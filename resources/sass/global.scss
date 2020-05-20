@@ -1,0 +1,30 @@
+@import "variables";
+@import "constants";
+@import "functions";
+@import "mixins";
+
+$body-background: white;
+$body-color: black;
+
+.brandWrapper {
+	position: relative;
+	height: 40px;
+	width: 100px;
+
+	.versionLabel {
+		bottom: -3px;
+		color: #cdcdcd;
+		position: absolute;
+		font-size: 9px;
+		user-select: none;
+		font-family: "Roboto Mono", monospace;
+		height: 9px;
+		width: 100px;
+		text-align: center;
+		animation: 0.3s all;
+
+		@at-root .offset-navbar & {
+			bottom: 3px;
+		}
+	}
+}

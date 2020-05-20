@@ -1,0 +1,198 @@
+
+{
+    "created_at": "Tue Mar 13 21:15:36 +0000 2018",
+    "id": 973668925090205696,
+    "id_str": "973668925090205696",
+    "full_text": "When you refactor and the tests pass on the first try https:\/\/t.co\/93Pmzm96QR",
+    "truncated": false,
+    "display_text_range": [
+        0,
+        53
+    ],
+    "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "user_mentions": [],
+        "urls": [],
+        "media": [
+            {
+                "id": 973668888226553856,
+                "id_str": "973668888226553856",
+                "indices": [
+                    54,
+                    77
+                ],
+                "media_url": "http:\/\/pbs.twimg.com\/tweet_video_thumb\/DYMqsfOX4AAWR2v.jpg",
+                "media_url_https": "https:\/\/pbs.twimg.com\/tweet_video_thumb\/DYMqsfOX4AAWR2v.jpg",
+                "url": "https:\/\/t.co\/93Pmzm96QR",
+                "display_url": "pic.twitter.com\/93Pmzm96QR",
+                "expanded_url": "https:\/\/twitter.com\/thomasfuchs\/status\/973668925090205696\/photo\/1",
+                "type": "photo",
+                "sizes": {
+                    "thumb": {
+                        "w": 150,
+                        "h": 150,
+                        "resize": "crop"
+                    },
+                    "medium": {
+                        "w": 360,
+                        "h": 396,
+                        "resize": "fit"
+                    },
+                    "large": {
+                        "w": 360,
+                        "h": 396,
+                        "resize": "fit"
+                    },
+                    "small": {
+                        "w": 360,
+                        "h": 396,
+                        "resize": "fit"
+                    }
+                }
+            }
+        ]
+    },
+    "extended_entities": {
+        "media": [
+            {
+                "id": 973668888226553856,
+                "id_str": "973668888226553856",
+                "indices": [
+                    54,
+                    77
+                ],
+                "media_url": "http:\/\/pbs.twimg.com\/tweet_video_thumb\/DYMqsfOX4AAWR2v.jpg",
+                "media_url_https": "https:\/\/pbs.twimg.com\/tweet_video_thumb\/DYMqsfOX4AAWR2v.jpg",
+                "url": "https:\/\/t.co\/93Pmzm96QR",
+                "display_url": "pic.twitter.com\/93Pmzm96QR",
+                "expanded_url": "https:\/\/twitter.com\/thomasfuchs\/status\/973668925090205696\/photo\/1",
+                "type": "animated_gif",
+                "sizes": {
+                    "thumb": {
+                        "w": 150,
+                        "h": 150,
+                        "resize": "crop"
+                    },
+                    "medium": {
+                        "w": 360,
+                        "h": 396,
+                        "resize": "fit"
+                    },
+                    "large": {
+                        "w": 360,
+                        "h": 396,
+                        "resize": "fit"
+                    },
+                    "small": {
+                        "w": 360,
+                        "h": 396,
+                        "resize": "fit"
+                    }
+                },
+                "video_info": {
+                    "aspect_ratio": [
+                        10,
+                        11
+                    ],
+                    "variants": [
+                        {
+                            "bitrate": 0,
+                            "content_type": "video\/mp4",
+                            "url": "https:\/\/video.twimg.com\/tweet_video\/DYMqsfOX4AAWR2v.mp4"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "source": "<a href=\"http:\/\/tapbots.com\/tweetbot\" rel=\"nofollow\">Tweetbot for i\u039fS<\/a>",
+    "in_reply_to_status_id": null,
+    "in_reply_to_status_id_str": null,
+    "in_reply_to_user_id": null,
+    "in_reply_to_user_id_str": null,
+    "in_reply_to_screen_name": null,
+    "user": {
+        "id": 6927562,
+        "id_str": "6927562",
+        "name": "Thomas Fuchs \ud83d\udd79\ud83d\udcfa",
+        "screen_name": "thomasfuchs",
+        "location": "Bucks County, PA",
+        "description": "Immigrant. Also, I'm in your Nintendo Switch https:\/\/t.co\/nh5M0lo0CF\u2026",
+        "url": "https:\/\/t.co\/zz1pMnks83",
+        "entities": {
+            "url": {
+                "urls": [
+                    {
+                        "url": "https:\/\/t.co\/zz1pMnks83",
+                        "expanded_url": "http:\/\/mir.aculo.us\/",
+                        "display_url": "mir.aculo.us",
+                        "indices": [
+                            0,
+                            23
+                        ]
+                    }
+                ]
+            },
+            "description": {
+                "urls": [
+                    {
+                        "url": "https:\/\/t.co\/nh5M0lo0CF",
+                        "expanded_url": "https:\/\/twitter.com\/thomasfuchs\/st",
+                        "display_url": "twitter.com\/thomasfuchs\/st",
+                        "indices": [
+                            45,
+                            68
+                        ]
+                    }
+                ]
+            }
+        },
+        "protected": false,
+        "followers_count": 31784,
+        "friends_count": 180,
+        "listed_count": 2226,
+        "created_at": "Tue Jun 19 12:51:30 +0000 2007",
+        "favourites_count": 4754,
+        "utc_offset": null,
+        "time_zone": null,
+        "geo_enabled": true,
+        "verified": true,
+        "statuses_count": 87118,
+        "lang": "en",
+        "contributors_enabled": false,
+        "is_translator": false,
+        "is_translation_enabled": false,
+        "profile_background_color": "000000",
+        "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png",
+        "profile_background_tile": false,
+        "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/995501313101361152\/RBHPHFCU_normal.jpg",
+        "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/995501313101361152\/RBHPHFCU_normal.jpg",
+        "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/6927562\/1398558455",
+        "profile_link_color": "0000FF",
+        "profile_sidebar_border_color": "87BC44",
+        "profile_sidebar_fill_color": "E0FF92",
+        "profile_text_color": "000000",
+        "profile_use_background_image": true,
+        "has_extended_profile": true,
+        "default_profile": false,
+        "default_profile_image": false,
+        "following": false,
+        "follow_request_sent": false,
+        "notifications": false,
+        "translator_type": "none"
+    },
+    "geo": null,
+    "coordinates": null,
+    "place": null,
+    "contributors": null,
+    "is_quote_status": false,
+    "retweet_count": 840,
+    "favorite_count": 2121,
+    "favorited": false,
+    "retweeted": false,
+    "possibly_sensitive": false,
+    "possibly_sensitive_appealable": false,
+    "lang": "en"
+}

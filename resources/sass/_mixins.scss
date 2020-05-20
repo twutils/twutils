@@ -1,0 +1,9 @@
+@mixin bg-with-text($color) {
+    background: $color;
+    background-color: $color;
+    color: choose-contrast-color($color);
+}
+
+@mixin common-text-shadow() {
+  text-shadow: 1px 1px 1px rgba(black, 0.5);
+}

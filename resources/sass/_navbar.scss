@@ -1,0 +1,151 @@
+$fontSizeLargeScreen: 1.3rem;
+$fontSizeSmallScreen: 1rem;
+@media (max-width: 767.98px) {
+  .navbar-laravel , body.offset-navbar .navbar-laravel {
+    height: initial !important;
+  }
+  body.offset-navbar {
+    paddint-top: 40px;
+  }
+}
+
+.navbar-laravel .navbar-toggler {
+    color: white;
+    border: none;
+}
+
+.dropdown-menu {
+  transform-origin: top;
+  transform-style: preserve-3d;
+  animation-name: stretch-x-top;
+}
+
+.dropdown-menu {
+  background-color: $primary;
+}
+
+.navbar-laravel, .dropdown-item {
+  color: white;
+}
+
+.navbarDropdown__user {
+  justify-content: space-between;
+  display: flex;
+  height: 40px;
+  align-items: center;
+  min-width: 140px;
+}
+
+body.offset-navbar {
+  padding-top: 40px;
+  .navbar-laravel {
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    height: 40px;
+    font-size: $fontSizeSmallScreen;
+  }
+
+  main {
+    min-height: calc(100vh - 80px);
+  }
+}
+.navbar-laravel {
+
+  @include common-text-shadow();
+  transition: all 0.3s ease 0s;
+  box-shadow: 0 2px 4px rgba($primary, 0.5);
+  font-size: $fontSizeLargeScreen;
+  background: lighten($primary, 15%);
+  height: 60px;
+
+  img.avatar {
+    width: 35px;
+  }
+  // small screens: smaller font, higher opacity degree
+  @include media-breakpoint-down(sm) {
+    background: rgba($primary, 0.7);
+    font-size: $fontSizeSmallScreen;
+  }
+
+  .navbarDropdown__container .dropdown-menu {
+    // default screens: larger font, lower opacity degree
+    font-size: $fontSizeLargeScreen;
+    background: rgba($primary, 0.5);
+
+    // large screens: higher opacity degree
+    @include media-breakpoint-up(sm) {
+      background: rgba($primary, 0.8);
+    }
+    // small screens: smaller font
+    @include media-breakpoint-down(sm) {
+      font-size: $fontSizeSmallScreen;
+    }
+  }
+}
+
+
+.navbar-laravel {
+  a.nav-link:not(.navbarDropdown__user) {
+    color: white;
+    padding-bottom: 2px;
+    @at-root .nav-link > .active,
+    &:active, &:focus, &:hover {
+      text-shadow: 2px 1px 2px rgba(0, 0, 0, 1);
+    }
+  }
+}
+
+.nav-link, .hoverUnderlineFromCenter {
+  // extracted from: http://ianlunn.github.io/Hover/
+  @at-root .nav-link > .active,
+  &:active:before,
+  &:focus:before,
+  &:hover:before {
+      left: 0;
+      right: 0;
+  }
+
+  // no need for animation from 51% to 0 for onload active items..
+  &.active:before {
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  &, &.active {
+    position: relative;
+  }
+
+  &:before, &.active:before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      left: 51%;
+      right: 51%;
+      bottom: 0;
+      background: $secondary;
+      height: 2px;
+      -webkit-transition-property: left, right;
+      transition-property: left, right;
+      -webkit-transition-duration: 0.3s;
+      transition-duration: 0.3s;
+      -webkit-transition-timing-function: ease-out;
+      transition-timing-function: ease-out;
+  }
+}
+.ellipsesPart {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 3px solid white;
+    border-radius: 50%;
+}
+
+
+
+.dropdown-item.active,
+.dropdown-item:active
+{
+    background-color: #4f4f4f;
+}

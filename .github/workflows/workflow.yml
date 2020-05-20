@@ -1,0 +1,51 @@
+name: Build and Test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v1
+      with:
+          php-version: 7.4
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+          coverage: none
+
+    - name: Install composer Dependencies
+      run: |
+       composer install --prefer-dist --no-interaction --no-suggest
+
+    - name: Prepare Laravel Application
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+
+
+    - name: Download NodeJs
+      uses: actions/setup-node@v1
+
+    - name: npm install, then build for production
+      run: |
+        npm install
+        npm run prod
+        npm run build
+
+    - name: Execute backend tests
+      run: |
+       vendor/bin/phpunit
+
+    - name: Prepare Frontend Data
+      run: |
+       composer testData
+
+    - name: Execute Frontend Tests
+      run: |
+        npm test

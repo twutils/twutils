@@ -1,0 +1,31 @@
+
+.locale-ar .card-title {
+  text-align: center;
+  img {
+    float: right;
+  }
+}
+
+.locale-ar {
+  .popover-body {
+    text-align: right;
+  }
+  .dropdown-item, .call-to-action {
+      @extend .rtl;
+  }
+  .feature__container {
+      @extend .dir-rtl;
+  }
+  .btn {
+      @extend .dir-rtl;    
+  }
+
+  .modal-header .close {
+    margin: -1rem auto -1rem -1rem;
+  }
+
+  .modal-footer > :not(:last-child) {
+      margin-right: unset;
+      margin-left: .25rem;
+  }
+}

@@ -1,0 +1,39 @@
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #5a5a5a;
+}
+
+.welcomeHeader {
+  margin-top: -1.5rem;
+  min-height: 70vh;
+  background-position-x: center;
+  background-position-y: center;
+  background-repeat-x: no-repeat;
+  background-repeat-y: no-repeat;
+  background-attachment: fixed;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: initial;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &-text {
+    font-size: 1.5rem;
+    text-shadow: 0px 0px 0px black;
+    color: $primary;
+
+    @at-root .locale-ar & {
+      @extend .dir-rtl;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    & {
+      min-height: initial;
+    }
+  }
+}
+

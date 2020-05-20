@@ -1,0 +1,31 @@
+@import "~animate.css/source/_base";
+@import "~animate.css/source/bouncing_entrances/bounceInDown";
+@import "~animate.css/source/fading_entrances/fadeIn";
+
+.stretchXTop {
+  transform-origin: top;
+  transform-style: preserve-3d;
+  animation-name: stretch-x-top;
+}
+
+@keyframes stretch-x-top {
+  from {
+    transform: rotateX(50deg);
+  }
+
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+.slideFade-enter-active {
+  transition: all .5s  ease;
+}
+.slideFade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slideFade-enter, .slideFade-leave-to
+{
+  transform: translateX(10px);
+  opacity: 0;
+}

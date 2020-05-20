@@ -1,0 +1,67 @@
+@import "animations";
+@import "utilities";
+@import "navbar";
+@import "rtl";
+
+body {
+  font-family: $font-family-sans-serif;
+}
+
+a {
+  color: lighten($primary, 40%);
+}
+
+.loading-gif {
+  background: url("../images/loading.gif");
+  position: fixed;
+  width: 200px;
+  height: 200px;
+//  filter: blur(2px);
+  right: 0px;
+  bottom: 10px;
+
+  &-content {
+    position: absolute;
+    top: 40%;
+    right: 40%;
+    background: white;
+  }
+}
+
+body {
+  background: $body-background;
+  color: choose-contrast-color($body-background);
+  background-size: cover;
+  background-attachment: fixed;
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+footer {
+  background: lighten(desaturate($primary, 15%), 15%);
+}
+
+
+footer {
+    margin-bottom: -1.5rem;
+}
+
+.locale-ar .loginContainer {
+  @extend .rtl;
+}
+
+footer {
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  min-height: $mainHeight;
+}
+
+.form-check-inline .form-check-input {
+  margin-left: 0.3125rem;
+}

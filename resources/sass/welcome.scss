@@ -1,0 +1,152 @@
+@import "./global.scss";
+
+@import "~typeface-lato";
+
+@import '~bootstrap/scss/bootstrap';
+@import '~dubai-font/dubai-font/css/dubai-font';
+@import '~open-iconic/font/css/open-iconic';
+@import '~font-awesome/scss/font-awesome';
+
+@import "./core.scss";
+@import "header";
+
+$mainActionButtonsBackground: desaturate($primary, 20%);//linear-gradient(to bottom right, $primary, desaturate($primary, 20%));
+$mainActionButtonsBackgroundHover: darken(desaturate($primary, 20%), 10%);//linear-gradient(to bottom right, $primary, darken(desaturate($primary, 20%), 20%));
+.callToAction__button,
+.mainActionButton {
+    background: $mainActionButtonsBackground;
+    color: white;
+    min-width: 200px;
+    border-radius: 40px;
+    font-size: 1.4rem;
+    padding: 1rem;
+    margin: 1rem;
+    border: 4px solid darken($primary, 10%);
+    transition: all 0.3s;
+    &:active, &:focus, &:hover {
+        @include common-text-shadow();
+        color: white;
+        background: $mainActionButtonsBackgroundHover !important;
+    }
+    @include media-breakpoint-down(xs) {
+      font-size: 1.1rem;
+    }
+}
+
+.feature__container {
+    min-height: 220px !important;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+.feature__container .card {
+  border: none;
+  color: black;
+}
+.feature__container .card-body {
+    border: none;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.feature__container .card, .feature__container, .feature__container .card-body {
+  background: white;
+}
+
+.callToAction__container {
+  justify-content: center;
+  align-items: center;
+  font-size: 1.3rem;
+}
+
+.imgWrapper {
+  margin: 1rem;
+}
+
+.featuresHeaderText {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
+}
+
+.featuresText {
+  
+}
+
+.featuresTextDesc {
+  font-size: 1.1rem;
+}
+
+body {
+  font-size: 1.3rem;
+}
+.howStepsContainer {
+  font-size: 1.3rem;
+}
+
+.circledStepNumber {
+  &, & .circledStepNumberWrapper {
+    
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+
+    .circledStepNumberWrapper {
+      margin: 1rem;
+      width: 50px;
+      height: 50px;
+      font-size: 1.3rem;
+      border: 1px dashed black;
+      border-radius: 50%;
+    }
+
+    .circledStepNumberText {
+
+    }
+}
+
+.stepBlock {
+    margin: 1rem 0rem;
+}
+
+.locale-ar .mainViewContainer {
+  direction: rtl;
+  text-align: right;
+}
+.locale-ar .markdownContainer {
+  text-align: justify;
+}
+
+@include media-breakpoint-down(xs) {
+  // Hyphenating "What is it" on mobile devices..
+  // Credits: https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/
+  .whatIsIt__container {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    text-align: justify;
+  }
+}
+
+.footer__githubAnchor {
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  font-size: 2.1rem;
+
+  color: #9e9e9e;
+
+  &:hover, &:focus, &:active {
+    color: lighten(#9e9e9e, 5%);
+  }
+}

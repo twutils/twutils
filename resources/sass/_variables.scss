@@ -1,0 +1,12 @@
+$mainHeight: calc(100vh - 100px);
+// Typography
+$font-family-sans-serif: "Lato", "Dubai-Regular", -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+//$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+$primary: #000000;
+$secondary: #23629f;
+
+$btn-focus-width: 0;
+$dropdown-link-hover-color: white;
+$dropdown-link-hover-bg: lighten($primary, 10%);

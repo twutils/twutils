@@ -1,0 +1,79 @@
+.dir-rtl {
+  direction: rtl;
+}
+.dir-ltr {
+  direction: ltr;
+}
+.clickable {
+  cursor: pointer;
+}
+.rtl {
+  text-align: right;
+  direction: rtl;
+}
+.ltr {
+  text-align: left;
+  direction: ltr;
+}
+.font-size-3 {
+  font-size: 1rem;
+}
+.font-size-08 {
+  font-size: 0.8rem !important;
+}
+
+.bg-secondary {
+  background-color: $secondary !important; 
+}
+
+.box-shadow-1 {
+  box-shadow: 1px 1px 1px black;
+}
+.max-width-200 {
+  max-width: 200px;
+}
+.max-width-230 {
+  max-width: 230px;
+}
+
+.pre-line {
+    white-space: pre-line;  
+}
+
+.line-height-25rem {
+  line-height: 2.5rem;
+}
+
+.text-line-through {
+  text-decoration: line-through;
+}
+
+.text-decoration-none {
+  &, &:hover, &:focus, &:active {
+    text-decoration: none !important;
+  }
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.font-size-90-percent {
+  font-size: 90%;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.border-radius-1rem {
+  border-radius: 1rem;
+}
+
+.font-mono {
+  font-family: "Roboto Mono", monospace;
+}

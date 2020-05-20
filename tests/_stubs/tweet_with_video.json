@@ -1,0 +1,238 @@
+{
+  "created_at": "Wed Mar 28 09:33:20 +0000 2018",
+  "id": 978928012358909952,
+  "id_str": "978928012358909952",
+  "full_text": "A CSS Grid powered menu that expands from a page corner  https:\/\/t.co\/FmvqDyd4bz #css #cssgrid #webdev #animation https:\/\/t.co\/jiK8vHzOb3",
+  "truncated": false,
+  "display_text_range": [
+    0,
+    113
+  ],
+  "entities": {
+    "hashtags": [
+      {
+        "text": "css",
+        "indices": [
+          81,
+          85
+        ]
+      },
+      {
+        "text": "cssgrid",
+        "indices": [
+          86,
+          94
+        ]
+      },
+      {
+        "text": "webdev",
+        "indices": [
+          95,
+          102
+        ]
+      },
+      {
+        "text": "animation",
+        "indices": [
+          103,
+          113
+        ]
+      }
+    ],
+    "symbols": [],
+    "user_mentions": [],
+    "urls": [
+      {
+        "url": "https:\/\/t.co\/FmvqDyd4bz",
+        "expanded_url": "https:\/\/tympanus.net\/codrops\/2018\/03\/28\/grid-menu\/",
+        "display_url": "tympanus.net\/codrops\/2018\/0\u2026",
+        "indices": [
+          57,
+          80
+        ]
+      }
+    ],
+    "media": [
+      {
+        "id": 978927735098585088,
+        "id_str": "978927735098585088",
+        "indices": [
+          114,
+          137
+        ],
+        "media_url": "http:\/\/pbs.twimg.com\/ext_tw_video_thumb\/978927735098585088\/pu\/img\/U67cERm8G779_A-L.jpg",
+        "media_url_https": "https:\/\/pbs.twimg.com\/ext_tw_video_thumb\/978927735098585088\/pu\/img\/U67cERm8G779_A-L.jpg",
+        "url": "https:\/\/t.co\/jiK8vHzOb3",
+        "display_url": "pic.twitter.com\/jiK8vHzOb3",
+        "expanded_url": "https:\/\/twitter.com\/crnacura\/status\/978928012358909952\/video\/1",
+        "type": "photo",
+        "sizes": {
+          "medium": {
+            "w": 1200,
+            "h": 664,
+            "resize": "fit"
+          },
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "small": {
+            "w": 680,
+            "h": 376,
+            "resize": "fit"
+          },
+          "large": {
+            "w": 1280,
+            "h": 708,
+            "resize": "fit"
+          }
+        }
+      }
+    ]
+  },
+  "extended_entities": {
+    "media": [
+      {
+        "id": 978927735098585088,
+        "id_str": "978927735098585088",
+        "indices": [
+          114,
+          137
+        ],
+        "media_url": "http:\/\/pbs.twimg.com\/ext_tw_video_thumb\/978927735098585088\/pu\/img\/U67cERm8G779_A-L.jpg",
+        "media_url_https": "https:\/\/pbs.twimg.com\/ext_tw_video_thumb\/978927735098585088\/pu\/img\/U67cERm8G779_A-L.jpg",
+        "url": "https:\/\/t.co\/jiK8vHzOb3",
+        "display_url": "pic.twitter.com\/jiK8vHzOb3",
+        "expanded_url": "https:\/\/twitter.com\/crnacura\/status\/978928012358909952\/video\/1",
+        "type": "video",
+        "sizes": {
+          "medium": {
+            "w": 1200,
+            "h": 664,
+            "resize": "fit"
+          },
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "small": {
+            "w": 680,
+            "h": 376,
+            "resize": "fit"
+          },
+          "large": {
+            "w": 1280,
+            "h": 708,
+            "resize": "fit"
+          }
+        },
+        "video_info": {
+          "aspect_ratio": [
+            320,
+            177
+          ],
+          "duration_millis": 14350,
+          "variants": [
+            {
+              "content_type": "application\/x-mpegURL",
+              "url": "https:\/\/video.twimg.com\/ext_tw_video\/978927735098585088\/pu\/pl\/seH6QDrpEzvanycN.m3u8"
+            },
+            {
+              "bitrate": 256000,
+              "content_type": "video\/mp4",
+              "url": "https:\/\/video.twimg.com\/ext_tw_video\/978927735098585088\/pu\/vid\/324x180\/BDUpnZQ_pjFm-ZKs.mp4"
+            },
+            {
+              "bitrate": 832000,
+              "content_type": "video\/mp4",
+              "url": "https:\/\/video.twimg.com\/ext_tw_video\/978927735098585088\/pu\/vid\/650x360\/wlV_jxFCGCkoj6Sd.mp4"
+            }
+          ]
+        },
+        "additional_media_info": {
+          "monetizable": false
+        }
+      }
+    ]
+  },
+  "source": "<a href=\"http:\/\/twitter.com\" rel=\"nofollow\">Twitter Web Client<\/a>",
+  "in_reply_to_status_id": null,
+  "in_reply_to_status_id_str": null,
+  "in_reply_to_user_id": null,
+  "in_reply_to_user_id_str": null,
+  "in_reply_to_screen_name": null,
+  "user": {
+    "id": 18642262,
+    "id_str": "18642262",
+    "name": "Mary Lou",
+    "screen_name": "crnacura",
+    "location": "",
+    "description": "\u2752 TBD. @codrops",
+    "url": "https:\/\/t.co\/pjsBgRvSaU",
+    "entities": {
+      "url": {
+        "urls": [
+          {
+            "url": "https:\/\/t.co\/pjsBgRvSaU",
+            "expanded_url": "http:\/\/www.codrops.com",
+            "display_url": "codrops.com",
+            "indices": [
+              0,
+              23
+            ]
+          }
+        ]
+      },
+      "description": {
+        "urls": []
+      }
+    },
+    "protected": false,
+    "followers_count": 23457,
+    "friends_count": 1005,
+    "listed_count": 951,
+    "created_at": "Mon Jan 05 19:34:34 +0000 2009",
+    "favourites_count": 604,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": false,
+    "statuses_count": 1966,
+    "lang": "en",
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "FFFDF3",
+    "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme7\/bg.gif",
+    "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme7\/bg.gif",
+    "profile_background_tile": false,
+    "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/805913360625790977\/V0AGc7jc_normal.jpg",
+    "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/805913360625790977\/V0AGc7jc_normal.jpg",
+    "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/18642262\/1481020394",
+    "profile_link_color": "C08670",
+    "profile_sidebar_border_color": "D4B494",
+    "profile_sidebar_fill_color": "0D0C0B",
+    "profile_text_color": "977C61",
+    "profile_use_background_image": true,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": false,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "regular"
+  },
+  "geo": null,
+  "coordinates": null,
+  "place": null,
+  "contributors": null,
+  "is_quote_status": false,
+  "retweet_count": 285,
+  "favorite_count": 1211,
+  "favorited": false,
+  "retweeted": false,
+  "possibly_sensitive": false,
+  "lang": "en"
+}

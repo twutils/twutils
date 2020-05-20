@@ -1,0 +1,13 @@
+{
+  "x_access_level": "read",
+  "x_connection_hash": "ee1b6a52114d1f29d1fb715d3be26ca6",
+  "x_content_type_options": "nosniff",
+  "x_frame_options": "SAMEORIGIN",
+  "x_rate_limit_limit": "75",
+  "x_rate_limit_remaining": "73",
+  "x_rate_limit_reset": "1519613015",
+  "x_response_time": "376",
+  "x_transaction": "004d38040042af13",
+  "x_twitter_response_tags": "BouncerCompliant",
+  "x_xss_protection": "1; mode=block; report=https://twitter.com/i/xss_report"
+}

@@ -52,11 +52,11 @@ class UpdateCacheVersion extends Command
     {
         $response = Http::withHeaders([
             'Authorization' => 'token '.env('GITHUB_TOKEN'),
-        ])->get('https://api.github.com/repos/MohannadNaj/twutils/tags');
+        ])->get('https://api.github.com/repos/MohannadNaj/twutils/releases/latest');
 
         $jsonResponse = $response->json();
 
-        if (empty($versionFound = $jsonResponse[0]['name'] ?? null)) {
+        if (empty($versionFound = $jsonResponse['name'] ?? null)) {
             throw new \Exception("Couldn't find version. GitHub Response: \n".$response->body(), 1);
         }
 

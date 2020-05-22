@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
-use File;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -12,7 +11,10 @@ use Illuminate\Queue\SerializesModels;
 
 class FetchFollowersJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private $parameters;
     private $socialUser;

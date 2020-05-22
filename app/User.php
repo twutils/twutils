@@ -64,14 +64,14 @@ class User extends Authenticatable
     public function getAvatarAttribute()
     {
         $socialUser = $this->socialUsers[0] ?? null;
-        if (! is_null($socialUser)) {
+        if (!is_null($socialUser)) {
             return $socialUser->avatar;
         }
 
         return null;
     }
 
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('username')

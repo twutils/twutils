@@ -2,16 +2,7 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchEntitiesUserTweetsJob;
-use App\Jobs\ZipEntitiesJob;
-use App\SocialUser;
-use App\Task;
-use App\Tweet;
-use App\TwUtils\AssetsManager;
-use App\User;
-use Auth;
-use Carbon\Carbon;
 
 class FetchEntitiesUserTweetsOperation extends FetchEntitiesLikesOperation
 {

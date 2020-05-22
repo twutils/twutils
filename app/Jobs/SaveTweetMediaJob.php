@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Jobs\ZipEntitiesJob;
 use App\Task;
 use App\Tweet;
 use App\TwUtils\AssetsManager;
@@ -14,7 +13,10 @@ use Illuminate\Queue\SerializesModels;
 
 class SaveTweetMediaJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     protected $tweetIdStr;
     protected $task;
     protected $tweetIndex;
@@ -42,7 +44,7 @@ class SaveTweetMediaJob implements ShouldQueue
      */
     public function handle()
     {
-        if (! $this->task || in_array($this->task->status, ['broken', 'cancelled'])) {
+        if (!$this->task || in_array($this->task->status, ['broken', 'cancelled'])) {
             return;
         }
 

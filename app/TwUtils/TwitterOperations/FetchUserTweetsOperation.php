@@ -2,16 +2,7 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchUserTweetsJob;
-use App\Jobs\ZipEntitiesJob;
-use App\SocialUser;
-use App\Task;
-use App\Tweet;
-use App\TwUtils\AssetsManager;
-use App\User;
-use Auth;
-use Carbon\Carbon;
 
 class FetchUserTweetsOperation extends FetchLikesOperation
 {
@@ -45,14 +36,14 @@ class FetchUserTweetsOperation extends FetchLikesOperation
     protected function buildParameters()
     {
         return [
-            'user_id' => $this->socialUser->social_user_id,
-            'screen_name' => $this->socialUser->nickname,
-            'count' => config('twutils.twitter_requests_counts.fetch_likes'),
-            'exclude_replies' => false,
-            'include_rts' => true,
-            'trim_user' => false,
+            'user_id'          => $this->socialUser->social_user_id,
+            'screen_name'      => $this->socialUser->nickname,
+            'count'            => config('twutils.twitter_requests_counts.fetch_likes'),
+            'exclude_replies'  => false,
+            'include_rts'      => true,
+            'trim_user'        => false,
             'include_entities' => true,
-            'tweet_mode' => 'extended',
+            'tweet_mode'       => 'extended',
         ];
     }
 }

@@ -3,14 +3,7 @@
 namespace App\TwUtils\TwitterOperations;
 
 use App\Jobs\DestroyTweetJob;
-use App\Jobs\FetchLikesJob;
-use App\SocialUser;
 use App\Task;
-use App\Tweet;
-use App\TwUtils\JobsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
 use Carbon\Carbon;
 
 class destroyTweetsOperation extends destroyLikesOperation
@@ -35,7 +28,7 @@ class destroyTweetsOperation extends destroyLikesOperation
         try {
             $relatedTaskLikes = Task::find($parameters['targeted_task_id'])->likes;
 
-            if (! empty($parameters['settings'])) {
+            if (!empty($parameters['settings'])) {
                 if (isset($parameters['settings']['start_date'])) {
                     $relatedTaskLikes = $relatedTaskLikes->where('tweet_created_at', '>', new Carbon($parameters['settings']['start_date']));
                 }

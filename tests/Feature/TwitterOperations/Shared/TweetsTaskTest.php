@@ -264,10 +264,10 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -290,22 +290,23 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([
             [
-                'type' => $this->jobName,
+                'type'   => $this->jobName,
                 'before' => function () {
                     app()->bind('AfterHTTPRequest', function () use (&$exceptionIsThrown) {
-                        if (! $exceptionIsThrown) {
+                        if (!$exceptionIsThrown) {
                             $exceptionIsThrown = true;
+
                             throw new \Abraham\TwitterOAuth\TwitterOAuthException('Error Processing Request', 1);
                         }
                     });
                 },
-                'twitterData' => $this->getStub('rate_limit_response.json'),
+                'twitterData'    => $this->getStub('rate_limit_response.json'),
                 'twitterHeaders' => ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
             ],
             [
-                'type' => $this->jobName,
+                'type'        => $this->jobName,
                 'twitterData' => array_fill(0, 2, $tweet),
-                'after' => function ($job) {
+                'after'       => function ($job) {
                     $this->assertNotNull($job->delay);
                     $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
                     $this->assertLessThanOrEqual(60, $nextJobDelay);
@@ -336,22 +337,22 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 10, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 10, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 5, $tweet),
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 10, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 10, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 5, $tweet),
+                ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -376,26 +377,26 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 10, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $expiredTokenStub,
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 10, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => [],
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 10, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $expiredTokenStub,
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 10, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [],
+                ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -419,22 +420,22 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 10, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 10, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => [],
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 10, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 10, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [],
+                ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -458,24 +459,24 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 15, $tweet),
-                'twitterHeaders' => ['x_rate_limit_remaining' => '1', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => [$tweet],
-                'after' => function ($job) {
-                    $this->assertNotNull($job->delay);
-                    $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
-                    $this->assertLessThanOrEqual(60, $nextJobDelay);
-                },
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type'           => $this->jobName,
+                    'twitterData'    => array_fill(0, 15, $tweet),
+                    'twitterHeaders' => ['x_rate_limit_remaining' => '1', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [$tweet],
+                    'after'       => function ($job) {
+                        $this->assertNotNull($job->delay);
+                        $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
+                        $this->assertLessThanOrEqual(60, $nextJobDelay);
+                    },
+                ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -523,10 +524,10 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -615,22 +616,22 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 2, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 2, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => [],
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => false,
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 2, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 2, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [],
+                ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => false,
+                ],
             ]
         );
 
@@ -658,34 +659,34 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 3, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 3, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 3, $tweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 3, $secondTweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => array_fill(0, 3, $secondTweet),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => [],
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => false,
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 3, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 3, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 3, $tweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 3, $secondTweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_fill(0, 3, $secondTweet),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [],
+                ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => false,
+                ],
             ]
         );
 

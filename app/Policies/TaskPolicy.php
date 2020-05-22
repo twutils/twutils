@@ -13,8 +13,9 @@ class TaskPolicy
     /**
      * Determine whether the user can view the task.
      *
-     * @param  \App\User  $user
-     * @param  \App\Task  $task
+     * @param \App\User $user
+     * @param \App\Task $task
+     *
      * @return mixed
      */
     public function view(User $user, Task $task)
@@ -25,7 +26,8 @@ class TaskPolicy
     /**
      * Determine whether the user can create tasks.
      *
-     * @param  \App\User  $user
+     * @param \App\User $user
+     *
      * @return mixed
      */
     public function create(User $user)
@@ -36,8 +38,9 @@ class TaskPolicy
     /**
      * Determine whether the user can update the task.
      *
-     * @param  \App\User  $user
-     * @param  \App\Task  $task
+     * @param \App\User $user
+     * @param \App\Task $task
+     *
      * @return mixed
      */
     public function seeManagedTasks(User $user, Task $task)
@@ -48,8 +51,9 @@ class TaskPolicy
     /**
      * Determine whether the user can delete the task.
      *
-     * @param  \App\User  $user
-     * @param  \App\Task  $task
+     * @param \App\User $user
+     * @param \App\Task $task
+     *
      * @return mixed
      */
     public function delete(User $user, Task $task)

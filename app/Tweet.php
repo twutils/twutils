@@ -8,17 +8,17 @@ class Tweet extends Model
 {
     protected $guarded = ['id'];
     protected $dates = [
-            'created_at',
-            'updated_at',
-            'removed',
-            'tweet_created_at',
-        ];
+        'created_at',
+        'updated_at',
+        'removed',
+        'tweet_created_at',
+    ];
     protected $casts = [
-      'attachments' => 'array',
-      'extended_entities' => 'array',
-      'quoted_status' => 'array',
-      'quoted_status_permalink' => 'array',
-      'retweeted_status' => 'array',
+        'attachments'             => 'array',
+        'extended_entities'       => 'array',
+        'quoted_status'           => 'array',
+        'quoted_status_permalink' => 'array',
+        'retweeted_status'        => 'array',
     ];
     protected $with = ['tweep'];
 
@@ -32,10 +32,10 @@ class Tweet extends Model
             $tweepOtherTweets = self::where('id_str', '!=', $tweet->id_str)
                             ->where('tweep_id', $tweep->id)->get()
                             ->concat(
-                              Following::where('tweep_id_str', $tweep->id_str)->get()
+                                Following::where('tweep_id_str', $tweep->id_str)->get()
                             )
                             ->concat(
-                              Follower::where('tweep_id_str', $tweep->id_str)->get()
+                                Follower::where('tweep_id_str', $tweep->id_str)->get()
                             );
 
             if ($tweepOtherTweets->isEmpty()) {

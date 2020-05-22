@@ -14,17 +14,15 @@ use App\Jobs\FetchLikesJob;
 use App\Jobs\FetchUserTweetsJob;
 use App\SocialUser;
 use App\Task;
-use App\TaskTweet;
 use App\Tweep;
 use App\Tweet;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Bus;
 use Tests\IntegrationTestCase;
 
 class DeleteMeTest extends IntegrationTestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->withoutJobs();
@@ -41,8 +39,8 @@ class DeleteMeTest extends IntegrationTestCase
         $this->assertStringContainsString('Remove my account', $response->getContent());
 
         $response = $this->post('/deleteMe', [
-            'day' => '',
-            'hour' => '',
+            'day'    => '',
+            'hour'   => '',
             'minute' => '',
         ]);
 
@@ -55,8 +53,8 @@ class DeleteMeTest extends IntegrationTestCase
     public function test_user_can_set_when_to_delete_me_to_zero_seconds_from_now()
     {
         $response = $this->post('/deleteMe', [
-            'day' => '',
-            'hour' => '',
+            'day'    => '',
+            'hour'   => '',
             'minute' => '',
         ]);
 
@@ -82,8 +80,8 @@ class DeleteMeTest extends IntegrationTestCase
     public function test_user_can_set_delete_me_to10_minutes_from_now()
     {
         $response = $this->post('/deleteMe', [
-            'day' => '',
-            'hour' => '',
+            'day'    => '',
+            'hour'   => '',
             'minute' => '10',
         ]);
 
@@ -129,29 +127,29 @@ class DeleteMeTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter([
             // task 1
             [
-                'type' => FetchFollowingJob::class,
+                'type'        => FetchFollowingJob::class,
                 'twitterData' => $this->fetchFollowingResponse(2),
             ],
             // task 2
             [
-                'type' => FetchFollowersJob::class,
+                'type'        => FetchFollowersJob::class,
                 'twitterData' => $this->fetchFollowingResponse(2),
             ],
             // task 3
             [
-                'type' => FetchUserTweetsJob::class,
+                'type'        => FetchUserTweetsJob::class,
                 'twitterData' => $this->generateUniqueTweets(2),
             ],
             // task 4
             [
-                'type' => FetchLikesJob::class,
+                'type'        => FetchLikesJob::class,
                 'twitterData' => $this->generateUniqueTweets(2),
             ],
             [
                 'type' => CleanFollowingsJob::class,
             ],
             [
-                'type' => FetchFollowingLookupsJob::class,
+                'type'        => FetchFollowingLookupsJob::class,
                 'twitterData' => [],
             ],
             [
@@ -182,8 +180,8 @@ class DeleteMeTest extends IntegrationTestCase
         $lastJobIndex = count($this->dispatchedJobs);
 
         $response = $this->post('/deleteMe', [
-            'day' => '',
-            'hour' => '',
+            'day'    => '',
+            'hour'   => '',
             'minute' => '',
         ]);
 

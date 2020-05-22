@@ -7,9 +7,6 @@ use App\SocialUser;
 use App\TwUtils\UserManager;
 use Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Session;
 
 class AppController extends Controller
@@ -37,7 +34,7 @@ class AppController extends Controller
 
     public function switchLang()
     {
-        if (! in_array(request()->segment(1), ['en', 'ar'])) {
+        if (!in_array(request()->segment(1), ['en', 'ar'])) {
             return redirect()->route('welcome');
         }
 
@@ -81,8 +78,8 @@ class AppController extends Controller
     {
         $request->validate(
             [
-                'day' => 'nullable|integer|min:0',
-                'hour' => 'nullable|integer|min:0',
+                'day'    => 'nullable|integer|min:0',
+                'hour'   => 'nullable|integer|min:0',
                 'minute' => 'nullable|integer|min:0',
             ]
         );

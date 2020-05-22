@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\TwitterOperations\Shared;
 
-use App\Task;
 use App\Tweep;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Str;
@@ -15,7 +14,7 @@ abstract class UsersListTest extends IntegrationTestCase
     protected $apiEndpoint;
     protected $twitterEndPoint;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -76,27 +75,27 @@ abstract class UsersListTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->fetchTwitterResponse(10, 1234),
-                'after' => function () {
-                    $this->assertEquals($this->lastTwitterClientData()['parameters']['cursor'], -1);
-                },
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->fetchTwitterResponse(10, 123, 10),
-                'after' => function () {
-                    $this->assertEquals($this->lastTwitterClientData()['parameters']['cursor'], 1234);
-                },
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->fetchTwitterResponse(10, 0, 20),
-                'after' => function () {
-                    $this->assertEquals($this->lastTwitterClientData()['parameters']['cursor'], 123);
-                },
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->fetchTwitterResponse(10, 1234),
+                    'after'       => function () {
+                        $this->assertEquals($this->lastTwitterClientData()['parameters']['cursor'], -1);
+                    },
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->fetchTwitterResponse(10, 123, 10),
+                    'after'       => function () {
+                        $this->assertEquals($this->lastTwitterClientData()['parameters']['cursor'], 1234);
+                    },
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->fetchTwitterResponse(10, 0, 20),
+                    'after'       => function () {
+                        $this->assertEquals($this->lastTwitterClientData()['parameters']['cursor'], 123);
+                    },
+                ],
             ]
         );
 
@@ -160,14 +159,14 @@ abstract class UsersListTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->fetchTwitterResponse(10, 1234),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->fetchTwitterResponse(10, 0, 10),
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->fetchTwitterResponse(10, 1234),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->fetchTwitterResponse(10, 0, 10),
+                ],
             ]
         );
 
@@ -185,14 +184,14 @@ abstract class UsersListTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->fetchTwitterResponse(10, 1234),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->fetchTwitterResponse(10, 0),
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->fetchTwitterResponse(10, 1234),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->fetchTwitterResponse(10, 0),
+                ],
             ]
         );
 

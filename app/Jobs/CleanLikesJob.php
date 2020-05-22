@@ -2,13 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Follower;
-use App\Following;
-use App\Jobs\CleanTweepsJob;
 use App\TaskTweet;
-use App\Tweep;
 use App\Tweet;
-use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,7 +12,10 @@ use Illuminate\Queue\SerializesModels;
 
 class CleanLikesJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private $task;
 
@@ -61,6 +59,6 @@ class CleanLikesJob implements ShouldQueue
             });
         }
 
-        dispatch(new CleanTweepsJob);
+        dispatch(new CleanTweepsJob());
     }
 }

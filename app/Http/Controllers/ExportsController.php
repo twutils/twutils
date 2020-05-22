@@ -4,16 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\TasksExport;
 use App\Exports\UsersListTaskExport;
-use App\Jobs\CleanExportsDiskJob;
 use App\Task;
 use App\TwUtils\ExportsManager;
 use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
 use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
-use App\TwUtils\TwitterOperations\FetchFollowersOperation;
-use App\TwUtils\TwitterOperations\FetchFollowingOperation;
-use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
-use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
-use File;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Storage;
@@ -40,8 +34,9 @@ class ExportsController extends Controller
     {
         $isEntitiesTask = in_array($task->type, [FetchEntitiesLikesOperation::class, FetchEntitiesUserTweetsOperation::class]);
 
-        if ($isEntitiesTask && ! empty($taskFiles = Storage::disk(config('filesystems.cloud'))->allFiles($task->id))) {
+        if ($isEntitiesTask && !empty($taskFiles = Storage::disk(config('filesystems.cloud'))->allFiles($task->id))) {
             $filePath = $taskFiles[0];
+
             try {
                 return redirect()->away(Storage::disk(config('filesystems.cloud'))->temporaryUrl($filePath, now()->addHours(1)));
             } catch (\Exception $e) {

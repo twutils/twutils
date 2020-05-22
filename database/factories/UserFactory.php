@@ -16,9 +16,9 @@ use Illuminate\Support\Str;
 
 $factory->define(App\User::class, function (Faker $faker, $data = []) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'username' => $faker->userName,
+        'name'           => $faker->name,
+        'email'          => $faker->unique()->safeEmail,
+        'username'       => $faker->userName,
         'remember_token' => Str::random(10),
     ];
 });

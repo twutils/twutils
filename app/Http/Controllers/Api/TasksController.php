@@ -113,6 +113,7 @@ class TasksController extends Controller
     public function delete(Request $request, Task $task)
     {
         $this->authorize('delete', $task);
+
         try {
             $task->delete();
 

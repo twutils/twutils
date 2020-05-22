@@ -3,13 +3,10 @@
 namespace Tests\Feature\TwitterOperations;
 
 use App\Jobs\DislikeTweetJob;
-use App\SocialUser;
 use App\Task;
 use App\Tweet;
 use App\User;
-use Config;
 use Illuminate\Support\Facades\Bus;
-use Mockery;
 use Tests\IntegrationTestCase;
 
 class DislikeTweetJobTest extends IntegrationTestCase

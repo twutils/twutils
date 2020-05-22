@@ -45,52 +45,52 @@ return [
 
         'temporaryTasks' => [
             'driver' => 'local',
-            'root' => storage_path('temporaryTasks'),
+            'root'   => storage_path('temporaryTasks'),
         ],
 
         'tasks' => [
             'driver' => 'local',
-            'root' => storage_path('tasks'),
+            'root'   => storage_path('tasks'),
         ],
 
         'htmlTasks' => [
             'driver' => 'local',
-            'root' => storage_path('htmlTasks'),
+            'root'   => storage_path('htmlTasks'),
         ],
 
         'localCloud' => [
             'driver' => 'local',
-            'root' => storage_path('localCloud'),
+            'root'   => storage_path('localCloud'),
         ],
 
         'publicRoot' => [
-            'driver' => 'local',
-            'root' => public_path(),
-            'url' => env('APP_URL').'/',
+            'driver'     => 'local',
+            'root'       => public_path(),
+            'url'        => env('APP_URL').'/',
             'visibility' => 'public',
         ],
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root'   => storage_path('app'),
         ],
 
         'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'driver'     => 'local',
+            'root'       => storage_path('app/public'),
+            'url'        => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
 
         's3' => [
             'visibility' => 'private',
-            'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
+            'driver'     => 's3',
+            'key'        => env('AWS_ACCESS_KEY_ID'),
+            'secret'     => env('AWS_SECRET_ACCESS_KEY'),
+            'region'     => env('AWS_DEFAULT_REGION'),
+            'bucket'     => env('AWS_BUCKET'),
+            'url'        => env('AWS_URL'),
+            'endpoint'   => env('AWS_ENDPOINT'),
         ],
 
     ],

@@ -3,13 +3,10 @@
 namespace Tests\Feature\TwitterOperations;
 
 use App\Jobs\DestroyTweetJob;
-use App\SocialUser;
 use App\Task;
 use App\Tweet;
 use App\User;
-use Config;
 use Illuminate\Support\Facades\Bus;
-use Mockery;
 use Tests\IntegrationTestCase;
 
 class DestroyTweetJobTest extends IntegrationTestCase
@@ -150,15 +147,15 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([
             [
-                'type' => DestroyTweetJob::class,
+                'type'        => DestroyTweetJob::class,
                 'twitterData' => $tweets[0],
             ],
             [
-                'type' => DestroyTweetJob::class,
+                'type'        => DestroyTweetJob::class,
                 'twitterData' => $twitterNotExistResponse,
             ],
             [
-                'type' => DestroyTweetJob::class,
+                'type'        => DestroyTweetJob::class,
                 'twitterData' => $tweets[2],
             ],
         ], $indexLastDispatched);
@@ -188,15 +185,15 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([
             [
-                'type' => DestroyTweetJob::class,
+                'type'        => DestroyTweetJob::class,
                 'twitterData' => $tweets[0],
             ],
             [
-                'type' => DestroyTweetJob::class,
+                'type'        => DestroyTweetJob::class,
                 'twitterData' => $twitterNotExistResponse,
             ],
             [
-                'type' => DestroyTweetJob::class,
+                'type'        => DestroyTweetJob::class,
                 'twitterData' => $tweets[2],
             ],
         ], $indexLastDispatched);
@@ -401,12 +398,12 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => [
-                'retweets' => false,
-                'tweets' => false,
-                'replies' => false,
-                'start_date' => '2018-05-01',
-                'end_date' => '2018-01-01',
-            ]]);
+            'retweets'   => false,
+            'tweets'     => false,
+            'replies'    => false,
+            'start_date' => '2018-05-01',
+            'end_date'   => '2018-01-01',
+        ]]);
 
         $response->assertStatus(422);
 

@@ -2,17 +2,7 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\CleanLikesJob;
-use App\Jobs\FetchLikesJob;
-use App\SocialUser;
 use App\Task;
-use App\Tweet;
-use App\TwUtils\AssetsManager;
-use App\TwUtils\JobsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
-use Carbon\Carbon;
 
 class RevokeAccessOperation extends TwitterOperation
 {
@@ -51,7 +41,7 @@ class RevokeAccessOperation extends TwitterOperation
     protected function buildParameters()
     {
         return [
-            'access_token' => $this->socialUser->token,
+            'access_token'        => $this->socialUser->token,
             'access_token_secret' => $this->socialUser->token_secret,
         ];
     }

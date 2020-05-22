@@ -9,19 +9,8 @@ use App\Jobs\FetchFollowingLookupsJob;
 use App\Jobs\FetchLikesJob;
 use App\Jobs\FetchUserTweetsJob;
 use App\SocialUser;
-use App\TwUtils\TwitterOperations\destroyLikesOperation;
-use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
-use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
-use App\TwUtils\TwitterOperations\FetchFollowersOperation;
-use App\TwUtils\TwitterOperations\FetchFollowingLookupsOperation;
-use App\TwUtils\TwitterOperations\FetchFollowingOperation;
-use App\TwUtils\TwitterOperations\FetchLikesOperation;
-use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
-use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
-use App\TwUtils\TwitterOperations\TwitterOperation;
 use App\TwUtils\UserManager;
 use Tests\IntegrationTestCase;
-use Tests\TestCase;
 
 class TestDataTest extends IntegrationTestCase
 {
@@ -53,18 +42,18 @@ class TestDataTest extends IntegrationTestCase
         $tasksList = $this->tasksList();
 
         SocialUser::find(1)->update([
-            'followers_count' => rand(10, 2000),
+            'followers_count'  => rand(10, 2000),
             'favourites_count' => rand(10, 2000),
-            'friends_count' => rand(10, 2000),
-            'statuses_count' => rand(10, 2000),
+            'friends_count'    => rand(10, 2000),
+            'statuses_count'   => rand(10, 2000),
         ]);
 
         return [
             'Tasks' => [
-                'TasksList' => $tasksList,
-                'FetchLikes' => $fetchLikes,
-                'FetchFollowing' => $fetchFollowing,
-                'FetchFollowers' => $fetchFollowers,
+                'TasksList'       => $tasksList,
+                'FetchLikes'      => $fetchLikes,
+                'FetchFollowing'  => $fetchFollowing,
+                'FetchFollowers'  => $fetchFollowers,
                 'FetchUserTweets' => $fetchUserTweets,
             ],
             'clientData' => UserManager::getClientData(),
@@ -88,19 +77,20 @@ class TestDataTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter(
             [
                 [
-                    'type' => FetchLikesJob::class,
+                    'type'        => FetchLikesJob::class,
                     'twitterData' => $tweets,
                 ],
                 [
                     'type' => CleanLikesJob::class,
                     'skip' => false,
                 ],
-            ], $lastFiredJobIndex
+            ],
+            $lastFiredJobIndex
         );
 
         return [
-            'TaskResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -117,19 +107,20 @@ class TestDataTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter(
             [
                 [
-                    'type' => FetchUserTweetsJob::class,
+                    'type'        => FetchUserTweetsJob::class,
                     'twitterData' => $tweets,
                 ],
                 [
                     'type' => CleanLikesJob::class,
                     'skip' => false,
                 ],
-            ], $lastFiredJobIndex
+            ],
+            $lastFiredJobIndex
         );
 
         return [
-            'TaskResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -148,27 +139,27 @@ class TestDataTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter(
             [
                 [
-                    'type' => FetchFollowingJob::class,
+                    'type'        => FetchFollowingJob::class,
                     'twitterData' => $fetchFollowingResponse,
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true]),
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([3 => false, 4 => false]),
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([5 => true, 123 => true]),
                 ],
             ]
         );
 
         return [
-            'TaskResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -186,15 +177,16 @@ class TestDataTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter(
             [
                 [
-                    'type' => FetchFollowersJob::class,
+                    'type'        => FetchFollowersJob::class,
                     'twitterData' => $fetchFollowingResponse,
                 ],
-            ], $lastFiredJobIndex
+            ],
+            $lastFiredJobIndex
         );
 
         return [
-            'TaskResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse' => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }

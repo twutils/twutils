@@ -3,21 +3,12 @@
 namespace App\TwUtils\TwitterOperations;
 
 use Abraham\TwitterOAuth\TwitterOAuthException;
-use App\Jobs\CleanLikesJob;
 use App\Jobs\CompleteTaskJob;
-use App\Jobs\FetchLikesJob;
 use App\SocialUser;
 use App\Task;
-use App\Tweet;
 use App\TwUtils\JobsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
 use Cache;
-use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Str;
-use Log;
 
 abstract class TwitterOperation
 {
@@ -195,7 +186,7 @@ abstract class TwitterOperation
     protected function breakTask($task, $response, $exception = null)
     {
         $breakData = ['break_response' => $response];
-        if (! is_null($exception)) {
+        if (!is_null($exception)) {
             $task->exception = $exception->__toString();
 
             $breakData['exceptionMessage'] = $exception->getMessage();

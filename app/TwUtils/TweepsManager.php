@@ -46,33 +46,33 @@ class TweepsManager
         return Tweep::create($tweep);
     }
 
-    public static function mapResponseUserToTweep(array $user) : array
+    public static function mapResponseUserToTweep(array $user): array
     {
         $displayUrl = null;
-        if (! empty($user['entities']->url) && ! empty($user['entities']->url->urls)) {
+        if (!empty($user['entities']->url) && !empty($user['entities']->url->urls)) {
             $displayUrl = $user['entities']->url->urls[0]->display_url ?? null;
         }
 
         return [
-        'id_str' => $user['id_str'],
-        'name' => $user['name'],
-        'avatar' => $user['profile_image_url_https'],
-        'screen_name' => $user['screen_name'],
-        'location' => $user['location'] ?? null,
-        'description' => $user['description'] ?? null,
-        'url' => $user['url'] ?? null,
-        'display_url' => $displayUrl ?? null,
-        'followers_count' => $user['followers_count'] ?? null,
-        'friends_count' => $user['friends_count'] ?? null,
-        'favourites_count' => $user['favourites_count'] ?? null,
-        'verified' => $user['verified'] ?? null,
-        'protected' => $user['protected'] ?? null,
-        'statuses_count' => $user['statuses_count'] ?? null,
-        'background_color' => $user['profile_background_color'] ?? null,
-        'background_image' => $user['profile_banner_url'] ?? null,
-        'tweep_created_at' => Carbon::createFromTimestamp(strtotime($user['created_at'] ?? 1)),
-        'created_at' => now(),
-        'updated_at' => now(),
+            'id_str'           => $user['id_str'],
+            'name'             => $user['name'],
+            'avatar'           => $user['profile_image_url_https'],
+            'screen_name'      => $user['screen_name'],
+            'location'         => $user['location'] ?? null,
+            'description'      => $user['description'] ?? null,
+            'url'              => $user['url'] ?? null,
+            'display_url'      => $displayUrl ?? null,
+            'followers_count'  => $user['followers_count'] ?? null,
+            'friends_count'    => $user['friends_count'] ?? null,
+            'favourites_count' => $user['favourites_count'] ?? null,
+            'verified'         => $user['verified'] ?? null,
+            'protected'        => $user['protected'] ?? null,
+            'statuses_count'   => $user['statuses_count'] ?? null,
+            'background_color' => $user['profile_background_color'] ?? null,
+            'background_image' => $user['profile_banner_url'] ?? null,
+            'tweep_created_at' => Carbon::createFromTimestamp(strtotime($user['created_at'] ?? 1)),
+            'created_at'       => now(),
+            'updated_at'       => now(),
         ];
     }
 }

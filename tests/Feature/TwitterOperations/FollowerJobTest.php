@@ -10,7 +10,7 @@ use Tests\Feature\TwitterOperations\Shared\UsersListTest;
 
 class FollowerJobTest extends UsersListTest
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

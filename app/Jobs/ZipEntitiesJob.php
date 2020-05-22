@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Jobs\CompleteTaskJob;
 use App\TwUtils\ExportsManager;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +13,10 @@ class ZipEntitiesJob implements ShouldQueue
 {
     private $task;
 
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct($task)
     {

@@ -2,10 +2,6 @@
 
 namespace App;
 
-use App\Follower;
-use App\Following;
-use App\TaskTweet;
-use App\Tweet;
 use App\TwUtils\TwitterOperations\destroyLikesOperation;
 use App\TwUtils\TwitterOperations\destroyTweetsOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
@@ -195,7 +191,7 @@ class Task extends Model
 
     public function getRemovedCountAttribute()
     {
-        if (! in_array($this->type, [destroyLikesOperation::class, destroyTweetsOperation::class])) {
+        if (!in_array($this->type, [destroyLikesOperation::class, destroyTweetsOperation::class])) {
             return null;
         }
 
@@ -203,7 +199,7 @@ class Task extends Model
             $likes = self::find($this->extra['targeted_task_id'])->likes;
 
             $removed = $likes->filter(function ($tweet) {
-                return ! empty($tweet->pivot->removed);
+                return !empty($tweet->pivot->removed);
             });
 
             $removeScopeCount = Arr::get($this->extra, 'removeScopeCount', '?');
@@ -215,7 +211,7 @@ class Task extends Model
             $tweets = self::find($this->extra['targeted_task_id'])->tweets;
 
             $removed = $tweets->filter(function ($tweet) {
-                return ! empty($tweet->pivot->removed);
+                return !empty($tweet->pivot->removed);
             });
 
             $removeScopeCount = Arr::get($this->extra, 'removeScopeCount', '?');

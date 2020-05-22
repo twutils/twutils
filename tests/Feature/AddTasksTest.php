@@ -2,15 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\CleanLikesJob;
-use App\Jobs\FetchLikesJob;
-use App\SocialUser;
 use App\Task;
-use App\Tweet;
-use App\User;
-use Config;
 use Illuminate\Support\Facades\Bus;
-use Mockery;
 use Tests\IntegrationTestCase;
 
 class AddTasksTest extends IntegrationTestCase
@@ -138,12 +131,12 @@ class AddTasksTest extends IntegrationTestCase
         $response->assertStatus(200);
 
         $response = $this->postJson('/api/destroyTweets/1', ['settings' => [
-            'end_date' => '2018-09-20',
-            'id' => 1, // TODO: another test for checking authorization on related task
+            'end_date'   => '2018-09-20',
+            'id'         => 1, // TODO: another test for checking authorization on related task
             'start_date' => '2013-09-22',
-            'replies' => true,
-            'retweets' => true,
-            'tweets' => true,
+            'replies'    => true,
+            'retweets'   => true,
+            'tweets'     => true,
         ]]);
         $response->assertStatus(200);
 

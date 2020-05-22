@@ -117,9 +117,9 @@ return [
     */
 
     'attributes' => [
-        'email' => 'Email',
+        'email'      => 'Email',
         'start_date' => 'Start Date',
-        'end_date' => 'End Date',
+        'end_date'   => 'End Date',
     ],
 
 ];

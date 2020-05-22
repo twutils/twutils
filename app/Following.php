@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Tweep;
 use Illuminate\Database\Eloquent\Model;
 
 class Following extends Model

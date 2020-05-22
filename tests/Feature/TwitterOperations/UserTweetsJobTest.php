@@ -7,7 +7,7 @@ use Tests\Feature\TwitterOperations\Shared\TweetsTaskTest;
 
 class UserTweetsJobTest extends TweetsTaskTest
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

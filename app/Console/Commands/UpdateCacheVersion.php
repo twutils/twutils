@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Http;
 use Cache;
+use Http;
 use Illuminate\Console\Command;
 
 class UpdateCacheVersion extends Command
@@ -42,8 +42,7 @@ class UpdateCacheVersion extends Command
         try {
             $this->updateCacheVersion();
         } catch (\Exception $e) {
-            if (app('env') !== 'production')
-            {
+            if (app('env') !== 'production') {
                 throw $e;
             }
         }
@@ -52,14 +51,13 @@ class UpdateCacheVersion extends Command
     protected function updateCacheVersion()
     {
         $response = Http::withHeaders([
-            'Authorization' => 'token ' . env('GITHUB_TOKEN'),
+            'Authorization' => 'token '.env('GITHUB_TOKEN'),
         ])->get('https://api.github.com/repos/MohannadNaj/twutils/tags');
 
         $jsonResponse = $response->json();
 
-        if (empty($versionFound = $jsonResponse[0]['name'] ?? null))
-        {
-            throw new \Exception("Couldn't find version. GitHub Response: \n" . $response->body(), 1);
+        if (empty($versionFound = $jsonResponse[0]['name'] ?? null)) {
+            throw new \Exception("Couldn't find version. GitHub Response: \n".$response->body(), 1);
         }
 
         Cache::set('app.version', $versionFound);

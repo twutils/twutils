@@ -6,14 +6,8 @@ use App\Follower;
 use App\Jobs\CleanFollowersJob;
 use App\Jobs\CompleteTaskJob;
 use App\Jobs\FetchFollowersJob;
-use App\SocialUser;
 use App\Task;
-use App\TwUtils\JobsManager;
 use App\TwUtils\TweepsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
-use Carbon\Carbon;
 
 class FetchFollowersOperation extends FetchFollowingOperation
 {
@@ -41,7 +35,7 @@ class FetchFollowersOperation extends FetchFollowingOperation
 
         $shouldBuild = $this->response['next_cursor_str'] != '0';
 
-        if (! $shouldBuild) {
+        if (!$shouldBuild) {
             $this->setCompletedTask($this->task);
         }
 
@@ -77,12 +71,13 @@ class FetchFollowersOperation extends FetchFollowingOperation
                 $tweep = TweepsManager::createOrFindFromFollowing($user);
 
                 array_push(
-                $followers, [
-                'task_id' => $task->id,
-                'tweep_id_str' => $tweep->id_str,
-                'followed_by_me' => $user['following'] ?? false,
-                ]
-            );
+                    $followers,
+                    [
+                        'task_id'        => $task->id,
+                        'tweep_id_str'   => $tweep->id_str,
+                        'followed_by_me' => $user['following'] ?? false,
+                    ]
+                );
             }
         );
 
@@ -99,8 +94,8 @@ class FetchFollowersOperation extends FetchFollowingOperation
     {
         return [
             'user_id' => $this->socialUser->social_user_id,
-            'count' => 200,
-            'cursor' => -1,
+            'count'   => 200,
+            'cursor'  => -1,
         ];
     }
 

@@ -4,15 +4,7 @@ namespace App\TwUtils\TwitterOperations;
 
 use App\Jobs\CompleteTaskJob;
 use App\Jobs\FetchFollowingLookupsJob;
-use App\SocialUser;
 use App\Task;
-use App\Tweep;
-use App\Tweet;
-use App\TwUtils\JobsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
-use Carbon\Carbon;
 
 class FetchFollowingLookupsOperation extends TwitterOperation
 {

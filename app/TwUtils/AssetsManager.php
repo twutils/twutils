@@ -2,7 +2,6 @@
 
 namespace App\TwUtils;
 
-use App\SocialUser;
 use Image;
 use Storage;
 
@@ -24,9 +23,9 @@ class AssetsManager
 
         $image = Image::make($url);
 
-        if (! is_null($width) && ! is_null($height)) {
+        if (!is_null($width) && !is_null($height)) {
             $image = $image->resize($width, $height);
-        } elseif (! is_null($width) && is_null($height)) {
+        } elseif (!is_null($width) && is_null($height)) {
             $image = $image->widen($width);
         }
 
@@ -45,12 +44,12 @@ class AssetsManager
 
     public static function hasMedia(array $tweet)
     {
-        return ! empty($tweet['extended_entities']) && ! empty($tweet['extended_entities']['media']);
+        return !empty($tweet['extended_entities']) && !empty($tweet['extended_entities']['media']);
     }
 
     public static function saveTweetMedia(array $tweet, $taskId)
     {
-        if (! static::hasMedia($tweet)) {
+        if (!static::hasMedia($tweet)) {
             return [];
         }
 
@@ -64,6 +63,7 @@ class AssetsManager
             $mediaPath = $tweet['id_str'].'_'.++$counter;
 
             $savedMedia = [];
+
             try {
                 if ($media->type == 'photo') {
                     $savedMedia = [static::saveTweetPhoto($media, $path.$mediaPath)];
@@ -73,12 +73,12 @@ class AssetsManager
                     $savedMedia = [static::saveTweetPhoto($media, $path.$mediaPath), static::saveTweetGif($media, $path.$mediaPath)];
                 }
             } catch (\Exception $e) {
-                \Log::info(json_encode(['exception' => $e . '', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
+                \Log::info(json_encode(['exception' => $e.'', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
 
                 return [];
             }
 
-            if (! empty($savedMedia)) {
+            if (!empty($savedMedia)) {
                 $savedMedia = (object) collect($savedMedia)
                     ->filter(
                         function ($item) {
@@ -105,6 +105,7 @@ class AssetsManager
 
         $extension = app('MimeDB')->findExtension($response->getHeaderLine('Content-Type'));
         $localPath = $path.'.'.$extension;
+
         try {
             if (Storage::disk('temporaryTasks')->put($localPath, $response->getBody()->getContents())) {
                 $ok = true;
@@ -169,7 +170,7 @@ class AssetsManager
             }
         );
         $minimumBitrate = $mp4Videos->min('bitrate');
-        if (! is_null($minimumBitrate)) {
+        if (!is_null($minimumBitrate)) {
             $chosenVideo = $mp4Videos->first(
                 function ($item) use ($minimumBitrate) {
                     return $item->bitrate == $minimumBitrate;

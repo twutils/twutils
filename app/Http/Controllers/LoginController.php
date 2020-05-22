@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\TwUtils\UserManager;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -43,7 +42,7 @@ class LoginController extends Controller
 
         $socialUser = UserManager::findSocialUser($user, ['read', 'write']);
 
-        if (! is_null($socialUser) && $socialUser->token !== '') {
+        if (!is_null($socialUser) && $socialUser->token !== '') {
             UserManager::loginUser($socialUser->user);
 
             return redirect()->route('twitter.rw.login');

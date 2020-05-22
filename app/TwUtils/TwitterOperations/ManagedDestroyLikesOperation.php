@@ -6,10 +6,7 @@ use App\Jobs\CompleteManagedDestroyLikesJob;
 use App\Jobs\CompleteTaskJob;
 use App\SocialUser;
 use App\Task;
-use App\TwUtils\SnapshotsManager;
 use App\TwUtils\TasksAdder;
-use App\TwUtils\TwitterOperations\destroyLikesOperation;
-use App\TwUtils\TwitterOperations\FetchLikesOperation;
 
 class ManagedDestroyLikesOperation extends TwitterOperation
 {

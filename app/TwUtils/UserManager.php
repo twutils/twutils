@@ -3,7 +3,6 @@
 namespace App\TwUtils;
 
 use App\SocialUser;
-use App\TwUtils\AssetsManager;
 use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
 use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 use App\User;
@@ -17,7 +16,7 @@ class UserManager
     {
         $socialUser = static::createOrFindSocialUser($user, $scopes);
 
-        $alreadyDifferentScope = ! is_null($socialUser->scope) && $socialUser->scope !== $scopes;
+        $alreadyDifferentScope = !is_null($socialUser->scope) && $socialUser->scope !== $scopes;
 
         if ($alreadyDifferentScope) {
             $userId = $socialUser->user_id;
@@ -45,15 +44,15 @@ class UserManager
     public static function getClientData()
     {
         return [
-            'baseUrl' => url('/').'/',
+            'baseUrl'    => url('/').'/',
             'apiBaseUrl' => url('/api').'/',
-            'assetsUrl' => asset('storage').'/',
-            'returnUrl' => session('returnUrl', ''),
-            'locale' => app()->getLocale(),
-            'timeZone' => config('app.timezone'),
-            'langStore' => __('messages'),
-            'routes' => ['twitter.rw.login' => route('twitter.rw.login')],
-            'user' => auth()->user() ? auth()->user()->load('socialUsers') : null,
+            'assetsUrl'  => asset('storage').'/',
+            'returnUrl'  => session('returnUrl', ''),
+            'locale'     => app()->getLocale(),
+            'timeZone'   => config('app.timezone'),
+            'langStore'  => __('messages'),
+            'routes'     => ['twitter.rw.login' => route('twitter.rw.login')],
+            'user'       => auth()->user() ? auth()->user()->load('socialUsers') : null,
         ];
     }
 
@@ -71,7 +70,7 @@ class UserManager
 
         $appUser = User::find($socialUser->user_id);
 
-        if (! $appUser && auth()->check()) {
+        if (!$appUser && auth()->check()) {
             $matchSocialUserId = auth()->user()->socialUsers
             ->filter(function ($socialUser) use ($socialUserId) {
                 return $socialUser->social_user_id == $socialUserId;
@@ -82,7 +81,7 @@ class UserManager
             }
         }
 
-        if (! $appUser) {
+        if (!$appUser) {
             $appUser = static::createAppUserFromSocialUser($socialUser);
         }
 
@@ -126,7 +125,7 @@ class UserManager
         }
     }
 
-    public static function createAppUserFromSocialUser(SocialUser $socialUser) : User
+    public static function createAppUserFromSocialUser(SocialUser $socialUser): User
     {
         $appUser = new User();
         $appUser->name = $socialUser->name;
@@ -145,7 +144,7 @@ class UserManager
         return $appUser;
     }
 
-    public static function createOrFindSocialUser(AbstractUser $user, array $scopes) : SocialUser
+    public static function createOrFindSocialUser(AbstractUser $user, array $scopes): SocialUser
     {
         $socialUser = static::findSocialUser($user, $scopes);
 
@@ -177,31 +176,31 @@ class UserManager
         ->first();
     }
 
-    public static function createSocialUser(AbstractUser $user) : SocialUser
+    public static function createSocialUser(AbstractUser $user): SocialUser
     {
-        $socialUser = new SocialUser;
+        $socialUser = new SocialUser();
 
         return $socialUser->fill(static::mapAbstractUserToSocialUser($user));
     }
 
-    public static function mapAbstractUserToSocialUser(AbstractUser $user) : array
+    public static function mapAbstractUserToSocialUser(AbstractUser $user): array
     {
         $map = $mapCopy = [
-            'token' => 'token',
-            'token_secret' => 'tokenSecret',
+            'token'         => 'token',
+            'token_secret'  => 'tokenSecret',
             'refresh_token' => 'refreshToken',
-            'expires_in' => 'expiresIn',
+            'expires_in'    => 'expiresIn',
 
             'social_user_id' => 'getId()',
-            'nickname' => 'getNickname()',
-            'name' => 'getName()',
-            'email' => 'getEmail()',
-            'avatar' => 'getAvatar()',
+            'nickname'       => 'getNickname()',
+            'name'           => 'getName()',
+            'email'          => 'getEmail()',
+            'avatar'         => 'getAvatar()',
         ];
 
         foreach ($map as $key => $value) {
             try {
-                if (! Str::contains($value, '()')) {
+                if (!Str::contains($value, '()')) {
                     $map[$key] = $user->{$value};
                 } else {
                     $map[$key] = $user->{substr($value, 0, -2)}();

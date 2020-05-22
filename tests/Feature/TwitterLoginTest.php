@@ -5,13 +5,10 @@ namespace Tests\Feature;
 use App\SocialUser;
 use App\User;
 use Auth;
-use Config;
 use Illuminate\Support\Str;
 use Mockery;
-use Session;
 use Socialite;
 use Tests\IntegrationTestCase;
-use Tests\TestCase;
 
 class TwitterLoginTest extends IntegrationTestCase
 {
@@ -45,9 +42,10 @@ class TwitterLoginTest extends IntegrationTestCase
         Auth::logout();
 
         $this->getTwitterResponse(
-            'twitter.callback', [
-            'getId' => 123456,
-            'getNickname' => $username,
+            'twitter.callback',
+            [
+                'getId'       => 123456,
+                'getNickname' => $username,
             ]
         );
 
@@ -59,9 +57,10 @@ class TwitterLoginTest extends IntegrationTestCase
     {
         for ($i = 0; $i < 5; $i++) {
             $this->getTwitterResponse(
-                'twitter.callback', [
-                'getId' => $i,
-                'getNickname' => $i,
+                'twitter.callback',
+                [
+                    'getId'       => $i,
+                    'getNickname' => $i,
                 ]
             );
             Auth::logout();
@@ -75,9 +74,10 @@ class TwitterLoginTest extends IntegrationTestCase
     {
         for ($i = 0; $i < 5; $i++) {
             $this->getTwitterResponse(
-                'twitter.callback', [
-                'getId' => $i,
-                'getNickname' => 'aaa',
+                'twitter.callback',
+                [
+                    'getId'       => $i,
+                    'getNickname' => 'aaa',
                 ]
             );
             Auth::logout();
@@ -97,9 +97,10 @@ class TwitterLoginTest extends IntegrationTestCase
         Auth::logout();
 
         $this->getTwitterResponse(
-            'twitter.callback', [
-            'getId' => 123456,
-            'getEmail' => $email,
+            'twitter.callback',
+            [
+                'getId'    => 123456,
+                'getEmail' => $email,
             ]
         );
 
@@ -124,8 +125,9 @@ class TwitterLoginTest extends IntegrationTestCase
         $newEmail = $email.Str::random();
 
         $this->getTwitterResponse(
-            'twitter.callback', [
-            'getEmail' => $newEmail,
+            'twitter.callback',
+            [
+                'getEmail' => $newEmail,
             ]
         );
 
@@ -375,13 +377,13 @@ class TwitterLoginTest extends IntegrationTestCase
     public function getTwitterResponse($route = 'twitter.callback', $overrideUser = [])
     {
         $user = $overrideUser + [
-            'token' => '1234',
+            'token'       => '1234',
             'tokenSecret' => '12345',
-            'getId' => 123,
-            'getEmail' => Str::random(10).'@test.com',
+            'getId'       => 123,
+            'getEmail'    => Str::random(10).'@test.com',
             'getNickname' => 'Pseudo',
-            'getName' => 'Mohannad Najjar :D',
-            'getAvatar' => 'https://en.gravatar.com/userimage',
+            'getName'     => 'Mohannad Najjar :D',
+            'getAvatar'   => 'https://en.gravatar.com/userimage',
         ];
 
         $abstractUser = Mockery::mock('Laravel\Socialite\One\User');

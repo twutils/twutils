@@ -7,7 +7,7 @@ use Tests\Feature\TwitterOperations\Shared\EntitiesTaskTests;
 
 class EntitiesUserTweetsJobTest extends EntitiesTaskTests
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

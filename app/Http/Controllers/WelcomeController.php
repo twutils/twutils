@@ -22,22 +22,22 @@ class WelcomeController extends Controller
     public function storeContact(Request $request)
     {
         $this->validate($request, [
-      'name' => 'required|string|max:254',
-      'email' => 'required|string|email|max:254',
-      'message' => 'required|string',
-      'purpose' => 'required|string|max:254',
-    ]);
+            'name'    => 'required|string|max:254',
+            'email'   => 'required|string|email|max:254',
+            'message' => 'required|string',
+            'purpose' => 'required|string|max:254',
+        ]);
 
         Issue::create([
-      'name' => $request->name,
-      'email' => $request->email,
-      'message' => $request->message,
-      'purpose' => $request->purpose,
-    ]);
+            'name'    => $request->name,
+            'email'   => $request->email,
+            'message' => $request->message,
+            'purpose' => $request->purpose,
+        ]);
 
         return [
-      'ok' => true,
-    ];
+            'ok' => true,
+        ];
     }
 
     public function about()

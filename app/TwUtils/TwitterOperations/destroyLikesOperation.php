@@ -3,14 +3,7 @@
 namespace App\TwUtils\TwitterOperations;
 
 use App\Jobs\DislikeTweetJob;
-use App\Jobs\FetchLikesJob;
-use App\SocialUser;
 use App\Task;
-use App\Tweet;
-use App\TwUtils\JobsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
 use Carbon\Carbon;
 
 class destroyLikesOperation extends TwitterOperation
@@ -51,10 +44,10 @@ class destroyLikesOperation extends TwitterOperation
         $alreadyDestroyedTweets = false;
         foreach ($this->response['errors'] as $error) {
             $error = (array) $error;
-            if (! empty($error['code']) && ! in_array($error['code'], [144])) {
+            if (!empty($error['code']) && !in_array($error['code'], [144])) {
                 $this->breakTask($this->task, $this->response);
                 break;
-            } elseif (! empty($error['code']) && $error['code'] == 144) {
+            } elseif (!empty($error['code']) && $error['code'] == 144) {
                 $alreadyDestroyedTweets = true;
             }
         }
@@ -92,9 +85,9 @@ class destroyLikesOperation extends TwitterOperation
             return false;
         }
 
-        $shouldBuild = ! is_null($nextTweetIndex);
+        $shouldBuild = !is_null($nextTweetIndex);
 
-        if (! $shouldBuild) {
+        if (!$shouldBuild) {
             $this->setCompletedTask($this->task);
         }
 
@@ -113,7 +106,7 @@ class destroyLikesOperation extends TwitterOperation
         try {
             $relatedTaskLikes = Task::find($parameters['targeted_task_id'])->likes;
 
-            if (! empty($parameters['settings'])) {
+            if (!empty($parameters['settings'])) {
                 if (isset($parameters['settings']['start_date'])) {
                     $relatedTaskLikes = $relatedTaskLikes->where('tweet_created_at', '>', new Carbon($parameters['settings']['start_date']));
                 }

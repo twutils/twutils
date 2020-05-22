@@ -7,7 +7,6 @@ use App\Following;
 use App\Task;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -16,19 +15,17 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Events\AfterSheet;
-use Maatwebsite\Excel\Events\BeforeExport;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Events\BeforeWriting;
 use Maatwebsite\Excel\Sheet;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithColumnFormatting
 {
-    use Exportable, RegistersEventListeners;
+    use Exportable;
+    use RegistersEventListeners;
 
     protected $task;
     protected static $tweepsUrls;
@@ -57,7 +54,7 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
 
         $headerBorderStyle = [
             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-            'color' => ['rgb' => '8A8F8A'],
+            'color'       => ['rgb' => '8A8F8A'],
         ];
 
         // Set Alignment for all columns except 'H' (Bio Column)
@@ -98,13 +95,13 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
                     'allBorders' => $headerBorderStyle,
                 ],
                 'fill' => [
-                  'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                  'startColor' => [
-                      'rgb' => 'BEC0BE',
-                  ],
-                  'endColor' => [
-                      'rgb' => 'BEC0BE',
-                  ],
+                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => [
+                        'rgb' => 'BEC0BE',
+                    ],
+                    'endColor' => [
+                        'rgb' => 'BEC0BE',
+                    ],
                 ],
             ]
         );
@@ -116,18 +113,18 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                        'color' => ['rgb' => 'A8A8A8'],
+                        'color'       => ['rgb' => 'A8A8A8'],
                     ],
                     'top' => $headerBorderStyle,
                 ],
                 'fill' => [
-                  'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                  'startColor' => [
-                      'rgb' => 'DCDCDC',
-                  ],
-                  'endColor' => [
-                      'rgb' => 'DCDCDC',
-                  ],
+                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => [
+                        'rgb' => 'DCDCDC',
+                    ],
+                    'endColor' => [
+                        'rgb' => 'DCDCDC',
+                    ],
                 ],
             ]
         );
@@ -138,25 +135,25 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
         $relationColumn = $this->task->type === FetchFollowingOperation::class ? 'follows_you' : 'followed_by_me';
 
         return [
-          'order',                  // A
-          'username',               // B
-          'name',                   // C
+            'order',                  // A
+            'username',               // B
+            'name',                   // C
 
-          'user_following',         // D
-          'user_followers',         // E
-          'user_tweets',            // F
-          'user_likes',             // G
+            'user_following',         // D
+            'user_followers',         // E
+            'user_tweets',            // F
+            'user_likes',             // G
 
-          'bio',                    // H
-          'user_url',               // I
-          'user_location',          // J
-          'user_is_verified',       // K
+            'bio',                    // H
+            'user_url',               // I
+            'user_location',          // J
+            'user_is_verified',       // K
 
-          $relationColumn,          // L
+            $relationColumn,          // L
 
-          'user_joined_twitter_at', // M
-          'id',                     // N
-          'permalink',              // O
+            'user_joined_twitter_at', // M
+            'id',                     // N
+            'permalink',              // O
         ];
     }
 
@@ -189,31 +186,32 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
 
     protected function followings()
     {
-        return $this->task->followings->reverse()->values()->map(function (Following $followoingPivot, $key) {
+        return $this->task->followings->reverse()->values()->map(
+            function (Following $followoingPivot, $key) {
             $tweep = $followoingPivot->tweep;
 
             static::$tweepsUrls[$tweep->display_url] = $tweep->url;
 
             return [
-              'order'                   => $key + 1,
-              'username'                => $this->formatText($tweep->screen_name),
-              'name'                    => $this->formatText($tweep->name),
+                'order'                   => $key + 1,
+                'username'                => $this->formatText($tweep->screen_name),
+                'name'                    => $this->formatText($tweep->name),
 
-              'user_following'          => $tweep->friends_count,
-              'user_followers'          => $tweep->followers_count,
-              'user_tweets'             => $tweep->statuses_count,
-              'user_likes'              => $tweep->favourites_count,
+                'user_following'          => $tweep->friends_count,
+                'user_followers'          => $tweep->followers_count,
+                'user_tweets'             => $tweep->statuses_count,
+                'user_likes'              => $tweep->favourites_count,
 
-              'bio'                     => $this->formatText($tweep->description),
-              'user_url'                => $this->formatText($tweep->display_url),
-              'user_location'           => $this->formatText($tweep->location),
-              'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
+                'bio'                     => $this->formatText($tweep->description),
+                'user_url'                => $this->formatText($tweep->display_url),
+                'user_location'           => $this->formatText($tweep->location),
+                'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
 
-              'follows_you'             => $followoingPivot->followed_by ? 'Yes' : 'No',
+                'follows_you'             => $followoingPivot->followed_by ? 'Yes' : 'No',
 
-              'user_joined_twitter_at'  => $tweep->tweep_created_at,
-              'id'                      => $tweep->id_str,
-              'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
+                'user_joined_twitter_at'  => $tweep->tweep_created_at,
+                'id'                      => $tweep->id_str,
+                'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
             ];
         }
         );
@@ -221,31 +219,32 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
 
     protected function followers()
     {
-        return $this->task->followers->reverse()->values()->map(function (Follower $followerPivot, $key) {
+        return $this->task->followers->reverse()->values()->map(
+            function (Follower $followerPivot, $key) {
             $tweep = $followerPivot->tweep;
 
             static::$tweepsUrls[$tweep->display_url] = $tweep->url;
 
             return [
-              'order'                   => $key + 1,
-              'username'                => $this->formatText($tweep->screen_name),
-              'name'                    => $this->formatText($tweep->name),
+                'order'                   => $key + 1,
+                'username'                => $this->formatText($tweep->screen_name),
+                'name'                    => $this->formatText($tweep->name),
 
-              'user_following'          => $tweep->friends_count,
-              'user_followers'          => $tweep->followers_count,
-              'user_tweets'             => $tweep->statuses_count,
-              'user_likes'              => $tweep->favourites_count,
+                'user_following'          => $tweep->friends_count,
+                'user_followers'          => $tweep->followers_count,
+                'user_tweets'             => $tweep->statuses_count,
+                'user_likes'              => $tweep->favourites_count,
 
-              'bio'                     => $this->formatText($tweep->description),
-              'user_url'                => $this->formatText($tweep->display_url),
-              'user_location'           => $this->formatText($tweep->location),
-              'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
+                'bio'                     => $this->formatText($tweep->description),
+                'user_url'                => $this->formatText($tweep->display_url),
+                'user_location'           => $this->formatText($tweep->location),
+                'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
 
-              'followed_by_me'          => $followerPivot->followed_by_me ? 'Yes' : 'No',
+                'followed_by_me'          => $followerPivot->followed_by_me ? 'Yes' : 'No',
 
-              'user_joined_twitter_at'  => $tweep->tweep_created_at,
-              'id'                      => $tweep->id_str,
-              'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
+                'user_joined_twitter_at'  => $tweep->tweep_created_at,
+                'id'                      => $tweep->id_str,
+                'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
             ];
         }
         );

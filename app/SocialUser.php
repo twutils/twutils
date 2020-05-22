@@ -8,11 +8,11 @@ class SocialUser extends Model
 {
     protected $guarded = ['id'];
     protected $casts = [
-        'scope' => 'array',
-        'followers_count' => 'integer',
-        'friends_count' => 'integer',
+        'scope'            => 'array',
+        'followers_count'  => 'integer',
+        'friends_count'    => 'integer',
         'favourites_count' => 'integer',
-        'statuses_count' => 'integer',
+        'statuses_count'   => 'integer',
     ];
     protected $appends = [
         'scopeIsActive',
@@ -45,7 +45,7 @@ class SocialUser extends Model
 
     protected function getScopeIsActiveAttribute()
     {
-        return ! empty($this->token);
+        return !empty($this->token);
     }
 
     public function user()

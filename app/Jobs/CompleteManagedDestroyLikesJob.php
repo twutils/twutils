@@ -16,7 +16,10 @@ class CompleteManagedDestroyLikesJob implements ShouldQueue
     protected $socialUser;
     protected $task;
 
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new job instance.
@@ -37,7 +40,7 @@ class CompleteManagedDestroyLikesJob implements ShouldQueue
      */
     public function handle()
     {
-        $destroyLikes = new $this->task->type;
+        $destroyLikes = new $this->task->type();
 
         $destroyLikes->complete($this->managedTask->fresh(), $this->socialUser, $this->task);
     }

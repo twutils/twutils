@@ -4,18 +4,12 @@ namespace App\TwUtils\TwitterOperations;
 
 use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
-use App\SocialUser;
 use App\Task;
 use App\TaskTweet;
 use App\Tweep;
 use App\Tweet;
-use App\TwUtils\JobsManager;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
-use Carbon\Carbon;
 
 class FetchLikesOperation extends TwitterOperation
 {
@@ -47,7 +41,7 @@ class FetchLikesOperation extends TwitterOperation
 
         $shouldBuild = $response->count() >= config('twutils.minimum_expected_likes');
 
-        if (! $shouldBuild) {
+        if (!$shouldBuild) {
             $this->setCompletedTask($this->task);
         }
 
@@ -124,11 +118,11 @@ class FetchLikesOperation extends TwitterOperation
     protected function buildParameters()
     {
         return [
-            'user_id' => $this->socialUser->social_user_id,
-            'screen_name' => $this->socialUser->nickname,
-            'count' => config('twutils.twitter_requests_counts.fetch_likes'),
+            'user_id'          => $this->socialUser->social_user_id,
+            'screen_name'      => $this->socialUser->nickname,
+            'count'            => config('twutils.twitter_requests_counts.fetch_likes'),
             'include_entities' => true,
-            'tweet_mode' => 'extended',
+            'tweet_mode'       => 'extended',
         ];
     }
 

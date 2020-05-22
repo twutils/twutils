@@ -4,13 +4,9 @@ namespace Tests\Feature\TwitterOperations;
 
 use App\Jobs\DislikeTweetJob;
 use App\Jobs\FetchLikesJob;
-use App\SocialUser;
 use App\Task;
 use App\Tweet;
-use App\User;
 use Config;
-use Illuminate\Support\Facades\Bus;
-use Mockery;
 use Tests\IntegrationTestCase;
 
 class ManagedDestroyLikesTest extends IntegrationTestCase
@@ -55,16 +51,16 @@ class ManagedDestroyLikesTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([
             [
-                'type' => FetchLikesJob::class,
+                'type'        => FetchLikesJob::class,
                 'twitterData' => [$tweets[0]],
             ],
             [
-                'type' => FetchLikesJob::class,
-                'twitterData' => $twitterNotExistResponse,
+                'type'           => FetchLikesJob::class,
+                'twitterData'    => $twitterNotExistResponse,
                 'twitterHeaders' => ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
             ],
             [
-                'type' => FetchLikesJob::class,
+                'type'        => FetchLikesJob::class,
                 'twitterData' => [$tweets[2]],
             ],
         ]);
@@ -89,11 +85,11 @@ class ManagedDestroyLikesTest extends IntegrationTestCase
 
         $response = $this->postJson('/api/ManagedDestroyLikes', ['settings' => [
             'start_date' => '2013-09-23',
-            'end_date' => '2020-09-23',
-            'id' => 3,
-            'replies' => true,
-            'retweets' => true,
-            'tweets' => true,
+            'end_date'   => '2020-09-23',
+            'id'         => 3,
+            'replies'    => true,
+            'retweets'   => true,
+            'tweets'     => true,
         ]]);
         $response->assertStatus(200);
 

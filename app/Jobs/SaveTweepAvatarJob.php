@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Jobs\ZipEntitiesJob;
-use App\Task;
 use App\Tweep;
 use App\TwUtils\AssetsManager;
 use GuzzleHttp\Exception\ClientException;
@@ -15,7 +13,10 @@ use Illuminate\Queue\SerializesModels;
 
 class SaveTweepAvatarJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     protected $tweepIdStr;
     protected $task;
 

@@ -2,17 +2,8 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\CleanLikesJob;
-use App\Jobs\FetchLikesJob;
-use App\SocialUser;
 use App\Task;
-use App\Tweet;
 use App\TwUtils\AssetsManager;
-use App\TwUtils\JobsManager;
-use App\TwUtils\TwitterConnector;
-use App\User;
-use Auth;
-use Carbon\Carbon;
 
 class FetchUserInfoOperation extends TwitterOperation
 {
@@ -44,7 +35,7 @@ class FetchUserInfoOperation extends TwitterOperation
         $response = $this->response;
         $displayUrl = null;
 
-        if (! empty($response['entities']->url) && ! empty($response['entities']->url->urls)) {
+        if (!empty($response['entities']->url) && !empty($response['entities']->url->urls)) {
             $displayUrl = $response['entities']->url->urls[0]->display_url;
         }
 
@@ -67,7 +58,7 @@ class FetchUserInfoOperation extends TwitterOperation
         }
 
         try {
-            if (! is_null($socialUserAvatar)) {
+            if (!is_null($socialUserAvatar)) {
                 $socialUser->avatar = AssetsManager::storeAvatar($socialUserAvatar, $socialUser->social_user_id);
             }
         } catch (\Exception $e) {
@@ -81,7 +72,7 @@ class FetchUserInfoOperation extends TwitterOperation
     protected function buildParameters()
     {
         return [
-            'user_id' => $this->socialUser->social_user_id,
+            'user_id'          => $this->socialUser->social_user_id,
             'include_entities' => true,
         ];
     }

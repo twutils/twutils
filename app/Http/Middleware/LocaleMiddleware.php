@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Auth;
 use Closure;
 use Illuminate\Http\Request;
 use Session;
@@ -13,7 +12,7 @@ class LocaleMiddleware
 
     public function handle(Request $request, Closure $next)
     {
-        if (! Session::has('locale')) {
+        if (!Session::has('locale')) {
             Session::put('locale', $request->getPreferredLanguage($this->languages));
         }
 

@@ -29,9 +29,10 @@ class AppServiceProvider extends ServiceProvider
             return $this;
         });
 
-        if (! env('ENABLE_DEBUGBAR')) {
+        if (!env('ENABLE_DEBUGBAR')) {
             \Debugbar::disable();
         }
+
         try {
             if (Str::contains($_SERVER['HTTP_REFERER'], '3000')) {
                 config()->set('services.twitter.redirect', sprintf(env('TWITTER_REDIRECT'), '3000'));

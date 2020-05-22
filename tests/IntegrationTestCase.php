@@ -2,18 +2,14 @@
 
 namespace Tests;
 
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
 use App\SocialUser;
 use App\Task;
-use App\Tweet;
 use App\TwUtils\ITwitterConnector;
 use App\User;
 use Config;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
-use Tests\TestCase;
-use Tests\TwitterClientMock;
 
 class IntegrationTestCase extends TestCase
 {
@@ -21,7 +17,7 @@ class IntegrationTestCase extends TestCase
         RefreshDatabase::refreshDatabase as refreshDatabaseTrait;
      }
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->bindTwitterConnector();
@@ -105,7 +101,7 @@ class IntegrationTestCase extends TestCase
     {
         $dispatchedJobs = collect($this->dispatchedJobs);
 
-        if (! is_null($jobClass)) {
+        if (!is_null($jobClass)) {
             $dispatchedJobs = $dispatchedJobs->filter(
                 function ($dispatchedJob) use ($jobClass) {
                     return get_class($dispatchedJob) == $jobClass;
@@ -132,12 +128,13 @@ class IntegrationTestCase extends TestCase
         $twitterConnector->shouldReceive('get')
         ->andReturn($twitterClient);
 
-        if (! is_null($callback)) {
+        if (!is_null($callback)) {
             $callback($twitterConnector, $twitterClient);
         }
 
         app()->bind(
-            ITwitterConnector::class, function () use ($twitterConnector) {
+            ITwitterConnector::class,
+            function () use ($twitterConnector) {
                 return $twitterConnector;
             }
         );
@@ -196,32 +193,32 @@ class IntegrationTestCase extends TestCase
             $jobDataHolderIndex = null;
 
             foreach ($data as $index => $jobDetails) {
-                if (! $jobDetails['called']) {
+                if (!$jobDetails['called']) {
                     $jobDataHolderIndex = $index;
                     $jobDataHolder = $jobDetails;
                     break;
                 }
             }
 
-            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['twitterData'])) {
+            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['twitterData'])) {
                 $this->bindTwitterConnector($jobDataHolder['twitterData'], $jobDataHolder['twitterHeaders'] ?? []);
             }
 
-            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['before'])) {
+            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['before'])) {
                 $jobDataHolder['before']($queuedJob);
             }
 
-            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type']) {
+            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type']) {
                 $data[$jobDataHolderIndex]['called'] = true;
             }
 
-            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['skip']) && $jobDataHolder['skip']) {
+            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['skip']) && $jobDataHolder['skip']) {
                 continue;
             }
 
             $queuedJob->handle();
 
-            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['after'])) {
+            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['after'])) {
                 $jobDataHolder['after']($queuedJob);
             }
         }
@@ -268,7 +265,7 @@ class IntegrationTestCase extends TestCase
         return $tweets;
     }
 
-    protected function generateUniqueTweeps($usersCount = 1, $startIndex = 0) : array
+    protected function generateUniqueTweeps($usersCount = 1, $startIndex = 0): array
     {
         $faker = app(\Faker\Generator::class);
         $user = $this->getStub('fetch_following_users.json');

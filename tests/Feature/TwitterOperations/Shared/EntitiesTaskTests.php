@@ -3,15 +3,10 @@
 namespace Tests\Feature\TwitterOperations\Shared;
 
 use App\Jobs\CleanLikesJob;
-use App\Jobs\FetchEntitiesUserTweetsJob;
-use App\Jobs\ZipEntitiesJob;
-use App\SocialUser;
 use App\Task;
 use App\Tweet;
-use App\User;
 use Config;
 use Illuminate\Support\Facades\Bus;
-use Mockery;
 use Tests\IntegrationTestCase;
 
 /*
@@ -23,7 +18,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
     protected $jobName;
     protected $apiEndpoint;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -53,10 +48,10 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -81,10 +76,10 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -111,10 +106,10 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -140,10 +135,10 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -185,10 +180,10 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -220,26 +215,26 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->generateUniqueTweets(10),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->generateUniqueTweets(10, $tweetWithOnePhoto),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->generateUniqueTweets(10, $tweetWithTwoPhotos),
-            ],
-            [
-                'type' => $this->jobName,
-                'twitterData' => $this->uniqueTweetIds([$tweetWithGif, $tweetWithVideo, $tweetWithGif, $tweetWithVideo]),
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->generateUniqueTweets(10),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->generateUniqueTweets(10, $tweetWithOnePhoto),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->generateUniqueTweets(10, $tweetWithTwoPhotos),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $this->uniqueTweetIds([$tweetWithGif, $tweetWithVideo, $tweetWithGif, $tweetWithVideo]),
+                ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 
@@ -276,10 +271,10 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
-            ],
+                [
+                    'type' => CleanLikesJob::class,
+                    'skip' => true,
+                ],
             ]
         );
 

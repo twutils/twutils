@@ -11,7 +11,7 @@ use Storage;
 
 class ExportsManager
 {
-    public static function createHtmlZip(Task $task, string $fileName) : string
+    public static function createHtmlZip(Task $task, string $fileName): string
     {
         $zipFile = static::makeTaskZipObject($task);
 
@@ -22,7 +22,7 @@ class ExportsManager
         return $path;
     }
 
-    public static function makeTaskZipObject(Task $task) : ZipFile
+    public static function makeTaskZipObject(Task $task): ZipFile
     {
         $zipFile = new \PhpZip\ZipFile();
 
@@ -55,7 +55,7 @@ class ExportsManager
         $availableAvatars = [];
 
         $tweeps->map(function (Tweep $tweep) use (&$availableAvatars) {
-            if (! Storage::disk('public')->exists('avatars/'.$tweep->id_str.'.png')) {
+            if (!Storage::disk('public')->exists('avatars/'.$tweep->id_str.'.png')) {
                 return;
             }
 

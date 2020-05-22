@@ -4,8 +4,6 @@ namespace App\TwUtils;
 
 use App\SocialUser;
 use App\Task;
-use App\User;
-use Auth;
 
 class SnapshotsManager
 {
@@ -45,11 +43,11 @@ class SnapshotsManager
 
         $task = Task::create(
             [
-            'socialuser_id'=> $this->socialUser->id,
-            'type'=> get_class($this->operationInstance),
-            'status' => 'queued',
-            'extra' => $this->data,
-            'managed_by_task_id' => $this->data['managedByTaskId'] ?? null,
+                'socialuser_id'      => $this->socialUser->id,
+                'type'               => get_class($this->operationInstance),
+                'status'             => 'queued',
+                'extra'              => $this->data,
+                'managed_by_task_id' => $this->data['managedByTaskId'] ?? null,
             ]
         );
         $this->operationInstance

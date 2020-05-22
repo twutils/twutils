@@ -8,12 +8,11 @@ use App\Jobs\FetchFollowingJob;
 use App\Jobs\FetchFollowingLookupsJob;
 use App\Task;
 use App\Tweep;
-use Illuminate\Support\Facades\Bus;
 use Tests\Feature\TwitterOperations\Shared\UsersListTest;
 
 class FollowingJobTest extends UsersListTest
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->jobName = FetchFollowingJob::class;
@@ -72,14 +71,14 @@ class FollowingJobTest extends UsersListTest
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => FetchFollowingJob::class,
-                'twitterData' => $this->fetchFollowingResponse(10, 1234),
-            ],
-            [
-                'type' => FetchFollowingJob::class,
-                'twitterData' => $this->fetchFollowingResponse(10, 0, 10),
-            ],
+                [
+                    'type'        => FetchFollowingJob::class,
+                    'twitterData' => $this->fetchFollowingResponse(10, 1234),
+                ],
+                [
+                    'type'        => FetchFollowingJob::class,
+                    'twitterData' => $this->fetchFollowingResponse(10, 0, 10),
+                ],
             ]
         );
 
@@ -98,14 +97,14 @@ class FollowingJobTest extends UsersListTest
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => FetchFollowingJob::class,
-                'twitterData' => $this->fetchFollowingResponse(10, 1234),
-            ],
-            [
-                'type' => FetchFollowingJob::class,
-                'twitterData' => $this->fetchFollowingResponse(10, 0, 10),
-            ],
+                [
+                    'type'        => FetchFollowingJob::class,
+                    'twitterData' => $this->fetchFollowingResponse(10, 1234),
+                ],
+                [
+                    'type'        => FetchFollowingJob::class,
+                    'twitterData' => $this->fetchFollowingResponse(10, 0, 10),
+                ],
             ]
         );
 
@@ -124,14 +123,14 @@ class FollowingJobTest extends UsersListTest
 
         $this->fireJobsAndBindTwitter(
             [
-            [
-                'type' => FetchFollowingJob::class,
-                'twitterData' => $this->fetchFollowingResponse(10, 0),
-            ],
-            [
-                'type' => FetchFollowingLookupsJob::class,
-                'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true, 4 => true]),
-            ],
+                [
+                    'type'        => FetchFollowingJob::class,
+                    'twitterData' => $this->fetchFollowingResponse(10, 0),
+                ],
+                [
+                    'type'        => FetchFollowingLookupsJob::class,
+                    'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true, 4 => true]),
+                ],
             ]
         );
         $tweepIds = Tweep::whereIn('id_str', [2, 4])->pluck('id')->toArray();
@@ -160,19 +159,19 @@ class FollowingJobTest extends UsersListTest
         $this->fireJobsAndBindTwitter(
             [
                 [
-                    'type' => FetchFollowingJob::class,
+                    'type'        => FetchFollowingJob::class,
                     'twitterData' => $fetchFollowingResponse,
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true]),
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([3 => false, 4 => false]),
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([5 => true, 123 => true]),
                 ],
             ]
@@ -204,32 +203,33 @@ class FollowingJobTest extends UsersListTest
         $this->fireJobsAndBindTwitter(
             [
                 [
-                    'type' => FetchFollowingJob::class,
+                    'type'        => FetchFollowingJob::class,
                     'twitterData' => $fetchFollowingResponse,
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'   => FetchFollowingLookupsJob::class,
                     'before' => function () {
                         app()->bind('AfterHTTPRequest', function () use (&$exceptionIsThrown) {
-                            if (! $exceptionIsThrown) {
+                            if (!$exceptionIsThrown) {
                                 $exceptionIsThrown = true;
+
                                 throw new \Abraham\TwitterOAuth\TwitterOAuthException('Error Processing Request', 1);
                             }
                         });
                     },
-                    'twitterData' => $this->getStub('rate_limit_response.json'),
+                    'twitterData'    => $this->getStub('rate_limit_response.json'),
                     'twitterHeaders' => ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true]),
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([3 => false, 4 => false]),
                 ],
                 [
-                    'type' => FetchFollowingLookupsJob::class,
+                    'type'        => FetchFollowingLookupsJob::class,
                     'twitterData' => $this->fetchFollowingLookupsResponse([5 => true, 123 => true]),
                 ],
             ]

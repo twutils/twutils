@@ -13,8 +13,9 @@ class SocialUserPolicy
     /**
      * Determine whether the user can view the social user.
      *
-     * @param  \App\User  $user
-     * @param  \App\SocialUser  $socialUser
+     * @param \App\User       $user
+     * @param \App\SocialUser $socialUser
+     *
      * @return mixed
      */
     public function view(User $user, SocialUser $socialUser)
@@ -25,7 +26,8 @@ class SocialUserPolicy
     /**
      * Determine whether the user can create social users.
      *
-     * @param  \App\User  $user
+     * @param \App\User $user
+     *
      * @return mixed
      */
     public function create(User $user)
@@ -36,8 +38,9 @@ class SocialUserPolicy
     /**
      * Determine whether the user can update the social user.
      *
-     * @param  \App\User  $user
-     * @param  \App\SocialUser  $socialUser
+     * @param \App\User       $user
+     * @param \App\SocialUser $socialUser
+     *
      * @return mixed
      */
     public function update(User $user, SocialUser $socialUser)
@@ -48,8 +51,9 @@ class SocialUserPolicy
     /**
      * Determine whether the user can delete the social user.
      *
-     * @param  \App\User  $user
-     * @param  \App\SocialUser  $socialUser
+     * @param \App\User       $user
+     * @param \App\SocialUser $socialUser
+     *
      * @return mixed
      */
     public function delete(User $user, SocialUser $socialUser)
@@ -60,8 +64,9 @@ class SocialUserPolicy
     /**
      * Determine whether the user can restore the social user.
      *
-     * @param  \App\User  $user
-     * @param  \App\SocialUser  $socialUser
+     * @param \App\User       $user
+     * @param \App\SocialUser $socialUser
+     *
      * @return mixed
      */
     public function restore(User $user, SocialUser $socialUser)
@@ -72,8 +77,9 @@ class SocialUserPolicy
     /**
      * Determine whether the user can permanently delete the social user.
      *
-     * @param  \App\User  $user
-     * @param  \App\SocialUser  $socialUser
+     * @param \App\User       $user
+     * @param \App\SocialUser $socialUser
+     *
      * @return mixed
      */
     public function forceDelete(User $user, SocialUser $socialUser)

@@ -11,7 +11,7 @@
 |
 */
 
-Route::middleware('throttle:3,1')->group(function () {
+Route::middleware('throttle:10,1')->group(function () {
     Route::post('/contact', 'WelcomeController@storeContact');
 });
 

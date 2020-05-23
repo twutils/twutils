@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\TwUtils\ExportsManager;
+use \Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -41,8 +42,14 @@ class ZipEntitiesJob implements ShouldQueue
         $zipFile = ExportsManager::makeTaskZipObject($this->task);
 
         // Include media in the zip file, and save it
+        foreach (collect(\Storage::disk('temporaryTasks')->allFiles($this->task->id))
+        ->chunk(5) as $filesChunk) {
+            $filesChunk->map(function ($file) use (& $zipFile) {
+                $zipFile->addFile(\Storage::disk('temporaryTasks')->path($file), 'media/' . Str::after($file, '/'));
+            });
+        }
+
         $zipFile
-        ->addDir($savedMediaPath, 'media')
         ->saveAsFile($fileAbsolutePath)
         ->close();
 

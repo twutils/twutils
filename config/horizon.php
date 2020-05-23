@@ -151,7 +151,7 @@ return [
     |
     */
 
-    'memory_limit' => 64,
+    'memory_limit' => 128,
 
     /*
     |--------------------------------------------------------------------------
@@ -168,10 +168,10 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['default'],
-                'balance' => 'simple',
-                'processes' => 10,
-                'tries' => 1,
+                'queue' => ['default', 'media', 'avatar'],
+                'balance' => 'auto',
+                'processes' => 20,
+                'tries' => 3,
             ],
         ],
 

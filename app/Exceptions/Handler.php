@@ -39,6 +39,8 @@ class Handler extends ExceptionHandler
     {
         parent::report($exception);
 
+        Config::set('sentry.release', Cache::get('app.version', ''));
+
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
             app('sentry')->captureException($exception);
         }

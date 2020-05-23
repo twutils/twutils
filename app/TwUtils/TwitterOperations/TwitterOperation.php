@@ -9,6 +9,7 @@ use App\Task;
 use App\TwUtils\JobsManager;
 use Cache;
 use Exception;
+use Illuminate\Support\Str;
 
 abstract class TwitterOperation
 {
@@ -191,7 +192,7 @@ abstract class TwitterOperation
         \Log::info('Task ' . $task->id . ' was broken. Exception: ' . ($exception ? $exception . '' : ''));
 
         if (!is_null($exception)) {
-            $task->exception = $exception->__toString();
+            $task->exception = Str::limit($exception->__toString(), 2000);
 
             $breakData['exceptionClass'] = get_class($exception);
         }

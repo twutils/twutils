@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Throwable;
 
 class Handler extends ExceptionHandler

@@ -38,7 +38,7 @@
             ></from-now>
           </div>
           <div class="d-flex flex-row flex-sm-column justify-content-between align-items-end" style="min-width: 60px;">
-            <button v-if="!isLocal" @click="remove" class="btn btn-outline-danger btn-sm">
+            <button v-if="!isLocal && task.managed_by_task_id === null" @click="remove" class="btn btn-outline-danger btn-sm">
               <span class="oi" data-glyph="trash"></span>
               <span class="sr-only">
                 {{__('remove')}}

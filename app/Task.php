@@ -196,7 +196,14 @@ class Task extends Model
         }
 
         if ($this->type === destroyLikesOperation::class) {
-            $likes = self::find($this->extra['targeted_task_id'])->likes;
+            $targetedTask = self::find($this->extra['targeted_task_id']);
+
+            if ( ! $targetedTask)
+            {
+                return '?';
+            }
+
+            $likes = $targetedTask->likes;
 
             $removed = $likes->filter(function ($tweet) {
                 return !empty($tweet->pivot->removed);
@@ -208,7 +215,14 @@ class Task extends Model
         }
 
         if ($this->type === destroyTweetsOperation::class) {
-            $tweets = self::find($this->extra['targeted_task_id'])->tweets;
+            $targetedTask = self::find($this->extra['targeted_task_id']);
+
+            if ( ! $targetedTask)
+            {
+                return '?';
+            }
+
+            $tweets = $targetedTask->tweets;
 
             $removed = $tweets->filter(function ($tweet) {
                 return !empty($tweet->pivot->removed);

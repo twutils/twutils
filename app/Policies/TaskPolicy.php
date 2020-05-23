@@ -58,6 +58,6 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task)
     {
-        return $this->view($user, $task);
+        return $task->managed_by_task_id === null && $this->view($user, $task);
     }
 }

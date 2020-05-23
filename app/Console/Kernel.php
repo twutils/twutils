@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('update-cache-version')->hourly();
+        $schedule->command('horizon:snapshot')->everyFiveMinutes();
     }
 
     /**

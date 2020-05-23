@@ -185,11 +185,14 @@ abstract class TwitterOperation
 
     protected function breakTask($task, $response, $exception = null)
     {
-        $breakData = ['break_response' => $response];
+        $breakData = [];
+
+        \Log::info('Task ' . $task->id . ' was broken. Twitter Response: ' . json_encode($response));
+        \Log::info('Task ' . $task->id . ' was broken. Exception: ' . ($exception ? $exception . '' : ''));
+
         if (!is_null($exception)) {
             $task->exception = $exception->__toString();
 
-            $breakData['exceptionMessage'] = $exception->getMessage();
             $breakData['exceptionClass'] = get_class($exception);
         }
 

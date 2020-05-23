@@ -10,13 +10,24 @@
 <template>
 <div class="row">
 
-	<div v-for="(task, index) in managedTasks" class="col-12 col-sm-6 offset-sm-3  text-center">
+	<div v-for="(managedTask, index) in managedTasks" :class="`col-12 col-sm-6 offset-sm-3  text-center ${isRtl ? 'rtl' : 'ltr'}`">
 		<span class="badge badge-pill badge-dark">
 			{{index + 1}}
 		</span>
+    <div
+      v-if="
+        task.baseName === 'manageddestroytweets' && managedTask.baseName === 'fetchusertweets' ||
+        task.baseName === 'manageddestroylikes' && managedTask.baseName === 'fetchlikes'
+      "
+      style="opacity: 0.5;"
+      :class="`alert alert-secondary text-justify m-3`"
+    >
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+      {{__('selected_tweets_source_desc')}}
+    </div>
 		<tasks-list-item
 			:selectionMode="false"
-			:task.sync="task"
+			:task.sync="managedTask"
 			:index.sync="index"
 			:key="index"
 		></tasks-list-item>

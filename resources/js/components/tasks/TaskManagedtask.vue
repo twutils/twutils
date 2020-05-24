@@ -9,7 +9,15 @@
 </style>
 <template>
 <div class="row">
-
+  <div
+    v-if="['manageddestroytweets', 'manageddestroylikes'].includes(task.baseName)"
+    :class="`col-12 ${isRtl ? 'rtl' : 'ltr'}`"
+  >
+    <h5>
+      {{__('options')}}:
+    </h5>
+    <destroy-tweets-options-view :task="task"></destroy-tweets-options-view>
+  </div>
 	<div v-for="(managedTask, index) in managedTasks" :class="`col-12 col-sm-6 offset-sm-3  text-center ${isRtl ? 'rtl' : 'ltr'}`">
 		<span class="badge badge-pill badge-dark">
 			{{index + 1}}
@@ -37,10 +45,12 @@
 
 <script>
 import tasksListItem from '@/components/TasksListItem'
+import destroyTweetsOptionsView from '@/components/DestroyTweetsOptionsView'
 
 export default {
   components: {
   	tasksListItem,
+    destroyTweetsOptionsView,
   },
   data () {
   	return {

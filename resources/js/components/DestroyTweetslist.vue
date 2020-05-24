@@ -38,16 +38,7 @@
               <h5>
                 {{__('options')}}:
               </h5>
-              <div style="border: 1px solid #ccc; padding: 1rem; border-radius: 1rem; margin: 0.8rem 0rem;">
-                <ul>
-                  <li>
-                    {{__('start_date')}}: <code>{{ getTaskSettingsOption('start_date') }}</code>
-                  </li>
-                  <li>
-                    {{__('end_date')}}: <code>{{ getTaskSettingsOption('end_date') }}</code>
-                  </li>
-                </ul>
-              </div>
+              <destroy-tweets-options-view :task="task"></destroy-tweets-options-view>
               <h5>
                 {{__('removed')}}:
               </h5>
@@ -64,6 +55,7 @@
 import get from 'lodash/get'
 import tasksListItem from './TasksListItem'
 import tweetsListItem from './TweetsListItem'
+import destroyTweetsOptionsView from './DestroyTweetsOptionsView'
 
 export default {
   beforeDestroy () {
@@ -72,6 +64,7 @@ export default {
   components: {
     tasksListItem,
     tweetsListItem,
+    destroyTweetsOptionsView,
   },
   props: [`task`, ],
   data () {
@@ -94,15 +87,6 @@ export default {
     this.fetchRelatedTask()
   },
   methods: {
-    getTaskSettingsOption (option) {
-      const optionValue = get(this.task.extra, `settings.` + option)
-
-      if (optionValue === null && option === `start_date`) { return `From the beginning` }
-
-      if (optionValue === null && option === `end_date`) { return `Until the end` }
-
-      return optionValue
-    },
     fetchTaskData (page) {
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/data?page=${page}`)
         .then(resp => {

@@ -8,7 +8,7 @@
             ({{task.likes_count }} {{__('tweet')}})
           </span>
           <span v-if="['destroylikes', 'destroytweets', 'manageddestroytweets', 'manageddestroylikes'].includes(task.baseName)"  :class="`${isRtl ? 'rtl':''}`">
-            ({{task.removedCount }} {{__('tweet')}})
+            ({{task.removedCount || '?' }} {{__('tweet')}})
           </span>
           <span v-if="task.baseName === 'fetchfollowing'"  :class="`${isRtl ? 'rtl':''}`">
             ({{task.followings_count }} {{__('following')}})

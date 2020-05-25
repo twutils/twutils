@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\TaskTweet;
 use App\Tweet;
+use App\TaskTweet;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
 class CleanLikesJob implements ShouldQueue
 {
@@ -38,7 +38,11 @@ class CleanLikesJob implements ShouldQueue
         if (count($toDeleteIds) > 0) {
             collect($toDeleteIds)->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
             ->each(function ($toDeleteIdsGroup) {
-                Tweet::destroy($toDeleteIdsGroup);
+                dispatch(
+                    new RemoveTweetsJob(
+                        $toDeleteIdsGroup
+                    )
+                );
             });
         }
 

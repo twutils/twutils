@@ -2,12 +2,13 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\CleanLikesJob;
-use App\Jobs\FetchLikesJob;
 use App\Task;
-use App\TaskTweet;
 use App\Tweep;
 use App\Tweet;
+use App\TaskTweet;
+use Carbon\Carbon;
+use App\Jobs\CleanLikesJob;
+use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
 
@@ -41,7 +42,7 @@ class FetchLikesOperation extends TwitterOperation
 
         $shouldBuild = $response->count() >= config('twutils.minimum_expected_likes');
 
-        if (!$shouldBuild) {
+        if (! $shouldBuild) {
             $this->setCompletedTask($this->task);
         }
 
@@ -55,14 +56,34 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function saveResponse()
     {
+        $taskId = $this->task['id'];
+        $taskSettings = $this->task->extra['settings'];
+        $likes = [];
+
+        $responseCollection = collect($this->response)
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
+
+                return $tweet;
+            });
+
+        if ($taskSettings && ($taskSettings['start_date'] || $taskSettings['end_date'])) {
+            if (isset($taskSettings['start_date'])) {
+                $responseCollection = $responseCollection->filter(function ($tweet) use ($taskSettings) {
+                    return $tweet->created_at->greaterThanOrEqualTo($taskSettings['start_date']);
+                });
+            }
+
+            if (isset($taskSettings['end_date'])) {
+                $responseCollection = $responseCollection->filter(function ($tweet) use ($taskSettings) {
+                    return $tweet->created_at->lessThanOrEqualTo($taskSettings['end_date']);
+                });
+            }
+        }
+
         if (count($this->response) === 0) {
             return;
         }
-
-        $taskId = $this->task['id'];
-        $likes = [];
-
-        $responseCollection = collect($this->response);
 
         $tweeps = $responseCollection->map(function ($tweet) {
             return $tweet->user;

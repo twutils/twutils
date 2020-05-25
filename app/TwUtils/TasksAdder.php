@@ -3,9 +3,9 @@
 namespace App\TwUtils;
 
 use App\Task;
+use App\User;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
-use App\User;
 
 class TasksAdder
 {
@@ -76,17 +76,17 @@ class TasksAdder
 
     public function buildTask()
     {
-        if (!$this->validRequest()) {
+        if (! $this->validRequest()) {
             return;
         }
 
-        if (!$this->validTasksLimit()) {
+        if (! $this->validTasksLimit()) {
             return;
         }
 
         $taskValidation = $this->{'validate'.$this->targetedTask}();
 
-        if (!$taskValidation) {
+        if (! $taskValidation) {
             return;
         }
 
@@ -112,7 +112,7 @@ class TasksAdder
 
     public function validateLikes()
     {
-        return true;
+        return $this->validateUserTweets();
     }
 
     public function validateEntitiesLikes()
@@ -122,6 +122,16 @@ class TasksAdder
 
     public function validateUserTweets()
     {
+        $hasValidDates = $this->hasValidDates();
+
+        if (! $hasValidDates['ok']) {
+            $this->ok = $hasValidDates['ok'];
+            $this->errors = $hasValidDates['errors'];
+            $this->statusCode = $hasValidDates['statusCode'];
+
+            return false;
+        }
+
         return true;
     }
 
@@ -149,7 +159,7 @@ class TasksAdder
     {
         $hasValidDates = $this->hasValidDates();
 
-        if (!$hasValidDates['ok']) {
+        if (! $hasValidDates['ok']) {
             $this->ok = $hasValidDates['ok'];
             $this->errors = $hasValidDates['errors'];
             $this->statusCode = $hasValidDates['statusCode'];
@@ -182,7 +192,7 @@ class TasksAdder
             ]
         )->errors()->all();
 
-        if ($shouldValidate && !empty($datesErrors)) {
+        if ($shouldValidate && ! empty($datesErrors)) {
             return [
                 'ok'         => false,
                 'errors'     => $datesErrors,
@@ -201,7 +211,7 @@ class TasksAdder
     {
         $hasValidDates = $this->hasValidDates();
 
-        if (!$hasValidDates['ok']) {
+        if (! $hasValidDates['ok']) {
             $this->ok = $hasValidDates['ok'];
             $this->errors = $hasValidDates['errors'];
             $this->statusCode = $hasValidDates['statusCode'];
@@ -235,7 +245,7 @@ class TasksAdder
         ->whereIn('socialuser_id', $this->user->socialUsers->pluck('id'))
         ->get()->last();
 
-        return !empty($userManagedTasks);
+        return ! empty($userManagedTasks);
     }
 
     public function addTask()
@@ -297,7 +307,7 @@ class TasksAdder
 
     public function validRequest()
     {
-        if (!in_array($this->targetedTask, $this->getAvailableTasks())) {
+        if (! in_array($this->targetedTask, $this->getAvailableTasks())) {
             $this->ok = false;
             $this->errors = [__('messages.task_add_bad_request')];
             $this->statusCode = 400;
@@ -305,7 +315,7 @@ class TasksAdder
             return false;
         }
 
-        if ($this->relatedTask != null && !$this->user->can('view', $this->relatedTask)) {
+        if ($this->relatedTask != null && ! $this->user->can('view', $this->relatedTask)) {
             $this->ok = false;
             $this->errors = [__('messages.task_add_unauthorized_access')];
             $this->statusCode = 401;

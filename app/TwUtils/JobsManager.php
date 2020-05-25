@@ -8,7 +8,7 @@ class JobsManager
 {
     public static function getNextJobDelayFromHeaders(array $headers)
     {
-        if (!isset($headers['x_rate_limit_remaining'])) {
+        if (! isset($headers['x_rate_limit_remaining'])) {
             return null;
         }
 

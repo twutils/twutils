@@ -2,12 +2,13 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Jobs\DestroyTweetJob;
-use App\Jobs\FetchUserTweetsJob;
+use Config;
 use App\Task;
 use App\Tweet;
-use Config;
+use Tests\TwitterClientMock;
+use App\Jobs\DestroyTweetJob;
 use Tests\IntegrationTestCase;
+use App\Jobs\FetchUserTweetsJob;
 
 class ManagedDestroyTweetsTest extends IntegrationTestCase
 {
@@ -30,6 +31,40 @@ class ManagedDestroyTweetsTest extends IntegrationTestCase
         $this->assertCountDispatchedJobs(1, FetchUserTweetsJob::class);
 
         $this->assertCountDispatchedJobs(1, DestroyTweetJob::class);
+
+        $this->assertTaskCount(3, 'completed');
+
+        $this->assertEquals(1, Task::all()->last()->managedBy->id);
+    }
+
+    public function test_managed_destroy_tweets_custom_date_range()
+    {
+        $this->logInSocialUserForDestroyTweets();
+        $this->withoutJobs();
+
+        $tweets = $this->generateUniqueTweets(10);
+
+        $this->postJson('/api/ManagedDestroyTweets', [
+            'settings' => [
+                'start_date' => now()->subDays(7)->format('Y-m-d'),
+                'end_date'   => now()->subDays(3)->format('Y-m-d'),
+            ],
+        ]);
+
+        $this->fireJobsAndBindTwitter([
+            [
+                'type'           => FetchUserTweetsJob::class,
+                'twitterData'    => $tweets,
+            ],
+        ]);
+
+        $this->assertCount(4, Tweet::all());
+
+        $this->assertCount(4, TwitterClientMock::getAllCallsData()->where('endpoint', 'statuses/destroy'));
+
+        $this->assertCountDispatchedJobs(1, FetchUserTweetsJob::class);
+
+        $this->assertCountDispatchedJobs(4, DestroyTweetJob::class);
 
         $this->assertTaskCount(3, 'completed');
 

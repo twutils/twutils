@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
+use DB;
+use App\Task;
+use App\Tweep;
+use App\Tweet;
 use App\Follower;
 use App\Following;
 use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
-use App\Task;
-use App\Tweep;
-use App\Tweet;
-use DB;
 use Tests\IntegrationTestCase;
 
 class DatabaseRelationsTest extends IntegrationTestCase

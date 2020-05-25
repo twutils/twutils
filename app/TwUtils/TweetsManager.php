@@ -18,7 +18,7 @@ class TweetsManager
             'lang'                    => $tweet['lang'],
             'retweet_count'           => $tweet['retweet_count'] ?? null,
             'favorite_count'          => isset($tweet['retweeted_status']) ? $tweet['retweeted_status']['favorite_count'] : $tweet['favorite_count'],
-            'tweet_created_at'        => Carbon::createFromTimestamp(strtotime($tweet['created_at'] ?? 1)),
+            'tweet_created_at'        => Carbon::createFromTimeString($tweet['created_at']),
             'tweep_id'                => $tweep->id,
             'in_reply_to_screen_name' => $tweet['in_reply_to_screen_name'] ?? null,
             'mentions'                => Str::limit(collect(Arr::get($tweet, 'entities.user_mentions', []))->implode('screen_name', ','), 190),

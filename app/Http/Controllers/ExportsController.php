@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TasksExport;
-use App\Exports\UsersListTaskExport;
+use Storage;
 use App\Task;
+use App\Exports\TasksExport;
+use Illuminate\Http\Request;
 use App\TwUtils\ExportsManager;
+use App\Exports\UsersListTaskExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
 use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use Storage;
 
 class ExportsController extends Controller
 {
@@ -34,7 +34,7 @@ class ExportsController extends Controller
     {
         $isEntitiesTask = in_array($task->type, [FetchEntitiesLikesOperation::class, FetchEntitiesUserTweetsOperation::class]);
 
-        if ($isEntitiesTask && !empty($taskFiles = Storage::disk(config('filesystems.cloud'))->allFiles($task->id))) {
+        if ($isEntitiesTask && ! empty($taskFiles = Storage::disk(config('filesystems.cloud'))->allFiles($task->id))) {
             $filePath = $taskFiles[0];
 
             try {

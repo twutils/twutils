@@ -2,14 +2,14 @@
 
 namespace Tests;
 
-use App\Jobs\FetchLikesJob;
-use App\SocialUser;
-use App\Task;
-use App\TwUtils\ITwitterConnector;
-use App\User;
 use Config;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
+use App\Task;
+use App\User;
+use App\SocialUser;
+use App\Jobs\FetchLikesJob;
+use App\TwUtils\ITwitterConnector;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IntegrationTestCase extends TestCase
 {
@@ -63,6 +63,21 @@ class IntegrationTestCase extends TestCase
         ->toArray();
     }
 
+    protected function uniqueTweetDates($tweets)
+    {
+        $counter = 0;
+
+        return collect($tweets)
+        ->map(
+            function ($tweet) use (&$counter) {
+                $tweet->created_at = now()->subDays($counter++)->format('D M d h:m:s O Y');
+
+                return $tweet;
+            }
+        )
+        ->toArray();
+    }
+
     protected function generateTweets($count, $createdAtDate = null)
     {
         $tweet = $this->getStub('tweet.json');
@@ -94,14 +109,14 @@ class IntegrationTestCase extends TestCase
             $tweetSample = $this->getStub('tweet.json');
         }
 
-        return $this->uniqueTweetIds(array_fill(0, $count, $tweetSample));
+        return $this->uniqueTweetDates($this->uniqueTweetIds(array_fill(0, $count, $tweetSample)));
     }
 
     protected function assertCountDispatchedJobs($count, $jobClass = FetchLikesJob::class)
     {
         $dispatchedJobs = collect($this->dispatchedJobs);
 
-        if (!is_null($jobClass)) {
+        if (! is_null($jobClass)) {
             $dispatchedJobs = $dispatchedJobs->filter(
                 function ($dispatchedJob) use ($jobClass) {
                     return get_class($dispatchedJob) == $jobClass;
@@ -128,7 +143,7 @@ class IntegrationTestCase extends TestCase
         $twitterConnector->shouldReceive('get')
         ->andReturn($twitterClient);
 
-        if (!is_null($callback)) {
+        if (! is_null($callback)) {
             $callback($twitterConnector, $twitterClient);
         }
 
@@ -193,32 +208,32 @@ class IntegrationTestCase extends TestCase
             $jobDataHolderIndex = null;
 
             foreach ($data as $index => $jobDetails) {
-                if (!$jobDetails['called']) {
+                if (! $jobDetails['called']) {
                     $jobDataHolderIndex = $index;
                     $jobDataHolder = $jobDetails;
                     break;
                 }
             }
 
-            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['twitterData'])) {
+            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['twitterData'])) {
                 $this->bindTwitterConnector($jobDataHolder['twitterData'], $jobDataHolder['twitterHeaders'] ?? []);
             }
 
-            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['before'])) {
+            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['before'])) {
                 $jobDataHolder['before']($queuedJob);
             }
 
-            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type']) {
+            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type']) {
                 $data[$jobDataHolderIndex]['called'] = true;
             }
 
-            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['skip']) && $jobDataHolder['skip']) {
+            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['skip']) && $jobDataHolder['skip']) {
                 continue;
             }
 
             $queuedJob->handle();
 
-            if ((!is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['after'])) {
+            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['after'])) {
                 $jobDataHolder['after']($queuedJob);
             }
         }

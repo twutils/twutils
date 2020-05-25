@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Jobs\DislikeTweetJob;
 use App\Task;
-use App\Tweet;
 use App\User;
-use Illuminate\Support\Facades\Bus;
+use App\Tweet;
+use App\Jobs\DislikeTweetJob;
 use Tests\IntegrationTestCase;
+use Illuminate\Support\Facades\Bus;
 
 class DislikeTweetJobTest extends IntegrationTestCase
 {
@@ -20,7 +20,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector([$tweet, $tweet]);
 
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $response = $this->postJson('/api/destroyLikes', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -37,7 +37,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector([]);
 
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $response = $this->postJson('/api/destroyLikes', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -56,7 +56,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
         // While retrieving likes, the tweet exists
         $tweet = $this->getStub('tweet.json');
         $this->bindTwitterConnector([$tweet]);
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         // But when destroying, it doesn't exist in the user likes anymore
         $twitterNotExistResponse = $this->getStub('tweet_id_not_exist_response.json');
@@ -84,7 +84,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
         $secondTweet->id_str = (string) time();
 
         $this->bindTwitterConnector([$tweet, $secondTweet]);
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $response = $this->postJson('/api/destroyLikes', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -113,7 +113,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
         $secondTweet->id_str = (string) time();
 
         $this->bindTwitterConnector([$tweet, $secondTweet]);
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $response = $this->postJson('/api/destroyLikes', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -150,7 +150,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
         $tweets = [$tweet, $secondTweet, $thirdTweet];
 
         $this->bindTwitterConnector($tweets);
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $response = $this->postJson('/api/destroyLikes', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -196,7 +196,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
         $tweets = [$tweet, $secondTweet, $thirdTweet];
 
         $this->bindTwitterConnector($tweets);
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $response = $this->postJson('/api/destroyLikes', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -256,7 +256,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
         $tweet = $this->getStub('tweet.json');
         $this->bindTwitterConnector([$tweet, $tweet]);
 
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $this->assertEquals($this->lastTwitterClientData()['endpoint'], 'favorites/list');
 
@@ -296,7 +296,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchLikes();
+        [$indexLastDispatched, $taskId] = $this->fetchLikes();
 
         $this->assertEquals($this->lastTwitterClientData()['endpoint'], 'favorites/list');
         $this->assertTrue(\DB::table('task_tweet')->where('removed', '!=', null)->get()->count() == 0);
@@ -320,7 +320,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
 
         $delaysIndexes->each(
             function ($delayIndex) use ($indexLastDispatched) {
-                $this->assertNotNull($this->dispatchedJobs[$delayIndex + $indexLastDispatched - 4]->delay);
+                $this->assertNotNull($this->dispatchedJobs[$delayIndex + $indexLastDispatched - 5]->delay);
             }
         );
 

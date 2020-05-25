@@ -2,11 +2,11 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\FetchEntitiesLikesJob;
-use App\Jobs\SaveTweetMediaJob;
-use App\Jobs\ZipEntitiesJob;
 use App\Task;
+use App\Jobs\ZipEntitiesJob;
 use App\TwUtils\AssetsManager;
+use App\Jobs\SaveTweetMediaJob;
+use App\Jobs\FetchEntitiesLikesJob;
 
 class FetchEntitiesLikesOperation extends FetchLikesOperation
 {
@@ -24,7 +24,7 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
 
         $shouldBuild = $response->count() >= config('twutils.minimum_expected_likes');
 
-        if (!$shouldBuild) {
+        if (! $shouldBuild) {
             $tweetsWithMedia = $this->task->tweets
                 ->filter(function ($tweet) {
                     return AssetsManager::hasMedia($tweet->toArray());
@@ -63,7 +63,7 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
         $disks = [\Storage::disk('temporaryTasks'), \Storage::disk('tasks')];
 
         foreach ($disks as $disk) {
-            if (!$disk->exists($this->task->id)) {
+            if (! $disk->exists($this->task->id)) {
                 $disk->makeDirectory($this->task->id);
             }
         }

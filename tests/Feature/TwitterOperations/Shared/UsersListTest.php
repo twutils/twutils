@@ -3,9 +3,9 @@
 namespace Tests\Feature\TwitterOperations\Shared;
 
 use App\Tweep;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Str;
 use Tests\IntegrationTestCase;
+use Illuminate\Support\Facades\Bus;
 
 abstract class UsersListTest extends IntegrationTestCase
 {

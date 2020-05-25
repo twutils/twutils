@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\TwitterOperations\Shared;
 
-use App\Exports\TasksExport;
-use App\Jobs\CleanLikesJob;
+use DB;
 use App\Task;
 use App\Tweep;
 use App\Tweet;
-use DB;
+use App\Jobs\CleanLikesJob;
+use App\Exports\TasksExport;
+use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;
 use Maatwebsite\Excel\Facades\Excel;
-use Tests\IntegrationTestCase;
 
 /*
  * A Generic abstract tests for all tasks that store tweets..
@@ -276,6 +276,36 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertLikesBelongsToTask();
     }
 
+    public function test_save_likes_with_custom_date()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+
+        $tweets = $this->generateUniqueTweets(10);
+
+        // TODO: Investigate why "postJson" works while there is
+        // no "POST" method defined for the route.
+
+        $this->postJson($this->apiEndpoint, [
+            'settings' => [
+                'start_date' => now()->subDays(7)->format('Y-m-d'),
+                'end_date'   => now()->subDays(3)->format('Y-m-d'),
+            ],
+        ])
+        ->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter([
+            [
+                'type'           => $this->jobName,
+                'twitterData'    => $tweets,
+            ],
+        ]);
+
+        $this->assertTaskCount(1, 'completed');
+        $this->assertCount(4, Tweet::all());
+        $this->assertLikesBelongsToTask();
+    }
+
     public function test_basic_save_tweets_first_request_has_error()
     {
         $this->withoutJobs();
@@ -293,7 +323,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                 'type'   => $this->jobName,
                 'before' => function () {
                     app()->bind('AfterHTTPRequest', function () use (&$exceptionIsThrown) {
-                        if (!$exceptionIsThrown) {
+                        if (! $exceptionIsThrown) {
                             $exceptionIsThrown = true;
 
                             throw new \Abraham\TwitterOAuth\TwitterOAuthException('Error Processing Request', 1);
@@ -756,6 +786,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->dispatchedJobs[1]->handle();
         $this->dispatchedJobs[2]->handle();
+        $this->dispatchedJobs[3]->handle();
+        $this->dispatchedJobs[4]->handle();
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());

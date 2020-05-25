@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Jobs\DislikeTweetJob;
-use App\Jobs\FetchLikesJob;
+use Config;
 use App\Task;
 use App\Tweet;
-use Config;
+use App\Jobs\FetchLikesJob;
+use App\Jobs\DislikeTweetJob;
 use Tests\IntegrationTestCase;
 
 class ManagedDestroyLikesTest extends IntegrationTestCase

@@ -15,7 +15,7 @@ Route::middleware('throttle:10,1')->group(function () {
     Route::post('/contact', 'WelcomeController@storeContact');
 });
 
-Route::middleware('auth:api', 'throttle:100,1')->group(function () {
+Route::middleware('auth:api', 'throttle:200,1')->group(function () {
     Route::get('tasks', 'Api\TasksController@index')->name('tasks');
     Route::get('tasks/likes', 'Api\TasksController@listLikesTasks')->name('tasks.listLikesTasks');
     Route::get('tasks/userTweets', 'Api\TasksController@listUserTweetsTasks')->name('tasks.listUserTweetsTasks');

@@ -2,8 +2,8 @@
 
 namespace App\TwUtils;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use App\SocialUser;
+use Abraham\TwitterOAuth\TwitterOAuth;
 
 class TwitterConnector implements ITwitterConnector
 {

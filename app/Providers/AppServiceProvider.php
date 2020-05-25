@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
+use Schema;
 use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use MimeTyper\Repository\MimeDbRepository;
-use Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
             return $this;
         });
 
-        if (!env('ENABLE_DEBUGBAR')) {
+        if (! env('ENABLE_DEBUGBAR')) {
             \Debugbar::disable();
         }
 

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\DeleteMeJob;
-use App\SocialUser;
-use App\TwUtils\UserManager;
 use Auth;
-use Illuminate\Http\Request;
 use Session;
+use App\SocialUser;
+use App\Jobs\DeleteMeJob;
+use App\TwUtils\UserManager;
+use Illuminate\Http\Request;
 
 class AppController extends Controller
 {
@@ -34,7 +34,7 @@ class AppController extends Controller
 
     public function switchLang()
     {
-        if (!in_array(request()->segment(1), ['en', 'ar'])) {
+        if (! in_array(request()->segment(1), ['en', 'ar'])) {
             return redirect()->route('welcome');
         }
 

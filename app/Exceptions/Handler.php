@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Throwable;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -41,11 +41,11 @@ class Handler extends ExceptionHandler
     {
         parent::report($exception);
 
-
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
             try {
                 Config::set('sentry.release', Cache::get('app.version', ''));
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             app('sentry')->captureException($exception);
         }

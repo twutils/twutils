@@ -4,12 +4,12 @@ namespace App\Jobs;
 
 use App\Task;
 use App\Tweet;
-use App\TwUtils\AssetsManager;
 use Illuminate\Bus\Queueable;
+use App\TwUtils\AssetsManager;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
 class SaveTweetMediaJob implements ShouldQueue
 {
@@ -44,7 +44,7 @@ class SaveTweetMediaJob implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->task || in_array($this->task->status, ['broken', 'cancelled'])) {
+        if (! $this->task || in_array($this->task->status, ['broken', 'cancelled'])) {
             return;
         }
 

@@ -45,7 +45,7 @@ class SocialUser extends Model
 
     protected function getScopeIsActiveAttribute()
     {
-        return !empty($this->token);
+        return ! empty($this->token);
     }
 
     public function user()

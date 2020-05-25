@@ -276,6 +276,33 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertLikesBelongsToTask();
     }
 
+    public function test_save_likes_with_custom_date()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+
+        $tweets = $this->generateUniqueTweets(10);
+
+        $this->postJson($this->apiEndpoint, [
+            'settings' => [
+                'start_date' => now()->subDays(7)->format('Y-m-d'),
+                'end_date' => now()->subDays(3)->format('Y-m-d'),
+            ]
+        ])
+        ->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter([
+            [
+                'type'   => $this->jobName,
+                'twitterData'    => $tweets,
+            ]
+        ]);
+
+        $this->assertTaskCount(1, 'completed');
+        $this->assertCount(4, Tweet::all());
+        $this->assertLikesBelongsToTask();
+    }
+
     public function test_basic_save_tweets_first_request_has_error()
     {
         $this->withoutJobs();

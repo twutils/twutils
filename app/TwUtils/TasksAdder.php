@@ -112,7 +112,7 @@ class TasksAdder
 
     public function validateLikes()
     {
-        return true;
+        return $this->validateUserTweets();
     }
 
     public function validateEntitiesLikes()
@@ -122,6 +122,16 @@ class TasksAdder
 
     public function validateUserTweets()
     {
+        $hasValidDates = $this->hasValidDates();
+
+        if (!$hasValidDates['ok']) {
+            $this->ok = $hasValidDates['ok'];
+            $this->errors = $hasValidDates['errors'];
+            $this->statusCode = $hasValidDates['statusCode'];
+
+            return false;
+        }
+
         return true;
     }
 

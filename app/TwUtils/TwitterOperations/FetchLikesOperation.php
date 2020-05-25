@@ -10,6 +10,7 @@ use App\Tweep;
 use App\Tweet;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
+use Carbon\Carbon;
 
 class FetchLikesOperation extends TwitterOperation
 {
@@ -55,14 +56,36 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function saveResponse()
     {
+        $taskId = $this->task['id'];
+        $taskSettings = $this->task->extra['settings'];
+        $likes = [];
+
+        $responseCollection = collect($this->response)
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
+                return $tweet;
+            });
+
+        if ($taskSettings && ($taskSettings['start_date'] || $taskSettings['end_date']))
+        {
+            if (isset($taskSettings['start_date']))
+            {
+                $responseCollection = $responseCollection->filter(function ($tweet) use ($taskSettings) {
+                    return $tweet->created_at->greaterThanOrEqualTo($taskSettings['start_date']);
+                });
+            }
+
+            if (isset($taskSettings['end_date']))
+            {
+                $responseCollection = $responseCollection->filter(function ($tweet) use ($taskSettings) {
+                    return $tweet->created_at->lessThanOrEqualTo($taskSettings['end_date']);
+                });
+            }
+        }
+
         if (count($this->response) === 0) {
             return;
         }
-
-        $taskId = $this->task['id'];
-        $likes = [];
-
-        $responseCollection = collect($this->response);
 
         $tweeps = $responseCollection->map(function ($tweet) {
             return $tweet->user;

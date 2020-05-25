@@ -63,6 +63,21 @@ class IntegrationTestCase extends TestCase
         ->toArray();
     }
 
+    protected function uniqueTweetDates($tweets)
+    {
+        $counter = 0;
+
+        return collect($tweets)
+        ->map(
+            function ($tweet) use (&$counter) {
+                $tweet->created_at = now()->subDays($counter++)->format('D M d h:m:s O Y');
+
+                return $tweet;
+            }
+        )
+        ->toArray();
+    }
+
     protected function generateTweets($count, $createdAtDate = null)
     {
         $tweet = $this->getStub('tweet.json');
@@ -94,7 +109,7 @@ class IntegrationTestCase extends TestCase
             $tweetSample = $this->getStub('tweet.json');
         }
 
-        return $this->uniqueTweetIds(array_fill(0, $count, $tweetSample));
+        return $this->uniqueTweetDates($this->uniqueTweetIds(array_fill(0, $count, $tweetSample)));
     }
 
     protected function assertCountDispatchedJobs($count, $jobClass = FetchLikesJob::class)

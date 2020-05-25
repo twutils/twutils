@@ -44,7 +44,12 @@ class CompleteTaskJob implements ShouldQueue
 
         $tweeps = $this->task->getTaskTweeps();
 
-        $tweeps->map(function (Tweep $tweep) {
+        $tweeps->map(function ($tweep) {
+            if (! $tweep)
+            {
+                return ;
+            }
+
             dispatch(new SaveTweepAvatarJob($tweep->id_str));
         });
     }

@@ -48,7 +48,7 @@ class ManagedDestroyLikesOperation extends TwitterOperation
         if ($managedTask->status === 'completed') {
             $this->attachDestroyTweets($managedTask, $socialUser, $task);
         } elseif ($managedTask->status === 'queued') {
-            dispatch(new CompleteManagedDestroyLikesJob($managedTask, $socialUser, $task));
+            dispatch(new CompleteManagedDestroyLikesJob($managedTask, $socialUser, $task))->delay(now()->addSeconds(10));
         } elseif ($managedTask->status === 'broken') {
             $this->breakTask($task, $managedTask->extra['break_response'] ?? []);
         }

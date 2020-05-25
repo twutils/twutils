@@ -8,7 +8,7 @@ return [
     'database_groups_chunk_counts' => [
         'fetch_following_lookups' => 50,
         'fetch_likes'             => 50,
-        'tweep_db_where_in_limit' => 999,
+        'tweep_db_where_in_limit' => 500,
     ],
     'minimum_expected_likes'              => 3,
     'tasks_limit_per_user'                => 30,

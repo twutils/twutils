@@ -16,7 +16,7 @@ class destroyLikesOperation extends TwitterOperation
     protected function handleJobParameters($parameters)
     {
         $index = $parameters['index'];
-        $likesCollection = $parameters['likesCollection'];
+        $likesCollection = $parameters['likesCollection']->values();
 
         $this->likesCollection = $likesCollection;
 

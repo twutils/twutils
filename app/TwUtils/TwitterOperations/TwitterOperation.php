@@ -87,7 +87,7 @@ abstract class TwitterOperation
         if ($e instanceof TwitterOAuthException) {
             if (Cache::get('rebuild_attempts_'.$this->task->id) < config('twutils.exception_rebuild_task_max_attempts')) {
                 return $this->rebuildJob();
-            } else if ($this->task) {
+            } elseif ($this->task) {
                 $this->breakTask($this->task, $this->response, $e);
             }
         }
@@ -110,8 +110,7 @@ abstract class TwitterOperation
             try {
                 $this->saveResponse();
             } catch (\Exception $e) {
-                if ($this->task)
-                {
+                if ($this->task) {
                     $this->breakTask($this->task, $this->response, $e);
                 }
             }
@@ -184,8 +183,7 @@ abstract class TwitterOperation
 
     protected function handleErrorResponse()
     {
-        if ($this->task)
-        {
+        if ($this->task) {
             $this->breakTask($this->task, $this->response);
         }
     }
@@ -194,8 +192,8 @@ abstract class TwitterOperation
     {
         $breakData = [];
 
-        \Log::info('Task ' . $task->id . ' was broken. Twitter Response: ' . json_encode($response));
-        \Log::info('Task ' . $task->id . ' was broken. Exception: ' . ($exception ? $exception . '' : ''));
+        \Log::info('Task '.$task->id.' was broken. Twitter Response: '.json_encode($response));
+        \Log::info('Task '.$task->id.' was broken. Exception: '.($exception ? $exception.'' : ''));
 
         if (!is_null($exception)) {
             $task->exception = Str::limit($exception->__toString(), 2000);

@@ -188,32 +188,32 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
     {
         return $this->task->followings->reverse()->values()->map(
             function (Following $followoingPivot, $key) {
-            $tweep = $followoingPivot->tweep;
+                $tweep = $followoingPivot->tweep;
 
-            static::$tweepsUrls[$tweep->display_url] = $tweep->url;
+                static::$tweepsUrls[$tweep->display_url] = $tweep->url;
 
-            return [
-                'order'                   => $key + 1,
-                'username'                => $this->formatText($tweep->screen_name),
-                'name'                    => $this->formatText($tweep->name),
+                return [
+                    'order'                   => $key + 1,
+                    'username'                => $this->formatText($tweep->screen_name),
+                    'name'                    => $this->formatText($tweep->name),
 
-                'user_following'          => $tweep->friends_count,
-                'user_followers'          => $tweep->followers_count,
-                'user_tweets'             => $tweep->statuses_count,
-                'user_likes'              => $tweep->favourites_count,
+                    'user_following'          => $tweep->friends_count,
+                    'user_followers'          => $tweep->followers_count,
+                    'user_tweets'             => $tweep->statuses_count,
+                    'user_likes'              => $tweep->favourites_count,
 
-                'bio'                     => $this->formatText($tweep->description),
-                'user_url'                => $this->formatText($tweep->display_url),
-                'user_location'           => $this->formatText($tweep->location),
-                'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
+                    'bio'                     => $this->formatText($tweep->description),
+                    'user_url'                => $this->formatText($tweep->display_url),
+                    'user_location'           => $this->formatText($tweep->location),
+                    'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
 
-                'follows_you'             => $followoingPivot->followed_by ? 'Yes' : 'No',
+                    'follows_you'             => $followoingPivot->followed_by ? 'Yes' : 'No',
 
-                'user_joined_twitter_at'  => $tweep->tweep_created_at,
-                'id'                      => $tweep->id_str,
-                'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
-            ];
-        }
+                    'user_joined_twitter_at'  => $tweep->tweep_created_at,
+                    'id'                      => $tweep->id_str,
+                    'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
+                ];
+            }
         );
     }
 
@@ -221,32 +221,32 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
     {
         return $this->task->followers->reverse()->values()->map(
             function (Follower $followerPivot, $key) {
-            $tweep = $followerPivot->tweep;
+                $tweep = $followerPivot->tweep;
 
-            static::$tweepsUrls[$tweep->display_url] = $tweep->url;
+                static::$tweepsUrls[$tweep->display_url] = $tweep->url;
 
-            return [
-                'order'                   => $key + 1,
-                'username'                => $this->formatText($tweep->screen_name),
-                'name'                    => $this->formatText($tweep->name),
+                return [
+                    'order'                   => $key + 1,
+                    'username'                => $this->formatText($tweep->screen_name),
+                    'name'                    => $this->formatText($tweep->name),
 
-                'user_following'          => $tweep->friends_count,
-                'user_followers'          => $tweep->followers_count,
-                'user_tweets'             => $tweep->statuses_count,
-                'user_likes'              => $tweep->favourites_count,
+                    'user_following'          => $tweep->friends_count,
+                    'user_followers'          => $tweep->followers_count,
+                    'user_tweets'             => $tweep->statuses_count,
+                    'user_likes'              => $tweep->favourites_count,
 
-                'bio'                     => $this->formatText($tweep->description),
-                'user_url'                => $this->formatText($tweep->display_url),
-                'user_location'           => $this->formatText($tweep->location),
-                'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
+                    'bio'                     => $this->formatText($tweep->description),
+                    'user_url'                => $this->formatText($tweep->display_url),
+                    'user_location'           => $this->formatText($tweep->location),
+                    'user_is_verified'        => $tweep->verified ? 'Yes' : 'No',
 
-                'followed_by_me'          => $followerPivot->followed_by_me ? 'Yes' : 'No',
+                    'followed_by_me'          => $followerPivot->followed_by_me ? 'Yes' : 'No',
 
-                'user_joined_twitter_at'  => $tweep->tweep_created_at,
-                'id'                      => $tweep->id_str,
-                'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
-            ];
-        }
+                    'user_joined_twitter_at'  => $tweep->tweep_created_at,
+                    'id'                      => $tweep->id_str,
+                    'permalink'               => 'https://twitter.com/intent/user?user_id='.$tweep->id_str,
+                ];
+            }
         );
     }
 }

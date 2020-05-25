@@ -289,16 +289,16 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->postJson($this->apiEndpoint, [
             'settings' => [
                 'start_date' => now()->subDays(7)->format('Y-m-d'),
-                'end_date' => now()->subDays(3)->format('Y-m-d'),
-            ]
+                'end_date'   => now()->subDays(3)->format('Y-m-d'),
+            ],
         ])
         ->assertStatus(200);
 
         $this->fireJobsAndBindTwitter([
             [
-                'type'   => $this->jobName,
+                'type'           => $this->jobName,
                 'twitterData'    => $tweets,
-            ]
+            ],
         ]);
 
         $this->assertTaskCount(1, 'completed');

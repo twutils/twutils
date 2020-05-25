@@ -98,7 +98,6 @@ class Task extends Model
                 $taskTweepsWithoutSharedWithOtherTasksTweeps = $taskTweeps->diff($tweepsSharedWithOtherTasks);
 
                 Tweep::whereIn('id_str', $taskTweepsWithoutSharedWithOtherTasksTweeps)->get()->map->delete();
-
             }
             $task->managedTasks->map->delete();
         });
@@ -198,8 +197,7 @@ class Task extends Model
         if ($this->type === destroyLikesOperation::class) {
             $targetedTask = self::find($this->extra['targeted_task_id']);
 
-            if ( ! $targetedTask)
-            {
+            if (!$targetedTask) {
                 return '?';
             }
 
@@ -217,8 +215,7 @@ class Task extends Model
         if ($this->type === destroyTweetsOperation::class) {
             $targetedTask = self::find($this->extra['targeted_task_id']);
 
-            if ( ! $targetedTask)
-            {
+            if (!$targetedTask) {
                 return '?';
             }
 

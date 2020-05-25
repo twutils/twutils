@@ -47,15 +47,15 @@ class ManagedDestroyTweetsTest extends IntegrationTestCase
         $this->postJson('/api/ManagedDestroyTweets', [
             'settings' => [
                 'start_date' => now()->subDays(7)->format('Y-m-d'),
-                'end_date' => now()->subDays(3)->format('Y-m-d'),
-            ]
+                'end_date'   => now()->subDays(3)->format('Y-m-d'),
+            ],
         ]);
 
         $this->fireJobsAndBindTwitter([
             [
-                'type'   => FetchUserTweetsJob::class,
+                'type'           => FetchUserTweetsJob::class,
                 'twitterData'    => $tweets,
-            ]
+            ],
         ]);
 
         $this->assertCount(4, Tweet::all());

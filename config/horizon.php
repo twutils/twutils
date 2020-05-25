@@ -168,7 +168,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['default', 'media', 'avatar'],
+                'queue' => ['default', 'media', 'avatar', 'cleaning'],
                 'balance' => 'auto',
                 'processes' => 20,
                 'tries' => 3,

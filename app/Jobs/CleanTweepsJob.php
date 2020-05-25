@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\CleanTweepJob;
 use App\Tweep;
 use App\Tweet;
 use DB;
@@ -32,39 +33,13 @@ class CleanTweepsJob implements ShouldQueue
 
         // mark the unique tweep as the last inserted record, newly created.
         collect($duplicates)
-        ->sortByDesc('id')
-        ->map(function ($tweep) use (&$uniqueTweeps) {
-            if (in_array($tweep->id_str, array_keys($uniqueTweeps))) {
-                return $tweep;
-            }
-
-            $uniqueTweeps[$tweep->id_str] = $tweep;
-
-            return false;
-        })
-        // filter only the duplicates tweeps that will be removed eventually
-        ->filter(function ($tweepOrFalse) {
-            return $tweepOrFalse;
-        })
-        // group them by their 'id_str'
         ->groupBy('id_str')
-        // Update tweets that associated with duplicate tweeps, to be assigned
-        // to the newly created tweep.
-        ->map(function ($similarIdStrsTweeps) use (&$uniqueTweeps) {
-            Tweet::whereIn('tweep_id', $similarIdStrsTweeps->pluck('id')->toArray())
-            ->update(['tweep_id' => $uniqueTweeps[$similarIdStrsTweeps->first()->id_str]->id]);
-
-            return $similarIdStrsTweeps;
-        })
-        // get the Tweep Ids for the 'id_str' grouped tweeps
-        ->map(function ($similarIdStrsTweeps) {
-            return $similarIdStrsTweeps->pluck('id');
-        })
-        // Merge all Tweep ids into one variable
-        ->map(function ($similarIdStrsTweeps) use (&$tweepsToDelete) {
-            $tweepsToDelete = $tweepsToDelete->merge($similarIdStrsTweeps);
+        ->map(function ($duplicateGroup) {
+            dispatch(
+                new CleanTweepJob(
+                    $duplicateGroup->first()->id_str,
+                )
+            );
         });
-
-        Tweep::whereIn('id', $tweepsToDelete->toArray())->delete();
     }
 }

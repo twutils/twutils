@@ -38,7 +38,11 @@ class CleanLikesJob implements ShouldQueue
         if (count($toDeleteIds) > 0) {
             collect($toDeleteIds)->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
             ->each(function ($toDeleteIdsGroup) {
-                Tweet::destroy($toDeleteIdsGroup);
+                dispatch(
+                    new RemoveTweetsJob(
+                        $toDeleteIdsGroup
+                    )
+                );
             });
         }
 

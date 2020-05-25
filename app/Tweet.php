@@ -29,6 +29,11 @@ class Tweet extends Model
         static::deleting(function (self $tweet) {
             $tweep = $tweet->tweep;
 
+            if (! $tweep)
+            {
+                return ;
+            }
+
             $tweepOtherTweets = self::where('id_str', '!=', $tweet->id_str)
                             ->where('tweep_id', $tweep->id)->get()
                             ->concat(

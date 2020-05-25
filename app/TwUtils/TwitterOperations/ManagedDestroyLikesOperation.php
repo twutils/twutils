@@ -2,11 +2,11 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\CompleteManagedDestroyLikesJob;
-use App\Jobs\CompleteTaskJob;
-use App\SocialUser;
 use App\Task;
+use App\SocialUser;
 use App\TwUtils\TasksAdder;
+use App\Jobs\CompleteTaskJob;
+use App\Jobs\CompleteManagedDestroyLikesJob;
 
 class ManagedDestroyLikesOperation extends TwitterOperation
 {

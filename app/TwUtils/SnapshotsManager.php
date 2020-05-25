@@ -2,8 +2,8 @@
 
 namespace App\TwUtils;
 
-use App\SocialUser;
 use App\Task;
+use App\SocialUser;
 
 class SnapshotsManager
 {

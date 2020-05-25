@@ -2,9 +2,9 @@
 
 namespace App\TwUtils\TwitterOperations;
 
+use App\Task;
 use App\Jobs\CompleteTaskJob;
 use App\Jobs\FetchFollowingLookupsJob;
-use App\Task;
 
 class FetchFollowingLookupsOperation extends TwitterOperation
 {

@@ -43,7 +43,7 @@ class TwitterClientMock
         ->each(
             function ($id_str) use (&$results) {
                 $lookup = collect($this->twitterResults)->where('id_str', $id_str)->first();
-                if (!empty($lookup)) {
+                if (! empty($lookup)) {
                     $results[] = $lookup;
                 }
             }

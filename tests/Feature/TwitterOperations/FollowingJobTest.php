@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Following;
-use App\Jobs\CleanFollowingsJob;
-use App\Jobs\FetchFollowingJob;
-use App\Jobs\FetchFollowingLookupsJob;
 use App\Task;
 use App\Tweep;
+use App\Following;
+use App\Jobs\FetchFollowingJob;
+use App\Jobs\CleanFollowingsJob;
+use App\Jobs\FetchFollowingLookupsJob;
 use Tests\Feature\TwitterOperations\Shared\UsersListTest;
 
 class FollowingJobTest extends UsersListTest
@@ -210,7 +210,7 @@ class FollowingJobTest extends UsersListTest
                     'type'   => FetchFollowingLookupsJob::class,
                     'before' => function () {
                         app()->bind('AfterHTTPRequest', function () use (&$exceptionIsThrown) {
-                            if (!$exceptionIsThrown) {
+                            if (! $exceptionIsThrown) {
                                 $exceptionIsThrown = true;
 
                                 throw new \Abraham\TwitterOAuth\TwitterOAuthException('Error Processing Request', 1);

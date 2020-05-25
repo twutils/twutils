@@ -16,7 +16,7 @@ class PinCodeForBetaMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (!config('app.beta')) {
+        if (! config('app.beta')) {
             return $next($request);
         }
 

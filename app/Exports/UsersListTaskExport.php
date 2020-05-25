@@ -2,25 +2,25 @@
 
 namespace App\Exports;
 
+use App\Task;
 use App\Follower;
 use App\Following;
-use App\Task;
-use App\TwUtils\TwitterOperations\FetchFollowersOperation;
-use App\TwUtils\TwitterOperations\FetchFollowingOperation;
-use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\RegistersEventListeners;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\BeforeWriting;
-use Maatwebsite\Excel\Sheet;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use App\TwUtils\TwitterOperations\FetchFollowersOperation;
+use App\TwUtils\TwitterOperations\FetchFollowingOperation;
 
 class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithColumnFormatting
 {

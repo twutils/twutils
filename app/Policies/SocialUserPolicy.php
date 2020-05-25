@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\SocialUser;
 use App\User;
+use App\SocialUser;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SocialUserPolicy

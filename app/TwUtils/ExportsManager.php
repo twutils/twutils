@@ -2,12 +2,12 @@
 
 namespace App\TwUtils;
 
+use Storage;
 use App\Task;
 use App\Tweep;
+use PhpZip\ZipFile;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
-use PhpZip\ZipFile;
-use Storage;
 
 class ExportsManager
 {
@@ -55,7 +55,7 @@ class ExportsManager
         $availableAvatars = [];
 
         $tweeps->map(function (Tweep $tweep) use (&$availableAvatars) {
-            if (!Storage::disk('public')->exists('avatars/'.$tweep->id_str.'.png')) {
+            if (! Storage::disk('public')->exists('avatars/'.$tweep->id_str.'.png')) {
                 return;
             }
 

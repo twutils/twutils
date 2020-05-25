@@ -2,13 +2,13 @@
 
 namespace App\TwUtils;
 
-use App\SocialUser;
-use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
-use App\TwUtils\TwitterOperations\RevokeAccessOperation;
-use App\User;
 use Auth;
+use App\User;
+use App\SocialUser;
 use Illuminate\Support\Str;
 use Laravel\Socialite\AbstractUser;
+use App\TwUtils\TwitterOperations\RevokeAccessOperation;
+use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
 
 class UserManager
 {
@@ -16,7 +16,7 @@ class UserManager
     {
         $socialUser = static::createOrFindSocialUser($user, $scopes);
 
-        $alreadyDifferentScope = !is_null($socialUser->scope) && $socialUser->scope !== $scopes;
+        $alreadyDifferentScope = ! is_null($socialUser->scope) && $socialUser->scope !== $scopes;
 
         if ($alreadyDifferentScope) {
             $userId = $socialUser->user_id;
@@ -70,7 +70,7 @@ class UserManager
 
         $appUser = User::find($socialUser->user_id);
 
-        if (!$appUser && auth()->check()) {
+        if (! $appUser && auth()->check()) {
             $matchSocialUserId = auth()->user()->socialUsers
             ->filter(function ($socialUser) use ($socialUserId) {
                 return $socialUser->social_user_id == $socialUserId;
@@ -81,7 +81,7 @@ class UserManager
             }
         }
 
-        if (!$appUser) {
+        if (! $appUser) {
             $appUser = static::createAppUserFromSocialUser($socialUser);
         }
 
@@ -200,7 +200,7 @@ class UserManager
 
         foreach ($map as $key => $value) {
             try {
-                if (!Str::contains($value, '()')) {
+                if (! Str::contains($value, '()')) {
                     $map[$key] = $user->{$value};
                 } else {
                     $map[$key] = $user->{substr($value, 0, -2)}();

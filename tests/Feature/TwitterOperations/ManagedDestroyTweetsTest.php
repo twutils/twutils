@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Jobs\DestroyTweetJob;
-use App\Jobs\FetchUserTweetsJob;
+use Config;
 use App\Task;
 use App\Tweet;
-use Config;
-use Tests\IntegrationTestCase;
 use Tests\TwitterClientMock;
+use App\Jobs\DestroyTweetJob;
+use Tests\IntegrationTestCase;
+use App\Jobs\FetchUserTweetsJob;
 
 class ManagedDestroyTweetsTest extends IntegrationTestCase
 {

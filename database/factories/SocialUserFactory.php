@@ -1,7 +1,7 @@
 <?php
 
-use App\SocialUser;
 use App\User;
+use App\SocialUser;
 use Faker\Generator as Faker;
 
 $factory->define(SocialUser::class, function (Faker $faker, array $data = []) {

@@ -2,14 +2,14 @@
 
 namespace App;
 
+use Storage;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 use App\TwUtils\TwitterOperations\destroyLikesOperation;
 use App\TwUtils\TwitterOperations\destroyTweetsOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Storage;
 
 class Task extends Model
 {
@@ -190,21 +190,21 @@ class Task extends Model
 
     public function getRemovedCountAttribute()
     {
-        if (!in_array($this->type, [destroyLikesOperation::class, destroyTweetsOperation::class])) {
+        if (! in_array($this->type, [destroyLikesOperation::class, destroyTweetsOperation::class])) {
             return null;
         }
 
         if ($this->type === destroyLikesOperation::class) {
             $targetedTask = self::find($this->extra['targeted_task_id']);
 
-            if (!$targetedTask) {
+            if (! $targetedTask) {
                 return '?';
             }
 
             $likes = $targetedTask->likes;
 
             $removed = $likes->filter(function ($tweet) {
-                return !empty($tweet->pivot->removed);
+                return ! empty($tweet->pivot->removed);
             });
 
             $removeScopeCount = Arr::get($this->extra, 'removeScopeCount', '?');
@@ -215,14 +215,14 @@ class Task extends Model
         if ($this->type === destroyTweetsOperation::class) {
             $targetedTask = self::find($this->extra['targeted_task_id']);
 
-            if (!$targetedTask) {
+            if (! $targetedTask) {
                 return '?';
             }
 
             $tweets = $targetedTask->tweets;
 
             $removed = $tweets->filter(function ($tweet) {
-                return !empty($tweet->pivot->removed);
+                return ! empty($tweet->pivot->removed);
             });
 
             $removeScopeCount = Arr::get($this->extra, 'removeScopeCount', '?');

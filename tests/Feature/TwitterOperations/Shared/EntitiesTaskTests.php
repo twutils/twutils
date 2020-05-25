@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\TwitterOperations\Shared;
 
-use App\Jobs\CleanLikesJob;
+use Config;
 use App\Task;
 use App\Tweet;
-use Config;
-use Illuminate\Support\Facades\Bus;
+use App\Jobs\CleanLikesJob;
 use Tests\IntegrationTestCase;
+use Illuminate\Support\Facades\Bus;
 
 /*
  * A Generic abstract tests for all tasks that store and attach entities and

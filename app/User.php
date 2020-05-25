@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -64,7 +64,7 @@ class User extends Authenticatable
     public function getAvatarAttribute()
     {
         $socialUser = $this->socialUsers[0] ?? null;
-        if (!is_null($socialUser)) {
+        if (! is_null($socialUser)) {
             return $socialUser->avatar;
         }
 

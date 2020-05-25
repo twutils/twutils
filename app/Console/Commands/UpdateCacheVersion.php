@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Cache;
 use Http;
+use Cache;
 use Illuminate\Console\Command;
 
 class UpdateCacheVersion extends Command

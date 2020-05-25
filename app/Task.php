@@ -99,8 +99,8 @@ class Task extends Model
 
                 Tweep::whereIn('id_str', $taskTweepsWithoutSharedWithOtherTasksTweeps)->get()->map->delete();
 
-                $task->managedTasks->map->delete();
             }
+            $task->managedTasks->map->delete();
         });
     }
 

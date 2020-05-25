@@ -35,7 +35,7 @@ class FetchUserInfoOperation extends TwitterOperation
         $response = $this->response;
         $displayUrl = null;
 
-        if (!empty($response['entities']->url) && !empty($response['entities']->url->urls)) {
+        if (! empty($response['entities']->url) && ! empty($response['entities']->url->urls)) {
             $displayUrl = $response['entities']->url->urls[0]->display_url;
         }
 
@@ -58,7 +58,7 @@ class FetchUserInfoOperation extends TwitterOperation
         }
 
         try {
-            if (!is_null($socialUserAvatar)) {
+            if (! is_null($socialUserAvatar)) {
                 $socialUser->avatar = AssetsManager::storeAvatar($socialUserAvatar, $socialUser->social_user_id);
             }
         } catch (\Exception $e) {

@@ -2,15 +2,15 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Jobs\CleanLikesJob;
-use App\Jobs\FetchLikesJob;
 use App\Task;
-use App\TaskTweet;
 use App\Tweep;
 use App\Tweet;
+use App\TaskTweet;
+use Carbon\Carbon;
+use App\Jobs\CleanLikesJob;
+use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
-use Carbon\Carbon;
 
 class FetchLikesOperation extends TwitterOperation
 {
@@ -42,7 +42,7 @@ class FetchLikesOperation extends TwitterOperation
 
         $shouldBuild = $response->count() >= config('twutils.minimum_expected_likes');
 
-        if (!$shouldBuild) {
+        if (! $shouldBuild) {
             $this->setCompletedTask($this->task);
         }
 

@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\TwitterOperations\Shared;
 
-use App\Exports\TasksExport;
-use App\Jobs\CleanLikesJob;
+use DB;
 use App\Task;
 use App\Tweep;
 use App\Tweet;
-use DB;
+use App\Jobs\CleanLikesJob;
+use App\Exports\TasksExport;
+use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;
 use Maatwebsite\Excel\Facades\Excel;
-use Tests\IntegrationTestCase;
 
 /*
  * A Generic abstract tests for all tasks that store tweets..
@@ -323,7 +323,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                 'type'   => $this->jobName,
                 'before' => function () {
                     app()->bind('AfterHTTPRequest', function () use (&$exceptionIsThrown) {
-                        if (!$exceptionIsThrown) {
+                        if (! $exceptionIsThrown) {
                             $exceptionIsThrown = true;
 
                             throw new \Abraham\TwitterOAuth\TwitterOAuthException('Error Processing Request', 1);

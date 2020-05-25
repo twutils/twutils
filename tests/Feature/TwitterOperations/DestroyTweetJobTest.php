@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Jobs\DestroyTweetJob;
 use App\Task;
-use App\Tweet;
 use App\User;
-use Illuminate\Support\Facades\Bus;
+use App\Tweet;
+use App\Jobs\DestroyTweetJob;
 use Tests\IntegrationTestCase;
+use Illuminate\Support\Facades\Bus;
 
 class DestroyTweetJobTest extends IntegrationTestCase
 {
@@ -20,7 +20,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector([$tweet, $tweet]);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -35,7 +35,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector([]);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -54,7 +54,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
         // While retrieving user tweets, the tweet exists
         $tweet = $this->getStub('tweet.json');
         $this->bindTwitterConnector([$tweet]);
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         // But when destroying, it doesn't exist in the user user tweets anymore
         $twitterNotExistResponse = $this->getStub('tweet_id_not_exist_response.json');
@@ -80,7 +80,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
         $secondTweet->id_str = (string) time();
 
         $this->bindTwitterConnector([$tweet, $secondTweet]);
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -106,7 +106,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $tweets = $this->bindMultipleTweets(2);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -136,7 +136,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
         $tweets = $this->generateTweets(3);
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -176,7 +176,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
         $tweets = $this->generateTweets(3);
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -234,7 +234,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
         $tweets = $this->generateTweets(2);
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->assertEquals($this->lastTwitterClientData()['endpoint'], 'statuses/user_timeline');
 
@@ -264,7 +264,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
         $tweets = $this->generateTweets(5);
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
         $response->assertStatus(200);
@@ -288,7 +288,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->assertEquals($this->lastTwitterClientData()['endpoint'], 'statuses/user_timeline');
         $this->assertTrue(Task::find(1)->tweets->where('pivot.removed', '!=', null)->count() == 0);
@@ -335,7 +335,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['start_date' => now()->subHour()->format('Y-m-d')]]);
@@ -368,7 +368,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['start_date' => now()->subWeek()->format('Y-m-d'), 'end_date' => now()->format('Y-m-d')]]);
@@ -394,7 +394,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindTwitterConnector($tweets);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => [
@@ -423,7 +423,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['start_date' => now()->format('Y-m-d')]]);
@@ -447,7 +447,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['start_date' => now()->format('H:i:s')]]);
@@ -473,7 +473,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['end_date' => now()->format('H:i:s')]]);
@@ -499,7 +499,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['start_date' => now()->format('Y-m-d'), 'end_date' => now()->format('H:i:s')]]);
@@ -525,7 +525,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['end_date' => now()->format('Y-m-d'), 'start_date' => now()->format('H:i:s')]]);
@@ -551,7 +551,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId, 'settings' => ['end_date' => now()->format('Y-D-M'), 'start_date' => now()->format('H:i:s')]]);
@@ -576,7 +576,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $this->bindMultipleTweets(40);
 
-        list($indexLastDispatched, $taskId) = $this->fetchTweets();
+        [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $this->bindTwitterConnector([]);
 

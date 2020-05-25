@@ -2,15 +2,15 @@
 
 namespace Tests\TestData;
 
-use App\Jobs\CleanLikesJob;
-use App\Jobs\FetchFollowersJob;
-use App\Jobs\FetchFollowingJob;
-use App\Jobs\FetchFollowingLookupsJob;
-use App\Jobs\FetchLikesJob;
-use App\Jobs\FetchUserTweetsJob;
 use App\SocialUser;
+use App\Jobs\CleanLikesJob;
+use App\Jobs\FetchLikesJob;
 use App\TwUtils\UserManager;
 use Tests\IntegrationTestCase;
+use App\Jobs\FetchFollowersJob;
+use App\Jobs\FetchFollowingJob;
+use App\Jobs\FetchUserTweetsJob;
+use App\Jobs\FetchFollowingLookupsJob;
 
 class TestDataTest extends IntegrationTestCase
 {

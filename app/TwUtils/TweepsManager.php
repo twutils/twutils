@@ -49,7 +49,7 @@ class TweepsManager
     public static function mapResponseUserToTweep(array $user): array
     {
         $displayUrl = null;
-        if (!empty($user['entities']->url) && !empty($user['entities']->url->urls)) {
+        if (! empty($user['entities']->url) && ! empty($user['entities']->url->urls)) {
             $displayUrl = $user['entities']->url->urls[0]->display_url ?? null;
         }
 

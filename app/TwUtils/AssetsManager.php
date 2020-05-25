@@ -23,9 +23,9 @@ class AssetsManager
 
         $image = Image::make($url);
 
-        if (!is_null($width) && !is_null($height)) {
+        if (! is_null($width) && ! is_null($height)) {
             $image = $image->resize($width, $height);
-        } elseif (!is_null($width) && is_null($height)) {
+        } elseif (! is_null($width) && is_null($height)) {
             $image = $image->widen($width);
         }
 
@@ -44,12 +44,12 @@ class AssetsManager
 
     public static function hasMedia(array $tweet)
     {
-        return !empty($tweet['extended_entities']) && !empty($tweet['extended_entities']['media']);
+        return ! empty($tweet['extended_entities']) && ! empty($tweet['extended_entities']['media']);
     }
 
     public static function saveTweetMedia(array $tweet, $taskId)
     {
-        if (!static::hasMedia($tweet)) {
+        if (! static::hasMedia($tweet)) {
             return [];
         }
 
@@ -78,7 +78,7 @@ class AssetsManager
                 return [];
             }
 
-            if (!empty($savedMedia)) {
+            if (! empty($savedMedia)) {
                 $savedMedia = (object) collect($savedMedia)
                     ->filter(
                         function ($item) {
@@ -170,7 +170,7 @@ class AssetsManager
             }
         );
         $minimumBitrate = $mp4Videos->min('bitrate');
-        if (!is_null($minimumBitrate)) {
+        if (! is_null($minimumBitrate)) {
             $chosenVideo = $mp4Videos->first(
                 function ($item) use ($minimumBitrate) {
                     return $item->bitrate == $minimumBitrate;

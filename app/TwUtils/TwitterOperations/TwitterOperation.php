@@ -2,14 +2,14 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use Abraham\TwitterOAuth\TwitterOAuthException;
-use App\Jobs\CompleteTaskJob;
-use App\SocialUser;
-use App\Task;
-use App\TwUtils\JobsManager;
 use Cache;
+use App\Task;
 use Exception;
+use App\SocialUser;
 use Illuminate\Support\Str;
+use App\TwUtils\JobsManager;
+use App\Jobs\CompleteTaskJob;
+use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation
 {
@@ -195,7 +195,7 @@ abstract class TwitterOperation
         \Log::info('Task '.$task->id.' was broken. Twitter Response: '.json_encode($response));
         \Log::info('Task '.$task->id.' was broken. Exception: '.($exception ? $exception.'' : ''));
 
-        if (!is_null($exception)) {
+        if (! is_null($exception)) {
             $task->exception = Str::limit($exception->__toString(), 2000);
 
             $breakData['exceptionClass'] = get_class($exception);

@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Task;
-use Illuminate\Support\Facades\Bus;
 use Tests\IntegrationTestCase;
+use Illuminate\Support\Facades\Bus;
 
 class AddTasksTest extends IntegrationTestCase
 {

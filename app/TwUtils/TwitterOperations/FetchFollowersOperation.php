@@ -2,12 +2,12 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Follower;
-use App\Jobs\CleanFollowersJob;
-use App\Jobs\CompleteTaskJob;
-use App\Jobs\FetchFollowersJob;
 use App\Task;
+use App\Follower;
+use App\Jobs\CompleteTaskJob;
 use App\TwUtils\TweepsManager;
+use App\Jobs\CleanFollowersJob;
+use App\Jobs\FetchFollowersJob;
 
 class FetchFollowersOperation extends FetchFollowingOperation
 {
@@ -35,7 +35,7 @@ class FetchFollowersOperation extends FetchFollowingOperation
 
         $shouldBuild = $this->response['next_cursor_str'] != '0';
 
-        if (!$shouldBuild) {
+        if (! $shouldBuild) {
             $this->setCompletedTask($this->task);
         }
 

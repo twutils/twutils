@@ -2,23 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\Following;
-use App\Jobs\CleanFollowersJob;
-use App\Jobs\CleanFollowingsJob;
-use App\Jobs\CleanLikesJob;
-use App\Jobs\DeleteMeJob;
-use App\Jobs\FetchFollowersJob;
-use App\Jobs\FetchFollowingJob;
-use App\Jobs\FetchFollowingLookupsJob;
-use App\Jobs\FetchLikesJob;
-use App\Jobs\FetchUserTweetsJob;
-use App\SocialUser;
 use App\Task;
+use App\User;
 use App\Tweep;
 use App\Tweet;
-use App\User;
+use App\Following;
 use Carbon\Carbon;
+use App\SocialUser;
+use App\Jobs\DeleteMeJob;
+use App\Jobs\CleanLikesJob;
+use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
+use App\Jobs\CleanFollowersJob;
+use App\Jobs\FetchFollowersJob;
+use App\Jobs\FetchFollowingJob;
+use App\Jobs\CleanFollowingsJob;
+use App\Jobs\FetchUserTweetsJob;
+use App\Jobs\FetchFollowingLookupsJob;
 
 class DeleteMeTest extends IntegrationTestCase
 {

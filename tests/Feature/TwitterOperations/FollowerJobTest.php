@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\TwitterOperations;
 
+use App\Task;
 use App\Follower;
 use App\Jobs\CleanFollowersJob;
 use App\Jobs\FetchFollowersJob;
-use App\Task;
 use Tests\Feature\TwitterOperations\Shared\UsersListTest;
 
 class FollowerJobTest extends UsersListTest

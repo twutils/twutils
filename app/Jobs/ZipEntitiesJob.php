@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\TwUtils\ExportsManager;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
+use App\TwUtils\ExportsManager;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
 
 class ZipEntitiesJob implements ShouldQueue
 {

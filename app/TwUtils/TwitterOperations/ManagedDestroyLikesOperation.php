@@ -17,7 +17,7 @@ class ManagedDestroyLikesOperation extends TwitterOperation
 
     public function dispatch()
     {
-        $taskAdd = new TasksAdder($this->firstTaskShortName, ['managedByTaskId' => $this->task->id], $this->task, $this->socialUser->user);
+        $taskAdd = new TasksAdder($this->firstTaskShortName, ['managedByTaskId' => $this->task->id, 'settings' => ($this->task->extra['settings'] ?? [])], $this->task, $this->socialUser->user);
 
         if ($taskAdd->isOk()) {
             $managedTask = Task::find($taskAdd->getData()['task_id']);

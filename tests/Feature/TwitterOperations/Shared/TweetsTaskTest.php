@@ -283,6 +283,9 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $tweets = $this->generateUniqueTweets(10);
 
+        // TODO: Investigate why "postJson" works while there is
+        // no "POST" method defined for the route.
+
         $this->postJson($this->apiEndpoint, [
             'settings' => [
                 'start_date' => now()->subDays(7)->format('Y-m-d'),

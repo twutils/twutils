@@ -2,9 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Jobs\CleanTweepJob;
 use App\Tweep;
-use App\Tweet;
 use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

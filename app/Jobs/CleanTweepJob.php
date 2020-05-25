@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Tweep;
 use App\Tweet;
-use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

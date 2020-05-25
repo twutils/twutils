@@ -143,24 +143,24 @@ class TasksExport extends BaseExport implements FromCollection, ShouldAutoSize, 
     {
         $tweets = $this->tweets->map(
             function ($like) {
-               return [
-                   'tweet_date'  => Date::dateTimeToExcel($like->tweet_created_at),
-                   'tweet_time'  => Date::dateTimeToExcel($like->tweet_created_at),
-                   'username'    => $this->formatText($like->retweeted_status ? $like->retweeted_status['user']['screen_name'] : $like->tweep->screen_name),
-                   'to'          => $this->formatText($like->in_reply_to_screen_name),
+                return [
+                    'tweet_date'  => Date::dateTimeToExcel($like->tweet_created_at),
+                    'tweet_time'  => Date::dateTimeToExcel($like->tweet_created_at),
+                    'username'    => $this->formatText($like->retweeted_status ? $like->retweeted_status['user']['screen_name'] : $like->tweep->screen_name),
+                    'to'          => $this->formatText($like->in_reply_to_screen_name),
 
-                   'retweets'    => $like->retweet_count,
-                   'favorites'   => $like->favorite_count,
+                    'retweets'    => $like->retweet_count,
+                    'favorites'   => $like->favorite_count,
 
-                   'text'        => $this->formatText($like->text),
+                    'text'        => $this->formatText($like->text),
 
-                   'mentions'    => $this->formatText($like->mentions),
-                   'hashtags'    => $this->formatText($like->hashtags),
-                   'id'          => $like->id_str.' ',
+                    'mentions'    => $this->formatText($like->mentions),
+                    'hashtags'    => $this->formatText($like->hashtags),
+                    'id'          => $like->id_str.' ',
 
-                   'permalink'   => 'https://twitter.com/'.$like->tweep->screen_name.'/status/'.$like->id_str,
-               ];
-           }
+                    'permalink'   => 'https://twitter.com/'.$like->tweep->screen_name.'/status/'.$like->id_str,
+                ];
+            }
         );
 
         return $tweets;

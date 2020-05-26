@@ -294,7 +294,15 @@ export default {
           const currentPage = resp.data.current_page
           const lastPage = resp.data.last_page
 
-          this.tweets = this.tweets.concat(resp.data.data)
+          let currentTweetsIds = this.tweets.map(x => x.id_str)
+
+          resp.data.data.map(tweet => {
+            if (! currentTweetsIds.includes(tweet.id_str))
+            {
+              currentTweetsIds.push(tweet.id_str)
+              this.tweets.push(tweet)
+            }
+          })
 
           if (currentPage === 1) {
             this.$nextTick(this.autoSelectLatestTweet)

@@ -76,8 +76,10 @@ class TasksController extends Controller
         $this->authorize('view', $task);
 
         if (in_array($task->baseName, Task::TWEETS_LISTS_BASE_NAMES)) {
+            $perPage = round($task->likes_count / 15);
+
             return $task->likes()
-                    ->paginate(200);
+                    ->paginate($perPage < 200 ? 200 : $perPage);
         }
 
         if (in_array($task->baseName, ['fetchfollowing'])) {
@@ -102,7 +104,7 @@ class TasksController extends Controller
             return Task::find($task->extra['targeted_task_id'])
                 ->tweets()
                 ->wherePivot('removed', '!=', null)
-                ->paginate(200);
+                ->paginate(1000);
         }
 
         return $task;

@@ -4,6 +4,7 @@ namespace App\TwUtils;
 
 use App\Tweep;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class TweepsManager
 {
@@ -59,7 +60,7 @@ class TweepsManager
             'avatar'           => $user['profile_image_url_https'],
             'screen_name'      => $user['screen_name'],
             'location'         => $user['location'] ?? null,
-            'description'      => $user['description'] ?? null,
+            'description'      => Str::limit($user['description'], 190) ?? null,
             'url'              => $user['url'] ?? null,
             'display_url'      => $displayUrl ?? null,
             'followers_count'  => $user['followers_count'] ?? null,

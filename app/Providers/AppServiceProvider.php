@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(191);
+        Schema::defaultStringLength(255);
 
         Collection::macro('file', function () {
             \File::put(base_path('temp/collect-'.time().'-'.now()->format('Y-m-d_H-m-s').'.json'), json_encode($this->items, JSON_PRETTY_PRINT));

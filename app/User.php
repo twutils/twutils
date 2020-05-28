@@ -77,6 +77,6 @@ class User extends Authenticatable
             ->generateSlugsFrom('username')
             ->saveSlugsTo('username')
             ->usingSeparator('_')
-            ->slugsShouldBeNoLongerThan(190);
+            ->slugsShouldBeNoLongerThan(254);
     }
 }

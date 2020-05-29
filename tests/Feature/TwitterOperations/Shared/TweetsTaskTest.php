@@ -690,19 +690,15 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                     'twitterData' => [$tweet],
                     'after'       => function ($job) {
                         $this->assertNotNull($job->delay);
-                        $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
+                        $nextJobDelay = $this->dispatchedJobs[2]->delay->diffInSeconds(now());
                         $this->assertLessThanOrEqual(60, $nextJobDelay);
                     },
-                ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
                 ],
             ]
         );
 
         $this->assertCountDispatchedJobs(2, $this->jobName);
-        $this->assertCount(16, Tweet::all());
+        $this->assertCount(1, Tweet::all());
 
         $this->assertTaskCount(1, 'completed');
 
@@ -852,7 +848,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertCountDispatchedJobs(1, CleanLikesJob::class);
+        $this->assertCountDispatchedJobs(2, CleanLikesJob::class);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(1, Tweet::all());
         $this->assertCount(1, DB::table('task_tweet')->get());
@@ -903,7 +899,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertCountDispatchedJobs(1, CleanLikesJob::class);
+        $this->assertCountDispatchedJobs(5, CleanLikesJob::class);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
         $this->assertCount(2, DB::table('task_tweet')->get());
@@ -965,7 +961,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         ->assertStatus(200);
 
         $this->dispatchedJobs[0]->handle();
-        $this->assertCountDispatchedJobs(3, null);
+        $this->assertCountDispatchedJobs(4, null);
 
         $this->dispatchedJobs[1]->handle();
         $this->dispatchedJobs[2]->handle();

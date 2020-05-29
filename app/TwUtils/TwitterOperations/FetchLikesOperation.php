@@ -9,6 +9,7 @@ use App\TaskTweet;
 use Carbon\Carbon;
 use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
+use App\Jobs\CleanTweepsJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
 
@@ -53,7 +54,7 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function afterCompletedTask(Task $task)
     {
-        dispatch(new CleanLikesJob($task));
+        dispatch(new CleanTweepsJob());
     }
 
     protected function saveResponse()
@@ -122,6 +123,8 @@ class FetchLikesOperation extends TwitterOperation
 
             TaskTweet::insert($tweets);
         }
+
+        dispatch(new CleanLikesJob($this->task));
     }
 
     protected function buildParameters()

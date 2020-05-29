@@ -29,7 +29,7 @@ class CleanLikesJob implements ShouldQueue
         $taskTweets = [];
         $duplicateTaskTweetsRelationIds = [];
 
-        $likes = $this->task ? $this->task->likes : Tweet::all();
+        $likes = $this->task->likes;
 
         $uniqueLikes = $likes->unique('id_str')->pluck('id');
         $toDelete = $likes->whereNotIn('id', $uniqueLikes);
@@ -62,7 +62,5 @@ class CleanLikesJob implements ShouldQueue
                 TaskTweet::whereIn('id', $duplicateTaskTweetsRelationIdsGroup)->delete();
             });
         }
-
-        dispatch(new CleanTweepsJob());
     }
 }

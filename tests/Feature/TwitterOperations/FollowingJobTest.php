@@ -129,14 +129,14 @@ class FollowingJobTest extends UsersListTest
                 ],
                 [
                     'type'        => FetchFollowingLookupsJob::class,
-                    'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true, 4 => true]),
+                    'twitterData' => $this->fetchFollowingLookupsResponse(['_1' => false, '_2' => true, '_4' => true]),
                 ],
             ]
         );
-        $tweepIds = Tweep::whereIn('id_str', [2, 4])->pluck('id')->toArray();
+        $tweepIds = Tweep::whereIn('id', [2, 4])->pluck('id_str')->toArray();
 
         $this->assertEquals('friendships/lookup', $this->lastTwitterClientData()['endpoint']);
-        $this->assertEquals('1,2,3,4,5,6,7,8,9,10', $this->lastTwitterClientData()['parameters']['user_id']);
+        $this->assertEquals('_1,_2,_3,_4,_5,_6,_7,_8,_9,_10', $this->lastTwitterClientData()['parameters']['user_id']);
         $this->assertEquals(2, Following::where('followed_by', true)->whereIn('tweep_id_str', $tweepIds)->get()->count());
         $this->assertCountDispatchedJobs(1, FetchFollowingLookupsJob::class);
         $this->assertTaskCount(1, 'completed');
@@ -154,7 +154,7 @@ class FollowingJobTest extends UsersListTest
         config(['twutils.twitter_requests_counts.fetch_following_lookups' => 2]);
 
         $fetchFollowingResponse = $this->fetchFollowingResponse(10, 0);
-        $fetchFollowingResponse->users[5]->id_str = 123;
+        $fetchFollowingResponse->users[5]->id_str = '_123';
 
         $this->fireJobsAndBindTwitter(
             [
@@ -164,19 +164,20 @@ class FollowingJobTest extends UsersListTest
                 ],
                 [
                     'type'        => FetchFollowingLookupsJob::class,
-                    'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true]),
+                    'twitterData' => $this->fetchFollowingLookupsResponse(['_1' => false, '_2' => true]),
                 ],
                 [
                     'type'        => FetchFollowingLookupsJob::class,
-                    'twitterData' => $this->fetchFollowingLookupsResponse([3 => false, 4 => false]),
+                    'twitterData' => $this->fetchFollowingLookupsResponse(['_3' => false, '_4' => false]),
                 ],
                 [
                     'type'        => FetchFollowingLookupsJob::class,
-                    'twitterData' => $this->fetchFollowingLookupsResponse([5 => true, 123 => true]),
+                    'twitterData' => $this->fetchFollowingLookupsResponse(['_5' => true, '_123' => true]),
                 ],
             ]
         );
-        $tweepIds = Tweep::whereIn('id_str', [2, 123, 5])->pluck('id_str')->toArray();
+
+        $tweepIds = Tweep::whereIn('id_str', ['_2', '_123', '_5'])->pluck('id_str')->toArray();
 
         $this->assertEquals(3, Following::where('followed_by', true)->count());
         $this->assertEquals(3, Following::where('followed_by', true)->whereIn('tweep_id_str', $tweepIds)->get()->count());
@@ -196,7 +197,7 @@ class FollowingJobTest extends UsersListTest
         config(['twutils.twitter_requests_counts.fetch_following_lookups' => 2]);
 
         $fetchFollowingResponse = $this->fetchFollowingResponse(10, 0);
-        $fetchFollowingResponse->users[5]->id_str = 123;
+        $fetchFollowingResponse->users[5]->id_str = '_123';
 
         $exceptionIsThrown = false;
 
@@ -222,19 +223,19 @@ class FollowingJobTest extends UsersListTest
                 ],
                 [
                     'type'        => FetchFollowingLookupsJob::class,
-                    'twitterData' => $this->fetchFollowingLookupsResponse([1 => false, 2 => true]),
+                    'twitterData' => $this->fetchFollowingLookupsResponse(['_1' => false, '_2' => true]),
                 ],
                 [
                     'type'        => FetchFollowingLookupsJob::class,
-                    'twitterData' => $this->fetchFollowingLookupsResponse([3 => false, 4 => false]),
+                    'twitterData' => $this->fetchFollowingLookupsResponse(['_3' => false, '_4' => false]),
                 ],
                 [
                     'type'        => FetchFollowingLookupsJob::class,
-                    'twitterData' => $this->fetchFollowingLookupsResponse([5 => true, 123 => true]),
+                    'twitterData' => $this->fetchFollowingLookupsResponse(['_5' => true, '_123' => true]),
                 ],
             ]
         );
-        $tweepIds = Tweep::whereIn('id_str', [2, 123, 5])->pluck('id_str')->toArray();
+        $tweepIds = Tweep::whereIn('id_str', ['_2', '_123', '_5'])->pluck('id_str')->toArray();
 
         $this->assertEquals(3, Following::where('followed_by', true)->count());
         $this->assertEquals(3, Following::where('followed_by', true)->whereIn('tweep_id_str', $tweepIds)->get()->count());

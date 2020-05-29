@@ -25,28 +25,6 @@ class Tweet extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::deleted(function (self $tweet) {
-            $tweep = Tweep::where('id_str', $tweet->tweep_id_str)->first();
-
-            if (! $tweep)
-            {
-                return ;
-            }
-
-            $tweepOtherTweets = self::where('id_str', '!=', $tweet->id_str)
-                            ->where('tweep_id_str', $tweep->id_str)->get()
-                            ->concat(
-                                Following::where('tweep_id_str', $tweep->id_str)->get()
-                            )
-                            ->concat(
-                                Follower::where('tweep_id_str', $tweep->id_str)->get()
-                            );
-
-            if ($tweepOtherTweets->isEmpty()) {
-                $tweep->delete();
-            }
-        });
     }
 
     public function tweep()

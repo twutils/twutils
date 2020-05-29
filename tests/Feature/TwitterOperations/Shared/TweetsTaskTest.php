@@ -48,7 +48,11 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
+        $lastJobIndex = count($this->dispatchedJobs);
+
         $this->deleteJson("api/tasks/{$taskId}");
+
+        $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
         $this->assertTaskCount(0);
         $this->assertCount(0, Tweet::all());
@@ -97,6 +101,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $secondTaskId = $response->decodeResponseJson()['data']['task_id'];
         $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
+        $lastJobIndex = count($this->dispatchedJobs);
+
         $this->assertCount(12, Tweet::all());
         $this->assertCount(12, Tweep::all());
 
@@ -104,6 +110,10 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->actingAs($firstUser, 'api');
 
         $this->deleteJson("api/tasks/{$firstTaskId}");
+
+        $this->fireJobsAndBindTwitter([], $lastJobIndex);
+
+        $lastJobIndex = count($this->dispatchedJobs);
 
         $this->assertTaskCount(1);
 
@@ -116,6 +126,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->actingAs($secondUser, 'api');
 
         $this->deleteJson("api/tasks/{$secondTaskId}");
+
+        $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
         $this->assertTaskCount(0);
         $this->assertCount(0, Tweet::all());
@@ -161,11 +173,17 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $secondTaskId = $response->decodeResponseJson()['data']['task_id'];
         $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
+        $lastJobIndex = count($this->dispatchedJobs);
+
         $this->assertCount(10, Tweet::all());
         $this->assertCount(12, Tweep::all());
 
         // Second User - Delete the second task
         $this->deleteJson("api/tasks/{$secondTaskId}")->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter([], $lastJobIndex);
+
+        $lastJobIndex = count($this->dispatchedJobs);
 
         $this->assertTaskCount(1);
 
@@ -178,6 +196,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->actingAs($firstUser, 'api');
 
         $this->deleteJson("api/tasks/{$firstTaskId}");
+
+        $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
         $this->assertTaskCount(0);
         $this->assertCount(0, Tweet::all());

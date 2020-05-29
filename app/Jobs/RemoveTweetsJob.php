@@ -26,6 +26,6 @@ class RemoveTweetsJob implements ShouldQueue
 
     public function handle()
     {
-        Tweet::destroy($this->toDeleteIdsGroup);
+        Tweet::whereIn('id', $this->toDeleteIdsGroup)->delete();
     }
 }

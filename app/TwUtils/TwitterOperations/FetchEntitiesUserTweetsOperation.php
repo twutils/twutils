@@ -15,7 +15,9 @@ class FetchEntitiesUserTweetsOperation extends FetchEntitiesLikesOperation
 
         $last = (array) collect($this->response)->last();
 
-        $parameters = $this->buildParameters() + ['max_id' => $last['id_str']];
+        $parameters = $this->buildParameters();
+
+        $parameters['max_id'] = $last['id_str'];
 
         dispatch(new FetchEntitiesUserTweetsJob($parameters, $this->socialUser, $this->task))->delay($nextJobDelay);
     }

@@ -13,5 +13,14 @@ class EntitiesUserTweetsJobTest extends EntitiesTaskTests
 
         $this->jobName = FetchEntitiesUserTweetsJob::class;
         $this->apiEndpoint = '/api/entitiesUserTweets';
+        $this->twitterEndpoint = 'statuses/user_timeline';
+
+        $this->initalTwitterParametersKeys = [
+			'count',
+			'include_entities',
+			'screen_name',
+			'tweet_mode',
+			'user_id',
+        ];
     }
 }

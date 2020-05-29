@@ -146,20 +146,8 @@ class DeleteMeTest extends IntegrationTestCase
                 'twitterData' => $this->generateUniqueTweets(2),
             ],
             [
-                'type' => CleanFollowingsJob::class,
-            ],
-            [
                 'type'        => FetchFollowingLookupsJob::class,
                 'twitterData' => [],
-            ],
-            [
-                'type' => CleanFollowersJob::class,
-            ],
-            [
-                'type' => CleanLikesJob::class,
-            ],
-            [
-                'type' => CleanLikesJob::class,
             ],
         ]);
 

@@ -392,7 +392,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         config()->set(['twutils.minimum_expected_likes' => 2]);
         config()->set(['twutils.twitter_requests_counts.fetch_likes' => 3]);
 
-        $tweets = $this->generateUniqueTweets(10);
+        $tweets = $this->generateUniqueTweets(30);
 
         $tweetsDividedForMultipleJobs = [];
 
@@ -468,7 +468,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter($tweetsDividedForMultipleJobs, $lastJobIndex);
 
         $this->assertTaskCount(2, 'completed');
-        $this->assertCount(10, Task::find(1)->likes->pluck('id_str'));
+        $this->assertCount(30, Task::find(1)->likes->pluck('id_str'));
         $this->assertCount(4, Task::find(2)->likes);
 
         // Assert it's 6 Requests since we are requesting with parameter
@@ -477,9 +477,11 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         // And the second task is parameterized to fetch only 
         // within 4 tweets that will be fetched in 3 requests.
         $this->assertCount(
-            6,
+            13,
             TwitterClientMock::getAllCallsData(),
         );
+
+        $initialMaxIdForSettingsTask = null;
 
         foreach (TwitterClientMock::getAllCallsData() as $index => $twitterCallData) {
             $this->assertEquals(
@@ -489,12 +491,12 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
             $expectedParameters = $this->initalTwitterParametersKeys;
 
-            // 1st request and 5th are the first requests each was performed for a newly created task
+            // 1st request and 11th are the first requests each was performed for a newly created task
             // So only them, aren't expected to have 'max_id' parameter
 
-            if ( $index !== 0 && $index < 4) {
+            if ( $index !== 0 && $index < 11) {
                 $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['max_id']);
-            } else if ($index >= 4) {
+            } else if ($index >= 11) {
                 $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['since_id', 'max_id']);
             }
 
@@ -504,6 +506,17 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                 'Request [' . $index . '] to twitter doesn\'t contain the correct parameters.'
                 . json_encode($twitterCallData)
             );
+
+            if ($index == 11)
+            {
+                $initialMaxIdForSettingsTask = $twitterCallData['parameters']['max_id'];
+            }
+
+            if ($index > 11)
+            {
+                $this->assertNotNull($initialMaxIdForSettingsTask);
+                $this->assertNotEquals($initialMaxIdForSettingsTask, $twitterCallData['parameters']['max_id']);
+            }
         }
     }
 

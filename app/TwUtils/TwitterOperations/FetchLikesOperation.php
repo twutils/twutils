@@ -97,25 +97,11 @@ class FetchLikesOperation extends TwitterOperation
             Tweep::insert($tweepsGroup->toArray());
         });
 
-        $tweepsIds = $tweeps->pluck('id_str');
-
-        $foundTweeps = collect([]);
-
-        $tweepsIds->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
-        ->each(function ($tweepsIdsGroup) use (&$foundTweeps) {
-            Tweep::whereIn('id_str', $tweepsIdsGroup)
-            ->get()
-            ->map(function ($tweep) use (&$foundTweeps) {
-                $foundTweeps->push($tweep);
-            });
-        });
-
         $responseCollection->each(
-            function ($like) use (&$likes, $taskId, $foundTweeps) {
+            function ($like) use (&$likes, $taskId) {
                 $like = (array) json_decode(json_encode($like), true);
-                $tweep = $foundTweeps->where('id_str', $like['user']['id_str'])->last();
 
-                $mappedTweet = TweetsManager::mapResponseToTweet($like, $tweep, $taskId);
+                $mappedTweet = TweetsManager::mapResponseToTweet($like, $taskId);
                 array_push($likes, $mappedTweet);
             }
         );

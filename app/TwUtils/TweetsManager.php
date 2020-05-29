@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class TweetsManager
 {
-    public static function mapResponseToTweet(array $tweet, Tweep $tweep, $taskId): array
+    public static function mapResponseToTweet(array $tweet, $taskId): array
     {
         return [
             'id_str'                  => $tweet['id_str'],
@@ -19,7 +19,7 @@ class TweetsManager
             'retweet_count'           => $tweet['retweet_count'] ?? null,
             'favorite_count'          => isset($tweet['retweeted_status']) ? $tweet['retweeted_status']['favorite_count'] : $tweet['favorite_count'],
             'tweet_created_at'        => Carbon::createFromTimeString($tweet['created_at']),
-            'tweep_id_str'            => $tweep->id_str,
+            'tweep_id_str'            => $tweet['user']['id_str'],
             'in_reply_to_screen_name' => $tweet['in_reply_to_screen_name'] ?? null,
             'mentions'                => Str::limit(collect(Arr::get($tweet, 'entities.user_mentions', []))->implode('screen_name', ','), 254),
             'hashtags'                => Str::limit(collect(Arr::get($tweet, 'entities.hashtags', []))->implode('text', ','), 254),

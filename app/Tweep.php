@@ -10,6 +10,6 @@ class Tweep extends Model
 
     protected function tweets()
     {
-        return $this->hasMany(Tweet::class);
+        return $this->hasMany(Tweet::class, 'tweep_id_str');
     }
 }

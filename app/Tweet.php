@@ -26,8 +26,8 @@ class Tweet extends Model
     {
         parent::boot();
 
-        static::deleting(function (self $tweet) {
-            $tweep = $tweet->tweep;
+        static::deleted(function (self $tweet) {
+            $tweep = Tweep::where('id_str', $tweet->tweep_id_str)->first();
 
             if (! $tweep)
             {
@@ -35,7 +35,7 @@ class Tweet extends Model
             }
 
             $tweepOtherTweets = self::where('id_str', '!=', $tweet->id_str)
-                            ->where('tweep_id', $tweep->id)->get()
+                            ->where('tweep_id_str', $tweep->id_str)->get()
                             ->concat(
                                 Following::where('tweep_id_str', $tweep->id_str)->get()
                             )
@@ -51,6 +51,6 @@ class Tweet extends Model
 
     public function tweep()
     {
-        return $this->belongsTo(Tweep::class);
+        return $this->belongsTo(Tweep::class, 'tweep_id_str', 'id_str');
     }
 }

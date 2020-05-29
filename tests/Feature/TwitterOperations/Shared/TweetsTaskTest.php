@@ -844,7 +844,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertEquals('completed', Task::find(1)->status);
         $this->assertCount(8, Tweep::all());
         $this->assertCount(10, Tweet::all());
-        $this->assertCount(8, Tweep::whereIn('id', Tweet::all()->pluck('tweep_id')->toArray())->get());
+        $this->assertCount(8, Tweep::whereIn('id_str', Tweet::all()->pluck('tweep_id_str')->toArray())->get());
     }
 
     public function test_basic_export_tweets()

@@ -31,9 +31,6 @@ class CleanTweepJob implements ShouldQueue
 
         $reservedTweep = $tweepGroup->shift();
 
-        Tweet::whereIn('tweep_id', $tweepGroup->pluck('id')->toArray())
-            ->update(['tweep_id' => $reservedTweep->id]);
-
         Tweep::whereIn('id', $tweepGroup->pluck('id')->toArray())->delete();
     }
 }

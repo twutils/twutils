@@ -8,6 +8,8 @@ use App\Tweep;
 use App\Tweet;
 use App\Jobs\CleanLikesJob;
 use App\Exports\TasksExport;
+use Tests\TwitterClientMock;
+use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;
 use Maatwebsite\Excel\Facades\Excel;
@@ -19,6 +21,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 {
     protected $jobName;
     protected $apiEndpoint;
+    protected $twitterEndpoint;
 
     public function test_basic_test()
     {
@@ -304,6 +307,204 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());
         $this->assertLikesBelongsToTask();
+    }
+
+    public function test_save_likes_has_correct_twitter_parameters()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+
+        config()->set(['twutils.minimum_expected_likes' => 2]);
+        config()->set(['twutils.twitter_requests_counts.fetch_likes' => 3]);
+
+        $tweets = $this->generateUniqueTweets(10);
+
+        $tweetsDividedForMultipleJobs = [];
+
+        collect($tweets)
+            ->chunk(config('twutils.twitter_requests_counts.fetch_likes'))
+            ->map(function($tweetsChunk) use (& $tweetsDividedForMultipleJobs) {
+
+                $tweetsDividedForMultipleJobs[] = [
+                    'type'           => $this->jobName,
+                    'twitterData'    => $tweetsChunk->toArray(),
+                ];
+            });
+
+        $tweetsDividedForMultipleJobs[] = [
+            'type'           => $this->jobName,
+            'twitterData'    => [],
+        ];
+
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter($tweetsDividedForMultipleJobs);
+
+        $lastJobIndex = count($this->dispatchedJobs);
+
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter($tweetsDividedForMultipleJobs, $lastJobIndex);
+
+        $this->assertTaskCount(2, 'completed');
+        $this->assertCount(10, Task::find(1)->likes->pluck('id_str'));
+        $this->assertCount(10, Task::find(2)->likes);
+
+        // Assert it's 8 Requests since we are requesting with parameter
+        // count as '3' tweets while it's all 10 tweets.
+        // So the 10 tweets will be fetched in 4 requests.
+        // and we have 2 tasks, so it's 8 requests.
+        $this->assertCount(
+            8,
+            TwitterClientMock::getAllCallsData(),
+        );
+
+        foreach (TwitterClientMock::getAllCallsData() as $index => $twitterCallData) {
+            $this->assertEquals(
+                $this->twitterEndpoint,
+                $twitterCallData['endpoint'],
+            );
+
+            $expectedParameters = $this->initalTwitterParametersKeys;
+
+            // 1st request and 5th are the first requests each was performed for a newly created task
+            // So only them, aren't expected to have 'max_id' parameter
+
+            if ( ! in_array($index, [0, 4])) {
+                $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['max_id']);
+            }
+
+            $this->assertEquals(
+                $expectedParameters,
+                array_keys($twitterCallData['parameters']),
+                'Request [' . $index . '] to twitter doesn\'t contain the correct parameters'
+            );
+        }
+    }
+
+    public function test_save_likes_with_and_without_custom_date_all_has_correct_twitter_parameters()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+
+        config()->set(['twutils.minimum_expected_likes' => 2]);
+        config()->set(['twutils.twitter_requests_counts.fetch_likes' => 3]);
+
+        $tweets = $this->generateUniqueTweets(10);
+
+        $tweetsDividedForMultipleJobs = [];
+
+        collect($tweets)
+            ->chunk(config('twutils.twitter_requests_counts.fetch_likes'))
+            ->map(function($tweetsChunk) use (& $tweetsDividedForMultipleJobs) {
+
+                $tweetsDividedForMultipleJobs[] = [
+                    'type'           => $this->jobName,
+                    'twitterData'    => $tweetsChunk->toArray(),
+                ];
+            });
+
+        $tweetsDividedForMultipleJobs[] = [
+            'type'           => $this->jobName,
+            'twitterData'    => [],
+        ];
+
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter($tweetsDividedForMultipleJobs);
+
+        $lastJobIndex = count($this->dispatchedJobs);
+
+        $taskSettings = [
+            'start_date' => now()->subDays(7)->format('Y-m-d'),
+            'end_date'   => now()->subDays(3)->format('Y-m-d'),
+        ];
+
+        $this->postJson($this->apiEndpoint, [
+            'settings' => $taskSettings,
+        ])
+        ->assertStatus(200);
+
+        $tweetsDividedForMultipleJobs = [];
+
+        collect($tweets)
+            ->filter(function ($tweet) use ($taskSettings) {
+                    $shouldReturn = true;
+                    $tweetCreatedAt =  Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
+
+                    if (
+                        isset($taskSettings['start_date']) &&
+                        ! $tweetCreatedAt->greaterThanOrEqualTo($taskSettings['start_date'])
+                    ) {
+                        $shouldReturn = false;
+                    }
+
+                    if (
+                        isset($taskSettings['end_date']) &&
+                        ! $tweetCreatedAt->lessThanOrEqualTo($taskSettings['end_date'])
+                    ) {
+                        $shouldReturn = false;
+                    }
+
+                    return $shouldReturn;
+            })
+            ->chunk(config('twutils.twitter_requests_counts.fetch_likes'))
+            ->map(function($tweetsChunk) use (& $tweetsDividedForMultipleJobs) {
+
+                $tweetsDividedForMultipleJobs[] = [
+                    'type'           => $this->jobName,
+                    'twitterData'    => $tweetsChunk->toArray(),
+                ];
+            });
+
+        $tweetsDividedForMultipleJobs[] = [
+            'type'           => $this->jobName,
+            'twitterData'    => [],
+        ];
+
+        $this->fireJobsAndBindTwitter($tweetsDividedForMultipleJobs, $lastJobIndex);
+
+        $this->assertTaskCount(2, 'completed');
+        $this->assertCount(10, Task::find(1)->likes->pluck('id_str'));
+        $this->assertCount(4, Task::find(2)->likes);
+
+        // Assert it's 6 Requests since we are requesting with parameter
+        // count as '3' tweets while it's all 10 tweets.
+        // So the first task 10 tweets will be fetched in 4 requests.
+        // And the second task is parameterized to fetch only 
+        // within 4 tweets that will be fetched in 3 requests.
+        $this->assertCount(
+            6,
+            TwitterClientMock::getAllCallsData(),
+        );
+
+        foreach (TwitterClientMock::getAllCallsData() as $index => $twitterCallData) {
+            $this->assertEquals(
+                $this->twitterEndpoint,
+                $twitterCallData['endpoint'],
+            );
+
+            $expectedParameters = $this->initalTwitterParametersKeys;
+
+            // 1st request and 5th are the first requests each was performed for a newly created task
+            // So only them, aren't expected to have 'max_id' parameter
+
+            if ( $index !== 0 && $index < 4) {
+                $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['max_id']);
+            } else if ($index >= 4) {
+                $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['since_id', 'max_id']);
+            }
+
+            $this->assertEquals(
+                $expectedParameters,
+                array_keys($twitterCallData['parameters']),
+                'Request [' . $index . '] to twitter doesn\'t contain the correct parameters.'
+                . json_encode($twitterCallData)
+            );
+        }
     }
 
     public function test_basic_save_tweets_first_request_has_error()

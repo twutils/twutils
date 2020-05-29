@@ -231,6 +231,10 @@ class IntegrationTestCase extends TestCase
                 continue;
             }
 
+            if(in_array('--debug', $_SERVER['argv'], true)) {
+                dump("Running ". get_class($queuedJob));
+            }
+
             $queuedJob->handle();
 
             if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['after'])) {

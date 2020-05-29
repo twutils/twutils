@@ -124,25 +124,62 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function buildParameters()
     {
-        return [
-            'user_id'          => $this->socialUser->social_user_id,
-            'screen_name'      => $this->socialUser->nickname,
+        $defaultParameters = [
             'count'            => config('twutils.twitter_requests_counts.fetch_likes'),
             'include_entities' => true,
+            'screen_name'      => $this->socialUser->nickname,
             'tweet_mode'       => 'extended',
+            'user_id'          => $this->socialUser->social_user_id,
         ];
+
+        return array_merge($defaultParameters, $this->getParametersFromSettings());
+    }
+
+    protected function getParametersFromSettings()
+    {
+        $taskSettings = $this->task->extra['settings'];
+
+        if ( empty($taskSettings))
+        {
+            return [];
+        }
+
+        $addedParameters = [];
+
+        if ( isset($taskSettings['start_date'])) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $taskSettings['start_date']);
+
+            $closestTweet = Tweet::where('tweet_created_at', '<=', $startDate->subDays(1))
+                            ->orderByDesc('tweet_created_at')
+                            ->limit(1)
+                            ->first();
+            if ($closestTweet) {
+                $addedParameters['since_id'] = $closestTweet->id_str;
+            }
+        }
+
+        if ( isset($taskSettings['end_date'])) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $taskSettings['end_date']);
+
+            $closestTweet = Tweet::where('tweet_created_at', '>=', $startDate->addDays(1))
+                            ->orderBy('tweet_created_at')
+                            ->limit(1)
+                            ->first();
+
+            if ($closestTweet) {
+                $addedParameters['max_id'] = $closestTweet->id_str;
+            }
+
+        }
+
+        return $addedParameters;
     }
 
     public function dispatch()
     {
         $parameters = $this->buildParameters();
+        $taskSettings = $this->task->extra['settings'];
 
-        try {
-            return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
-        } catch (\Exception $e) {
-            if (app('env') === 'testing') {
-                dd($e);
-            }
-        }
+        return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
     }
 }

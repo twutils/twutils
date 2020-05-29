@@ -15,7 +15,9 @@ class FetchUserTweetsOperation extends FetchLikesOperation
 
         $last = (array) collect($this->response)->last();
 
-        $parameters = $this->buildParameters() + ['max_id' => $last['id_str']];
+        $parameters = $this->buildParameters();
+
+        $parameters['max_id'] = $last['id_str'];
 
         dispatch(new FetchUserTweetsJob($parameters, $this->socialUser, $this->task))->delay($nextJobDelay);
     }
@@ -35,15 +37,17 @@ class FetchUserTweetsOperation extends FetchLikesOperation
 
     protected function buildParameters()
     {
-        return [
-            'user_id'          => $this->socialUser->social_user_id,
-            'screen_name'      => $this->socialUser->nickname,
+        $defaultParameters = [
             'count'            => config('twutils.twitter_requests_counts.fetch_likes'),
             'exclude_replies'  => false,
-            'include_rts'      => true,
-            'trim_user'        => false,
             'include_entities' => true,
+            'include_rts'      => true,
+            'screen_name'      => $this->socialUser->nickname,
+            'trim_user'        => false,
             'tweet_mode'       => 'extended',
+            'user_id'          => $this->socialUser->social_user_id,
         ];
+
+        return array_merge($defaultParameters, $this->getParametersFromSettings());
     }
 }

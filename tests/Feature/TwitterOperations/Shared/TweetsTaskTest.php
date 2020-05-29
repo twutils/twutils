@@ -258,21 +258,14 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
-        $tweet = $this->getStub('tweet.json');
+        $tweets = $this->generateUniqueTweets(2);
 
-        $this->bindTwitterConnector([$tweet, $tweet]);
+        $this->bindTwitterConnector($tweets);
 
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
@@ -525,7 +518,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
-        $tweet = $this->getStub('tweet.json');
+        $tweets = $this->generateUniqueTweets(2);
 
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
@@ -549,16 +542,12 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             ],
             [
                 'type'        => $this->jobName,
-                'twitterData' => array_fill(0, 2, $tweet),
+                'twitterData' => $tweets,
                 'after'       => function ($job) {
                     $this->assertNotNull($job->delay);
                     $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
                     $this->assertLessThanOrEqual(60, $nextJobDelay);
                 },
-            ],
-            [
-                'type' => CleanLikesJob::class,
-                'skip' => true,
             ],
         ]);
 
@@ -572,7 +561,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
-        $tweet = $this->getStub('tweet.json');
+        $tweets = collect($this->generateUniqueTweets(25))->chunk(10)->map->toArray();
 
         config()->set(['twutils.minimum_expected_likes' => 10]);
 
@@ -583,19 +572,15 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             [
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => array_fill(0, 10, $tweet),
+                    'twitterData' => $tweets[0],
                 ],
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => array_fill(0, 10, $tweet),
+                    'twitterData' => $tweets[1],
                 ],
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => array_fill(0, 5, $tweet),
-                ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
+                    'twitterData' => $tweets[2],
                 ],
             ]
         );
@@ -611,7 +596,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
-        $tweet = $this->getStub('tweet.json');
+        $tweets = collect($this->generateUniqueTweets(20))->chunk(10)->map->toArray();
         $expiredTokenStub = $this->getStub('expired_token.json');
 
         config()->set(['twutils.minimum_expected_likes' => 10]);
@@ -623,7 +608,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             [
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => array_fill(0, 10, $tweet),
+                    'twitterData' => $tweets[0],
                 ],
                 [
                     'type'        => $this->jobName,
@@ -631,15 +616,11 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                 ],
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => array_fill(0, 10, $tweet),
+                    'twitterData' => $tweets[1],
                 ],
                 [
                     'type'        => $this->jobName,
                     'twitterData' => [],
-                ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
                 ],
             ]
         );
@@ -655,7 +636,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
-        $tweet = $this->getStub('tweet.json');
+        $tweets = collect($this->generateUniqueTweets(20))->chunk(10)->map->toArray();
 
         config()->set(['twutils.minimum_expected_likes' => 10]);
 
@@ -666,19 +647,15 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             [
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => array_fill(0, 10, $tweet),
+                    'twitterData' => $tweets[0],
                 ],
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => array_fill(0, 10, $tweet),
+                    'twitterData' => $tweets[1],
                 ],
                 [
                     'type'        => $this->jobName,
                     'twitterData' => [],
-                ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
                 ],
             ]
         );
@@ -872,10 +849,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                     'type'        => $this->jobName,
                     'twitterData' => [],
                 ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => false,
-                ],
             ]
         );
 
@@ -926,10 +899,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                 [
                     'type'        => $this->jobName,
                     'twitterData' => [],
-                ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => false,
                 ],
             ]
         );

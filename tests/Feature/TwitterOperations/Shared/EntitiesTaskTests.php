@@ -5,7 +5,6 @@ namespace Tests\Feature\TwitterOperations\Shared;
 use Config;
 use App\Task;
 use App\Tweet;
-use App\Jobs\CleanLikesJob;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
@@ -50,14 +49,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -78,14 +70,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -108,14 +93,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -137,14 +115,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -182,14 +153,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -235,10 +199,6 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
                     'type'        => $this->jobName,
                     'twitterData' => $this->uniqueTweetIds([$tweetWithGif, $tweetWithVideo, $tweetWithGif, $tweetWithVideo]),
                 ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
             ]
         );
 
@@ -273,14 +233,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);

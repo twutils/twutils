@@ -26,7 +26,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $this->getJson('/api/likes')
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter([['type' => CleanLikesJob::class, 'skip' => true]]);
+        $this->fireJobsAndBindTwitter([]);
 
         DB::connection()->enableQueryLog();
         $response = $this->getJson('/api/tasks/likes');

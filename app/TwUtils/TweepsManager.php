@@ -19,7 +19,7 @@ class TweepsManager
         $foundTweepsIds = $foundTweeps->pluck('id_str');
 
         $notFound = $tweeps->pluck('id_str')->diff($foundTweepsIds);
-        
+
         $foundTweeps->map(function (Tweep $tweep) use ($tweeps) {
             return static::updateTweepIfNeeded($tweep, $tweeps->where('id_str', $tweep->id_str)->first());
         });

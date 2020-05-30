@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
          * @param string|array $cols Set the columns to be selected.
          * @return Collection A new collection consisting of only the specified columns.
          */
-         Collection::macro('pick', function ($cols = ['*']) {
+        Collection::macro('pick', function ($cols = ['*']) {
             $cols = is_array($cols) ? $cols : func_get_args();
             $obj = clone $this;
 

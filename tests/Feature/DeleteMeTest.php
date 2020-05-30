@@ -12,10 +12,8 @@ use App\SocialUser;
 use App\Jobs\DeleteMeJob;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
-use App\Jobs\CleanFollowersJob;
 use App\Jobs\FetchFollowersJob;
 use App\Jobs\FetchFollowingJob;
-use App\Jobs\CleanFollowingsJob;
 use App\Jobs\FetchUserTweetsJob;
 use App\Jobs\FetchFollowingLookupsJob;
 

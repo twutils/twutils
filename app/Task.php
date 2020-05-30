@@ -67,7 +67,6 @@ class Task extends Model
             }
 
             $task->managedTasks->map->delete();
-
         });
         static::deleted(function (self $task) {
             dispatch(new CleaningAllTweetsAndTweeps);

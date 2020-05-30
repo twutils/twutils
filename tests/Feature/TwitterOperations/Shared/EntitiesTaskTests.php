@@ -256,8 +256,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         collect($tweets)
             ->chunk(config('twutils.twitter_requests_counts.fetch_likes'))
-            ->map(function($tweetsChunk) use (& $tweetsDividedForMultipleJobs) {
-
+            ->map(function ($tweetsChunk) use (&$tweetsDividedForMultipleJobs) {
                 $tweetsDividedForMultipleJobs[] = [
                     'type'           => $this->jobName,
                     'twitterData'    => $tweetsChunk->toArray(),
@@ -290,28 +289,27 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         collect($tweets)
             ->filter(function ($tweet) use ($taskSettings) {
-                    $shouldReturn = true;
-                    $tweetCreatedAt =  Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
+                $shouldReturn = true;
+                $tweetCreatedAt = Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
 
-                    if (
+                if (
                         isset($taskSettings['start_date']) &&
                         ! $tweetCreatedAt->greaterThanOrEqualTo($taskSettings['start_date'])
                     ) {
-                        $shouldReturn = false;
-                    }
+                    $shouldReturn = false;
+                }
 
-                    if (
+                if (
                         isset($taskSettings['end_date']) &&
                         ! $tweetCreatedAt->lessThanOrEqualTo($taskSettings['end_date'])
                     ) {
-                        $shouldReturn = false;
-                    }
+                    $shouldReturn = false;
+                }
 
-                    return $shouldReturn;
+                return $shouldReturn;
             })
             ->chunk(config('twutils.twitter_requests_counts.fetch_likes'))
-            ->map(function($tweetsChunk) use (& $tweetsDividedForMultipleJobs) {
-
+            ->map(function ($tweetsChunk) use (&$tweetsDividedForMultipleJobs) {
                 $tweetsDividedForMultipleJobs[] = [
                     'type'           => $this->jobName,
                     'twitterData'    => $tweetsChunk->toArray(),
@@ -332,7 +330,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         // Assert it's 6 Requests since we are requesting with parameter
         // count as '3' tweets while it's all 10 tweets.
         // So the first task 10 tweets will be fetched in 4 requests.
-        // And the second task is parameterized to fetch only 
+        // And the second task is parameterized to fetch only
         // within 4 tweets that will be fetched in 3 requests.
         $this->assertCount(
             13,
@@ -352,26 +350,24 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
             // 1st request and 11th are the first requests each was performed for a newly created task
             // So only them, aren't expected to have 'max_id' parameter
 
-            if ( $index !== 0 && $index < 11) {
+            if ($index !== 0 && $index < 11) {
                 $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['max_id']);
-            } else if ($index >= 11) {
+            } elseif ($index >= 11) {
                 $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['since_id', 'max_id']);
             }
 
             $this->assertEquals(
                 $expectedParameters,
                 array_keys($twitterCallData['parameters']),
-                'Request [' . $index . '] to twitter doesn\'t contain the correct parameters.'
-                . json_encode($twitterCallData)
+                'Request ['.$index.'] to twitter doesn\'t contain the correct parameters.'
+                .json_encode($twitterCallData)
             );
 
-            if ($index == 11)
-            {
+            if ($index == 11) {
                 $initialMaxIdForSettingsTask = $twitterCallData['parameters']['max_id'];
             }
 
-            if ($index > 11)
-            {
+            if ($index > 11) {
                 $this->assertNotNull($initialMaxIdForSettingsTask);
                 $this->assertNotEquals($initialMaxIdForSettingsTask, $twitterCallData['parameters']['max_id']);
             }

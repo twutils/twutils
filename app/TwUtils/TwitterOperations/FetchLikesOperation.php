@@ -3,7 +3,6 @@
 namespace App\TwUtils\TwitterOperations;
 
 use App\Task;
-use App\Tweep;
 use App\Tweet;
 use App\TaskTweet;
 use Carbon\Carbon;
@@ -98,9 +97,8 @@ class FetchLikesOperation extends TwitterOperation
             TweetsManager::insertOrUpdateMultipleTweets($likesGroup);
         }
 
-        if (! $this->shouldContinueProcessing())
-        {
-            return ;
+        if (! $this->shouldContinueProcessing()) {
+            return;
         }
 
         foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
@@ -135,14 +133,13 @@ class FetchLikesOperation extends TwitterOperation
     {
         $taskSettings = $this->task->extra['settings'];
 
-        if ( empty($taskSettings))
-        {
+        if (empty($taskSettings)) {
             return [];
         }
 
         $addedParameters = [];
 
-        if ( isset($taskSettings['start_date'])) {
+        if (isset($taskSettings['start_date'])) {
             $startDate = Carbon::createFromFormat('Y-m-d', $taskSettings['start_date']);
 
             $closestTweet = Tweet::where('tweet_created_at', '<=', $startDate->subDays(1))
@@ -154,7 +151,7 @@ class FetchLikesOperation extends TwitterOperation
             }
         }
 
-        if ( isset($taskSettings['end_date'])) {
+        if (isset($taskSettings['end_date'])) {
             $startDate = Carbon::createFromFormat('Y-m-d', $taskSettings['end_date']);
 
             $closestTweet = Tweet::where('tweet_created_at', '>=', $startDate->addDays(1))
@@ -165,7 +162,6 @@ class FetchLikesOperation extends TwitterOperation
             if ($closestTweet) {
                 $addedParameters['max_id'] = $closestTweet->id_str;
             }
-
         }
 
         return $addedParameters;

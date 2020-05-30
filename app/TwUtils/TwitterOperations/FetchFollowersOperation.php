@@ -84,9 +84,8 @@ class FetchFollowersOperation extends FetchFollowingOperation
             app()->make('BeforeFollowersInsertHook');
         }
 
-        if (! $this->shouldContinueProcessing())
-        {
-            return ;
+        if (! $this->shouldContinueProcessing()) {
+            return;
         }
 
         foreach (collect($followers)->chunk(50) as $i => $followersGroup) {

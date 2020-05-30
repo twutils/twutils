@@ -85,9 +85,8 @@ class FetchFollowingOperation extends TwitterOperation
             app()->make('BeforeFollowingInsertHook');
         }
 
-        if (! $this->shouldContinueProcessing())
-        {
-            return ;
+        if (! $this->shouldContinueProcessing()) {
+            return;
         }
 
         foreach (collect($followings)->chunk(50) as $i => $followingsGroup) {

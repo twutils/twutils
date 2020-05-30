@@ -10,6 +10,7 @@ use App\Following;
 use Carbon\Carbon;
 use App\SocialUser;
 use App\Jobs\DeleteMeJob;
+use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
 use App\Jobs\CleanFollowersJob;

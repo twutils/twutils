@@ -12,7 +12,7 @@ class TweepsManager
     public static function insertOrUpdateMultipleTweeps(Collection $tweeps)
     {
         $tweeps = $tweeps->unique('id_str')->map(function ($user) {
-            return static::mapResponseUserToTweep((array) $user);
+            return static::mapResponseUserToTweep($user);
         });
 
         $foundTweeps = Tweep::whereIn('id_str', $tweeps->pluck('id_str'))->get();

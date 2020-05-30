@@ -8,6 +8,7 @@ use App\Tweep;
 use App\Tweet;
 use App\Follower;
 use App\Following;
+use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
 
@@ -168,13 +169,12 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
     public function test_two_workers_share_same_tweep_whose_data_will_be_updated_during_following_task()
     {
-        // In total, we have three tasks
         // 1. a Tweep, let's say his handle is 'MohannadNaj', was inserted in
         // the first 'fetch likes' task.
         // 2. a 'fetch followings' task was dispatched after. This task
         // includes the same tweep, 'MohannadNaj'.
-        // 3. at the same time the second task was dispatched, the third
-        // task 'fetch likes' was dispatched and finished, it includes
+        // 3. at the same time the previous task was dispatched, a new
+        // 'fetch likes' was dispatched and finished, it includes
         // the same tweep: 'MohannadNaj', now his data will be updated
         // and the tweep will be in a different id.
 
@@ -211,17 +211,11 @@ class DatabaseRelationsTest extends IntegrationTestCase
             for ($i = $lastJobIndex; $i < count($this->dispatchedJobs); $i++) {
                 $this->dispatchedJobs[$i]->handle();
             }
-
             $this->bindTwitterConnector($followingResponse);
             $hookExecuted = true;
         });
 
-        $this->fireJobsAndBindTwitter([
-            [
-                'type' => FetchLikesJob::class,
-                'skip' => true,
-            ]
-        ], $lastJobIndex);
+        $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
         $this->assertTrue($hookExecuted);
 

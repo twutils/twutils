@@ -84,7 +84,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $this->assertEquals(Task::first()->tweets[2]->pivot->retweeted, 1);
         $this->assertEquals(Task::first()->tweets[2]->pivot->favorited, 1);
 
-        $this->assertLessThanOrEqual(16, count($queries));
+        $this->assertLessThanOrEqual(18, count($queries));
     }
 
     public function test_followings_and_followers_table_will_have_the_latest_tweep_id()

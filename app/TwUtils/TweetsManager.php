@@ -23,21 +23,21 @@ class TweetsManager
 
         $notFound = $tweets->pluck('id_str')->diff($foundTweetsIds);
         
-        $foundTweets->map(function (Tweet $tweep) use ($tweets) {
-            return static::updateTweetIfNeeded($tweep, $tweets->where('id_str', $tweep->id_str)->first());
+        $foundTweets->map(function (Tweet $tweet) use ($tweets) {
+            return static::updateTweetIfNeeded($tweet, $tweets->where('id_str', $tweet->id_str)->first());
         });
 
-        $notFound->map(function ($tweepIdStr) use ($tweets) {
-            return static::createTweet($tweets->where('id_str', $tweepIdStr)->first());
+        $notFound->map(function ($tweetIdStr) use ($tweets) {
+            return static::createTweet($tweets->where('id_str', $tweetIdStr)->first());
         });
     }
 
-    public static function updateTweetIfNeeded($tweep, $mappedTweet)
+    public static function updateTweetIfNeeded($tweet, $mappedTweet)
     {
         $needUpdate = false;
 
         foreach ($mappedTweet as $key => $value) {
-            if ($tweep->$key === $value) {
+            if ($tweet->$key === $value) {
                 continue;
             }
             $needUpdate = true;
@@ -45,15 +45,15 @@ class TweetsManager
         }
 
         if ($needUpdate) {
-            $tweep->update($mappedTweet);
+            $tweet->update($mappedTweet);
         }
 
-        return $tweep;
+        return $tweet;
     }
 
-    public static function createTweet(array $tweep)
+    public static function createTweet(array $tweet)
     {
-        return Tweet::create($tweep);
+        return Tweet::create($tweet);
     }
 
     public static function mapResponseToTweet(array $tweet): array
@@ -71,9 +71,9 @@ class TweetsManager
             'mentions'                => Str::limit(collect(Arr::get($tweet, 'entities.user_mentions', []))->implode('screen_name', ','), 254),
             'hashtags'                => Str::limit(collect(Arr::get($tweet, 'entities.hashtags', []))->implode('text', ','), 254),
             'is_quote_status'         => $tweet['is_quote_status'] ?? false,
-            'quoted_status'           => isset($tweet['quoted_status']) ? json_encode($tweet['quoted_status']) : null,
-            'quoted_status_permalink' => isset($tweet['quoted_status_permalink']) ? json_encode($tweet['quoted_status_permalink']) : null,
-            'retweeted_status'        => isset($tweet['retweeted_status']) ? json_encode($tweet['retweeted_status']) : null,
+            'quoted_status'           => isset($tweet['quoted_status']) ? $tweet['quoted_status'] : null,
+            'quoted_status_permalink' => isset($tweet['quoted_status_permalink']) ? $tweet['quoted_status_permalink'] : null,
+            'retweeted_status'        => isset($tweet['retweeted_status']) ? $tweet['retweeted_status'] : null,
         ];
     }
 }

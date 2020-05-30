@@ -15,12 +15,15 @@ Route::middleware('throttle:10,1')->group(function () {
     Route::post('/contact', 'WelcomeController@storeContact');
 });
 
-Route::middleware('auth:api', 'throttle:200,1')->group(function () {
+Route::middleware('auth:api', 'throttle:2000,1')->group(function () {
+    Route::get('tasks/{task}/data', 'Api\TasksController@getTaskData')->name('tasks.getTaskData');
+});
+
+Route::middleware('auth:api', 'throttle:100,1')->group(function () {
     Route::get('tasks', 'Api\TasksController@index')->name('tasks');
     Route::get('tasks/likes', 'Api\TasksController@listLikesTasks')->name('tasks.listLikesTasks');
     Route::get('tasks/userTweets', 'Api\TasksController@listUserTweetsTasks')->name('tasks.listUserTweetsTasks');
     Route::get('tasks/{task}', 'Api\TasksController@show')->name('tasks.show');
-    Route::get('tasks/{task}/data', 'Api\TasksController@getTaskData')->name('tasks.getTaskData');
     Route::get('tasks/{task}/managedTasks', 'Api\TasksController@getManagedTasks')->name('tasks.getManagedTasks');
     Route::delete('tasks/{task}', 'Api\TasksController@delete')->name('tasks.delete');
 

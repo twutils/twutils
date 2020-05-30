@@ -28,7 +28,7 @@ class FetchLikesOperation extends TwitterOperation
 
         $parameters['max_id'] = $last['id_str'];
 
-        dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task))->delay($nextJobDelay);
+        dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task->fresh()))->delay($nextJobDelay);
     }
 
     protected function shouldBuildNextJob()
@@ -96,6 +96,11 @@ class FetchLikesOperation extends TwitterOperation
 
         foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
             TweetsManager::insertOrUpdateMultipleTweets($likesGroup);
+        }
+
+        if (! $this->shouldContinueProcessing())
+        {
+            return ;
         }
 
         foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {

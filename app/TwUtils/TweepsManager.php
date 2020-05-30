@@ -81,7 +81,7 @@ class TweepsManager
             'avatar'           => $user['profile_image_url_https'],
             'screen_name'      => $user['screen_name'],
             'location'         => $user['location'] ?? null,
-            'description'      => Str::limit($user['description'], 254) ?? null,
+            'description'      => Str::limit($user['description'], 251) ?? null,
             'url'              => $user['url'] ?? null,
             'display_url'      => $displayUrl ?? null,
             'followers_count'  => $user['followers_count'] ?? null,

@@ -195,7 +195,7 @@ abstract class UsersListTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertCountDispatchedJobs(1, $this->cleaningJobName);
+        $this->assertCountDispatchedJobs(2, $this->cleaningJobName);
         $this->assertEquals($this->getDBTable()->count(), 10);
     }
 

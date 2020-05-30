@@ -9,7 +9,6 @@ use App\TaskTweet;
 use Carbon\Carbon;
 use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
-use App\Jobs\CleanTweepsJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
 
@@ -54,7 +53,6 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function afterCompletedTask(Task $task)
     {
-        dispatch(new CleanTweepsJob());
     }
 
     protected function saveResponse()
@@ -95,9 +93,10 @@ class FetchLikesOperation extends TwitterOperation
         $tweeps->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
         ->each(function ($tweepsGroup) {
             $tweepsGroup = $tweepsGroup->map(function ($tweep) {
-                return TweepsManager::mapResponseUserToTweep((array) $tweep);
+                return (array) $tweep;
             });
-            Tweep::insert($tweepsGroup->toArray());
+
+            TweepsManager::insertOrUpdateMultipleTweeps($tweepsGroup);
         });
 
         $responseCollection->each(

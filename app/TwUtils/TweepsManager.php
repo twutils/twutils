@@ -5,9 +5,30 @@ namespace App\TwUtils;
 use App\Tweep;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 class TweepsManager
 {
+    public static function insertOrUpdateMultipleTweeps(Collection $tweeps)
+    {
+        $tweeps = $tweeps->unique('id_str')->map(function ($user) {
+            return static::mapResponseUserToTweep($user);
+        });
+
+        $foundTweeps = Tweep::whereIn('id_str', $tweeps->pluck('id_str'))->get();
+        $foundTweepsIds = $foundTweeps->pluck('id_str');
+
+        $notFound = $tweeps->pluck('id_str')->diff($foundTweepsIds);
+        
+        $foundTweeps->map(function (Tweep $tweep) use ($tweeps) {
+            return static::updateTweepIfNeeded($tweep, $tweeps->where('id_str', $tweep->id_str)->first());
+        });
+
+        $notFound->map(function ($tweepIdStr) use ($tweeps) {
+            return static::createTweep($tweeps->where('id_str', $tweepIdStr)->first());
+        });
+    }
+
     public static function createOrFindFromFollowing(array $user)
     {
         $tweep = Tweep::where('id_str', $user['id_str'])->first();

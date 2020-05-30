@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\TwUtils\JobsManager;
 use App\Jobs\CompleteTaskJob;
 use Abraham\TwitterOAuth\TwitterOAuthException;
+use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
 
 abstract class TwitterOperation
@@ -34,7 +35,8 @@ abstract class TwitterOperation
     final public function doRequest($socialUser, $task, $parameters)
     {
         if (
-            get_class($this) !== FetchUserInfoOperation::class && (is_null($task) || is_null($task->fresh()))
+            (is_null($task) || is_null($task->fresh())) &&
+            ! in_array(get_class($this), [FetchUserInfoOperation::class, RevokeAccessOperation::class])
         )
         {
             return ;

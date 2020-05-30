@@ -320,7 +320,7 @@ class DislikeTweetJobTest extends IntegrationTestCase
 
         $delaysIndexes->each(
             function ($delayIndex) use ($indexLastDispatched) {
-                $this->assertNotNull($this->dispatchedJobs[$delayIndex + $indexLastDispatched - 5]->delay);
+                $this->assertNotNull($this->dispatchedJobs[$delayIndex + $indexLastDispatched - 1]->delay);
             }
         );
 

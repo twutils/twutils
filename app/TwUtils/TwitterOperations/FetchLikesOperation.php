@@ -7,9 +7,7 @@ use App\Tweep;
 use App\Tweet;
 use App\TaskTweet;
 use Carbon\Carbon;
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
-use App\Jobs\CleanTweepsJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
 
@@ -54,7 +52,6 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function afterCompletedTask(Task $task)
     {
-        dispatch(new CleanTweepsJob());
     }
 
     protected function saveResponse()
@@ -64,7 +61,7 @@ class FetchLikesOperation extends TwitterOperation
         $likes = [];
 
         $responseCollection = collect($this->response)
-            ->map(function ($tweet) {
+            ->map(function (object $tweet) {
                 $tweet->created_at = Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
 
                 return $tweet;
@@ -94,37 +91,26 @@ class FetchLikesOperation extends TwitterOperation
 
         $tweeps->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
         ->each(function ($tweepsGroup) {
-            $tweepsGroup = $tweepsGroup->map(function ($tweep) {
-                return TweepsManager::mapResponseUserToTweep((array) $tweep);
-            });
-            Tweep::insert($tweepsGroup->toArray());
+            TweepsManager::insertOrUpdateMultipleTweeps($tweepsGroup);
         });
 
-        $responseCollection->each(
-            function ($like) use (&$likes, $taskId) {
-                $like = (array) json_decode(json_encode($like), true);
-
-                $mappedTweet = TweetsManager::mapResponseToTweet($like, $taskId);
-                array_push($likes, $mappedTweet);
-            }
-        );
-
-        foreach (collect($likes)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
-            Tweet::insert($likesGroup->toArray());
+        foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
+            TweetsManager::insertOrUpdateMultipleTweets($likesGroup);
         }
 
-        foreach (collect($likes)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
-            $tweets = $likesGroup->map(function ($tweet) use ($responseCollection) {
-                $id = $tweet['id_str'];
-                $tweetResponse = $responseCollection->where('id_str', $id)->first();
+        foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
+            $tweets = $likesGroup->unique('id_str')->map(function ($tweet) use ($responseCollection) {
+                $id = $tweet->id_str;
 
-                return ['favorited'=>$tweetResponse->favorited, 'retweeted' => $tweetResponse->retweeted, 'task_id' => $this->task->id, 'tweet_id_str' => $id];
-            })->toArray();
+                return ['favorited'=>$tweet->favorited, 'retweeted' => $tweet->retweeted, 'task_id' => $this->task->id, 'tweet_id_str' => $id];
+            })
+            ->toArray();
 
+            TaskTweet::where('task_id', $this->task->id)
+                ->whereIn('tweet_id_str', $likesGroup->pluck('id_str'))
+                ->delete();
             TaskTweet::insert($tweets);
         }
-
-        dispatch(new CleanLikesJob($this->task));
     }
 
     protected function buildParameters()

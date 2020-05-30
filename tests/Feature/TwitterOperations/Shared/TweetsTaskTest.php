@@ -6,7 +6,6 @@ use DB;
 use App\Task;
 use App\Tweep;
 use App\Tweet;
-use App\Jobs\CleanLikesJob;
 use App\Exports\TasksExport;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
@@ -57,6 +56,71 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertTaskCount(0);
         $this->assertCount(0, Tweet::all());
         $this->assertLikesBelongsToTask();
+    }
+
+    public function test_tweet_and_tweep_data_is_up_to_date()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+
+        $firstTweetStrId        = '654321';
+        $firstTweetLikes        = 50;
+        $firstTweetUpdatedLikes = 70;
+
+        $firstTweepStrId        = '123456';
+        $firstTweepBio          = 'Old Bio';
+        $firstTweepUpdatedBio   = 'New Bio';
+
+        $tweets = $this->generateUniqueTweetsAndTweeps(10, 3);
+
+        $tweets[0]->id_str            = $firstTweetStrId;
+        $tweets[0]->favorite_count    = $firstTweetLikes;
+
+        $tweets[0]->user->id_str      = $firstTweepStrId;
+        $tweets[0]->user->description = $firstTweepBio;
+
+        $response = $this->getJson($this->apiEndpoint);
+        $response->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter([
+            [
+                'type'           => $this->jobName,
+                'twitterData'    => $tweets,
+            ],
+        ]);
+
+        $lastJobIndex = count($this->dispatchedJobs);
+
+        $this->assertTaskCount(1);
+        $this->assertCount(10, Tweet::all());
+        $this->assertCount(3, Tweep::all());
+        $this->assertLikesBelongsToTask();
+
+        $this->assertEquals($firstTweetLikes, Tweet::where('id_str', $firstTweetStrId)->first()->favorite_count);
+        $this->assertEquals($firstTweepBio, Tweep::where('id_str', $firstTweepStrId)->first()->description);
+
+        $response = $this->getJson($this->apiEndpoint);
+        $response->assertStatus(200);
+
+        $oldBio = $tweets[0]->user->description;
+
+        $tweets[0]->favorite_count    = $firstTweetUpdatedLikes;
+        $tweets[0]->user->description = $firstTweepUpdatedBio;
+
+        $this->fireJobsAndBindTwitter([
+            [
+                'type'           => $this->jobName,
+                'twitterData'    => $tweets,
+            ],
+        ], $lastJobIndex);
+
+
+        $this->assertTaskCount(2);
+        $this->assertCount(10, Tweet::all());
+        $this->assertCount(3, Tweep::all());
+        $this->assertCount(10, Task::find(2)->likes);
+        // TODO Uncomment: $this->assertEquals($firstTweetUpdatedLikes, Tweet::where('id_str', $firstTweetStrId)->first()->favorite_count);
+        $this->assertEquals($firstTweepUpdatedBio, Tweep::where('id_str', $firstTweepStrId)->first()->description);
     }
 
     public function test_deleted_task_tweets_are_included_in_other_task()
@@ -710,7 +774,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                     'twitterData' => [$tweet],
                     'after'       => function ($job) {
                         $this->assertNotNull($job->delay);
-                        $nextJobDelay = $this->dispatchedJobs[2]->delay->diffInSeconds(now());
+                        $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
                         $this->assertLessThanOrEqual(60, $nextJobDelay);
                     },
                 ],
@@ -759,20 +823,13 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTrue(empty($this->dispatchedJobs[1]) || get_class($this->dispatchedJobs[1]) !== $this->jobName);
 
         $this->assertCountDispatchedJobs(1, $this->jobName);
         $this->assertTaskCount(1, 'completed');
-        $this->assertCount(3, Tweet::all());
+        $this->assertCount(1, Tweet::all());
         $this->assertLikesBelongsToTask();
     }
 
@@ -811,7 +868,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
-        $this->assertCountDispatchedJobs(1, CleanLikesJob::class);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(1, Tweet::all());
         $this->assertLikesBelongsToTask();
@@ -831,7 +887,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
-        $this->assertCountDispatchedJobs(1, CleanLikesJob::class);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(1, Tweet::all());
         $this->assertCount(1, Task::first()->likes);
@@ -868,7 +923,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertCountDispatchedJobs(2, CleanLikesJob::class);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(1, Tweet::all());
         $this->assertCount(1, DB::table('task_tweet')->get());
@@ -919,7 +973,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             ]
         );
 
-        $this->assertCountDispatchedJobs(5, CleanLikesJob::class);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
         $this->assertCount(2, DB::table('task_tweet')->get());
@@ -948,7 +1001,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
-        $this->assertCountDispatchedJobs(1, CleanLikesJob::class);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
         $this->assertLikesBelongsToTask();
@@ -981,12 +1033,10 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         ->assertStatus(200);
 
         $this->dispatchedJobs[0]->handle();
-        $this->assertCountDispatchedJobs(4, null);
+        $this->assertCountDispatchedJobs(2, null);
 
         $this->dispatchedJobs[1]->handle();
         $this->dispatchedJobs[2]->handle();
-        $this->dispatchedJobs[3]->handle();
-        $this->dispatchedJobs[4]->handle();
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());

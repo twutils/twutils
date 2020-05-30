@@ -28,17 +28,6 @@ class CleaningAllTweetsAndTweeps implements ShouldQueue
         $followingsQuery = DB::table('followings')->select('tweep_id_str');
         $followersQuery = DB::table('followers')->select('tweep_id_str');
 
-        // If we are in production/development
-        // Delay cleaning for one hour
-
-        if (! app()->runningUnitTests())
-        {
-            $taskTweetQuery = $taskTweetQuery->where('created_at', '<' ,now()->subHours(1));
-            $tweetsQuery = $tweetsQuery->where('created_at', '<' ,now()->subHours(1));
-            $followingsQuery = $followingsQuery->where('created_at', '<' ,now()->subHours(1));
-            $followersQuery = $followersQuery->where('created_at', '<' ,now()->subHours(1));
-        }
-
         DB::table('tweets')
             ->whereNotIn(
                 'id_str',

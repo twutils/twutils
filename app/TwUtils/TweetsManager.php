@@ -2,14 +2,61 @@
 
 namespace App\TwUtils;
 
-use App\Tweep;
+use App\Tweet;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 class TweetsManager
 {
-    public static function mapResponseToTweet(array $tweet, $taskId): array
+    public static function insertOrUpdateMultipleTweets(Collection $tweets)
+    {
+        $tweets = $tweets->unique('id_str')->map(function ($tweet) {
+            $tweet = (array) json_decode(json_encode($tweet), true);
+
+            return static::mapResponseToTweet($tweet);
+        });
+
+        $foundTweets = Tweet::whereIn('id_str', $tweets->pluck('id_str'))->get();
+        $foundTweetsIds = $foundTweets->pluck('id_str');
+
+        $notFound = $tweets->pluck('id_str')->diff($foundTweetsIds);
+        
+        $foundTweets->map(function (Tweet $tweep) use ($tweets) {
+            return static::updateTweetIfNeeded($tweep, $tweets->where('id_str', $tweep->id_str)->first());
+        });
+
+        $notFound->map(function ($tweepIdStr) use ($tweets) {
+            return static::createTweet($tweets->where('id_str', $tweepIdStr)->first());
+        });
+    }
+
+    public static function updateTweetIfNeeded($tweep, $mappedTweet)
+    {
+        $needUpdate = false;
+
+        foreach ($mappedTweet as $key => $value) {
+            if ($tweep->$key === $value) {
+                continue;
+            }
+            $needUpdate = true;
+            break;
+        }
+
+        if ($needUpdate) {
+            $tweep->update($mappedTweet);
+        }
+
+        return $tweep;
+    }
+
+    public static function createTweet(array $tweep)
+    {
+        return Tweet::create($tweep);
+    }
+
+    public static function mapResponseToTweet(array $tweet): array
     {
         return [
             'id_str'                  => $tweet['id_str'],

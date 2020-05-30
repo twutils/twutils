@@ -121,10 +121,9 @@ class DatabaseRelationsTest extends IntegrationTestCase
                             ->get()
                             ->pluck('id');
 
-
         // Assert Followers and Followings not empty string like: ',,,,,,,'
-        $this->assertNotEquals(Follower::count(), strlen($followers->implode(','))+1);
-        $this->assertNotEquals(Following::count(), strlen($followings->implode(','))+1);
+        $this->assertNotEquals(Follower::count(), strlen($followers->implode(',')) + 1);
+        $this->assertNotEquals(Following::count(), strlen($followings->implode(',')) + 1);
 
         $lastJobIndex = count($this->dispatchedJobs);
 
@@ -157,7 +156,6 @@ class DatabaseRelationsTest extends IntegrationTestCase
             ->sort()
             ->implode(',')
         );
-
 
         $this->assertEquals(4, Task::all()->count());
         $this->assertEquals('completed', Task::find(1)->status);
@@ -200,7 +198,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
         $tweepsIds = (Tweep::all()->pluck('id_str')->implode(','));
         $hookExecuted = false;
-        app()->bind('BeforeFollowingInsertHook', function () use ($tweets, $tweepsIds, $followingResponse, & $hookExecuted) {
+        app()->bind('BeforeFollowingInsertHook', function () use ($tweets, $tweepsIds, $followingResponse, &$hookExecuted) {
             $this->bindTwitterConnector($tweets);
 
             $lastJobIndex = count($this->dispatchedJobs);
@@ -220,7 +218,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
             [
                 'type' => FetchLikesJob::class,
                 'skip' => true,
-            ]
+            ],
         ], $lastJobIndex);
 
         $this->assertTrue($hookExecuted);

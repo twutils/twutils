@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class UpdateTweetsTableTweepIdStr extends Migration
 {
@@ -13,13 +13,11 @@ class UpdateTweetsTableTweepIdStr extends Migration
      */
     public function up()
     {
-
         Schema::table('tweets', function (Blueprint $table) {
             $table->string('tweep_id_str')->default(10000)->index();
         });
 
-        if (! app()->runningUnitTests())
-        {
+        if (! app()->runningUnitTests()) {
             // Map to the new structure
             DB::statement('UPDATE tweets set tweets.tweep_id_str = (select tweeps.id_str from tweeps where tweeps.id = tweep_id)');
 

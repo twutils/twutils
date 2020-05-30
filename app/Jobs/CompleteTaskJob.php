@@ -3,10 +3,8 @@
 namespace App\Jobs;
 
 use App\Task;
-use App\Tweep;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
-use App\Jobs\CleaningAllTweetsAndTweeps;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,7 +36,6 @@ class CompleteTaskJob implements ShouldQueue
      */
     public function handle()
     {
-
         if ($this->task->fresh()->status !== 'completed') {
             $this->task->status = 'completed';
             $this->task->save();
@@ -47,9 +44,8 @@ class CompleteTaskJob implements ShouldQueue
         $tweeps = $this->task->getTaskTweeps();
 
         $tweeps->map(function ($tweep) {
-            if (! $tweep)
-            {
-                return ;
+            if (! $tweep) {
+                return;
             }
 
             dispatch(new SaveTweepAvatarJob($tweep->id_str));

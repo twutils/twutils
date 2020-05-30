@@ -16,11 +16,11 @@ class EntitiesUserTweetsJobTest extends EntitiesTaskTests
         $this->twitterEndpoint = 'statuses/user_timeline';
 
         $this->initalTwitterParametersKeys = [
-			'count',
-			'include_entities',
-			'screen_name',
-			'tweet_mode',
-			'user_id',
+            'count',
+            'include_entities',
+            'screen_name',
+            'tweet_mode',
+            'user_id',
         ];
     }
 }

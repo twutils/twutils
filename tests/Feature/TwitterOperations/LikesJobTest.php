@@ -16,11 +16,11 @@ class LikesJobTest extends TweetsTaskTest
         $this->twitterEndpoint = 'favorites/list';
 
         $this->initalTwitterParametersKeys = [
-			'count',
-			'include_entities',
-			'screen_name',
-			'tweet_mode',
-			'user_id',
+            'count',
+            'include_entities',
+            'screen_name',
+            'tweet_mode',
+            'user_id',
         ];
     }
 }

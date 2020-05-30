@@ -10,8 +10,6 @@ use Illuminate\Support\Str;
 use App\TwUtils\JobsManager;
 use App\Jobs\CompleteTaskJob;
 use Abraham\TwitterOAuth\TwitterOAuthException;
-use App\TwUtils\TwitterOperations\RevokeAccessOperation;
-use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
 
 abstract class TwitterOperation
 {
@@ -39,9 +37,8 @@ abstract class TwitterOperation
         $this->socialUser = $socialUser;
         $this->task = $task;
 
-        if (! $this->shouldContinueProcessing())
-        {
-            return ;
+        if (! $this->shouldContinueProcessing()) {
+            return;
         }
 
         $this->handleJobParameters($parameters);
@@ -88,14 +85,12 @@ abstract class TwitterOperation
         throw new \Exception('buildNextJob function is not implemented');
     }
 
-
     protected function shouldContinueProcessing()
     {
         if (
             (is_null($this->task) || is_null($this->task->fresh())) &&
             ! in_array(get_class($this), [FetchUserInfoOperation::class, RevokeAccessOperation::class])
-        )
-        {
+        ) {
             return false;
         }
 

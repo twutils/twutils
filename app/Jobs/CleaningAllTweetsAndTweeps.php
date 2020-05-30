@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use DB;
-use App\Tweep;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

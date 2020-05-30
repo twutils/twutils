@@ -231,8 +231,8 @@ class IntegrationTestCase extends TestCase
                 continue;
             }
 
-            if(in_array('--debug', $_SERVER['argv'], true)) {
-                dump("Running ". get_class($queuedJob));
+            if (in_array('--debug', $_SERVER['argv'], true)) {
+                dump('Running '.get_class($queuedJob));
             }
 
             $queuedJob->handle();
@@ -292,7 +292,7 @@ class IntegrationTestCase extends TestCase
 
         for ($i = 0; $i < $usersCount; $i++) {
             $users[$i]['id'] = $i + 1 + $startIndex;
-            $users[$i]['id_str'] = '_' . ($i + 1 + $startIndex);
+            $users[$i]['id_str'] = '_'.($i + 1 + $startIndex);
             $users[$i]['name'] = (string) $faker->name;
             $users[$i]['description'] = (string) implode(' ', $faker->sentences);
             $users[$i]['profile_banner_url'] = (string) $faker->imageUrl;

@@ -22,7 +22,7 @@ class TweetsManager
         $foundTweetsIds = $foundTweets->pluck('id_str');
 
         $notFound = $tweets->pluck('id_str')->diff($foundTweetsIds);
-        
+
         $foundTweets->map(function (Tweet $tweet) use ($tweets) {
             return static::updateTweetIfNeeded($tweet, $tweets->where('id_str', $tweet->id_str)->first());
         });

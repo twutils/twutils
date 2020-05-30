@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\TwUtils\UserManager;
 use Illuminate\Database\Eloquent\Model;
 
 class SocialUser extends Model
@@ -29,6 +30,8 @@ class SocialUser extends Model
             $socialUser->tasks()->each(function (Task $task) {
                 $task->delete();
             });
+
+            UserManager::revokeAccessToken($socialUser);
         });
     }
 

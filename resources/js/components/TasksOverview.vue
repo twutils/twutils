@@ -5,16 +5,16 @@
   <div class="row taskTypes__container">
     <portal :key="task.id" v-for="task in tasks" :to="`task-counts-${task.id}`">
           <span v-if="task.baseName === 'fetchlikes' || task.baseName === 'fetchusertweets'"  :class="`${isRtl ? 'rtl':''}`">
-            ({{task.likes_count }} {{__('tweet')}})
+            ({{intlFormat(task.likes_count) }} {{__('tweet')}})
           </span>
           <span v-if="['destroylikes', 'destroytweets', 'manageddestroytweets', 'manageddestroylikes'].includes(task.baseName)"  :class="`${isRtl ? 'rtl':''}`">
             ({{task.removedCount || '?' }} {{__('tweet')}})
           </span>
           <span v-if="task.baseName === 'fetchfollowing'"  :class="`${isRtl ? 'rtl':''}`">
-            ({{task.followings_count }} {{__('following')}})
+            ({{intlFormat(task.followings_count) }} {{__('following')}})
           </span>
           <span v-if="task.baseName === 'fetchfollowers'"  :class="`${isRtl ? 'rtl':''}`">
-            ({{task.followers_count }} {{__('followers')}})
+            ({{intlFormat(task.followers_count) }} {{__('followers')}})
           </span>
     </portal>
     <tasks-overview-item :tasks="tweetsTasks" :header="__('tweets')">

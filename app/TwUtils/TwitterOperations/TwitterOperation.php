@@ -54,6 +54,13 @@ abstract class TwitterOperation
         try {
             $this->response = (array) $twitterClient->{$this->httpMethod}($this->endpoint, $parameters);
 
+            \Log::info([
+                'endpoint' => $this->endpoint,
+                'parameters' => $parameters,
+                'response' => $this->response,
+                'headers'=> $twitterClient->getLastXHeaders(),
+            ]);
+
             if (app('env') === 'testing' && app()->has('AfterHTTPRequest')) {
                 app()->make('AfterHTTPRequest');
             }

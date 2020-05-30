@@ -15,7 +15,7 @@ class UpdateTweetsTableTweepIdStr extends Migration
     {
 
         Schema::table('tweets', function (Blueprint $table) {
-            $table->string('tweep_id_str')->default(1000);
+            $table->string('tweep_id_str')->default(10000)->index();
         });
 
         if (! app()->runningUnitTests())

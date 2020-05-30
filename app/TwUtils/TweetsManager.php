@@ -60,7 +60,7 @@ class TweetsManager
     {
         return [
             'id_str'                  => $tweet['id_str'],
-            'extended_entities'       => json_encode($tweet['extended_entities'] ?? []),
+            'extended_entities'       => $tweet['extended_entities'] ?? [],
             'text'                    => $tweet['full_text'],
             'lang'                    => $tweet['lang'],
             'retweet_count'           => $tweet['retweet_count'] ?? null,

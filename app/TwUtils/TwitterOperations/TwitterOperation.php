@@ -34,18 +34,16 @@ abstract class TwitterOperation
 
     final public function doRequest($socialUser, $task, $parameters)
     {
-        if (
-            (is_null($task) || is_null($task->fresh())) &&
-            ! in_array(get_class($this), [FetchUserInfoOperation::class, RevokeAccessOperation::class])
-        )
-        {
-            return ;
-        }
-
         $this->doRequestParameters = $parameters;
 
         $this->socialUser = $socialUser;
         $this->task = $task;
+
+        if (! $this->shouldContinueProcessing())
+        {
+            return ;
+        }
+
         $this->handleJobParameters($parameters);
 
         $connector = app(\App\TwUtils\ITwitterConnector::class);
@@ -88,6 +86,20 @@ abstract class TwitterOperation
     protected function buildNextJob()
     {
         throw new \Exception('buildNextJob function is not implemented');
+    }
+
+
+    protected function shouldContinueProcessing()
+    {
+        if (
+            (is_null($this->task) || is_null($this->task->fresh())) &&
+            ! in_array(get_class($this), [FetchUserInfoOperation::class, RevokeAccessOperation::class])
+        )
+        {
+            return false;
+        }
+
+        return true;
     }
 
     protected function handleTwitterException($e)

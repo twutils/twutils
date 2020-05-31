@@ -568,36 +568,32 @@ export default {
     perPageInt () {
       return parseInt(this.perPage)
     },
-    shouldShowExpectedToFinish() {
-      return this.task.status == 'queued' &&
-              ['fetchfollowing', 'fetchfollowers'].includes(this.task.baseName) &&
-              get(this.user, 'social_users[0].followers_count', 0) > 2800
+    shouldShowExpectedToFinish () {
+      return this.task.status == `queued` &&
+              [`fetchfollowing`, `fetchfollowers`,].includes(this.task.baseName) &&
+              get(this.user, `social_users[0].followers_count`, 0) > 2800
     },
-    taskExpectedToFinishInMins() {
-      if (! ['fetchfollowing', 'fetchfollowers'].includes(this.task.baseName))
-      {
-        return '';
+    taskExpectedToFinishInMins () {
+      if (![`fetchfollowing`, `fetchfollowers`,].includes(this.task.baseName)) {
+        return ``
       }
 
       let expectedToFinish = 0
       let remainingUsers = 0
 
-      if (this.task.baseName === 'fetchfollowers')
-      {
-        remainingUsers = get(this.user, 'social_users[0].followers_count', 0) - get(this.task, 'followers_count', 0)
+      if (this.task.baseName === `fetchfollowers`) {
+        remainingUsers = get(this.user, `social_users[0].followers_count`, 0) - get(this.task, `followers_count`, 0)
       }
 
-      if (this.task.baseName === 'fetchfollowing')
-      {
-        remainingUsers = get(this.user, 'social_users[0].friends_count', 0) - get(this.task, 'followings_count', 0)
+      if (this.task.baseName === `fetchfollowing`) {
+        remainingUsers = get(this.user, `social_users[0].friends_count`, 0) - get(this.task, `followings_count`, 0)
       }
 
       // We can only fetch 2800 user in 15 mins.
       expectedToFinish = Math.round((remainingUsers / 2800 * 15) - 15)
 
-      if (expectedToFinish < 1)
-      {
-        return '0'
+      if (expectedToFinish < 1) {
+        return `0`
       }
 
       return expectedToFinish

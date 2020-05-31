@@ -23,13 +23,13 @@ export default {
       type: Object,
     },
   },
-  data() {
+  data () {
     return {
-      
+
     }
   },
-  mounted() {
-    
+  mounted () {
+
   },
   methods: {
     getTaskSettingsOption (option) {

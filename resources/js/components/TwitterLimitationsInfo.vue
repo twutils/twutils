@@ -104,24 +104,22 @@ export default {
     }
   },
   computed: {
-    countFromProfile() {
+    countFromProfile () {
       return this.getCountFromProfileByTask(this.task)
     },
-    tweetsCountFromTask() {
+    tweetsCountFromTask () {
       return this.getTweetsCountFromTask(this.task)
     },
-    tweetTypeFromTask() {
-      if (this.isLikesTask(this.task))
-      {
-        return this.isRtl ? 'تغريدة مفضّلة' : 'Like'
+    tweetTypeFromTask () {
+      if (this.isLikesTask(this.task)) {
+        return this.isRtl ? `تغريدة مفضّلة` : `Like`
       }
 
-      if (this.isUserTweetsTask(this.task))
-      {
-        return this.isRtl ? 'تغريدة' : 'Tweet'
+      if (this.isUserTweetsTask(this.task)) {
+        return this.isRtl ? `تغريدة` : `Tweet`
       }
 
-      return ''
+      return ``
     },
   },
 }

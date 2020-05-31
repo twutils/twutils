@@ -294,11 +294,10 @@ export default {
           const currentPage = resp.data.current_page
           const lastPage = resp.data.last_page
 
-          let currentTweetsIds = this.tweets.map(x => x.id_str)
+          const currentTweetsIds = this.tweets.map(x => x.id_str)
 
           resp.data.data.map(tweet => {
-            if (! currentTweetsIds.includes(tweet.id_str))
-            {
+            if (!currentTweetsIds.includes(tweet.id_str)) {
               currentTweetsIds.push(tweet.id_str)
               this.tweets.push(tweet)
             }
@@ -433,12 +432,11 @@ export default {
       return yearAndMonthTweetsLength
     },
     getMonthBarHeight (year, monthIndex) {
-      let tweetsLength = this.getYearAndMonthTweetsLength(year, monthIndex)
+      const tweetsLength = this.getYearAndMonthTweetsLength(year, monthIndex)
 
-      let calculatedValue = parseInt( (tweetsLength * 50) / this.maximumMonthlyTweets)
+      const calculatedValue = parseInt((tweetsLength * 50) / this.maximumMonthlyTweets)
 
-      if (tweetsLength !== 0 && calculatedValue < 2)
-        return 2
+      if (tweetsLength !== 0 && calculatedValue < 2) { return 2 }
 
       return calculatedValue
     },

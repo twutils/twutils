@@ -1,3 +1,4 @@
+import get from 'lodash/get'
 import router from '@/router'
 import rtlChars from '@/rtlChars'
 import startCase from 'lodash/startCase'
@@ -54,6 +55,59 @@ export default {
       this.$nextTick(x => {
         $(this.$el).find(`[data-toggle="tooltip"]`).tooltip()
       })
+    },
+    isUserTweetsTask(task) {
+      return [`fetchusertweets`, `fetchentitiesusertweets`,].includes(task.baseName)
+    },
+    isLikesTask(task) {
+      return [`fetchlikes`, `fetchentitieslikes`,].includes(task.baseName)
+    },
+    isFollowingsTask(task) {
+      return [`fetchfollowing`,].includes(task.baseName)
+    },
+    isFollowersTask(task) {
+      return [`fetchfollowers`,].includes(task.baseName)
+    },
+    getCountFromProfileByTask(task) {
+      let profileRelatedTaskCount = 0
+
+      if (this.isLikesTask(this.task))
+      {
+        profileRelatedTaskCount = get(this.user, 'social_users[0].favourites_count', 0)
+      }
+
+      if (this.isUserTweetsTask(this.task))
+      {
+        profileRelatedTaskCount = get(this.user, 'social_users[0].statuses_count', 0)
+      }
+
+      return profileRelatedTaskCount
+    },
+    getTweetsCountFromTask(task) {
+
+      if (this.isLikesTask(task))
+      {
+        return get(this.task, `likes_count`, 0)
+      }
+
+      if (this.isUserTweetsTask(task))
+      {
+        return get(this.task, `likes_count`, 0)
+      }
+
+      return 0
+    },
+    shouldShowTwitterLimitations() {
+      let tweetsCountFromProfile = this.getCountFromProfileByTask(this.task)
+
+      let tweetsCountFromTask = this.getTweetsCountFromTask(this.task)
+
+      if (tweetsCountFromProfile > (tweetsCountFromTask + 100))
+      {
+        return true;
+      }
+
+      return false;
     },
   },
   computed: {

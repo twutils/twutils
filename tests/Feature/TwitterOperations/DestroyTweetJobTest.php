@@ -311,7 +311,7 @@ class DestroyTweetJobTest extends IntegrationTestCase
         }
         $delaysIndexes->each(
             function ($delayIndex) use ($indexLastDispatched) {
-                $this->assertNotNull($this->dispatchedJobs[$delayIndex + $indexLastDispatched - 4]->delay);
+                $this->assertNotNull($this->dispatchedJobs[$delayIndex + $indexLastDispatched - 2]->delay);
             }
         );
 

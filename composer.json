@@ -12,6 +12,7 @@
         "abraham/twitteroauth": "^1.1.0",
         "adrienrn/php-mimetyper": "^0.2.1",
         "beyondcode/laravel-dump-server": "^1.2",
+        "doctrine/dbal": "^2.10",
         "erusev/parsedown-extra": "^0.8.0",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",

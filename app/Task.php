@@ -6,6 +6,7 @@ use Storage;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use App\Jobs\CleaningAllTweetsAndTweeps;
 use App\TwUtils\TwitterOperations\destroyLikesOperation;
 use App\TwUtils\TwitterOperations\destroyTweetsOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
@@ -47,16 +48,6 @@ class Task extends Model
 
         static::deleting(function (self $task) {
             $taskId = $task->id;
-            $taskTweets = TaskTweet::where('task_id', $taskId)
-                ->get()
-                ->pluck('tweet_id_str');
-
-            $taskTweeps = Following::where('task_id', $taskId)
-                ->get()
-                ->concat(
-                    Follower::where('task_id', $taskId)->get()
-                )
-                ->pluck('tweep_id_str');
 
             TaskTweet::where('task_id', $taskId)->delete();
             Following::where('task_id', $taskId)->delete();
@@ -75,31 +66,10 @@ class Task extends Model
                 }
             }
 
-            if (in_array($task->baseName, static::TWEETS_LISTS_BASE_NAMES)) {
-                $tweetsSharedWithOtherTasks = TaskTweet::where('task_id', '!=', $taskId)
-                    ->whereIn('tweet_id_str', $taskTweets)
-                    ->get()
-                    ->pluck('tweet_id_str');
-
-                $taskTweetsWithoutSharedWithOtherTasksTweets = $taskTweets->diff($tweetsSharedWithOtherTasks);
-
-                Tweet::whereIn('id_str', $taskTweetsWithoutSharedWithOtherTasksTweets)->get()->map->delete();
-            } elseif (in_array($task->baseName, static::USERS_LISTS_BASE_NAMES)) {
-                $tweepsSharedWithOtherTasks = Following::where('task_id', '!=', $taskId)
-                    ->whereIn('tweep_id_str', $taskTweeps)
-                    ->get()
-                    ->concat(
-                        Follower::where('task_id', '!=', $taskId)
-                        ->whereIn('tweep_id_str', $taskTweeps)
-                        ->get()
-                    )
-                    ->pluck('tweep_id_str');
-
-                $taskTweepsWithoutSharedWithOtherTasksTweeps = $taskTweeps->diff($tweepsSharedWithOtherTasks);
-
-                Tweep::whereIn('id_str', $taskTweepsWithoutSharedWithOtherTasksTweeps)->get()->map->delete();
-            }
             $task->managedTasks->map->delete();
+        });
+        static::deleted(function (self $task) {
+            dispatch(new CleaningAllTweetsAndTweeps);
         });
     }
 

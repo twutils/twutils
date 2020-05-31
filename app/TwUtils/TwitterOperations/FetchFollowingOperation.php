@@ -51,7 +51,6 @@ class FetchFollowingOperation extends TwitterOperation
 
     protected function afterCompletedTask(Task $task)
     {
-        dispatch(new CleanFollowingsJob($this->task));
         dispatch(new FetchFollowingLookupsJob(['index' => 0], $this->socialUser, $this->task));
     }
 
@@ -86,9 +85,15 @@ class FetchFollowingOperation extends TwitterOperation
             app()->make('BeforeFollowingInsertHook');
         }
 
+        if (! $this->shouldContinueProcessing()) {
+            return;
+        }
+
         foreach (collect($followings)->chunk(50) as $i => $followingsGroup) {
             Following::insert($followingsGroup->toArray());
         }
+
+        dispatch(new CleanFollowingsJob($this->task));
     }
 
     protected function buildParameters()

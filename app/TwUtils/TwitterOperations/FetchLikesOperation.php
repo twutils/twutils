@@ -3,11 +3,9 @@
 namespace App\TwUtils\TwitterOperations;
 
 use App\Task;
-use App\Tweep;
 use App\Tweet;
 use App\TaskTweet;
 use Carbon\Carbon;
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
@@ -25,9 +23,11 @@ class FetchLikesOperation extends TwitterOperation
 
         $last = (array) collect($this->response)->last();
 
-        $parameters = $this->buildParameters() + ['max_id' => $last['id_str']];
+        $parameters = $this->buildParameters();
 
-        dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task))->delay($nextJobDelay);
+        $parameters['max_id'] = $last['id_str'];
+
+        dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task->fresh()))->delay($nextJobDelay);
     }
 
     protected function shouldBuildNextJob()
@@ -51,7 +51,6 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function afterCompletedTask(Task $task)
     {
-        dispatch(new CleanLikesJob($task));
     }
 
     protected function saveResponse()
@@ -61,7 +60,7 @@ class FetchLikesOperation extends TwitterOperation
         $likes = [];
 
         $responseCollection = collect($this->response)
-            ->map(function ($tweet) {
+            ->map(function (object $tweet) {
                 $tweet->created_at = Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
 
                 return $tweet;
@@ -91,72 +90,88 @@ class FetchLikesOperation extends TwitterOperation
 
         $tweeps->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
         ->each(function ($tweepsGroup) {
-            $tweepsGroup = $tweepsGroup->map(function ($tweep) {
-                return TweepsManager::mapResponseUserToTweep((array) $tweep);
-            });
-            Tweep::insert($tweepsGroup->toArray());
+            TweepsManager::insertOrUpdateMultipleTweeps($tweepsGroup);
         });
 
-        $tweepsIds = $tweeps->pluck('id_str');
-
-        $foundTweeps = collect([]);
-
-        $tweepsIds->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
-        ->each(function ($tweepsIdsGroup) use (&$foundTweeps) {
-            Tweep::whereIn('id_str', $tweepsIdsGroup)
-            ->get()
-            ->map(function ($tweep) use (&$foundTweeps) {
-                $foundTweeps->push($tweep);
-            });
-        });
-
-        $responseCollection->each(
-            function ($like) use (&$likes, $taskId, $foundTweeps) {
-                $like = (array) json_decode(json_encode($like), true);
-                $tweep = $foundTweeps->where('id_str', $like['user']['id_str'])->last();
-
-                $mappedTweet = TweetsManager::mapResponseToTweet($like, $tweep, $taskId);
-                array_push($likes, $mappedTweet);
-            }
-        );
-
-        foreach (collect($likes)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
-            Tweet::insert($likesGroup->toArray());
+        foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
+            TweetsManager::insertOrUpdateMultipleTweets($likesGroup);
         }
 
-        foreach (collect($likes)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
-            $tweets = $likesGroup->map(function ($tweet) use ($responseCollection) {
-                $id = $tweet['id_str'];
-                $tweetResponse = $responseCollection->where('id_str', $id)->first();
+        if (! $this->shouldContinueProcessing()) {
+            return;
+        }
 
-                return ['favorited'=>$tweetResponse->favorited, 'retweeted' => $tweetResponse->retweeted, 'task_id' => $this->task->id, 'tweet_id_str' => $id];
-            })->toArray();
+        foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
+            $tweets = $likesGroup->unique('id_str')->map(function ($tweet) use ($responseCollection) {
+                $id = $tweet->id_str;
 
+                return ['favorited'=>$tweet->favorited, 'retweeted' => $tweet->retweeted, 'task_id' => $this->task->id, 'tweet_id_str' => $id];
+            })
+            ->toArray();
+
+            TaskTweet::where('task_id', $this->task->id)
+                ->whereIn('tweet_id_str', $likesGroup->pluck('id_str'))
+                ->delete();
             TaskTweet::insert($tweets);
         }
     }
 
     protected function buildParameters()
     {
-        return [
-            'user_id'          => $this->socialUser->social_user_id,
-            'screen_name'      => $this->socialUser->nickname,
+        $defaultParameters = [
             'count'            => config('twutils.twitter_requests_counts.fetch_likes'),
             'include_entities' => true,
+            'screen_name'      => $this->socialUser->nickname,
             'tweet_mode'       => 'extended',
+            'user_id'          => $this->socialUser->social_user_id,
         ];
+
+        return array_merge($defaultParameters, $this->getParametersFromSettings());
+    }
+
+    protected function getParametersFromSettings()
+    {
+        $taskSettings = $this->task->extra['settings'];
+
+        if (empty($taskSettings)) {
+            return [];
+        }
+
+        $addedParameters = [];
+
+        if (isset($taskSettings['start_date'])) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $taskSettings['start_date']);
+
+            $closestTweet = Tweet::where('tweet_created_at', '<=', $startDate->subDays(1))
+                            ->orderByDesc('tweet_created_at')
+                            ->limit(1)
+                            ->first();
+            if ($closestTweet) {
+                $addedParameters['since_id'] = $closestTweet->id_str;
+            }
+        }
+
+        if (isset($taskSettings['end_date'])) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $taskSettings['end_date']);
+
+            $closestTweet = Tweet::where('tweet_created_at', '>=', $startDate->addDays(1))
+                            ->orderBy('tweet_created_at')
+                            ->limit(1)
+                            ->first();
+
+            if ($closestTweet) {
+                $addedParameters['max_id'] = $closestTweet->id_str;
+            }
+        }
+
+        return $addedParameters;
     }
 
     public function dispatch()
     {
         $parameters = $this->buildParameters();
+        $taskSettings = $this->task->extra['settings'];
 
-        try {
-            return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
-        } catch (\Exception $e) {
-            if (app('env') === 'testing') {
-                dd($e);
-            }
-        }
+        return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
     }
 }

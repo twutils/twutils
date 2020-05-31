@@ -50,7 +50,6 @@ class FetchFollowersOperation extends FetchFollowingOperation
 
     protected function afterCompletedTask(Task $task)
     {
-        dispatch(new CleanFollowersJob($this->task));
     }
 
     protected function saveResponse()
@@ -85,9 +84,15 @@ class FetchFollowersOperation extends FetchFollowingOperation
             app()->make('BeforeFollowersInsertHook');
         }
 
+        if (! $this->shouldContinueProcessing()) {
+            return;
+        }
+
         foreach (collect($followers)->chunk(50) as $i => $followersGroup) {
             Follower::insert($followersGroup->toArray());
         }
+
+        dispatch(new CleanFollowersJob($this->task));
     }
 
     protected function buildParameters()

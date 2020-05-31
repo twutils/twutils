@@ -13,5 +13,17 @@ class UserTweetsJobTest extends TweetsTaskTest
 
         $this->jobName = FetchUserTweetsJob::class;
         $this->apiEndpoint = '/api/userTweets';
+        $this->twitterEndpoint = 'statuses/user_timeline';
+
+        $this->initalTwitterParametersKeys = [
+            'count',
+            'exclude_replies',
+            'include_entities',
+            'include_rts',
+            'screen_name',
+            'trim_user',
+            'tweet_mode',
+            'user_id',
+        ];
     }
 }

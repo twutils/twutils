@@ -91,6 +91,22 @@
 <template>
   <div class="my-3 row">
     <slot></slot>
+    <div
+      v-if="shouldShowExpectedToFinish"
+      :class="`col-12 ${isRtl ? 'rtl':''}`"
+    >
+      <div class="alert alert-secondary">
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
+        <span v-if="!isRtl">
+          This will take time. Maybe <strong>({{ taskExpectedToFinishInMins }} Minutes)</strong>.
+          Looks like you have more than 2800 {{task.baseName === 'fetchfollowers' ? 'follower': 'following'}}, and twitter allows to fetch only 2800 {{task.baseName === 'fetchfollowers' ? 'follower': 'following'}} in each 15 minute.
+        </span>
+        <span v-if="isRtl">
+          هذه المهمة قد تستغرق بعض الوقت. ربما <strong>({{ taskExpectedToFinishInMins }} دقيقة)</strong>.
+          على ما يبدو أن لديك أكثر من ٢٨٠٠ متابع، وتويتر يسمح فقط بنسخ ٢٨٠٠ متابع كل ١٥ دقيقة.
+        </span>
+      </div>
+    </div>
     <div :class="`col-12 ${isRtl ? 'rtl':''}`">
       <div class="row usersList__controls__container">
         <div class="col-sm-8 p-0 mh-100 d-flex flex-column justify-content-between" :style="`border-${isRtl ? 'left':'right'}: 1px dashed #ccc;`">
@@ -277,6 +293,7 @@
 
 <script>
 import Vue from 'vue'
+import get from 'lodash/get'
 import EventBus from '@/EventBus'
 import debounce from 'lodash/debounce'
 import orderBy from 'lodash/orderBy'
@@ -401,6 +418,7 @@ export default {
     })
   },
   methods: {
+    get,
     initFollowers () {
       if (this.task.followers) {
         this.users = this.task.followers.map(this.refineUserFunc).reverse()
@@ -549,6 +567,36 @@ export default {
     },
     perPageInt () {
       return parseInt(this.perPage)
+    },
+    shouldShowExpectedToFinish () {
+      return this.task.status == `queued` &&
+              [`fetchfollowing`, `fetchfollowers`,].includes(this.task.baseName) &&
+              get(this.user, `social_users[0].followers_count`, 0) > 2800
+    },
+    taskExpectedToFinishInMins () {
+      if (![`fetchfollowing`, `fetchfollowers`,].includes(this.task.baseName)) {
+        return ``
+      }
+
+      let expectedToFinish = 0
+      let remainingUsers = 0
+
+      if (this.task.baseName === `fetchfollowers`) {
+        remainingUsers = get(this.user, `social_users[0].followers_count`, 0) - get(this.task, `followers_count`, 0)
+      }
+
+      if (this.task.baseName === `fetchfollowing`) {
+        remainingUsers = get(this.user, `social_users[0].friends_count`, 0) - get(this.task, `followings_count`, 0)
+      }
+
+      // We can only fetch 2800 user in 15 mins.
+      expectedToFinish = Math.round((remainingUsers / 2800 * 15) - 15)
+
+      if (expectedToFinish < 1) {
+        return `0`
+      }
+
+      return expectedToFinish
     },
   },
 }

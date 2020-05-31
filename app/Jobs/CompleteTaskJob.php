@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Task;
-use App\Tweep;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -45,12 +44,13 @@ class CompleteTaskJob implements ShouldQueue
         $tweeps = $this->task->getTaskTweeps();
 
         $tweeps->map(function ($tweep) {
-            if (! $tweep)
-            {
-                return ;
+            if (! $tweep) {
+                return;
             }
 
             dispatch(new SaveTweepAvatarJob($tweep->id_str));
         });
+
+        dispatch(new CleaningAllTweetsAndTweeps);
     }
 }

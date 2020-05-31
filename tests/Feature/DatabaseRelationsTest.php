@@ -8,7 +8,6 @@ use App\Tweep;
 use App\Tweet;
 use App\Follower;
 use App\Following;
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
 
@@ -26,7 +25,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $this->getJson('/api/likes')
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter([['type' => CleanLikesJob::class, 'skip' => true]]);
+        $this->fireJobsAndBindTwitter([]);
 
         DB::connection()->enableQueryLog();
         $response = $this->getJson('/api/tasks/likes');
@@ -85,7 +84,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $this->assertEquals(Task::first()->tweets[2]->pivot->retweeted, 1);
         $this->assertEquals(Task::first()->tweets[2]->pivot->favorited, 1);
 
-        $this->assertLessThanOrEqual(16, count($queries));
+        $this->assertLessThanOrEqual(18, count($queries));
     }
 
     public function test_followings_and_followers_table_will_have_the_latest_tweep_id()
@@ -114,8 +113,17 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
-        $followers = Follower::all()->pluck('tweep_id')->sort()->implode(',');
-        $followings = Following::all()->pluck('tweep_id')->sort()->implode(',');
+        $followers = Tweep::whereIn('id_str', Follower::all()->pluck('tweep_id_str')->sort())
+                            ->get()
+                            ->pluck('id');
+
+        $followings = Tweep::whereIn('id_str', Following::all()->pluck('tweep_id_str')->sort())
+                            ->get()
+                            ->pluck('id');
+
+        // Assert Followers and Followings not empty string like: ',,,,,,,'
+        $this->assertNotEquals(Follower::count(), strlen($followers->implode(',')) + 1);
+        $this->assertNotEquals(Following::count(), strlen($followings->implode(',')) + 1);
 
         $lastJobIndex = count($this->dispatchedJobs);
 
@@ -127,8 +135,27 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
-        $this->assertNotEquals($followers, Follower::all()->pluck('tweep_id_str')->sort()->implode(','));
-        $this->assertNotEquals($followings, Following::all()->pluck('tweep_id_str')->sort()->implode(','));
+        $this->assertNotEquals(
+            $followers->implode(','),
+            Tweep::whereIn(
+                'id_str',
+                Follower::all()->pluck('tweep_id_str')
+            )
+            ->pluck('id')
+            ->sort()
+            ->implode(',')
+        );
+
+        $this->assertNotEquals(
+            $followings->implode(','),
+            Tweep::whereIn(
+                'id_str',
+                Following::all()->pluck('tweep_id_str')
+            )
+            ->pluck('id')
+            ->sort()
+            ->implode(',')
+        );
 
         $this->assertEquals(4, Task::all()->count());
         $this->assertEquals('completed', Task::find(1)->status);
@@ -139,12 +166,13 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
     public function test_two_workers_share_same_tweep_whose_data_will_be_updated_during_following_task()
     {
+        // In total, we have three tasks
         // 1. a Tweep, let's say his handle is 'MohannadNaj', was inserted in
         // the first 'fetch likes' task.
         // 2. a 'fetch followings' task was dispatched after. This task
         // includes the same tweep, 'MohannadNaj'.
-        // 3. at the same time the previous task was dispatched, a new
-        // 'fetch likes' was dispatched and finished, it includes
+        // 3. at the same time the second task was dispatched, the third
+        // task 'fetch likes' was dispatched and finished, it includes
         // the same tweep: 'MohannadNaj', now his data will be updated
         // and the tweep will be in a different id.
 
@@ -168,8 +196,9 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
         $this->bindTwitterConnector($followingResponse);
 
-        $tweepsIds = (Tweep::all()->pluck('id')->implode(','));
-        app()->bind('BeforeFollowingInsertHook', function () use ($tweets, $tweepsIds, $followingResponse) {
+        $tweepsIds = (Tweep::all()->pluck('id_str')->implode(','));
+        $hookExecuted = false;
+        app()->bind('BeforeFollowingInsertHook', function () use ($tweets, $tweepsIds, $followingResponse, &$hookExecuted) {
             $this->bindTwitterConnector($tweets);
 
             $lastJobIndex = count($this->dispatchedJobs);
@@ -180,7 +209,9 @@ class DatabaseRelationsTest extends IntegrationTestCase
             for ($i = $lastJobIndex; $i < count($this->dispatchedJobs); $i++) {
                 $this->dispatchedJobs[$i]->handle();
             }
+
             $this->bindTwitterConnector($followingResponse);
+            $hookExecuted = true;
         });
 
         $this->fireJobsAndBindTwitter([
@@ -189,6 +220,8 @@ class DatabaseRelationsTest extends IntegrationTestCase
                 'skip' => true,
             ],
         ], $lastJobIndex);
+
+        $this->assertTrue($hookExecuted);
 
         $firstLikesTaskTweepsIds = Task::find(1)->likes->pluck('tweep_id')->sort()->implode(',');
         $firstLikesTaskTweepsIdStrs = Task::find(1)->likes->map->tweep->map->id_str->unique()->sort()->implode(',');
@@ -256,10 +289,10 @@ class DatabaseRelationsTest extends IntegrationTestCase
             ],
         ], $lastJobIndex);
 
-        $firstLikesTaskTweepsIds = Task::find(1)->likes->pluck('tweep_id')->sort()->implode(',');
+        $firstLikesTaskTweepsIds = Task::find(1)->likes->pluck('tweep.id')->sort()->implode(',');
         $firstLikesTaskTweepsIdStrs = Task::find(1)->likes->map->tweep->map->id_str->unique()->sort()->implode(',');
         $followersTaskTweeps = Task::find(2)->followers->pluck('tweep_id_str')->sort()->implode(',');
-        $secondLikesTaskTweepsIds = Task::find(3)->likes->pluck('tweep_id')->sort()->implode(',');
+        $secondLikesTaskTweepsIds = Task::find(3)->likes->pluck('tweep.id')->sort()->implode(',');
         $secondLikesTaskTweepsIdStrs = Task::find(3)->likes->map->tweep->map->id_str->unique()->sort()->implode(',');
 
         $followersTaskResponse = $this->getJson('/api/tasks/2/data')->decodeResponseJson();

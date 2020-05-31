@@ -13,5 +13,14 @@ class EntitiesLikesJobTest extends EntitiesTaskTests
 
         $this->jobName = FetchEntitiesLikesJob::class;
         $this->apiEndpoint = '/api/entitiesLikes';
+        $this->twitterEndpoint = 'favorites/list';
+
+        $this->initalTwitterParametersKeys = [
+            'count',
+            'include_entities',
+            'screen_name',
+            'tweet_mode',
+            'user_id',
+        ];
     }
 }

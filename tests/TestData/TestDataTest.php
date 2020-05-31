@@ -3,7 +3,6 @@
 namespace Tests\TestData;
 
 use App\SocialUser;
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\UserManager;
 use Tests\IntegrationTestCase;
@@ -80,10 +79,6 @@ class TestDataTest extends IntegrationTestCase
                     'type'        => FetchLikesJob::class,
                     'twitterData' => $tweets,
                 ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => false,
-                ],
             ],
             $lastFiredJobIndex
         );
@@ -109,10 +104,6 @@ class TestDataTest extends IntegrationTestCase
                 [
                     'type'        => FetchUserTweetsJob::class,
                     'twitterData' => $tweets,
-                ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => false,
                 ],
             ],
             $lastFiredJobIndex

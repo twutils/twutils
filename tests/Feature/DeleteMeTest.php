@@ -10,13 +10,10 @@ use App\Following;
 use Carbon\Carbon;
 use App\SocialUser;
 use App\Jobs\DeleteMeJob;
-use App\Jobs\CleanLikesJob;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
-use App\Jobs\CleanFollowersJob;
 use App\Jobs\FetchFollowersJob;
 use App\Jobs\FetchFollowingJob;
-use App\Jobs\CleanFollowingsJob;
 use App\Jobs\FetchUserTweetsJob;
 use App\Jobs\FetchFollowingLookupsJob;
 
@@ -146,20 +143,8 @@ class DeleteMeTest extends IntegrationTestCase
                 'twitterData' => $this->generateUniqueTweets(2),
             ],
             [
-                'type' => CleanFollowingsJob::class,
-            ],
-            [
                 'type'        => FetchFollowingLookupsJob::class,
                 'twitterData' => [],
-            ],
-            [
-                'type' => CleanFollowersJob::class,
-            ],
-            [
-                'type' => CleanLikesJob::class,
-            ],
-            [
-                'type' => CleanLikesJob::class,
             ],
         ]);
 

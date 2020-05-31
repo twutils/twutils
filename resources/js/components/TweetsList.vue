@@ -133,7 +133,7 @@
           </h5>
         </div>
         <div @click="filterTweetsByYearAndMonth(year, monthIndex)" data-toggle="tooltip" data-placement="bottom" :title="`${year}-${month} ${getYearAndMonthTweetsLength(year, monthIndex)} ${__('tweets')}`" v-for="(month, monthIndex) in months" :class="`col-1 monthTweetsBarContainer ${selected.year === year && selected.month === monthIndex ? 'selected':''} ${getYearAndMonthTweetsLength(year, monthIndex) > 0 ? 'selectable':''}`" style="height: 50px;" :key="monthIndex">
-          <small class="monthTweetsBar" :style="`height: ${parseInt( (getYearAndMonthTweetsLength(year, monthIndex) * 50) / maximumMonthlyTweets)}px;`">&nbsp;</small>
+          <small class="monthTweetsBar" :style="`height: ${getMonthBarHeight(year, monthIndex)}px;`">&nbsp;</small>
           <small class="monthTweetsBarLabel" v-if="monthIndex == 0 || monthIndex == 11" v-text="month.substr(0,3).toUpperCase()"></small>
         </div>
       </div>
@@ -163,7 +163,7 @@
           </div>
         </div>
       </div>
-      <tweets-list-item v-for="(tweet,index) in paginatedFilteredTweets" :tweet="tweet" :key="tweet.id"></tweets-list-item>
+      <tweets-list-item :ref="tweet.id" v-for="(tweet,index) in paginatedFilteredTweets" :tweet="tweet" :key="tweet.id"></tweets-list-item>
     </div>
   </div>
 </template>
@@ -294,11 +294,10 @@ export default {
           const currentPage = resp.data.current_page
           const lastPage = resp.data.last_page
 
-          let currentTweetsIds = this.tweets.map(x => x.id_str)
+          const currentTweetsIds = this.tweets.map(x => x.id_str)
 
           resp.data.data.map(tweet => {
-            if (! currentTweetsIds.includes(tweet.id_str))
-            {
+            if (!currentTweetsIds.includes(tweet.id_str)) {
               currentTweetsIds.push(tweet.id_str)
               this.tweets.push(tweet)
             }
@@ -431,6 +430,15 @@ export default {
       if (yearAndMonthTweetsLength > this.maximumMonthlyTweets) { this.maximumMonthlyTweets = yearAndMonthTweetsLength }
 
       return yearAndMonthTweetsLength
+    },
+    getMonthBarHeight (year, monthIndex) {
+      const tweetsLength = this.getYearAndMonthTweetsLength(year, monthIndex)
+
+      const calculatedValue = parseInt((tweetsLength * 50) / this.maximumMonthlyTweets)
+
+      if (tweetsLength !== 0 && calculatedValue < 2) { return 2 }
+
+      return calculatedValue
     },
   },
 }

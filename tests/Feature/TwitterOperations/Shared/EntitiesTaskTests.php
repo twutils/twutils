@@ -5,7 +5,8 @@ namespace Tests\Feature\TwitterOperations\Shared;
 use Config;
 use App\Task;
 use App\Tweet;
-use App\Jobs\CleanLikesJob;
+use Tests\TwitterClientMock;
+use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;
 
@@ -17,6 +18,8 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 {
     protected $jobName;
     protected $apiEndpoint;
+    protected $twitterEndpoint;
+    protected $initalTwitterParametersKeys;
 
     public function setUp(): void
     {
@@ -46,14 +49,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -74,14 +70,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -104,14 +93,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -133,14 +115,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -178,14 +153,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
@@ -231,10 +199,6 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
                     'type'        => $this->jobName,
                     'twitterData' => $this->uniqueTweetIds([$tweetWithGif, $tweetWithVideo, $tweetWithGif, $tweetWithVideo]),
                 ],
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
             ]
         );
 
@@ -269,20 +233,145 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->fireJobsAndBindTwitter(
-            [
-                [
-                    'type' => CleanLikesJob::class,
-                    'skip' => true,
-                ],
-            ]
-        );
+        $this->fireJobsAndBindTwitter([]);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedMissing('1', $tweet->id_str.'_1.jpeg');
         $this->assertTrue(empty(Task::all()->last()->tweets->first()->pivot->attachments));
+    }
+
+    public function test_save_likes_with_and_without_custom_date_all_has_correct_twitter_parameters()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+
+        config()->set(['twutils.minimum_expected_likes' => 2]);
+        config()->set(['twutils.twitter_requests_counts.fetch_likes' => 3]);
+
+        $tweets = $this->generateUniqueTweets(30);
+
+        $tweetsDividedForMultipleJobs = [];
+
+        collect($tweets)
+            ->chunk(config('twutils.twitter_requests_counts.fetch_likes'))
+            ->map(function ($tweetsChunk) use (&$tweetsDividedForMultipleJobs) {
+                $tweetsDividedForMultipleJobs[] = [
+                    'type'           => $this->jobName,
+                    'twitterData'    => $tweetsChunk->toArray(),
+                ];
+            });
+
+        $tweetsDividedForMultipleJobs[] = [
+            'type'           => $this->jobName,
+            'twitterData'    => [],
+        ];
+
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter($tweetsDividedForMultipleJobs);
+
+        $lastJobIndex = count($this->dispatchedJobs);
+
+        $taskSettings = [
+            'start_date' => now()->subDays(7)->format('Y-m-d'),
+            'end_date'   => now()->subDays(3)->format('Y-m-d'),
+        ];
+
+        $this->postJson($this->apiEndpoint, [
+            'settings' => $taskSettings,
+        ])
+        ->assertStatus(200);
+
+        $tweetsDividedForMultipleJobs = [];
+
+        collect($tweets)
+            ->filter(function ($tweet) use ($taskSettings) {
+                $shouldReturn = true;
+                $tweetCreatedAt = Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
+
+                if (
+                        isset($taskSettings['start_date']) &&
+                        ! $tweetCreatedAt->greaterThanOrEqualTo($taskSettings['start_date'])
+                    ) {
+                    $shouldReturn = false;
+                }
+
+                if (
+                        isset($taskSettings['end_date']) &&
+                        ! $tweetCreatedAt->lessThanOrEqualTo($taskSettings['end_date'])
+                    ) {
+                    $shouldReturn = false;
+                }
+
+                return $shouldReturn;
+            })
+            ->chunk(config('twutils.twitter_requests_counts.fetch_likes'))
+            ->map(function ($tweetsChunk) use (&$tweetsDividedForMultipleJobs) {
+                $tweetsDividedForMultipleJobs[] = [
+                    'type'           => $this->jobName,
+                    'twitterData'    => $tweetsChunk->toArray(),
+                ];
+            });
+
+        $tweetsDividedForMultipleJobs[] = [
+            'type'           => $this->jobName,
+            'twitterData'    => [],
+        ];
+
+        $this->fireJobsAndBindTwitter($tweetsDividedForMultipleJobs, $lastJobIndex);
+
+        $this->assertTaskCount(2, 'completed');
+        $this->assertCount(30, Task::find(1)->likes->pluck('id_str'));
+        $this->assertCount(4, Task::find(2)->likes);
+
+        // Assert it's 6 Requests since we are requesting with parameter
+        // count as '3' tweets while it's all 10 tweets.
+        // So the first task 10 tweets will be fetched in 4 requests.
+        // And the second task is parameterized to fetch only
+        // within 4 tweets that will be fetched in 3 requests.
+        $this->assertCount(
+            13,
+            TwitterClientMock::getAllCallsData(),
+        );
+
+        $initialMaxIdForSettingsTask = null;
+
+        foreach (TwitterClientMock::getAllCallsData() as $index => $twitterCallData) {
+            $this->assertEquals(
+                $this->twitterEndpoint,
+                $twitterCallData['endpoint'],
+            );
+
+            $expectedParameters = $this->initalTwitterParametersKeys;
+
+            // 1st request and 11th are the first requests each was performed for a newly created task
+            // So only them, aren't expected to have 'max_id' parameter
+
+            if ($index !== 0 && $index < 11) {
+                $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['max_id']);
+            } elseif ($index >= 11) {
+                $expectedParameters = array_merge($this->initalTwitterParametersKeys, ['since_id', 'max_id']);
+            }
+
+            $this->assertEquals(
+                $expectedParameters,
+                array_keys($twitterCallData['parameters']),
+                'Request ['.$index.'] to twitter doesn\'t contain the correct parameters.'
+                .json_encode($twitterCallData)
+            );
+
+            if ($index == 11) {
+                $initialMaxIdForSettingsTask = $twitterCallData['parameters']['max_id'];
+            }
+
+            if ($index > 11) {
+                $this->assertNotNull($initialMaxIdForSettingsTask);
+                $this->assertNotEquals($initialMaxIdForSettingsTask, $twitterCallData['parameters']['max_id']);
+            }
+        }
     }
 
     protected function assertZippedExists($taskId, $files)

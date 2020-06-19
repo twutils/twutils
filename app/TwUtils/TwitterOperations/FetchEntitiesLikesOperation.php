@@ -38,10 +38,6 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
             });
 
             $this->setCompletedTask($this->task);
-
-            if ($totalTweets === 0) {
-                dispatch(new ZipEntitiesJob($this->task));
-            }
         }
 
         return $shouldBuild;
@@ -81,6 +77,7 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
     protected function afterCompletedTask(Task $task)
     {
         parent::afterCompletedTask($task);
+        dispatch(new ZipEntitiesJob($this->task));
     }
 
     public function dispatch()

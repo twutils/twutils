@@ -67,17 +67,9 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
         }
     }
 
-    protected function setCompletedTask($task)
-    {
-        $task->status = 'staging';
-        $task->save();
-        $this->afterCompletedTask($task);
-    }
-
     protected function afterCompletedTask(Task $task)
     {
         parent::afterCompletedTask($task);
-        dispatch(new ZipEntitiesJob($this->task));
     }
 
     public function dispatch()

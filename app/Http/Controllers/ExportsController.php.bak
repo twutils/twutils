@@ -23,6 +23,7 @@ class ExportsController extends Controller
     {
         $this->authorize('view', $task);
 
+        return ;
         if ($format === 'html') {
             return $this->html($request, $task);
         } else {

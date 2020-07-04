@@ -3,6 +3,7 @@
 namespace App;
 
 use Storage;
+use App\Download;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +28,12 @@ class Task extends Model
         'fetchentitiesusertweets',
     ];
 
+
+    public const TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES = [
+        'fetchentitieslikes',
+        'fetchentitiesusertweets',
+    ];
+
     public const USERS_LISTS_BASE_NAMES = [
         'fetchfollowing',
         'fetchfollowers',
@@ -45,6 +52,38 @@ class Task extends Model
     protected static function boot()
     {
         parent::boot();
+
+        static::created(function (self $task) {
+            Download::create([
+                'task_id' => $task->id,
+                'type'    => Download::TYPE_HTML,
+            ]);
+            Download::create([
+                'task_id' => $task->id,
+                'type'    => Download::TYPE_EXCEL,
+            ]);
+
+            if ( ! in_array($task->baseName, static::TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES) )
+            {
+                return ;
+            }
+
+            Download::create([
+                'task_id' => $task->id,
+                'type'    => Download::TYPE_HTMLENTITIES,
+            ]);
+        });
+
+        static::updated(function (self $task) {
+
+            if ( array_key_exists('status', $task->getDirty() ))
+            {
+                $task->downloads->map(function (Download $download) {
+                    $download->status = 'started';
+                    $download->save();
+                });
+            }
+        });
 
         static::deleting(function (self $task) {
             $taskId = $task->id;
@@ -68,6 +107,7 @@ class Task extends Model
 
             $task->managedTasks->map->delete();
         });
+
         static::deleted(function (self $task) {
             dispatch(new CleaningAllTweetsAndTweeps);
         });
@@ -117,6 +157,11 @@ class Task extends Model
     public function socialUser()
     {
         return $this->belongsTo(SocialUser::class, 'socialuser_id', 'id');
+    }
+
+    public function downloads()
+    {
+        return $this->hasMany(Download::class, 'task_id', 'id');
     }
 
     public function followings()

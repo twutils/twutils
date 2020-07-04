@@ -51,6 +51,8 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
+        dd('Done.. test_basic_save_photo');
+
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();

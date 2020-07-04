@@ -15,7 +15,7 @@ class ExportsManager
     {
         $zipFile = static::makeTaskZipObject($task);
 
-        $path = \Storage::disk('htmlTasks')->path($fileName);
+        $path = Storage::disk(config('filesystems.cloud'))->path($fileName);
 
         $zipFile->saveAsFile($path);
 

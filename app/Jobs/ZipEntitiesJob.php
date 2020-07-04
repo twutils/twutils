@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Download;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
@@ -26,8 +27,9 @@ class ZipEntitiesJob implements ShouldQueue
 
     public function handle()
     {
-        dispatch(new CompleteTaskJob($this->task));
+        $download = $this->task->downloads->where('type', Download::TYPE_HTMLENTITIES)->first();
 
+        dd($this->task->likes->map->pivot->toArray(), \Storage::disk('temporaryTasks')->allFiles($this->task->id));
         $savedMediaPath = \Storage::disk('temporaryTasks')->path($this->task->id);
         $zippedTaskPath = \Storage::disk('tasks')->path($this->task->id);
         $fileName = $this->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
@@ -54,6 +56,8 @@ class ZipEntitiesJob implements ShouldQueue
         ->close();
 
         $zippedStream = fopen($fileAbsolutePath, 'r');
+
+        dd(\Storage::disk(config('filesystems.cloud'))->allFiles(''));
 
         \Storage::disk(config('filesystems.cloud'))->put($this->task->id.'/'.$fileName, $zippedStream);
 

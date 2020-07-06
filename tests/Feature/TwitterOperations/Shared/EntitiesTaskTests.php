@@ -99,7 +99,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
-        $this->assertZippedExists('1', $tweet->id_str.'_1.mp4');
+        $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
         $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
     }
 
@@ -121,9 +121,9 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
-        $this->assertZippedExists('1', $tweet->id_str.'_1.mp4');
+        $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
         $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][1], $tweet->id_str.'_1.mp4');
+        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][1], $tweet->id_str.'_2.mp4');
 
         $response = $this->get('task/1/download/html');
         $response->assertStatus(200);
@@ -164,9 +164,9 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
     public function test_mixed_types_of_tweets()
     {
-        $expectedSavedPaths = '1/media/10_1.jpeg,1/media/11_1.jpeg,1/media/12_1.jpeg,1/media/13_1.jpeg,1/media/14_1.jpeg,1/media/15_1.jpeg,1/media/16_1.jpeg,1/media/17_1.jpeg,1/media/18_1.jpeg,1/media/19_1.jpeg,1/media/20_1.jpeg,1/media/20_2.jpeg,1/media/21_1.jpeg,1/media/21_2.jpeg,1/media/22_1.jpeg,1/media/22_2.jpeg,1/media/23_1.jpeg,1/media/23_2.jpeg,1/media/24_1.jpeg,1/media/24_2.jpeg,1/media/25_1.jpeg,1/media/25_2.jpeg,1/media/26_1.jpeg,1/media/26_2.jpeg,1/media/27_1.jpeg,1/media/27_2.jpeg,1/media/28_1.jpeg,1/media/28_2.jpeg,1/media/29_1.jpeg,1/media/29_2.jpeg,1/media/30_1.jpeg,1/media/30_1.mp4,1/media/31_1.jpeg,1/media/31_1.mp4,1/media/32_1.jpeg,1/media/32_1.mp4,1/media/33_1.jpeg,1/media/33_1.mp4';
+        $expectedSavedPaths = '1/media/10_1.jpeg,1/media/11_1.jpeg,1/media/12_1.jpeg,1/media/13_1.jpeg,1/media/14_1.jpeg,1/media/15_1.jpeg,1/media/16_1.jpeg,1/media/17_1.jpeg,1/media/18_1.jpeg,1/media/19_1.jpeg,1/media/20_1.jpeg,1/media/20_2.jpeg,1/media/21_1.jpeg,1/media/21_2.jpeg,1/media/22_1.jpeg,1/media/22_2.jpeg,1/media/23_1.jpeg,1/media/23_2.jpeg,1/media/24_1.jpeg,1/media/24_2.jpeg,1/media/25_1.jpeg,1/media/25_2.jpeg,1/media/26_1.jpeg,1/media/26_2.jpeg,1/media/27_1.jpeg,1/media/27_2.jpeg,1/media/28_1.jpeg,1/media/28_2.jpeg,1/media/29_1.jpeg,1/media/29_2.jpeg,1/media/30_1.jpeg,1/media/30_2.mp4,1/media/31_1.jpeg,1/media/31_2.mp4,1/media/32_1.jpeg,1/media/32_2.mp4,1/media/33_1.jpeg,1/media/33_2.mp4';
 
-        $expectedTweetsAttachmentsPaths = '10_1.jpeg,11_1.jpeg,12_1.jpeg,13_1.jpeg,14_1.jpeg,15_1.jpeg,16_1.jpeg,17_1.jpeg,18_1.jpeg,19_1.jpeg,20_1.jpeg,20_2.jpeg,21_1.jpeg,21_2.jpeg,22_1.jpeg,22_2.jpeg,23_1.jpeg,23_2.jpeg,24_1.jpeg,24_2.jpeg,25_1.jpeg,25_2.jpeg,26_1.jpeg,26_2.jpeg,27_1.jpeg,27_2.jpeg,28_1.jpeg,28_2.jpeg,29_1.jpeg,29_2.jpeg,30_1.jpeg,30_1.mp4,31_1.jpeg,31_1.mp4,32_1.jpeg,32_1.mp4,33_1.jpeg,33_1.mp4';
+        $expectedTweetsAttachmentsPaths = '10_1.jpeg,11_1.jpeg,12_1.jpeg,13_1.jpeg,14_1.jpeg,15_1.jpeg,16_1.jpeg,17_1.jpeg,18_1.jpeg,19_1.jpeg,20_1.jpeg,20_2.jpeg,21_1.jpeg,21_2.jpeg,22_1.jpeg,22_2.jpeg,23_1.jpeg,23_2.jpeg,24_1.jpeg,24_2.jpeg,25_1.jpeg,25_2.jpeg,26_1.jpeg,26_2.jpeg,27_1.jpeg,27_2.jpeg,28_1.jpeg,28_2.jpeg,29_1.jpeg,29_2.jpeg,30_1.jpeg,30_2.mp4,31_1.jpeg,31_2.mp4,32_1.jpeg,32_2.mp4,33_1.jpeg,33_2.mp4';
 
         $this->withoutJobs();
         $this->logInSocialUser('api');

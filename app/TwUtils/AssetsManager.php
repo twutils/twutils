@@ -4,6 +4,12 @@ namespace App\TwUtils;
 
 use Image;
 use Storage;
+use App\Tweet;
+use App\TaskTweet;
+use App\TwUtils\Tweets\Media\Downloader;
+use App\TwUtils\Tweets\Media\GifDownloader;
+use App\TwUtils\Tweets\Media\ImageDownloader;
+use App\TwUtils\Tweets\Media\VideoDownloader;
 
 class AssetsManager
 {
@@ -42,142 +48,92 @@ class AssetsManager
         return null;
     }
 
-    public static function hasMedia(array $tweet)
+    public static function hasMedia(Tweet $tweet)
     {
         return ! empty($tweet['extended_entities']) && ! empty($tweet['extended_entities']['media']);
     }
 
-    public static function saveTweetMedia(array $tweet, $taskId)
+    public function saveTweetMedia(TaskTweet $taskTweet)
     {
+        $tweet = $taskTweet->tweet;
+        $taskId = $taskTweet->task_id;
+
         if (! static::hasMedia($tweet)) {
             return [];
         }
 
         $tweetMedias = [];
-        $path = $taskId.'/';
 
-        $counter = 0;
+        Downloader::$counter = 0;
+
         foreach ($tweet['extended_entities']['media'] as $media) {
-            $media = json_decode(json_encode($media));
-
-            $mediaPath = $tweet['id_str'].'_'.++$counter;
-
-            $savedMedia = [];
-
-            try {
-                if ($media->type == 'photo') {
-                    $savedMedia = [static::saveTweetPhoto($media, $path.$mediaPath)];
-                } elseif ($media->type == 'video') {
-                    $savedMedia = [static::saveTweetPhoto($media, $path.$mediaPath), static::saveTweetVideo($media, $path.$mediaPath)];
-                } elseif ($media->type == 'animated_gif') {
-                    $savedMedia = [static::saveTweetPhoto($media, $path.$mediaPath), static::saveTweetGif($media, $path.$mediaPath)];
-                }
-            } catch (\Exception $e) {
-                \Log::info(json_encode(['exception' => $e.'', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
-
-                return [];
-            }
+            $savedMedia = $this->saveSingleTweetMedia($media, $taskTweet);
 
             if (! empty($savedMedia)) {
-                $savedMedia = (object) collect($savedMedia)
-                    ->filter(
-                        function ($item) {
-                            return $item['ok'];
-                        }
-                    )
-                    ->pluck('path')
-                    ->map(function ($mediaPath) use ($path) {
-                        return substr($mediaPath, strlen($path));
-                    })
-                    ->toArray();
                 array_push($tweetMedias, $savedMedia);
             }
         }
 
-        return ['type' => $media->type, 'paths' => $tweetMedias];
+        return ['type' => $media['type'], 'paths' => $tweetMedias];
+    }
+
+    public function saveSingleTweetMedia(array $media, TaskTweet $taskTweet)
+    {
+        $tweet = $taskTweet->tweet;
+        $taskId = $taskTweet->task_id;
+
+        $media = json_decode(json_encode($media));
+
+        $mediaPath = $taskTweet->getMediaPathInStorage();
+
+        $savedMedia = [];
+
+        try {
+            if ($media->type == 'photo') {
+                $savedMedia = [static::saveTweetPhoto($media, $mediaPath)];
+            } elseif ($media->type == 'video') {
+                $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetVideo($media, $mediaPath)];
+            } elseif ($media->type == 'animated_gif') {
+                $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetGif($media, $mediaPath)];
+            }
+        } catch (\Exception $e) {
+            if (app()->runningUnitTests())
+            {
+                dd($e);
+            }
+
+            \Log::info(json_encode(['exception' => $e.'', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
+        }
+
+        if (! empty($savedMedia)) {
+            $savedMedia = (object) collect($savedMedia)
+                ->filter(
+                    function ($item) {
+                        return $item['ok'];
+                    }
+                )
+                ->pluck('path')
+                ->map(function ($mediaPath) use ($taskTweet) {
+                    return substr($mediaPath, strlen($taskTweet->getMediaDirPathInStorage()));
+                })
+                ->toArray();
+        }
+
+        return $savedMedia;
     }
 
     public static function saveTweetPhoto($media, $path)
     {
-        $ok = false;
-        $client = app('HttpClient');
-        $response = $client->get($media->media_url_https);
-
-        $extension = app('MimeDB')->findExtension($response->getHeaderLine('Content-Type'));
-        $localPath = $path.'.'.$extension;
-
-        try {
-            if (Storage::disk('temporaryTasks')->put($localPath, $response->getBody()->getContents())) {
-                $ok = true;
-            }
-        } catch (\Exception $e) {
-        }
-
-        return ['ok' => $ok, 'path' => $localPath];
+        return (new ImageDownloader($media, $path))->download()->toArray();
     }
 
     public static function saveTweetVideo($media, $path)
     {
-        $ok = false;
-        $client = app('HttpClient');
-
-        $videoVariants = collect($media->video_info->variants);
-        $chosenVideo = static::choseBestVideo($videoVariants);
-
-        $response = $client->get($chosenVideo->url);
-
-        $extension = app('MimeDB')->findExtension($response->getHeaderLine('Content-Type'));
-        $localPath = $path.'.'.$extension;
-
-        try {
-            if (Storage::disk('temporaryTasks')->put($localPath, $response->getBody()->getContents())) {
-                $ok = true;
-            }
-        } catch (\Exception $e) {
-        }
-
-        return ['ok' => $ok, 'path' => $localPath];
+        return (new VideoDownloader($media, $path))->download()->toArray();
     }
 
     public static function saveTweetGif($media, $path)
     {
-        $ok = false;
-        $client = app('HttpClient');
-
-        $video = $media->video_info->variants[0];
-        $response = $client->get($video->url);
-
-        $extension = app('MimeDB')->findExtension($response->getHeaderLine('Content-Type'));
-        $localPath = $path.'.'.$extension;
-
-        try {
-            if (Storage::disk('temporaryTasks')->put($localPath, $response->getBody()->getContents())) {
-                $ok = true;
-            }
-        } catch (\Exception $e) {
-        }
-
-        return ['ok' => $ok, 'path' => $localPath];
-    }
-
-    public static function choseBestVideo($videoVariants)
-    {
-        $chosenVideo = $videoVariants->first();
-
-        $mp4Videos = $videoVariants->filter(
-            function ($item) {
-                return $item->content_type == 'video/mp4';
-            }
-        );
-        $minimumBitrate = $mp4Videos->min('bitrate');
-        if (! is_null($minimumBitrate)) {
-            $chosenVideo = $mp4Videos->first(
-                function ($item) use ($minimumBitrate) {
-                    return $item->bitrate == $minimumBitrate;
-                }
-            );
-        }
-
-        return $chosenVideo;
+        return (new GifDownloader($media, $path))->download()->toArray();
     }
 }

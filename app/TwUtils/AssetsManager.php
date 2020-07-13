@@ -60,28 +60,14 @@ class AssetsManager
 
         $tweetMedias = [];
 
-        Downloader::$counter = 0;
-
         $medias = Arr::get($tweet, 'extended_entities.media', []);
 
-        foreach ($medias as $media) {
-            $savedMedia = $this->saveSingleTweetMedia($media, $taskTweet);
-
-            if (! empty($savedMedia)) {
-                array_push($tweetMedias, $savedMedia);
-            }
-        }
-
-        $tweetMedia = ['type' => Arr::last($medias, null, ['type' => null])['type'], 'paths' => $tweetMedias];
-
-        if ($tweetMedia['type'])
-        {
-            $taskTweet->attachments = $tweetMedia;
-            $taskTweet->save();
+        foreach ($taskTweet->getMedia() as $media) {
+            $this->saveSingleTweetMedia((array) $media->data, $taskTweet, $tweetMedias, $medias);
         }
     }
 
-    public function saveSingleTweetMedia(array $media, TaskTweet $taskTweet)
+    public function saveSingleTweetMedia(array $media, TaskTweet $taskTweet, & $tweetMedias, $medias)
     {
         $tweet = $taskTweet->tweet;
         $taskId = $taskTweet->task_id;
@@ -118,7 +104,18 @@ class AssetsManager
                 ->toArray();
         }
 
-        return $savedMedia;
+            if (! empty($savedMedia)) {
+                array_push($tweetMedias, $savedMedia);
+            }
+
+
+        $tweetMedia = ['type' => Arr::last($medias, null, ['type' => null])['type'], 'paths' => $tweetMedias];
+
+        if ($tweetMedia['type'])
+        {
+            $taskTweet->attachments = $tweetMedia;
+            $taskTweet->save();
+        }
     }
 
     public static function saveTweetPhoto($media, $path)

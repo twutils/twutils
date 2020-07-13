@@ -113,7 +113,7 @@ class AssetsManager
 
         if ($tweetMedia['type'])
         {
-            $taskTweet->attachments = $tweetMedia;
+            $taskTweet->attachments_paths = $tweetMedia;
             $taskTweet->save();
         }
     }

@@ -11,14 +11,21 @@ class TaskTweet extends Pivot
 {
     protected $table = 'task_tweet';
 
+    protected $appends = ['attachments'];
+
     protected $casts = [
         'task_id' => 'int',
-        'attachments' => 'array',
+        'attachments_paths' => 'array',
     ];
 
     public function tweet()
     {
         return $this->belongsTo(Tweet::class, 'tweet_id_str', 'id_str');
+    }
+
+    public function getAttachmentsAttribute()
+    {
+        return $this->attachments_paths;
     }
 
     public function getMedia()

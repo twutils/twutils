@@ -104,9 +104,9 @@ class AssetsManager
                 ->toArray();
         }
 
-            if (! empty($savedMedia)) {
-                array_push($tweetMedias, $savedMedia);
-            }
+        if (! empty($savedMedia)) {
+            array_push($tweetMedias, $savedMedia);
+        }
 
 
         $tweetMedia = ['type' => Arr::last($medias, null, ['type' => null])['type'], 'paths' => $tweetMedias];

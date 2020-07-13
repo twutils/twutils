@@ -58,35 +58,15 @@ class AssetsManager
     {
         $tweet = $taskTweet->tweet;
 
-        $tweetMedias = [];
-
-        Downloader::$counter = 0;
-
-        $medias = Arr::get($tweet, 'extended_entities.media', []);
-
-        foreach ($medias as $media) {
-            $savedMedia = $this->saveSingleTweetMedia($media, $taskTweet);
-
-            if (! empty($savedMedia)) {
-                array_push($tweetMedias, $savedMedia);
-            }
-        }
-
-        $tweetMedia = ['type' => Arr::last($medias, null, ['type' => null])['type'], 'paths' => $tweetMedias];
-
-        if ($tweetMedia['type'])
-        {
-            $taskTweet->attachments = $tweetMedia;
-            $taskTweet->save();
+        foreach ($taskTweet->getMedia() as $media) {
+            $this->saveSingleTweetMedia($media, $taskTweet);
         }
     }
 
-    public function saveSingleTweetMedia(array $media, TaskTweet $taskTweet)
+    public function saveSingleTweetMedia(object $media, TaskTweet $taskTweet)
     {
         $tweet = $taskTweet->tweet;
         $taskId = $taskTweet->task_id;
-
-        $media = json_decode(json_encode($media));
 
         $mediaPath = $taskTweet->getMediaPathInStorage();
 
@@ -105,7 +85,7 @@ class AssetsManager
         }
 
         if (! empty($savedMedia)) {
-            $savedMedia = (object) collect($savedMedia)
+            $savedMedia = (array) collect($savedMedia)
                 ->filter(
                     function ($item) {
                         return $item['ok'];
@@ -116,23 +96,26 @@ class AssetsManager
                     return substr($mediaPath, strlen($taskTweet->getMediaDirPathInStorage()));
                 })
                 ->toArray();
-        }
+
+                $taskTweet->attachments = ['type' => $media->type, 'paths' => array_merge($taskTweet->attachments['paths'] ?? [], $savedMedia)];
+                $taskTweet->save();
+            }
 
         return $savedMedia;
     }
 
     public static function saveTweetPhoto($media, $path)
     {
-        return (new ImageDownloader($media, $path))->download()->toArray();
+        return (new ImageDownloader($media->data, $path))->download()->toArray();
     }
 
     public static function saveTweetVideo($media, $path)
     {
-        return (new VideoDownloader($media, $path))->download()->toArray();
+        return (new VideoDownloader($media->data, $path))->download()->toArray();
     }
 
     public static function saveTweetGif($media, $path)
     {
-        return (new GifDownloader($media, $path))->download()->toArray();
+        return (new GifDownloader($media->data, $path))->download()->toArray();
     }
 }

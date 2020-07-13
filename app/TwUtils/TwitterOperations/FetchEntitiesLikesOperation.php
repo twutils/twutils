@@ -26,9 +26,6 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
 
         if (! $shouldBuild) {
             $tweetsWithMedia = $this->task->tweets
-                ->filter(function ($tweet) {
-                    return AssetsManager::hasMedia($tweet);
-                })
                 ->values();
 
             $totalTweets = $tweetsWithMedia->count();

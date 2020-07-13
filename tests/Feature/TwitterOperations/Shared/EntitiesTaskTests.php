@@ -8,7 +8,9 @@ use App\Tweet;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
+use App\Jobs\SaveTweetMediaJob;
 use Illuminate\Support\Facades\Bus;
+use Tests\HttpClientMock;
 
 /*
  * A Generic abstract tests for all tasks that store and attach entities and
@@ -164,9 +166,9 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
     public function test_mixed_types_of_tweets()
     {
-        $expectedSavedPaths = '1/media/10_1.jpeg,1/media/11_1.jpeg,1/media/12_1.jpeg,1/media/13_1.jpeg,1/media/14_1.jpeg,1/media/15_1.jpeg,1/media/16_1.jpeg,1/media/17_1.jpeg,1/media/18_1.jpeg,1/media/19_1.jpeg,1/media/20_1.jpeg,1/media/20_2.jpeg,1/media/21_1.jpeg,1/media/21_2.jpeg,1/media/22_1.jpeg,1/media/22_2.jpeg,1/media/23_1.jpeg,1/media/23_2.jpeg,1/media/24_1.jpeg,1/media/24_2.jpeg,1/media/25_1.jpeg,1/media/25_2.jpeg,1/media/26_1.jpeg,1/media/26_2.jpeg,1/media/27_1.jpeg,1/media/27_2.jpeg,1/media/28_1.jpeg,1/media/28_2.jpeg,1/media/29_1.jpeg,1/media/29_2.jpeg,1/media/30_1.jpeg,1/media/30_2.mp4,1/media/31_1.jpeg,1/media/31_2.mp4,1/media/32_1.jpeg,1/media/32_2.mp4,1/media/33_1.jpeg,1/media/33_2.mp4';
+        $expectedSavedPaths = '1/media/11_1.jpeg,1/media/12_1.jpeg,1/media/13_1.jpeg,1/media/14_1.jpeg,1/media/15_1.jpeg,1/media/16_1.jpeg,1/media/17_1.jpeg,1/media/18_1.jpeg,1/media/19_1.jpeg,1/media/20_1.jpeg,1/media/20_2.jpeg,1/media/21_1.jpeg,1/media/21_2.jpeg,1/media/22_1.jpeg,1/media/22_2.jpeg,1/media/23_1.jpeg,1/media/23_2.jpeg,1/media/24_1.jpeg,1/media/24_2.jpeg,1/media/25_1.jpeg,1/media/25_2.jpeg,1/media/26_1.jpeg,1/media/26_2.jpeg,1/media/27_1.jpeg,1/media/27_2.jpeg,1/media/28_1.jpeg,1/media/28_2.jpeg,1/media/29_1.jpeg,1/media/29_2.jpeg,1/media/30_1.jpeg,1/media/30_2.mp4,1/media/31_1.jpeg,1/media/31_2.mp4,1/media/32_1.jpeg,1/media/32_2.mp4,1/media/33_1.jpeg,1/media/33_2.mp4';
 
-        $expectedTweetsAttachmentsPaths = '10_1.jpeg,11_1.jpeg,12_1.jpeg,13_1.jpeg,14_1.jpeg,15_1.jpeg,16_1.jpeg,17_1.jpeg,18_1.jpeg,19_1.jpeg,20_1.jpeg,20_2.jpeg,21_1.jpeg,21_2.jpeg,22_1.jpeg,22_2.jpeg,23_1.jpeg,23_2.jpeg,24_1.jpeg,24_2.jpeg,25_1.jpeg,25_2.jpeg,26_1.jpeg,26_2.jpeg,27_1.jpeg,27_2.jpeg,28_1.jpeg,28_2.jpeg,29_1.jpeg,29_2.jpeg,30_1.jpeg,30_2.mp4,31_1.jpeg,31_2.mp4,32_1.jpeg,32_2.mp4,33_1.jpeg,33_2.mp4';
+        $expectedTweetsAttachmentsPaths = '11_1.jpeg,12_1.jpeg,13_1.jpeg,14_1.jpeg,15_1.jpeg,16_1.jpeg,17_1.jpeg,18_1.jpeg,19_1.jpeg,20_1.jpeg,20_2.jpeg,21_1.jpeg,21_2.jpeg,22_1.jpeg,22_2.jpeg,23_1.jpeg,23_2.jpeg,24_1.jpeg,24_2.jpeg,25_1.jpeg,25_2.jpeg,26_1.jpeg,26_2.jpeg,27_1.jpeg,27_2.jpeg,28_1.jpeg,28_2.jpeg,29_1.jpeg,29_2.jpeg,30_1.jpeg,30_2.mp4,31_1.jpeg,31_2.mp4,32_1.jpeg,32_2.mp4,33_1.jpeg,33_2.mp4';
 
         $this->withoutJobs();
         $this->logInSocialUser('api');
@@ -199,6 +201,13 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
                     'type'        => $this->jobName,
                     'twitterData' => $this->uniqueTweetIds([$tweetWithGif, $tweetWithVideo, $tweetWithGif, $tweetWithVideo]),
                 ],
+                [
+                    'type'        => SaveTweetMediaJob::class,
+                    'twitterData' => [],
+                    'before'      => function () {
+                        app('HttpClient')->throwException(1);
+                    }
+                ],
             ]
         );
 
@@ -219,6 +228,17 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertLikesBelongsToTask();
         $this->assertStringContainsString($expectedSavedPaths, collect($this->getZippedFiles(1))->implode(','));
         $this->assertStringContainsString($expectedTweetsAttachmentsPaths, $likeEntitiesPaths);
+
+        $this->assertNotContains(
+            null,
+            Task::all()->last()->tweets
+                ->pluck('pivot.attachments')
+                ->filter(function($attachments) {
+                    return ! empty($attachments);
+                })
+                ->pluck('type'),
+            '\'attachments\' column in \'task_tweet\' table can\'t be empty'
+        );
     }
 
     public function test_do_nothing_with_regualr_tweets()

@@ -50,10 +50,7 @@ class SaveTweetMediaJob implements ShouldQueue
 
         $tweet = $this->task->tweets->where('id_str', $this->tweetIdStr)->first();
 
-        $tweetMedia = (new AssetsManager)->saveTweetMedia($tweet->pivot);
-
-        $tweet->pivot->attachments = $tweetMedia;
-        $tweet->pivot->save();
+        (new AssetsManager)->saveTweetMedia($tweet->pivot);
 
         $this->zipEntities();
     }

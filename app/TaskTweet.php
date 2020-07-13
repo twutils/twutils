@@ -18,6 +18,11 @@ class TaskTweet extends Pivot
         return $this->belongsTo(Tweet::class, 'tweet_id_str', 'id_str');
     }
 
+    public function getMedia()
+    {
+        
+    }
+
     public function getMediaDirPathInStorage()
     {
         return $this->task_id . '/';

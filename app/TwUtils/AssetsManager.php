@@ -6,6 +6,7 @@ use Image;
 use Storage;
 use App\Tweet;
 use App\TaskTweet;
+use Illuminate\Support\Arr;
 use App\TwUtils\Tweets\Media\Downloader;
 use App\TwUtils\Tweets\Media\GifDownloader;
 use App\TwUtils\Tweets\Media\ImageDownloader;
@@ -56,17 +57,14 @@ class AssetsManager
     public function saveTweetMedia(TaskTweet $taskTweet)
     {
         $tweet = $taskTweet->tweet;
-        $taskId = $taskTweet->task_id;
-
-        if (! static::hasMedia($tweet)) {
-            return [];
-        }
 
         $tweetMedias = [];
 
         Downloader::$counter = 0;
 
-        foreach ($tweet['extended_entities']['media'] as $media) {
+        $medias = Arr::get($tweet, 'extended_entities.media', []);
+
+        foreach ($medias as $media) {
             $savedMedia = $this->saveSingleTweetMedia($media, $taskTweet);
 
             if (! empty($savedMedia)) {
@@ -74,7 +72,13 @@ class AssetsManager
             }
         }
 
-        return ['type' => $media['type'], 'paths' => $tweetMedias];
+        $tweetMedia = ['type' => Arr::last($medias, null, ['type' => null])['type'], 'paths' => $tweetMedias];
+
+        if ($tweetMedia['type'])
+        {
+            $taskTweet->attachments = $tweetMedia;
+            $taskTweet->save();
+        }
     }
 
     public function saveSingleTweetMedia(array $media, TaskTweet $taskTweet)
@@ -97,11 +101,6 @@ class AssetsManager
                 $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetGif($media, $mediaPath)];
             }
         } catch (\Exception $e) {
-            if (app()->runningUnitTests())
-            {
-                dd($e);
-            }
-
             \Log::info(json_encode(['exception' => $e.'', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
         }
 

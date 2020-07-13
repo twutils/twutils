@@ -2,8 +2,8 @@
 
 namespace App\TwUtils\Tweets\Media;
 
-use Storage;
 use App\TwUtils\State\DownloadStatus;
+use Illuminate\Support\Facades\Storage;
 
 abstract class Downloader
 {

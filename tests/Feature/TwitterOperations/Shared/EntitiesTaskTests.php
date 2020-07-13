@@ -216,7 +216,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         ->map(
             function ($likeEntityPaths) use (&$likeEntitiesPaths) {
                 foreach ((array) $likeEntityPaths as $path) {
-                    $likeEntitiesPaths .= $path . ',';
+                    $likeEntitiesPaths .= implode(',', $path).',';
                 }
             }
         );

@@ -91,7 +91,7 @@ class AssetsManager
         }
 
         if (! empty($savedMedia)) {
-            $savedMedia = (object) collect($savedMedia)
+            $savedMedia = (array) collect($savedMedia)
                 ->filter(
                     function ($item) {
                         return $item['ok'];

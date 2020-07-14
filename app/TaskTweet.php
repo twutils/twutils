@@ -25,7 +25,15 @@ class TaskTweet extends Pivot
 
     public function getAttachmentsAttribute()
     {
-        return $this->attachments_paths;
+        if ($this->attachments_type)
+        {
+            return [
+                'type' => $this->attachments_type,
+                'paths' => $this->attachments_paths,
+            ];
+        }
+
+        return [];
     }
 
     public function getMedia()

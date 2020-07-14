@@ -109,13 +109,14 @@ class AssetsManager
         }
 
 
-        $tweetMedia = ['type' => Arr::last($medias, null, ['type' => null])['type'], 'paths' => $tweetMedias];
+        $taskTweet->attachments_type = Arr::last($medias, null, null);
 
-        if ($tweetMedia['type'])
+        if ( $taskTweet->attachments_type )
         {
-            $taskTweet->attachments_paths = $tweetMedia;
-            $taskTweet->save();
+            $taskTweet->attachments_paths = $tweetMedias;
         }
+
+        $taskTweet->save();
     }
 
     public static function saveTweetPhoto($media, $path)

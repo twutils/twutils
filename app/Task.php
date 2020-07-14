@@ -111,7 +111,7 @@ class Task extends Model
     {
         return $this->belongsToMany(Tweet::class, 'task_tweet', 'task_id', 'tweet_id_str', 'id', 'id_str', 'tweets')
             ->using(TaskTweet::class)
-            ->withPivot(['favorited', 'retweeted', 'removed', 'removed_task_id', 'attachments_paths']);
+            ->withPivot(['favorited', 'retweeted', 'removed', 'removed_task_id', 'attachments_paths', 'attachments_type']);
     }
 
     public function socialUser()

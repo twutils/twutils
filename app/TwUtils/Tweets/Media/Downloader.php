@@ -17,7 +17,7 @@ abstract class Downloader
     {
         $this->media = $media->data;
         $this->taskTweet = $taskTweet;
-        ++ static::$counter;
+        static::$counter++;
     }
 
     abstract protected function getUrl() : string;

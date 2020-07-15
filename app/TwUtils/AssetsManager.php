@@ -7,7 +7,7 @@ use Storage;
 use App\Tweet;
 use App\TaskTweet;
 use Illuminate\Support\Arr;
-use App\TwUtils\Tweets\Media\Downloader;
+use App\TwUtils\State\Media;
 use App\TwUtils\Tweets\Media\GifDownloader;
 use App\TwUtils\Tweets\Media\ImageDownloader;
 use App\TwUtils\Tweets\Media\VideoDownloader;
@@ -63,16 +63,14 @@ class AssetsManager
         $medias = Arr::get($tweet, 'extended_entities.media', []);
 
         foreach ($taskTweet->getMedia() as $media) {
-            $this->saveSingleTweetMedia((array) $media->data, $taskTweet, $tweetMedias, $medias);
+            $this->saveSingleTweetMedia($media, $taskTweet, $tweetMedias, $medias);
         }
     }
 
-    public function saveSingleTweetMedia(array $media, TaskTweet $taskTweet, & $tweetMedias, $medias)
+    public function saveSingleTweetMedia($media, TaskTweet $taskTweet, & $tweetMedias, $medias)
     {
         $tweet = $taskTweet->tweet;
         $taskId = $taskTweet->task_id;
-
-        $media = json_decode(json_encode($media));
 
         $mediaPath = $taskTweet->getMediaPathInStorage();
 
@@ -119,17 +117,17 @@ class AssetsManager
         $taskTweet->save();
     }
 
-    public static function saveTweetPhoto($media, $path)
+    public static function saveTweetPhoto(Media $media, $path)
     {
         return (new ImageDownloader($media, $path))->download()->toArray();
     }
 
-    public static function saveTweetVideo($media, $path)
+    public static function saveTweetVideo(Media $media, $path)
     {
         return (new VideoDownloader($media, $path))->download()->toArray();
     }
 
-    public static function saveTweetGif($media, $path)
+    public static function saveTweetGif(Media $media, $path)
     {
         return (new GifDownloader($media, $path))->download()->toArray();
     }

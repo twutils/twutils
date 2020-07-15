@@ -2,6 +2,7 @@
 
 namespace App\TwUtils\Tweets\Media;
 
+use App\TwUtils\State\Media;
 use App\TwUtils\State\DownloadStatus;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,9 +12,9 @@ abstract class Downloader
     protected $path;
     static $counter = 0;
 
-    final public function __construct($media, $path)
+    final public function __construct(Media $media, $path)
     {
-        $this->media = $media;
+        $this->media = $media->data;
         $this->path = $path . ++ static::$counter;
     }
 

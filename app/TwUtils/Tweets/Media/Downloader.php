@@ -23,6 +23,18 @@ abstract class Downloader
     final public function download() : DownloadStatus
     {
         $ok = false;
+
+        $localPath = null;
+
+        try {
+            $ok = $this->doDownload($localPath);
+        } catch (\Exception $e) {}
+
+        return new DownloadStatus($ok, $localPath);
+    }
+
+    final protected function doDownload(& $localPath) : bool
+    {
         $client = app('HttpClient');
 
         $response = $client->get($this->getUrl());
@@ -30,13 +42,10 @@ abstract class Downloader
         $extension = app('MimeDB')->findExtension($response->getHeaderLine('Content-Type'));
         $localPath = $this->path.'.'.$extension;
 
-        try {
-            if (Storage::disk('temporaryTasks')->put($localPath, $response->getBody()->getContents())) {
-                $ok = true;
-            }
-        } catch (\Exception $e) {
+        if (Storage::disk('temporaryTasks')->put($localPath, $response->getBody()->getContents())) {
+            return true;
         }
 
-        return new DownloadStatus($ok, $localPath);
+        return false;
     }
 }

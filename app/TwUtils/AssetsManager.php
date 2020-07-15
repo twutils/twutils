@@ -88,23 +88,19 @@ class AssetsManager
             \Log::info(json_encode(['exception' => $e.'', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
         }
 
-        if (! empty($savedMedia)) {
-            $savedMedia = (array) collect($savedMedia)
-                ->filter(
-                    function ($item) {
-                        return $item['ok'];
-                    }
-                )
-                ->pluck('path')
-                ->map(function ($mediaPath) use ($taskTweet) {
-                    return substr($mediaPath, strlen($taskTweet->getMediaDirPathInStorage()));
-                })
-                ->toArray();
-        }
+        $savedMedia = (array) collect($savedMedia)
+            ->filter(
+                function ($item) {
+                    return $item['ok'];
+                }
+            )
+            ->pluck('path')
+            ->map(function ($mediaPath) use ($taskTweet) {
+                return substr($mediaPath, strlen($taskTweet->getMediaDirPathInStorage()));
+            })
+            ->toArray();
 
-        if (! empty($savedMedia)) {
-            array_push($tweetMedias, $savedMedia);
-        }
+        array_push($tweetMedias, $savedMedia);
 
 
         $taskTweet->attachments_type = Arr::last($medias, null, null);

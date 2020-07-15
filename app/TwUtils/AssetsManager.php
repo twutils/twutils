@@ -76,16 +76,12 @@ class AssetsManager
 
         $savedMedia = [];
 
-        try {
-            if ($media->type == 'photo') {
-                $savedMedia = [static::saveTweetPhoto($media, $mediaPath)];
-            } elseif ($media->type == 'video') {
-                $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetVideo($media, $mediaPath)];
-            } elseif ($media->type == 'animated_gif') {
-                $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetGif($media, $mediaPath)];
-            }
-        } catch (\Exception $e) {
-            \Log::info(json_encode(['exception' => $e.'', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
+        if ($media->type == 'photo') {
+            $savedMedia = [static::saveTweetPhoto($media, $mediaPath)];
+        } elseif ($media->type == 'video') {
+            $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetVideo($media, $mediaPath)];
+        } elseif ($media->type == 'animated_gif') {
+            $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetGif($media, $mediaPath)];
         }
 
         $savedMedia = (array) collect($savedMedia)

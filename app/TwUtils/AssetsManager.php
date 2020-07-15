@@ -86,9 +86,7 @@ class AssetsManager
 
         $savedMedia = (array) collect($savedMedia)
             ->filter(
-                function ($item) {
-                    return $item['ok'];
-                }
+                fn ($item) => $item['ok']
             )
             ->pluck('path')
             ->map(function ($mediaPath) use ($taskTweet) {

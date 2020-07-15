@@ -69,19 +69,14 @@ class AssetsManager
 
     public function saveSingleTweetMedia($media, TaskTweet $taskTweet, & $tweetMedias, $medias)
     {
-        $tweet = $taskTweet->tweet;
-        $taskId = $taskTweet->task_id;
-
-        $mediaPath = $taskTweet->getMediaPathInStorage();
-
         $savedMedia = [];
 
         if ($media->type == 'photo') {
-            $savedMedia = [static::saveTweetPhoto($media, $mediaPath)];
+            $savedMedia = [static::saveTweetPhoto($media, $taskTweet)];
         } elseif ($media->type == 'video') {
-            $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetVideo($media, $mediaPath)];
+            $savedMedia = [static::saveTweetPhoto($media, $taskTweet), static::saveTweetVideo($media, $taskTweet)];
         } elseif ($media->type == 'animated_gif') {
-            $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetGif($media, $mediaPath)];
+            $savedMedia = [static::saveTweetPhoto($media, $taskTweet), static::saveTweetGif($media, $taskTweet)];
         }
 
         $savedMedia = (array) collect($savedMedia)
@@ -107,18 +102,18 @@ class AssetsManager
         $taskTweet->save();
     }
 
-    public static function saveTweetPhoto(Media $media, $path)
+    public static function saveTweetPhoto(Media $media, TaskTweet $taskTweet)
     {
-        return (new ImageDownloader($media, $path))->download()->toArray();
+        return (new ImageDownloader($media, $taskTweet))->download()->toArray();
     }
 
-    public static function saveTweetVideo(Media $media, $path)
+    public static function saveTweetVideo(Media $media, TaskTweet $taskTweet)
     {
-        return (new VideoDownloader($media, $path))->download()->toArray();
+        return (new VideoDownloader($media, $taskTweet))->download()->toArray();
     }
 
-    public static function saveTweetGif(Media $media, $path)
+    public static function saveTweetGif(Media $media, TaskTweet $taskTweet)
     {
-        return (new GifDownloader($media, $path))->download()->toArray();
+        return (new GifDownloader($media, $taskTweet))->download()->toArray();
     }
 }

@@ -9,13 +9,15 @@ use Illuminate\Support\Facades\Storage;
 abstract class Downloader
 {
     protected $media;
+    protected $taskTweet;
     protected $path;
     static $counter = 0;
 
-    final public function __construct(Media $media, $path)
+    final public function __construct(Media $media, $taskTweet)
     {
         $this->media = $media->data;
-        $this->path = $path . ++ static::$counter;
+        $this->taskTweet = $taskTweet;
+        $this->path = $this->taskTweet->getMediaPathInStorage() . ++ static::$counter;
     }
 
     abstract protected function getUrl() : string;

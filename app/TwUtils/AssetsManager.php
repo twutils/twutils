@@ -2,12 +2,12 @@
 
 namespace App\TwUtils;
 
-use Image;
-use Storage;
 use App\Tweet;
 use App\TaskTweet;
 use Illuminate\Support\Arr;
 use App\TwUtils\State\Media;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use App\TwUtils\Tweets\Media\GifDownloader;
 use App\TwUtils\Tweets\Media\ImageDownloader;
 use App\TwUtils\Tweets\Media\VideoDownloader;

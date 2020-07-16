@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Support\Arr;
 use App\TwUtils\State\Media;
-use App\TwUtils\Tweets\Media\Downloader;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class TaskTweet extends Pivot

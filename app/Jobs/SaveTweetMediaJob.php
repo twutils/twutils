@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Task;
-use App\Tweet;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\AssetsManager;
 use Illuminate\Queue\SerializesModels;
@@ -55,7 +54,7 @@ class SaveTweetMediaJob implements ShouldQueue
         $this->zipEntities();
     }
 
-    public function failed($e)
+    public function failed()
     {
         $this->zipEntities();
     }

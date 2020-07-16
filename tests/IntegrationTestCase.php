@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Config;
 use Mockery;
 use App\Task;
 use App\User;

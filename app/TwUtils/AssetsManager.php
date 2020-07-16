@@ -2,11 +2,12 @@
 
 namespace App\TwUtils;
 
-use Image;
-use Storage;
 use App\Tweet;
 use App\TaskTweet;
-use App\TwUtils\Tweets\Media\Downloader;
+use Illuminate\Support\Arr;
+use App\TwUtils\State\Media;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use App\TwUtils\Tweets\Media\GifDownloader;
 use App\TwUtils\Tweets\Media\ImageDownloader;
 use App\TwUtils\Tweets\Media\VideoDownloader;
@@ -56,84 +57,64 @@ class AssetsManager
     public function saveTweetMedia(TaskTweet $taskTweet)
     {
         $tweet = $taskTweet->tweet;
-        $taskId = $taskTweet->task_id;
 
-        if (! static::hasMedia($tweet)) {
-            return [];
+        $medias = Arr::get($tweet, 'extended_entities.media', []);
+
+        foreach ($taskTweet->getMedia() as $media) {
+            $this->saveSingleTweetMedia($media, $taskTweet, $medias);
         }
-
-        $tweetMedias = [];
-
-        Downloader::$counter = 0;
-
-        foreach ($tweet['extended_entities']['media'] as $media) {
-            $savedMedia = $this->saveSingleTweetMedia($media, $taskTweet);
-
-            if (! empty($savedMedia)) {
-                array_push($tweetMedias, $savedMedia);
-            }
-        }
-
-        return ['type' => $media['type'], 'paths' => $tweetMedias];
     }
 
-    public function saveSingleTweetMedia(array $media, TaskTweet $taskTweet)
+    public function saveSingleTweetMedia($media, TaskTweet $taskTweet, $medias)
     {
-        $tweet = $taskTweet->tweet;
-        $taskId = $taskTweet->task_id;
-
-        $media = json_decode(json_encode($media));
-
-        $mediaPath = $taskTweet->getMediaPathInStorage();
-
         $savedMedia = [];
 
-        try {
-            if ($media->type == 'photo') {
-                $savedMedia = [static::saveTweetPhoto($media, $mediaPath)];
-            } elseif ($media->type == 'video') {
-                $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetVideo($media, $mediaPath)];
-            } elseif ($media->type == 'animated_gif') {
-                $savedMedia = [static::saveTweetPhoto($media, $mediaPath), static::saveTweetGif($media, $mediaPath)];
-            }
-        } catch (\Exception $e) {
-            if (app()->runningUnitTests())
-            {
-                dd($e);
-            }
-
-            \Log::info(json_encode(['exception' => $e.'', 'desc'=> sprintf('Couldn\'t download the media in the tweet [%s] for the task [%s] ', $tweet['id_str'], $taskId)]));
+        if ($media->type == 'photo') {
+            $savedMedia = [static::saveTweetPhoto($media, $taskTweet)];
+        } elseif ($media->type == 'video') {
+            $savedMedia = [static::saveTweetPhoto($media, $taskTweet), static::saveTweetVideo($media, $taskTweet)];
+        } elseif ($media->type == 'animated_gif') {
+            $savedMedia = [static::saveTweetPhoto($media, $taskTweet), static::saveTweetGif($media, $taskTweet)];
         }
 
-        if (! empty($savedMedia)) {
-            $savedMedia = (object) collect($savedMedia)
-                ->filter(
-                    function ($item) {
-                        return $item['ok'];
-                    }
-                )
-                ->pluck('path')
-                ->map(function ($mediaPath) use ($taskTweet) {
-                    return substr($mediaPath, strlen($taskTweet->getMediaDirPathInStorage()));
-                })
-                ->toArray();
+        $savedMedia = (array) collect($savedMedia)
+            ->filter(
+                fn ($item) => $item->isOk()
+            )
+            ->map
+            ->getPath()
+            ->map(function ($mediaPath) use ($taskTweet) {
+                return substr($mediaPath, strlen($taskTweet->getMediaDirPathInStorage()));
+            })
+            ->toArray();
+
+
+        $taskTweet->attachments_type = Arr::last($medias, null, null)['type'];
+
+        if ( $taskTweet->attachments_type )
+        {
+            $attachmentsPaths = $taskTweet->attachments_paths ?? [];
+
+            $attachmentsPaths[] = $savedMedia;
+
+            $taskTweet->attachments_paths = $attachmentsPaths;
         }
 
-        return $savedMedia;
+        $taskTweet->save();
     }
 
-    public static function saveTweetPhoto($media, $path)
+    public static function saveTweetPhoto(Media $media, TaskTweet $taskTweet)
     {
-        return (new ImageDownloader($media, $path))->download()->toArray();
+        return (new ImageDownloader($media, $taskTweet))->download();
     }
 
-    public static function saveTweetVideo($media, $path)
+    public static function saveTweetVideo(Media $media, TaskTweet $taskTweet)
     {
-        return (new VideoDownloader($media, $path))->download()->toArray();
+        return (new VideoDownloader($media, $taskTweet))->download();
     }
 
-    public static function saveTweetGif($media, $path)
+    public static function saveTweetGif(Media $media, TaskTweet $taskTweet)
     {
-        return (new GifDownloader($media, $path))->download()->toArray();
+        return (new GifDownloader($media, $taskTweet))->download();
     }
 }

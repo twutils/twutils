@@ -19,7 +19,8 @@ class CreateTaskTweetTable extends Migration
             $table->string('tweet_id_str')->index();
             $table->boolean('favorited');
             $table->boolean('retweeted');
-            $table->text('attachments')->nullable();
+            $table->string('attachments_type')->nullable();
+            $table->text('attachments_paths')->nullable();
             $table->dateTime('removed')->nullable();
             $table->unsignedInteger('removed_task_id')->nullable();
             $table->timestamps();

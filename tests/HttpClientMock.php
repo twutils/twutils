@@ -6,10 +6,17 @@ class HttpClientMock
 {
     public static $lastData = null;
     public static $lastUrlCalled = null;
+    public static $throwException = 0;
 
     public function get($url, ...$args)
     {
         static::$lastUrlCalled = $url;
+
+        if (static::$throwException !== 0)
+        {
+            static::$throwException--;
+            throw new \Exception("Error Processing Request", 1);
+        }
 
         return $this;
     }
@@ -36,6 +43,11 @@ class HttpClientMock
         }
 
         throw new \Exception("Stub for the extension [$extension] not found");
+    }
+
+    public function throwException($times)
+    {
+        static::$throwException = $times;
     }
 
     public function __call($method, $parameters)

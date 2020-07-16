@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Task;
-use App\Tweet;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\AssetsManager;
 use Illuminate\Queue\SerializesModels;
@@ -50,13 +49,20 @@ class SaveTweetMediaJob implements ShouldQueue
 
         $tweet = $this->task->tweets->where('id_str', $this->tweetIdStr)->first();
 
-        $tweetMedia = (new AssetsManager)->saveTweetMedia($tweet->pivot);
+        (new AssetsManager)->saveTweetMedia($tweet->pivot);
 
-        $tweet->pivot->attachments = $tweetMedia;
-        $tweet->pivot->save();
+        $this->zipEntities();
     }
 
-    public function failed($e)
+    public function failed()
     {
+        $this->zipEntities();
+    }
+
+    protected function zipEntities()
+    {
+        if ($this->tweetIndex === $this->totalTweets - 1) {
+            dispatch(new ZipEntitiesJob($this->task));
+        }
     }
 }

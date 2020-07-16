@@ -2,10 +2,10 @@
 
 namespace App\TwUtils;
 
-use Storage;
 use App\Task;
 use App\Tweep;
 use PhpZip\ZipFile;
+use Illuminate\Support\Facades\Storage;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 

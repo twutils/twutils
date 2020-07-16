@@ -85,6 +85,32 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][1][0], $tweet->id_str.'_2.jpeg');
     }
 
+    public function test_basic_save_two_photos_database_relations()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+
+        $tweet = $this->getStub('tweet_with_two_photos.json');
+
+        $this->bindTwitterConnector([$tweet]);
+
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $this->fireJobsAndBindTwitter([]);
+
+        $this->assertCount(2, Tweet::first()->media);
+
+        $this->assertTaskCount(1, 'completed');
+
+        $this->assertEquals(Tweet::all()->count(), 1);
+        $this->assertLikesBelongsToTask();
+        $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
+        $this->assertZippedExists('1', $tweet->id_str.'_2.jpeg');
+        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
+        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][1][0], $tweet->id_str.'_2.jpeg');
+    }
+
     public function test_basic_save_gif()
     {
         $this->withoutJobs();

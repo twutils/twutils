@@ -58,8 +58,6 @@ class AssetsManager
     {
         $tweet = $taskTweet->tweet;
 
-        $tweetMedias = [];
-
         $medias = Arr::get($tweet, 'extended_entities.media', []);
 
         foreach ($taskTweet->getMedia() as $media) {
@@ -94,11 +92,11 @@ class AssetsManager
 
         if ( $taskTweet->attachments_type )
         {
-            $currentPaths = $taskTweet->attachments_paths ?? [];
+            $attachmentsPaths = $taskTweet->attachments_paths ?? [];
 
-            $currentPaths[] = $savedMedia;
+            $attachmentsPaths[] = $savedMedia;
 
-            $taskTweet->attachments_paths = $currentPaths;
+            $taskTweet->attachments_paths = $attachmentsPaths;
         }
 
         $taskTweet->save();

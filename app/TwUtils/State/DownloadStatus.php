@@ -2,9 +2,7 @@
 
 namespace App\TwUtils\State;
 
-use Illuminate\Contracts\Support\Arrayable;
-
-class DownloadStatus implements Arrayable
+class DownloadStatus
 {
     protected $ok;
     protected $path;
@@ -23,10 +21,5 @@ class DownloadStatus implements Arrayable
     public function getPath()
     {
         return $this->path;
-    }
-
-    public function toArray()
-    {
-        return ['ok' => $this->ok, 'path' => $this->path];
     }
 }

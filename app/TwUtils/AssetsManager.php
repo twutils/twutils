@@ -79,9 +79,10 @@ class AssetsManager
 
         $savedMedia = (array) collect($savedMedia)
             ->filter(
-                fn ($item) => $item['ok']
+                fn ($item) => $item->isOk()
             )
-            ->pluck('path')
+            ->map
+            ->getPath()
             ->map(function ($mediaPath) use ($taskTweet) {
                 return substr($mediaPath, strlen($taskTweet->getMediaDirPathInStorage()));
             })
@@ -104,16 +105,16 @@ class AssetsManager
 
     public static function saveTweetPhoto(Media $media, TaskTweet $taskTweet)
     {
-        return (new ImageDownloader($media, $taskTweet))->download()->toArray();
+        return (new ImageDownloader($media, $taskTweet))->download();
     }
 
     public static function saveTweetVideo(Media $media, TaskTweet $taskTweet)
     {
-        return (new VideoDownloader($media, $taskTweet))->download()->toArray();
+        return (new VideoDownloader($media, $taskTweet))->download();
     }
 
     public static function saveTweetGif(Media $media, TaskTweet $taskTweet)
     {
-        return (new GifDownloader($media, $taskTweet))->download()->toArray();
+        return (new GifDownloader($media, $taskTweet))->download();
     }
 }

@@ -54,19 +54,9 @@ class SaveTweetMediaJob implements ShouldQueue
 
         $tweet->pivot->attachments = $tweetMedia;
         $tweet->pivot->save();
-
-        $this->zipEntities();
     }
 
     public function failed($e)
     {
-        $this->zipEntities();
-    }
-
-    protected function zipEntities()
-    {
-        if ($this->tweetIndex === $this->totalTweets - 1) {
-            dispatch(new ZipEntitiesJob($this->task));
-        }
     }
 }

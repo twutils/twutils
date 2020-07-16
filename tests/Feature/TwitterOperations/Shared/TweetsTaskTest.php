@@ -3,6 +3,7 @@
 namespace Tests\Feature\TwitterOperations\Shared;
 
 use DB;
+use Storage;
 use App\Task;
 use App\Tweep;
 use App\Tweet;
@@ -1090,10 +1091,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCount(8, Tweep::whereIn('id_str', Tweet::all()->pluck('tweep_id_str')->toArray())->get());
     }
 
-    public function test_basic_export_tweets()
+    public function test_basic_export_tweets_excel()
     {
-        Excel::fake();
-
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
@@ -1106,26 +1105,48 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $response = $this->get('task/1/download');
+        $response = $this->get('task/1/download/1');
         $response->assertStatus(200);
 
-        $response = $this->get('task/1/download/excel');
+        $response = $this->get('task/1/download/2');
         $response->assertStatus(200);
 
-        $fileName = auth()->user()->socialUsers[0]->nickname.'_'.Task::find(1)->shortName.'_'.Task::find(1)->created_at->format('m-d-Y_hia').'.xlsx';
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 
-        $tasksExportsCalled = false;
+        $spreadsheet = $reader->load(Storage::disk(config('filesystems.cloud'))->path(2));
+    
+        $headers = [
+            "date",
+            "time",
+            "username",
+            "to",
+            "retweets",
+            "favorites",
+            "text",
+            "mentions",
+            "hashtags",
+            "id",
+            "permalink",
+        ];
 
-        Excel::assertDownloaded($fileName, function (TasksExport $taskExport) use (&$tasksExportsCalled) {
-            $tasksExportsCalled = true;
-            $exportedTweets = $taskExport->collection();
+        $rows = $spreadsheet->getActiveSheet()->toArray();
 
-            $this->assertCount(5, $exportedTweets);
+        $this->assertEquals($rows[0],
+            $headers
+        );
 
-            return true;
+        $this->assertCount(6, $rows);
+
+        collect($rows)->map(function ($row) use ($headers) {
+            $this->assertNotNull($row[ array_search('date', $headers) ]);
+            $this->assertNotNull($row[ array_search('time', $headers) ]);
+            $this->assertNotNull($row[ array_search('username', $headers) ]);
+            $this->assertNotNull($row[ array_search('retweets', $headers) ]);
+            $this->assertNotNull($row[ array_search('favorites', $headers) ]);
+            $this->assertNotNull($row[ array_search('text', $headers) ]);
+            $this->assertNotNull($row[ array_search('id', $headers) ]);
+            $this->assertNotNull($row[ array_search('permalink', $headers) ]);
         });
-
-        $this->assertTrue($tasksExportsCalled);
     }
 
     public function test_basic_export_tweets_html()
@@ -1142,7 +1163,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $response = $this->get('task/1/download/html');
+        $this->actingAs(auth()->user(), 'web');
+        $response = $this->get('task/1/download/1');
         $response->assertStatus(200);
 
         $fileAsString = $response->streamedContent();

@@ -18,6 +18,8 @@ class TaskTweet extends Pivot
         'attachments_paths' => 'array',
     ];
 
+    static $counter = 0;
+
     public function tweet()
     {
         return $this->belongsTo(Tweet::class, 'tweet_id_str', 'id_str');
@@ -42,7 +44,7 @@ class TaskTweet extends Pivot
 
         $tweetMedias = [];
 
-        Downloader::$counter = 0;
+        static::$counter = 0;
 
         $medias = Arr::get($tweet, 'extended_entities.media', []);
 
@@ -66,9 +68,11 @@ class TaskTweet extends Pivot
         return $this->task_id . '/';
     }
 
-    public function getMediaPathInStorage()
+    public function getMediaPathInStorage($extension)
     {
-        return $this->getMediaDirPathInStorage() . $this->tweet_id_str . '_';
+        static::$counter++;
+
+        return $this->getMediaDirPathInStorage() . $this->tweet_id_str . '_' . static::$counter . '.' . $extension;
     }
 
 }

@@ -11,13 +11,11 @@ abstract class Downloader
     protected $media;
     protected $taskTweet;
     protected $path;
-    static $counter = 0;
 
     final public function __construct(Media $media, $taskTweet)
     {
         $this->media = $media->data;
         $this->taskTweet = $taskTweet;
-        static::$counter++;
     }
 
     abstract protected function getUrl() : string;
@@ -42,7 +40,7 @@ abstract class Downloader
         $response = $client->get($this->getUrl());
 
         $extension = app('MimeDB')->findExtension($response->getHeaderLine('Content-Type'));
-        $localPath = $this->taskTweet->getMediaPathInStorage() . static::$counter .'.'.$extension;
+        $localPath = $this->taskTweet->getMediaPathInStorage($extension);
 
         if (Storage::disk('temporaryTasks')->put($localPath, $response->getBody()->getContents())) {
             return true;

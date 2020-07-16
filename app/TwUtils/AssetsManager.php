@@ -92,7 +92,7 @@ class AssetsManager
         array_push($tweetMedias, $savedMedia);
 
 
-        $taskTweet->attachments_type = Arr::last($medias, null, null);
+        $taskTweet->attachments_type = Arr::last($medias, null, null)['type'];
 
         if ( $taskTweet->attachments_type )
         {

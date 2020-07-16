@@ -3,6 +3,7 @@
 namespace App\TwUtils\TwitterOperations;
 
 use App\Task;
+use App\Tweet;
 use App\Jobs\ZipEntitiesJob;
 use App\TwUtils\AssetsManager;
 use App\Jobs\SaveTweetMediaJob;
@@ -26,12 +27,13 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
 
         if (! $shouldBuild) {
             $tweetsWithMedia = $this->task->tweets
+                ->filter(fn(Tweet $tweet) => AssetsManager::hasMedia($tweet))
                 ->values();
 
             $totalTweets = $tweetsWithMedia->count();
 
             $tweetsWithMedia->map(function ($tweet, $index) use ($totalTweets) {
-                dispatch(new SaveTweetMediaJob($tweet->id_str, $this->task, $index, $totalTweets));
+                $tweet->initMedia();
             });
 
             $this->setCompletedTask($this->task);

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
 
 class Tweet extends Model
@@ -30,5 +31,19 @@ class Tweet extends Model
     public function tweep()
     {
         return $this->belongsTo(Tweep::class, 'tweep_id_str', 'id_str');
+    }
+
+    public function media()
+    {
+        return $this->hasMany(Media::class);
+    }
+
+    public function initMedia()
+    {
+        $medias = Arr::get($this, 'extended_entities.media', []);
+
+        foreach ($medias as $media) {
+            Media::create(['tweet_id' => $this->id, 'data' => $media]);
+        }
     }
 }

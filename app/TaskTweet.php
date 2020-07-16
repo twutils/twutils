@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Media;
 use Illuminate\Support\Arr;
 use App\TwUtils\State\Media;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -22,6 +23,11 @@ class TaskTweet extends Pivot
     public function tweet()
     {
         return $this->belongsTo(Tweet::class, 'tweet_id_str', 'id_str');
+    }
+
+    public function medias()
+    {
+        return $this->hasMany(Media::class, 'tweet_id_str', 'id_str');
     }
 
     public function getAttachmentsAttribute()

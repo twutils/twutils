@@ -63,11 +63,11 @@ class AssetsManager
         $medias = Arr::get($tweet, 'extended_entities.media', []);
 
         foreach ($taskTweet->getMedia() as $media) {
-            $this->saveSingleTweetMedia($media, $taskTweet, $tweetMedias, $medias);
+            $this->saveSingleTweetMedia($media, $taskTweet, $medias);
         }
     }
 
-    public function saveSingleTweetMedia($media, TaskTweet $taskTweet, & $tweetMedias, $medias)
+    public function saveSingleTweetMedia($media, TaskTweet $taskTweet, $medias)
     {
         $savedMedia = [];
 
@@ -89,14 +89,16 @@ class AssetsManager
             })
             ->toArray();
 
-        array_push($tweetMedias, $savedMedia);
-
 
         $taskTweet->attachments_type = Arr::last($medias, null, null)['type'];
 
         if ( $taskTweet->attachments_type )
         {
-            $taskTweet->attachments_paths = $tweetMedias;
+            $currentPaths = $taskTweet->attachments_paths ?? [];
+
+            $currentPaths[] = $savedMedia;
+
+            $taskTweet->attachments_paths = $currentPaths;
         }
 
         $taskTweet->save();

@@ -48,6 +48,11 @@ return [
             'root'   => storage_path('temporaryTasks'),
         ],
 
+        'tweetsMedia' => [
+            'driver' => 'local',
+            'root'   => storage_path('tweetsMedia'),
+        ],
+
         'tasks' => [
             'driver' => 'local',
             'root'   => storage_path('tasks'),

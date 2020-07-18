@@ -3,6 +3,7 @@
 namespace App\TwUtils\TwitterOperations;
 
 use App\Task;
+use App\Media;
 use App\Tweet;
 use App\Jobs\ZipEntitiesJob;
 use App\TwUtils\AssetsManager;
@@ -32,8 +33,13 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
 
             $totalTweets = $tweetsWithMedia->count();
 
-            $tweetsWithMedia->map(function ($tweet, $index) use ($totalTweets) {
-                $tweet->initMedia();
+            $tweetsWithMedia->map(function ($tweet) {
+
+                $tweet->media->map(function (Media $media) {
+                    $media->status = Media::STATUS_STARTED;
+                    $media->save();
+                });
+
             });
 
             $this->setCompletedTask($this->task);

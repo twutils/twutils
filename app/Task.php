@@ -76,7 +76,10 @@ class Task extends Model
 
         static::updated(function (self $task) {
 
-            if ( array_key_exists('status', $task->getDirty() ))
+            if (
+                $task->status === 'completed' &&
+                array_key_exists('status', $task->getDirty() )
+            )
             {
                 $task->downloads->map(function (Download $download) {
                     $download->status = 'started';

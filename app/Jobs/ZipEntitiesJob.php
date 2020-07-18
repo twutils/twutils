@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Storage;
 
 class ZipEntitiesJob implements ShouldQueue
 {
@@ -27,7 +28,10 @@ class ZipEntitiesJob implements ShouldQueue
 
     public function handle()
     {
+        return ;
         $download = $this->task->downloads->where('type', Download::TYPE_HTMLENTITIES)->first();
+
+        dd('ZipEntitiesJob', Storage::disk('tweetsMedia')->allFiles(''), \App\Media::all()->pluck('mediaFiles')->toArray() );
 
         dd($this->task->likes->map->pivot->toArray(), \Storage::disk('temporaryTasks')->allFiles($this->task->id));
         $savedMediaPath = \Storage::disk('temporaryTasks')->path($this->task->id);

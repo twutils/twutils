@@ -2,17 +2,17 @@
 
 namespace App;
 
-use App\Jobs\ProcessMediaJob;
-use App\TwUtils\AssetsManager;
+use App\Jobs\ProcessMediaFileJob;
 use Illuminate\Database\Eloquent\Model;
+use App\TwUtils\Tweets\Media\Downloader;
 
-class Media extends Model
+class MediaFile extends Model
 {
-    protected $table = "media";
+    protected $table = "media_files";
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['tweet_id', 'raw'];
+    protected $fillable = ['media_id', 'downloader'];
 
     protected $casts = [
         'raw' => 'json',
@@ -27,14 +27,10 @@ class Media extends Model
     {
         parent::boot();
 
-        static::creating(function (self $media) {
-            $media->status = 'initial';
-            $media->type = $media->raw['type'];
+        static::creating(function (self $mediaFile) {
+            $mediaFile->status = 'initial';
         });
 
-        static::created(function (self $media) {
-            $media->initMediaFiles();
-        });
 
         static::updating(function (self $media) {
             if ( ! array_key_exists('status', $media->getDirty() ))
@@ -59,25 +55,22 @@ class Media extends Model
         });
 
         static::saved(function (self $media) {
-            dispatch(new ProcessMediaJob($media));
+            dispatch(new ProcessMediaFileJob($media));
         });
     }
 
-    public function initMediaFiles()
+    public function media()
     {
-        collect(AssetsManager::getMediaDownloaders($this))
-        ->map(function ($downloader) {
-            MediaFile::create(['downloader' => $downloader, 'media_id' => $this->id]);
-        });
+        return $this->belongsTo(Media::class);
     }
 
-    public function mediaFiles()
+    public function download() : self
     {
-        return $this->hasMany(MediaFile::class);
+        return $this->getDownloader()->download();
     }
 
-    public function tweet()
+    public function getDownloader() : Downloader
     {
-        return $this->belongsTo(Tweet::class);
+        return new $this->downloader ($this);
     }
 }

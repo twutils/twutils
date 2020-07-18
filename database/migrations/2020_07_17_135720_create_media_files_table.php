@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMediaTable extends Migration
+class CreateMediaFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateMediaTable extends Migration
      */
     public function up()
     {
-        Schema::create('media', function (Blueprint $table) {
+        Schema::create('media_files', function (Blueprint $table) {
             $table->id();
+            $table->unsignedInteger('media_id');
 
-            $table->unsignedInteger('tweet_id');
-
-            $table->text('raw')->nullable();
-            $table->string('type');
+            $table->string('extension')->nullable();
+            $table->string('downloader');
 
             $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
 
@@ -38,6 +37,6 @@ class CreateMediaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media');
+        Schema::dropIfExists('media_files');
     }
 }

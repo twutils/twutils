@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Media;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,6 +27,10 @@ class Tweet extends Model
     protected static function boot()
     {
         parent::boot();
+
+        static::created(function (self $tweet) {
+            $tweet->initMedia();
+        });
     }
 
     public function tweep()
@@ -43,7 +48,7 @@ class Tweet extends Model
         $medias = Arr::get($this, 'extended_entities.media', []);
 
         foreach ($medias as $media) {
-            Media::create(['tweet_id' => $this->id, 'data' => $media]);
+            Media::create(['tweet_id' => $this->id, 'raw' => $media]);
         }
     }
 }

@@ -4,13 +4,16 @@ namespace Tests\Feature\TwitterOperations\Shared;
 
 use Config;
 use App\Task;
+use App\Media;
 use App\Tweet;
+use App\Download;
+use Tests\HttpClientMock;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
 use App\Jobs\SaveTweetMediaJob;
+use App\MediaFile;
 use Illuminate\Support\Facades\Bus;
-use Tests\HttpClientMock;
 
 /*
  * A Generic abstract tests for all tasks that store and attach entities and
@@ -100,15 +103,12 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->fireJobsAndBindTwitter([]);
 
         $this->assertCount(2, Tweet::first()->media);
+        $this->assertCount(2, Media::all());
+        $this->assertCount(3, Task::first()->downloads);
+        $this->assertEquals('success', Download::first()->status);
+        $this->assertEquals('success', Media::first()->status);
 
         $this->assertTaskCount(1, 'completed');
-
-        $this->assertEquals(Tweet::all()->count(), 1);
-        $this->assertLikesBelongsToTask();
-        $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
-        $this->assertZippedExists('1', $tweet->id_str.'_2.jpeg');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][1][0], $tweet->id_str.'_2.jpeg');
     }
 
     public function test_basic_save_gif()

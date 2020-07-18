@@ -28,6 +28,7 @@ trait CreatesApplication
         \Storage::fake('public');
         \Storage::fake('htmlTasks');
         \Storage::fake('temporaryTasks');
+        \Storage::fake('tweetsMedia');
         \Storage::fake(config('filesystems.cloud'));
 
         return $app;

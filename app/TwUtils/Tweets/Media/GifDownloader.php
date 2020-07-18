@@ -6,7 +6,7 @@ class GifDownloader extends Downloader
 {
     public function getUrl() : string
     {
-        $video = $this->media->video_info->variants[0];
+        $video = $this->media->raw['video_info']['variants'][0];
 
         return $video->url;
     }

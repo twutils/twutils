@@ -19,6 +19,7 @@ class CreateMediaFilesTable extends Migration
 
             $table->string('extension')->nullable();
             $table->string('downloader');
+            $table->string('name');
 
             $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
 

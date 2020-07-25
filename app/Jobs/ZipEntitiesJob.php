@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Download;
+use App\MediaFile;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
@@ -14,44 +15,52 @@ use Illuminate\Support\Facades\Storage;
 
 class ZipEntitiesJob implements ShouldQueue
 {
-    private $task;
+    private $download;
 
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    public function __construct($task)
+    public function __construct(Download $download)
     {
-        $this->task = $task;
+        $this->download = $download;
     }
 
     public function handle()
     {
-        return ;
-        $download = $this->task->downloads->where('type', Download::TYPE_HTMLENTITIES)->first();
+        $paths = collect();
+        $this->download
+            ->task
+            ->likes
+            ->load('media.mediaFiles')
+            ->pluck('media.*.mediaFiles.*')
+            ->map(function ($mediaFilesCollection) use ($paths) {
+                return collect($mediaFilesCollection)->map(function ($mediaFile) use ($paths) {
+                    if ($mediaFile->status === MediaFile::STATUS_SUCCESS)
+                    {
+                        $paths->push($mediaFile->mediaPath);
+                    }
+                });
+            });
 
-        dd('ZipEntitiesJob', Storage::disk('tweetsMedia')->allFiles(''), \App\Media::all()->pluck('mediaFiles')->toArray() );
+        Storage::disk('local')->makeDirectory($this->download->id);
 
-        dd($this->task->likes->map->pivot->toArray(), \Storage::disk('temporaryTasks')->allFiles($this->task->id));
-        $savedMediaPath = \Storage::disk('temporaryTasks')->path($this->task->id);
-        $zippedTaskPath = \Storage::disk('tasks')->path($this->task->id);
-        $fileName = $this->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
-        $fileAbsolutePath = $zippedTaskPath.'/'.$fileName;
+        $paths->map(function ($path) {
+            Storage::disk('local')->put($this->download->id . '/' . $path, MediaFile::getStorageDisk()->readStream($path));
+        });
 
-        // Mark task as 'completed', even if the previously
-        // dispatched job wasn't processed, so the frontend
-        // rendering (during the HTML zip) will see it as
-        // completed
-        $this->task->status = 'completed';
+        $fileName = $this->download->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
 
-        $zipFile = ExportsManager::makeTaskZipObject($this->task);
+        $fileAbsolutePath = Storage::disk('local')->path($this->download->id) .  '/' . $fileName;
+
+        $zipFile = ExportsManager::makeTaskZipObject($this->download->task);
 
         // Include media in the zip file, and save it
-        foreach (collect(\Storage::disk('temporaryTasks')->allFiles($this->task->id))
+        foreach (collect(Storage::disk('local')->allFiles($this->download->id))
         ->chunk(5) as $filesChunk) {
             $filesChunk->map(function ($file) use (&$zipFile) {
-                $zipFile->addFile(\Storage::disk('temporaryTasks')->path($file), 'media/'.Str::after($file, '/'));
+                $zipFile->addFile(Storage::disk('local')->path($file), 'media/'.Str::after($file, '/'));
             });
         }
 
@@ -61,12 +70,11 @@ class ZipEntitiesJob implements ShouldQueue
 
         $zippedStream = fopen($fileAbsolutePath, 'r');
 
-        dd(\Storage::disk(config('filesystems.cloud'))->allFiles(''));
-
-        \Storage::disk(config('filesystems.cloud'))->put($this->task->id.'/'.$fileName, $zippedStream);
+        Storage::disk(config('filesystems.cloud'))->put($this->download->id, $zippedStream);
 
         fclose($zippedStream);
 
+        return ;
         dispatch(new CleanZippedEntitiesJob($this->task->id))->delay(now()->addSeconds(1));
     }
 }

@@ -3,10 +3,7 @@
 namespace App\TwUtils;
 
 use App\Media;
-use App\MediaFile;
 use App\Tweet;
-use App\TaskTweet;
-use Illuminate\Support\Arr;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use App\TwUtils\Tweets\Media\GifDownloader;

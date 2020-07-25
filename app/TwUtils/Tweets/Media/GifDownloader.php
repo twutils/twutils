@@ -8,6 +8,6 @@ class GifDownloader extends Downloader
     {
         $video = $this->media->raw['video_info']['variants'][0];
 
-        return $video->url;
+        return $video['url'];
     }
 }

@@ -7,7 +7,6 @@ use App\Media;
 use App\Tweet;
 use App\Jobs\ZipEntitiesJob;
 use App\TwUtils\AssetsManager;
-use App\Jobs\SaveTweetMediaJob;
 use App\Jobs\FetchEntitiesLikesJob;
 
 class FetchEntitiesLikesOperation extends FetchLikesOperation

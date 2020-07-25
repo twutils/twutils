@@ -42,9 +42,9 @@ abstract class Downloader
 
         $extension = app('MimeDB')->findExtension($response->getHeaderLine('Content-Type'));
 
-        if (Storage::disk('tweetsMedia')->put($this->mediaFile->id . '.' . $extension, $response->getBody()->getContents())) {
-            $this->mediaFile->extension = $extension;
+        $this->mediaFile->extension = $extension;
 
+        if (MediaFile::getStorageDisk()->put($this->mediaFile->mediaPath, $response->getBody()->getContents())) {
             return ;
         }
 

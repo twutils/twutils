@@ -7,13 +7,15 @@ use App\Task;
 use App\Media;
 use App\Tweet;
 use App\Download;
+use App\Jobs\ProcessMediaFileJob;
+use App\MediaFile;
 use Tests\HttpClientMock;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
 use App\Jobs\SaveTweetMediaJob;
-use App\MediaFile;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Storage;
 
 /*
  * A Generic abstract tests for all tasks that store and attach entities and
@@ -42,7 +44,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         Bus::assertDispatched($this->jobName);
     }
 
-    public function test_basic_save_photo()
+    public function test_one_tweet_contains_one_photo()
     {
         $this->withoutJobs();
         $this->logInSocialUser('api');
@@ -56,13 +58,11 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
-        dd('Done.. test_basic_save_photo');
-
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
+        $this->assertEquals(Task::all()->last()->tweets->first()->media->map->mediaFiles[0][0]->mediaPath, $tweet->id_str.'_1.jpeg');
     }
 
     public function test_basic_save_two_photos()
@@ -79,13 +79,17 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
+        $response = $this->getJson(route('tasks.getTaskData', ['task' => Task::all()->last()->id]));
+
+        $this->assertEquals('success', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['status']);
+
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.jpeg');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][1][0], $tweet->id_str.'_2.jpeg');
+        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
+        $this->assertEquals($tweet->id_str.'_2.jpeg', $response->decodeResponseJson()['data'][0]['media'][1]['media_files'][0]['mediaPath']);
     }
 
     public function test_basic_save_two_photos_database_relations()
@@ -102,13 +106,20 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
+        $this->assertLikesBelongsToTask();
         $this->assertCount(2, Tweet::first()->media);
         $this->assertCount(2, Media::all());
+        $this->assertCount(2, MediaFile::all());
+        $this->assertCount(1, Media::find(1)->mediaFiles);
+        $this->assertCount(1, Media::find(2)->mediaFiles);
         $this->assertCount(3, Task::first()->downloads);
         $this->assertEquals('success', Download::first()->status);
         $this->assertEquals('success', Media::first()->status);
-
+        $this->assertCount(2, Storage::disk('tweetsMedia')->allFiles(''));
         $this->assertTaskCount(1, 'completed');
+
+        $this->assertZippedExists('1', [$tweet->id_str . '_1.jpeg', $tweet->id_str . '_2.jpeg']);
+
     }
 
     public function test_basic_save_gif()
@@ -125,12 +136,14 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
+        $response = $this->getJson(route('tasks.getTaskData', ['task' => Task::all()->last()->id]));
+
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
+        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
     }
 
     public function test_basic_save_video()
@@ -147,15 +160,17 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
+        $response = $this->getJson(route('tasks.getTaskData', ['task' => Task::all()->last()->id]));
+
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][0], $tweet->id_str.'_1.jpeg');
-        $this->assertEquals(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0][1], $tweet->id_str.'_2.mp4');
+        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
+        $this->assertEquals($tweet->id_str.'_2.mp4', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][1]['mediaPath']);
 
-        $response = $this->get('task/1/download/html');
+        $response = $this->get('task/1/download/1');
         $response->assertStatus(200);
 
         $fileAsString = $response->streamedContent();
@@ -185,18 +200,20 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
+        $response = $this->getJson(route('tasks.getTaskData', ['task' => Task::all()->last()->id]));
+
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedMissing('1', $tweet->id_str.'_1.zip');
-        $this->assertTrue(empty(Task::all()->last()->tweets->first()->pivot->attachments['paths'][0]));
+        $this->assertEquals('broken', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['status']);
     }
 
     public function test_mixed_types_of_tweets()
     {
-        $expectedSavedPaths = '1/media/11_1.jpeg,1/media/12_1.jpeg,1/media/13_1.jpeg,1/media/14_1.jpeg,1/media/15_1.jpeg,1/media/16_1.jpeg,1/media/17_1.jpeg,1/media/18_1.jpeg,1/media/19_1.jpeg,1/media/20_1.jpeg,1/media/20_2.jpeg,1/media/21_1.jpeg,1/media/21_2.jpeg,1/media/22_1.jpeg,1/media/22_2.jpeg,1/media/23_1.jpeg,1/media/23_2.jpeg,1/media/24_1.jpeg,1/media/24_2.jpeg,1/media/25_1.jpeg,1/media/25_2.jpeg,1/media/26_1.jpeg,1/media/26_2.jpeg,1/media/27_1.jpeg,1/media/27_2.jpeg,1/media/28_1.jpeg,1/media/28_2.jpeg,1/media/29_1.jpeg,1/media/29_2.jpeg,1/media/30_1.jpeg,1/media/30_2.mp4,1/media/31_1.jpeg,1/media/31_2.mp4,1/media/32_1.jpeg,1/media/32_2.mp4,1/media/33_1.jpeg,1/media/33_2.mp4';
+        $expectedSavedPaths = 'media/11_2.jpeg,media/12_3.jpeg,media/13_4.jpeg,media/14_5.jpeg,media/15_6.jpeg,media/16_7.jpeg,media/17_8.jpeg,media/18_9.jpeg,media/19_10.jpeg,media/20_11.jpeg,media/20_12.jpeg,media/21_13.jpeg,media/21_14.jpeg,media/22_15.jpeg,media/22_16.jpeg,media/23_17.jpeg,media/23_18.jpeg,media/24_19.jpeg,media/24_20.jpeg,media/25_21.jpeg,media/25_22.jpeg,media/26_23.jpeg,media/26_24.jpeg,media/27_25.jpeg,media/27_26.jpeg,media/28_27.jpeg,media/28_28.jpeg,media/29_29.jpeg,media/29_30.jpeg,media/30_31.jpeg,media/30_32.mp4,media/31_33.jpeg,media/31_34.mp4,media/32_35.jpeg,media/32_36.mp4,media/33_37.jpeg,media/33_38.mp4';
 
-        $expectedTweetsAttachmentsPaths = '11_1.jpeg,12_1.jpeg,13_1.jpeg,14_1.jpeg,15_1.jpeg,16_1.jpeg,17_1.jpeg,18_1.jpeg,19_1.jpeg,20_1.jpeg,20_2.jpeg,21_1.jpeg,21_2.jpeg,22_1.jpeg,22_2.jpeg,23_1.jpeg,23_2.jpeg,24_1.jpeg,24_2.jpeg,25_1.jpeg,25_2.jpeg,26_1.jpeg,26_2.jpeg,27_1.jpeg,27_2.jpeg,28_1.jpeg,28_2.jpeg,29_1.jpeg,29_2.jpeg,30_1.jpeg,30_2.mp4,31_1.jpeg,31_2.mp4,32_1.jpeg,32_2.mp4,33_1.jpeg,33_2.mp4';
+        $expectedTweetsAttachmentsPaths = '11_2.jpeg,12_3.jpeg,13_4.jpeg,14_5.jpeg,15_6.jpeg,16_7.jpeg,17_8.jpeg,18_9.jpeg,19_10.jpeg,20_11.jpeg,20_12.jpeg,21_13.jpeg,21_14.jpeg,22_15.jpeg,22_16.jpeg,23_17.jpeg,23_18.jpeg,24_19.jpeg,24_20.jpeg,25_21.jpeg,25_22.jpeg,26_23.jpeg,26_24.jpeg,27_25.jpeg,27_26.jpeg,28_27.jpeg,28_28.jpeg,29_29.jpeg,29_30.jpeg,30_31.jpeg,30_32.mp4,31_33.jpeg,31_34.mp4,32_35.jpeg,32_36.mp4,33_37.jpeg,33_38.mp4';
 
         $this->withoutJobs();
         $this->logInSocialUser('api');
@@ -230,21 +247,33 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
                     'twitterData' => $this->uniqueTweetIds([$tweetWithGif, $tweetWithVideo, $tweetWithGif, $tweetWithVideo]),
                 ],
                 [
-                    'type'        => SaveTweetMediaJob::class,
+                    'type'        => ProcessMediaFileJob::class,
                     'twitterData' => [],
                     'before'      => function () {
                         app('HttpClient')->throwException(1);
                     }
                 ],
+                [
+                    'type'        => ProcessMediaFileJob::class,
+                    'twitterData' => [],
+                    'before'      => function () {}
+                ],
             ]
         );
 
+        $response = $this->getJson(route('tasks.getTaskData', ['task' => Task::all()->last()->id]));
+
         $likeEntitiesPaths = '';
-        Task::all()->last()->tweets->sortBy('id')->pluck('pivot.attachments.paths')
+        collect($response->decodeResponseJson()['data'])
         ->map(
-            function ($likeEntityPaths) use (&$likeEntitiesPaths) {
-                foreach ((array) $likeEntityPaths as $path) {
-                    $likeEntitiesPaths .= implode(',', $path).',';
+            function ($tweet) use (&$likeEntitiesPaths) {
+                foreach ($tweet['media'] as $media) {
+                    foreach ($media['media_files'] as $mediaFile) {
+                        if ($mediaFile['status'] === MediaFile::STATUS_SUCCESS)
+                        {
+                            $likeEntitiesPaths .= $mediaFile['mediaPath'] . ',';
+                        }
+                    }
                 }
             }
         );
@@ -254,19 +283,8 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 34);
         $this->assertLikesBelongsToTask();
-        $this->assertStringContainsString($expectedSavedPaths, collect($this->getZippedFiles(1))->implode(','));
         $this->assertStringContainsString($expectedTweetsAttachmentsPaths, $likeEntitiesPaths);
-
-        $this->assertNotContains(
-            null,
-            Task::all()->last()->tweets
-                ->pluck('pivot.attachments')
-                ->filter(function($attachments) {
-                    return ! empty($attachments);
-                })
-                ->pluck('type'),
-            '\'attachments\' column in \'task_tweet\' table can\'t be empty'
-        );
+        $this->assertStringContainsString($expectedSavedPaths, collect($this->getZippedFiles(3))->implode(','));
     }
 
     public function test_do_nothing_with_regualr_tweets()
@@ -424,10 +442,12 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
     protected function assertZippedExists($taskId, $files)
     {
-        $zippedFilesList = $this->getZippedFiles($taskId);
+        $downloadId = \App\Task::find($taskId)->downloads->where('type', Download::TYPE_HTMLENTITIES)->first()->id;
+
+        $zippedFilesList = $this->getZippedFiles($downloadId);
 
         foreach ((array) $files as $file) {
-            $this->assertContains($taskId.'/media/'.$file, $zippedFilesList);
+            $this->assertContains('media/'.$file, $zippedFilesList);
         }
     }
 
@@ -439,31 +459,15 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         }
     }
 
-    protected function getZippedFiles($taskId)
+    protected function getZippedFiles($downloadId)
     {
         $disk = \Storage::disk(config('filesystems.cloud'));
-        $path = $disk->path('').'/';
-        $zippedPath = $disk->files($taskId)[0];
+        $path = $disk->path($downloadId);
 
         $zipFile = new \PhpZip\ZipFile();
-        $zipFile->openFile($path.$zippedPath);
+        $zipFile->openFile($path);
 
-        $result = collect($zipFile->getListFiles())
-      ->map(
-          function ($file) {
-              if (substr($file, 0, 1) == '\\') {
-                  return substr($file, 1);
-              }
-
-              return $file;
-          }
-      )
-      ->map(
-          function ($file) use ($taskId) {
-              return $taskId.'/'.$file;
-          }
-      )
-      ->toArray();
+        $result = $zipFile->getListFiles();
 
         $zipFile->close();
 

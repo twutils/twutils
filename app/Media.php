@@ -65,9 +65,12 @@ class Media extends Model
 
     public function initMediaFiles()
     {
+        $counter = 1;
+
         collect(AssetsManager::getMediaDownloaders($this))
-        ->map(function ($downloader) {
-            MediaFile::create(['downloader' => $downloader, 'media_id' => $this->id]);
+        ->map(function ($downloader) use (& $counter) {
+            // TODO: Optimize loading "this->tweet"
+            MediaFile::create(['downloader' => $downloader, 'media_id' => $this->id, 'name' => $this->tweet->id_str]);
         });
     }
 

@@ -4,7 +4,9 @@ namespace App;
 
 use App\Jobs\ProcessMediaFileJob;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use App\TwUtils\Tweets\Media\Downloader;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class MediaFile extends Model
 {
@@ -12,11 +14,13 @@ class MediaFile extends Model
 
     protected $guarded = ['id'];
 
-    protected $fillable = ['media_id', 'downloader'];
+    protected $fillable = ['media_id', 'downloader', 'name'];
 
     protected $casts = [
         'raw' => 'json',
     ];
+
+    protected $appends = ['mediaPath'];
 
     public const STATUS_INITIAL = 'initial';
     public const STATUS_STARTED = 'started';
@@ -69,7 +73,17 @@ class MediaFile extends Model
         return $this->getDownloader()->download();
     }
 
-    public function getDownloader() : Downloader
+    public function getMediaPathAttribute()
+    {
+        return implode('', [$this->name, '_', $this->id, '.', $this->extension]);
+    }
+
+    public static function getStorageDisk() : FilesystemAdapter
+    {
+        return Storage::disk('tweetsMedia');
+    }
+
+    protected function getDownloader() : Downloader
     {
         return new $this->downloader ($this);
     }

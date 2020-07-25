@@ -79,6 +79,7 @@ class TasksController extends Controller
             $perPage = round($task->likes_count / 15);
 
             return $task->likes()
+                    ->with('media.mediaFiles')
                     ->paginate($perPage < 200 ? 200 : $perPage);
         }
 

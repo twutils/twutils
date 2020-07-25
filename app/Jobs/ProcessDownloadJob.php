@@ -5,6 +5,7 @@ namespace App\Jobs;
 use Storage;
 use App\Task;
 use App\Download;
+use App\MediaFile;
 use Illuminate\Support\Str;
 use App\Exports\TasksExport;
 use App\Jobs\ZipEntitiesJob;
@@ -19,6 +20,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 class ProcessDownloadJob implements ShouldQueue
 {
     protected $download;
+    protected $mediaFilesIsCompleted;
 
     use Dispatchable;
     use InteractsWithQueue;
@@ -38,9 +40,13 @@ class ProcessDownloadJob implements ShouldQueue
         if ($this->download->type === Download::TYPE_HTML)
         {
             $this->createHtmlDownload();
-        } else if ($this->download->type === Download::TYPE_EXCEL) {
+        }
+
+        if ($this->download->type === Download::TYPE_EXCEL) {
             $this->createExcelDownload();
-        } else if ($this->download->type === Download::TYPE_HTMLENTITIES) {
+        }
+
+        if ($this->download->type === Download::TYPE_HTMLENTITIES) {
             $this->createHtmlEntitiesDownload();
         }
 
@@ -86,7 +92,27 @@ class ProcessDownloadJob implements ShouldQueue
 
     protected function createHtmlEntitiesDownload()
     {
-        dispatch(new ZipEntitiesJob($this->download->task));
+        $this->mediaFilesIsCompleted = true;
+
+        $this->download->task
+            ->likes
+            ->load('media.mediaFiles')
+            ->pluck('media.*.mediaFiles.*')
+            ->map(function ($mediaFilesCollection) {
+                return collect($mediaFilesCollection)->map(function ($i) {
+                    if ( in_array($i->status, [MediaFile::STATUS_STARTED, MediaFile::STATUS_INITIAL]) )
+                        {
+                            $this->mediaFilesIsCompleted = false;
+                        }
+                    });
+            });
+
+        if (! $this->mediaFilesIsCompleted)
+        {
+            return dispatch(new self($this->download))->delay(now()->addSeconds(10));
+        }
+
+        (new ZipEntitiesJob($this->download))->handle();
     }
 
 }

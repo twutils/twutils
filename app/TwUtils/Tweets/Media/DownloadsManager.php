@@ -4,8 +4,8 @@ namespace App\TwUtils\Tweets\Media;
 
 use App\Tweet;
 
-
-class DownloadsManager {
+class DownloadsManager
+{
     protected $tweet;
     protected $taskId;
 
@@ -14,6 +14,4 @@ class DownloadsManager {
         $this->tweet = $tweet;
         $this->taskId = $taskId;
     }
-
-    
 }

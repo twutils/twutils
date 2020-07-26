@@ -10,7 +10,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 
 class MediaFile extends Model
 {
-    protected $table = "media_files";
+    protected $table = 'media_files';
 
     protected $guarded = ['id'];
 
@@ -35,25 +35,20 @@ class MediaFile extends Model
             $mediaFile->status = 'initial';
         });
 
-
         static::updating(function (self $media) {
-            if ( ! array_key_exists('status', $media->getDirty() ))
-            {
-                return ;
+            if (! array_key_exists('status', $media->getDirty())) {
+                return;
             }
 
-            if ($media->status === static::STATUS_STARTED)
-            {
+            if ($media->status === static::STATUS_STARTED) {
                 $media->started_at = now();
             }
 
-            if ($media->status === static::STATUS_SUCCESS)
-            {
+            if ($media->status === static::STATUS_SUCCESS) {
                 $media->success_at = now();
             }
 
-            if ($media->status === static::STATUS_BROKEN)
-            {
+            if ($media->status === static::STATUS_BROKEN) {
                 $media->broken_at = now();
             }
         });
@@ -68,7 +63,7 @@ class MediaFile extends Model
         return $this->belongsTo(Media::class);
     }
 
-    public function download() : self
+    public function download(): self
     {
         return $this->getDownloader()->download();
     }
@@ -78,13 +73,13 @@ class MediaFile extends Model
         return implode('', [$this->name, '_', $this->id, '.', $this->extension]);
     }
 
-    public static function getStorageDisk() : FilesystemAdapter
+    public static function getStorageDisk(): FilesystemAdapter
     {
         return Storage::disk('tweetsMedia');
     }
 
-    protected function getDownloader() : Downloader
+    protected function getDownloader(): Downloader
     {
-        return new $this->downloader ($this);
+        return new $this->downloader($this);
     }
 }

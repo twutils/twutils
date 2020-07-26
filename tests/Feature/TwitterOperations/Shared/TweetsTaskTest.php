@@ -7,12 +7,10 @@ use Storage;
 use App\Task;
 use App\Tweep;
 use App\Tweet;
-use App\Exports\TasksExport;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;
-use Maatwebsite\Excel\Facades\Excel;
 
 /*
  * A Generic abstract tests for all tasks that store tweets..
@@ -1114,19 +1112,19 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 
         $spreadsheet = $reader->load(Storage::disk(config('filesystems.cloud'))->path(2));
-    
+
         $headers = [
-            "date",
-            "time",
-            "username",
-            "to",
-            "retweets",
-            "favorites",
-            "text",
-            "mentions",
-            "hashtags",
-            "id",
-            "permalink",
+            'date',
+            'time',
+            'username',
+            'to',
+            'retweets',
+            'favorites',
+            'text',
+            'mentions',
+            'hashtags',
+            'id',
+            'permalink',
         ];
 
         $rows = $spreadsheet->getActiveSheet()->toArray();
@@ -1138,14 +1136,14 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCount(6, $rows);
 
         collect($rows)->map(function ($row) use ($headers) {
-            $this->assertNotNull($row[ array_search('date', $headers) ]);
-            $this->assertNotNull($row[ array_search('time', $headers) ]);
-            $this->assertNotNull($row[ array_search('username', $headers) ]);
-            $this->assertNotNull($row[ array_search('retweets', $headers) ]);
-            $this->assertNotNull($row[ array_search('favorites', $headers) ]);
-            $this->assertNotNull($row[ array_search('text', $headers) ]);
-            $this->assertNotNull($row[ array_search('id', $headers) ]);
-            $this->assertNotNull($row[ array_search('permalink', $headers) ]);
+            $this->assertNotNull($row[array_search('date', $headers)]);
+            $this->assertNotNull($row[array_search('time', $headers)]);
+            $this->assertNotNull($row[array_search('username', $headers)]);
+            $this->assertNotNull($row[array_search('retweets', $headers)]);
+            $this->assertNotNull($row[array_search('favorites', $headers)]);
+            $this->assertNotNull($row[array_search('text', $headers)]);
+            $this->assertNotNull($row[array_search('id', $headers)]);
+            $this->assertNotNull($row[array_search('permalink', $headers)]);
         });
     }
 

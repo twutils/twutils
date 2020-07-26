@@ -11,7 +11,7 @@ class Download extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-    	'task_id' => 'int',
+        'task_id' => 'int',
         'started_at' => 'datetime',
         'success_at' => 'datetime',
     ];
@@ -34,23 +34,19 @@ class Download extends Model
         });
 
         static::updating(function (self $download) {
-            if ( ! array_key_exists('status', $download->getDirty() ))
-            {
-                return ;
+            if (! array_key_exists('status', $download->getDirty())) {
+                return;
             }
 
-            if ($download->status === static::STATUS_STARTED)
-            {
+            if ($download->status === static::STATUS_STARTED) {
                 $download->started_at = now();
             }
 
-            if ($download->status === static::STATUS_SUCCESS)
-            {
+            if ($download->status === static::STATUS_SUCCESS) {
                 $download->success_at = now();
             }
 
-            if ($download->status === static::STATUS_BROKEN)
-            {
+            if ($download->status === static::STATUS_BROKEN) {
                 $download->broken_at = now();
             }
         });
@@ -62,11 +58,11 @@ class Download extends Model
 
     public function task()
     {
-    	return $this->hasOne(Task::class, 'id', 'task_id');
+        return $this->hasOne(Task::class, 'id', 'task_id');
     }
 
     public function toResponse()
     {
-    	return Storage::disk(config('filesystems.cloud'))->response($this->id);
+        return Storage::disk(config('filesystems.cloud'))->response($this->id);
     }
 }

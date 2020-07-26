@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Media extends Model
 {
-    protected $table = "media";
+    protected $table = 'media';
 
     protected $guarded = ['id'];
 
@@ -37,23 +37,19 @@ class Media extends Model
         });
 
         static::updating(function (self $media) {
-            if ( ! array_key_exists('status', $media->getDirty() ))
-            {
-                return ;
+            if (! array_key_exists('status', $media->getDirty())) {
+                return;
             }
 
-            if ($media->status === static::STATUS_STARTED)
-            {
+            if ($media->status === static::STATUS_STARTED) {
                 $media->started_at = now();
             }
 
-            if ($media->status === static::STATUS_SUCCESS)
-            {
+            if ($media->status === static::STATUS_SUCCESS) {
                 $media->success_at = now();
             }
 
-            if ($media->status === static::STATUS_BROKEN)
-            {
+            if ($media->status === static::STATUS_BROKEN) {
                 $media->broken_at = now();
             }
         });
@@ -68,7 +64,7 @@ class Media extends Model
         $counter = 1;
 
         collect(AssetsManager::getMediaDownloaders($this))
-        ->map(function ($downloader) use (& $counter) {
+        ->map(function ($downloader) use (&$counter) {
             // TODO: Optimize loading "this->tweet"
             MediaFile::create(['downloader' => $downloader, 'media_id' => $this->id, 'name' => $this->tweet->id_str]);
         });

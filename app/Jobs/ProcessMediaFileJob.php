@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\MediaFile;
 use Illuminate\Bus\Queueable;
-use App\TwUtils\AssetsManager;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -23,8 +22,9 @@ class ProcessMediaFileJob implements ShouldQueue
 
     public function handle()
     {
-        if ($this->mediaFile->status !== MediaFile::STATUS_STARTED)
-            return ;
+        if ($this->mediaFile->status !== MediaFile::STATUS_STARTED) {
+            return;
+        }
 
         $this->mediaFile->download();
     }

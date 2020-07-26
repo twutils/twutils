@@ -3,7 +3,6 @@
 namespace App;
 
 use Storage;
-use App\Download;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -27,7 +26,6 @@ class Task extends Model
         'fetchusertweets',
         'fetchentitiesusertweets',
     ];
-
 
     public const TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES = [
         'fetchentitieslikes',
@@ -63,9 +61,8 @@ class Task extends Model
                 'type'    => Download::TYPE_EXCEL,
             ]);
 
-            if ( ! in_array($task->baseName, static::TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES) )
-            {
-                return ;
+            if (! in_array($task->baseName, static::TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES)) {
+                return;
             }
 
             Download::create([
@@ -75,12 +72,10 @@ class Task extends Model
         });
 
         static::updated(function (self $task) {
-
             if (
                 $task->status === 'completed' &&
-                array_key_exists('status', $task->getDirty() )
-            )
-            {
+                array_key_exists('status', $task->getDirty())
+            ) {
                 $task->downloads->map(function (Download $download) {
                     $download->status = 'started';
                     $download->save();
@@ -154,7 +149,7 @@ class Task extends Model
     {
         return $this->belongsToMany(Tweet::class, 'task_tweet', 'task_id', 'tweet_id_str', 'id', 'id_str', 'tweets')
             ->using(TaskTweet::class)
-            ->withPivot(['favorited', 'retweeted', 'removed', 'removed_task_id',]);
+            ->withPivot(['favorited', 'retweeted', 'removed', 'removed_task_id']);
     }
 
     public function socialUser()

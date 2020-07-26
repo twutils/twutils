@@ -52,7 +52,7 @@ class AssetsManager
         return ! empty($tweet['extended_entities']) && ! empty($tweet['extended_entities']['media']);
     }
 
-    public static function getMediaDownloaders(Media $media) : array
+    public static function getMediaDownloaders(Media $media): array
     {
         if ($media->type == 'photo') {
             return [ImageDownloader::class];

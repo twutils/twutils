@@ -13,8 +13,7 @@ class DownloadPolicy
 
     public function view(User $user, Download $download, Task $task)
     {
-        if ( $user->cannot('view', $task))
-        {
+        if ($user->cannot('view', $task)) {
             return false;
         }
 

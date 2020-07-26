@@ -7,13 +7,11 @@ use App\Task;
 use App\Media;
 use App\Tweet;
 use App\Download;
-use App\Jobs\ProcessMediaFileJob;
 use App\MediaFile;
-use Tests\HttpClientMock;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
-use App\Jobs\SaveTweetMediaJob;
+use App\Jobs\ProcessMediaFileJob;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 
@@ -118,8 +116,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertCount(2, Storage::disk('tweetsMedia')->allFiles(''));
         $this->assertTaskCount(1, 'completed');
 
-        $this->assertZippedExists('1', [$tweet->id_str . '_1.jpeg', $tweet->id_str . '_2.jpeg']);
-
+        $this->assertZippedExists('1', [$tweet->id_str.'_1.jpeg', $tweet->id_str.'_2.jpeg']);
     }
 
     public function test_basic_save_gif()
@@ -251,12 +248,13 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
                     'twitterData' => [],
                     'before'      => function () {
                         app('HttpClient')->throwException(1);
-                    }
+                    },
                 ],
                 [
                     'type'        => ProcessMediaFileJob::class,
                     'twitterData' => [],
-                    'before'      => function () {}
+                    'before'      => function () {
+                    },
                 ],
             ]
         );
@@ -269,9 +267,8 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
             function ($tweet) use (&$likeEntitiesPaths) {
                 foreach ($tweet['media'] as $media) {
                     foreach ($media['media_files'] as $mediaFile) {
-                        if ($mediaFile['status'] === MediaFile::STATUS_SUCCESS)
-                        {
-                            $likeEntitiesPaths .= $mediaFile['mediaPath'] . ',';
+                        if ($mediaFile['status'] === MediaFile::STATUS_SUCCESS) {
+                            $likeEntitiesPaths .= $mediaFile['mediaPath'].',';
                         }
                     }
                 }

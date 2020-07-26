@@ -8,10 +8,10 @@ use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Storage;
 
 class ZipEntitiesJob implements ShouldQueue
 {
@@ -37,8 +37,7 @@ class ZipEntitiesJob implements ShouldQueue
             ->pluck('media.*.mediaFiles.*')
             ->map(function ($mediaFilesCollection) use ($paths) {
                 return collect($mediaFilesCollection)->map(function ($mediaFile) use ($paths) {
-                    if ($mediaFile->status === MediaFile::STATUS_SUCCESS)
-                    {
+                    if ($mediaFile->status === MediaFile::STATUS_SUCCESS) {
                         $paths->push($mediaFile->mediaPath);
                     }
                 });
@@ -47,12 +46,12 @@ class ZipEntitiesJob implements ShouldQueue
         Storage::disk('local')->makeDirectory($this->download->id);
 
         $paths->map(function ($path) {
-            Storage::disk('local')->put($this->download->id . '/' . $path, MediaFile::getStorageDisk()->readStream($path));
+            Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));
         });
 
         $fileName = $this->download->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
 
-        $fileAbsolutePath = Storage::disk('local')->path($this->download->id) .  '/' . $fileName;
+        $fileAbsolutePath = Storage::disk('local')->path($this->download->id).'/'.$fileName;
 
         $zipFile = ExportsManager::makeTaskZipObject($this->download->task);
 
@@ -74,7 +73,7 @@ class ZipEntitiesJob implements ShouldQueue
 
         fclose($zippedStream);
 
-        return ;
+        return;
         dispatch(new CleanZippedEntitiesJob($this->task->id))->delay(now()->addSeconds(1));
     }
 }

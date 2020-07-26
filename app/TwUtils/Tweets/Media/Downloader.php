@@ -4,7 +4,6 @@ namespace App\TwUtils\Tweets\Media;
 
 use App\Media;
 use App\MediaFile;
-use Illuminate\Support\Facades\Storage;
 
 abstract class Downloader
 {
@@ -17,9 +16,9 @@ abstract class Downloader
         $this->mediaFile = $mediaFile;
     }
 
-    abstract protected function getUrl() : string;
+    abstract protected function getUrl(): string;
 
-    final public function download() : MediaFile
+    final public function download(): MediaFile
     {
         try {
             $this->doDownload();
@@ -34,7 +33,7 @@ abstract class Downloader
         return $this->mediaFile;
     }
 
-    final protected function doDownload() : void
+    final protected function doDownload(): void
     {
         $client = app('HttpClient');
 
@@ -45,10 +44,9 @@ abstract class Downloader
         $this->mediaFile->extension = $extension;
 
         if (MediaFile::getStorageDisk()->put($this->mediaFile->mediaPath, $response->getBody()->getContents())) {
-            return ;
+            return;
         }
 
-        throw new \Exception("Error downloading media file: " . $this->mediaFile->id);
-        
+        throw new \Exception('Error downloading media file: '.$this->mediaFile->id);
     }
 }

@@ -2,13 +2,10 @@
 
 namespace App\Jobs;
 
-use Storage;
 use App\Task;
 use App\Download;
 use App\MediaFile;
-use Illuminate\Support\Str;
 use App\Exports\TasksExport;
-use App\Jobs\ZipEntitiesJob;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
 use App\Exports\UsersListTaskExport;
@@ -34,11 +31,11 @@ class ProcessDownloadJob implements ShouldQueue
 
     public function handle()
     {
-        if ($this->download->status !== Download::STATUS_STARTED)
-            return ;
-        
-        if ($this->download->type === Download::TYPE_HTML)
-        {
+        if ($this->download->status !== Download::STATUS_STARTED) {
+            return;
+        }
+
+        if ($this->download->type === Download::TYPE_HTML) {
             $this->createHtmlDownload();
         }
 
@@ -100,19 +97,16 @@ class ProcessDownloadJob implements ShouldQueue
             ->pluck('media.*.mediaFiles.*')
             ->map(function ($mediaFilesCollection) {
                 return collect($mediaFilesCollection)->map(function ($i) {
-                    if ( in_array($i->status, [MediaFile::STATUS_STARTED, MediaFile::STATUS_INITIAL]) )
-                        {
-                            $this->mediaFilesIsCompleted = false;
-                        }
-                    });
+                    if (in_array($i->status, [MediaFile::STATUS_STARTED, MediaFile::STATUS_INITIAL])) {
+                        $this->mediaFilesIsCompleted = false;
+                    }
+                });
             });
 
-        if (! $this->mediaFilesIsCompleted)
-        {
+        if (! $this->mediaFilesIsCompleted) {
             return dispatch(new self($this->download))->delay(now()->addSeconds(10));
         }
 
         (new ZipEntitiesJob($this->download))->handle();
     }
-
 }

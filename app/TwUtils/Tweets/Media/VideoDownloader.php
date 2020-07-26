@@ -4,7 +4,7 @@ namespace App\TwUtils\Tweets\Media;
 
 class VideoDownloader extends Downloader
 {
-    public function getUrl() : string
+    public function getUrl(): string
     {
         $videoVariants = collect($this->media->raw['video_info']['variants']);
         $chosenVideo = $this->choseBestVideo($videoVariants);

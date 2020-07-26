@@ -12,10 +12,9 @@ class HttpClientMock
     {
         static::$lastUrlCalled = $url;
 
-        if (static::$throwException !== 0)
-        {
+        if (static::$throwException !== 0) {
             static::$throwException--;
-            throw new \Exception("Error Processing Request", 1);
+            throw new \Exception('Error Processing Request', 1);
         }
 
         return $this;

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Media;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
 

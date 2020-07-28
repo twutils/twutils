@@ -1026,10 +1026,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         ->assertStatus(200);
 
         $this->dispatchedJobs[0]->handle();
-        $this->assertCountDispatchedJobs(2, null);
-
-        $this->dispatchedJobs[1]->handle();
-        $this->dispatchedJobs[2]->handle();
+        $this->assertCountDispatchedJobs(3, null);
+        $this->fireJobsAndBindTwitter([], 1);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());

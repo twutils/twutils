@@ -77,8 +77,11 @@ class ProcessDownloadJob implements ShouldQueue
                 });
         }
 
-        if (in_array($task->baseName, Task::TWEETS_DESTROY_BASE_NAMES)) {
-            $tweets = Task::find($task->extra['targeted_task_id'])
+        if (
+            in_array($task->baseName, Task::TWEETS_DESTROY_BASE_NAMES) &&
+            ($targetedTask = Task::find($task->extra['targeted_task_id']))
+        ) {
+            $tweets = $targetedTask
                 ->tweets()
                 ->wherePivot('removed', '!=', null)
                 ->get();

@@ -12,6 +12,7 @@ class destroyLikesOperation extends TwitterOperation
     protected $scope = 'write';
     protected $httpMethod = 'post';
     protected $likesCollection = [];
+    protected $dispatchJobName = DislikeTweetJob::class;
 
     protected function handleJobParameters($parameters)
     {
@@ -72,7 +73,7 @@ class destroyLikesOperation extends TwitterOperation
         $nextJobDelay = $this->data['nextJobDelay'];
         $nextTweetIndex = $this->data['nextTweetIndex'];
 
-        dispatch(new DislikeTweetJob($this->socialUser, $nextTweetIndex, $this->likesCollection, $this->task))->delay($nextJobDelay);
+        dispatch(new $this->dispatchJobName($this->socialUser, $nextTweetIndex, $this->likesCollection, $this->task))->delay($nextJobDelay);
     }
 
     protected function shouldBuildNextJob()
@@ -127,7 +128,7 @@ class destroyLikesOperation extends TwitterOperation
                 return $this->setCompletedTask($this->task);
             }
 
-            return dispatch(new DislikeTweetJob($this->socialUser, 0, $likes, $this->task));
+            return dispatch(new $this->dispatchJobName($this->socialUser, 0, $likes, $this->task));
         } catch (\Exception $e) {
             if (app('env') === 'testing') {
                 dd($e);

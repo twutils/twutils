@@ -75,11 +75,9 @@ class DestroyTweetJobTest extends IntegrationTestCase
         $this->logInSocialUserForDestroyTweets();
         $this->withoutJobs();
 
-        $tweet = $this->getStub('tweet.json');
-        $secondTweet = clone $tweet;
-        $secondTweet->id_str = (string) time();
+        $tweets = $this->generateTweets(2);
+        $this->bindTwitterConnector($tweets);
 
-        $this->bindTwitterConnector([$tweet, $secondTweet]);
         [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
         $response = $this->postJson('/api/destroyTweets', ['id' => $taskId]);
@@ -87,12 +85,16 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $twitterNotExistResponse = $this->getStub('tweet_id_not_exist_response.json');
 
-        for ($i = $indexLastDispatched; $i < count($this->dispatchedJobs); $i++) {
-            if ($i != $indexLastDispatched) {
-                $this->bindTwitterConnector($twitterNotExistResponse);
-            }
-            $this->dispatchedJobs[$i]->handle();
-        }
+        $this->fireJobsAndBindTwitter([
+            [
+                'type'        => DestroyTweetJob::class,
+                'twitterData' => $tweets[0],
+            ],
+            [
+                'type'        => DestroyTweetJob::class,
+                'twitterData' => $twitterNotExistResponse,
+            ],
+        ], $indexLastDispatched);
 
         $this->assertTaskCount(2, 'completed');
         $this->assertNotNull(Task::find(1)->tweets->first()->pivot->removed);
@@ -104,7 +106,8 @@ class DestroyTweetJobTest extends IntegrationTestCase
         $this->logInSocialUserForDestroyTweets();
         $this->withoutJobs();
 
-        $tweets = $this->bindMultipleTweets(2);
+        $tweets = $this->generateTweets(2);
+        $this->bindTwitterConnector($tweets);
 
         [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
@@ -115,12 +118,16 @@ class DestroyTweetJobTest extends IntegrationTestCase
 
         $twitterNotExistResponse->errors[0]->code = 54321;
 
-        for ($i = $indexLastDispatched; $i < count($this->dispatchedJobs); $i++) {
-            if ($i != $indexLastDispatched) {
-                $this->bindTwitterConnector($twitterNotExistResponse);
-            }
-            $this->dispatchedJobs[$i]->handle();
-        }
+        $this->fireJobsAndBindTwitter([
+            [
+                'type'        => DestroyTweetJob::class,
+                'twitterData' => $tweets[0],
+            ],
+            [
+                'type'        => DestroyTweetJob::class,
+                'twitterData' => $twitterNotExistResponse,
+            ],
+        ], $indexLastDispatched);
 
         $this->assertEquals(1, Task::all()->where('status', 'completed')->count());
         $this->assertEquals(1, Task::all()->where('status', 'broken')->count());

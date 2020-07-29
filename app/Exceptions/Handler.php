@@ -42,10 +42,7 @@ class Handler extends ExceptionHandler
         parent::report($exception);
 
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
-            try {
-                Config::set('sentry.release', Cache::get('app.version', ''));
-            } catch (\Exception $e) {
-            }
+            $this->setSentryVersion();
 
             app('sentry')->captureException($exception);
         }
@@ -66,5 +63,13 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         return parent::render($request, $exception);
+    }
+
+    protected function setSentryVersion()
+    {
+        try {
+            Config::set('sentry.release', Cache::get('app.version', ''));
+        } catch (\Exception $e) {
+        }
     }
 }

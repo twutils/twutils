@@ -84,7 +84,7 @@ class AppController extends Controller
             ]
         );
 
-        $user = auth()->user();
+        $user = $request->user();
 
         if ($user->remove_at !== null) {
             session()->flash('message', ['type' => 'info', 'message' => trans('messages.deleteMe_pending')]);
@@ -107,7 +107,7 @@ class AppController extends Controller
 
     public function cancelDeleteMe(Request $request)
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         if ($user->remove_at === null) {
             return redirect()->back();

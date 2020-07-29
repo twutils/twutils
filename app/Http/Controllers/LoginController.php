@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Socialite;
 use App\TwUtils\UserManager;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -53,14 +53,7 @@ class LoginController extends Controller
 
     public function redirectToProviderWithReadWrite()
     {
-        if (app('env') == 'production') {
-            config()->set('services.twitter.redirect', env('TWITTER_REDIRECT_READ_WRITE'));
-        } else {
-            config()->set('services.twitter.redirect', sprintf(env('TWITTER_REDIRECT_READ_WRITE'), env('APP_PORT')));
-        }
-
-        config()->set('services.twitter.client_id', env('TWITTER_READ_WRITE_CLIENT_ID'));
-        config()->set('services.twitter.client_secret', env('TWITTER_READ_WRITE_CLIENT_SECRET'));
+        $this->setupTwitterConfigForReadWrite();
 
         return Socialite::driver('twitter')->redirect();
     }
@@ -73,6 +66,17 @@ class LoginController extends Controller
             return redirect()->route(auth()->check() ? 'app' : 'welcome');
         }
 
+        $this->setupTwitterConfigForReadWrite();
+
+        $user = Socialite::driver('twitter')->user();
+
+        UserManager::loginSocialUser($user, ['read', 'write']);
+
+        return redirect()->route('app');
+    }
+
+    protected function setupTwitterConfigForReadWrite()
+    {
         if (app('env') == 'production') {
             config()->set('services.twitter.redirect', env('TWITTER_REDIRECT_READ_WRITE'));
         } else {
@@ -81,10 +85,5 @@ class LoginController extends Controller
 
         config()->set('services.twitter.client_id', env('TWITTER_READ_WRITE_CLIENT_ID'));
         config()->set('services.twitter.client_secret', env('TWITTER_READ_WRITE_CLIENT_SECRET'));
-        $user = Socialite::driver('twitter')->user();
-
-        UserManager::loginSocialUser($user, ['read', 'write']);
-
-        return redirect()->route('app');
     }
 }

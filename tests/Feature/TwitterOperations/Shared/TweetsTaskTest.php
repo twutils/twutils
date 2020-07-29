@@ -605,7 +605,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter([
             [
                 'type'   => $this->jobName,
-                'before' => function () {
+                'before' => function ()  use (&$exceptionIsThrown) {
                     app()->bind('AfterHTTPRequest', function () use (&$exceptionIsThrown) {
                         if (! $exceptionIsThrown) {
                             $exceptionIsThrown = true;
@@ -627,6 +627,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             ],
         ]);
 
+        $this->assertTrue($exceptionIsThrown);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
         $this->assertLikesBelongsToTask();

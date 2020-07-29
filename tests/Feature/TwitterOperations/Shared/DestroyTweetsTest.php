@@ -306,8 +306,6 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->assertCountDispatchedJobs(1, $this->jobName);
 
-        $delaysIndexes = collect([10, 20, 30]);
-
         $this->fireJobsAndBindTwitter([
             [
                 'type' => $this->jobName,

@@ -323,14 +323,14 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
 
-        $this->getJson($this->apiEndpoint)
-        ->assertStatus(200);
+        tap(count($this->dispatchedJobs), function ($lastJobIndex) {
+            $this->getJson($this->apiEndpoint)
+            ->assertStatus(200);
+
+            $this->fireJobsAndBindTwitter([], $lastJobIndex);
+        });
 
         $this->assertTaskCount(2);
-
-        for ($i = 1; $i < count($this->dispatchedJobs); $i++) {
-            $this->dispatchedJobs[$i]->handle();
-        }
 
         $this->assertTaskCount(2, 'completed');
     }
@@ -622,8 +622,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
                 'twitterData' => $tweets,
                 'after'       => function ($job) {
                     $this->assertNotNull($job->delay);
-                    $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
-                    $this->assertLessThanOrEqual(60, $nextJobDelay);
+                    $this->assertLessThanOrEqual(60, $job->delay->diffInSeconds(now()));
                 },
             ],
         ]);
@@ -748,8 +747,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
-        $tweet = $this->getStub('tweet.json');
-
         config()->set(['twutils.minimum_expected_likes' => 10]);
 
         $this->getJson($this->apiEndpoint)
@@ -759,23 +756,22 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             [
                 [
                     'type'           => $this->jobName,
-                    'twitterData'    => array_fill(0, 15, $tweet),
+                    'twitterData'    => $this->generateUniqueTweets(15),
                     'twitterHeaders' => ['x_rate_limit_remaining' => '1', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
                 ],
                 [
                     'type'        => $this->jobName,
-                    'twitterData' => [$tweet],
+                    'twitterData' => $this->generateUniqueTweets(5),
                     'after'       => function ($job) {
                         $this->assertNotNull($job->delay);
-                        $nextJobDelay = $this->dispatchedJobs[1]->delay->diffInSeconds(now());
-                        $this->assertLessThanOrEqual(60, $nextJobDelay);
+                        $this->assertLessThanOrEqual(60, $job->delay->diffInSeconds(now()));
                     },
                 ],
             ]
         );
 
         $this->assertCountDispatchedJobs(2, $this->jobName);
-        $this->assertCount(1, Tweet::all());
+        $this->assertCount(20, Tweet::all());
 
         $this->assertTaskCount(1, 'completed');
 
@@ -833,14 +829,25 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $tweet = $this->getStub('rate_limit_response.json');
 
-        $this->bindTwitterConnector($tweet, ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')]);
-
         $this->getJson($this->apiEndpoint)
         ->assertStatus(200);
 
-        $this->dispatchedJobs[0]->handle();
+        $this->fireJobsAndBindTwitter([
+            [
+                'type' => $this->jobName,
+                'twitterData' => $tweet,
+                'twitterHeaders' => ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')]
+            ]
+        ]);
 
-        $this->assertTrue(empty($this->dispatchedJobs[1]));
+        $dispatchedJobs = collect($this->dispatchedJobs)
+                            ->filter( function ($job) {
+                                return get_class($job) === $this->jobName;
+                            })
+                            ->values()
+                            ->toArray();
+
+        $this->assertNotEmpty($dispatchedJobs);
 
         $this->assertCountDispatchedJobs(1, $this->jobName);
         $this->assertTaskCount(1, 'broken');

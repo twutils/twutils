@@ -58,6 +58,16 @@ class ManagedDestroyTweetsTest extends IntegrationTestCase
             ],
         ]);
 
+        $response = $this->getJson('api/tasks/')
+                    ->assertSuccessful()
+                    ->decodeResponseJson();
+
+        $this->assertEquals('4/4', $response[0]['removedCount']);
+        $this->assertEquals('4/4', $response[2]['removedCount']);
+        $this->assertEquals(4, $response[2]['extra']['removeScopeCount']);
+        $this->assertEquals('manageddestroytweets', $response[0]['baseName']);
+        $this->assertEquals('destroytweets', $response[2]['componentName']);
+
         $this->assertCount(4, Tweet::all());
 
         $this->assertCount(4, TwitterClientMock::getAllCallsData()->where('endpoint', 'statuses/destroy'));

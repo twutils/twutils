@@ -203,6 +203,18 @@ class Task extends Model
 
     public function getRemovedCountAttribute()
     {
+        if ($this->type === ManagedDestroyLikesOperation::class) {
+            $managedTask = self::where('managed_by_task_id', $this->id)->where('type', destroyLikesOperation::class)->first();
+
+            return ($managedTask ?? optional())->removedCount;
+        }
+
+        if ($this->type === ManagedDestroyTweetsOperation::class) {
+            $managedTask = self::where('managed_by_task_id', $this->id)->where('type', destroyTweetsOperation::class)->first();
+
+            return ($managedTask ?? optional())->removedCount;
+        }
+
         if (! in_array($this->type, [destroyLikesOperation::class, destroyTweetsOperation::class])) {
             return null;
         }

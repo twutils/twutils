@@ -26,25 +26,7 @@ class TasksController extends Controller
                 ->orderByDesc('created_at')
                 ->get();
 
-        $tasks = $tasks->map(function ($task) use ($tasks) {
-            $taskArray = $task->toArray();
-
-            if ($task->type === ManagedDestroyLikesOperation::class) {
-                $managedTask = $tasks->where('managed_by_task_id', $task->id)->where('type', destroyLikesOperation::class)->first();
-
-                $taskArray['removedCount'] = ($managedTask ?? optional())->removedCount;
-            }
-
-            if ($task->type === ManagedDestroyTweetsOperation::class) {
-                $managedTask = $tasks->where('managed_by_task_id', $task->id)->where('type', destroyTweetsOperation::class)->first();
-
-                $taskArray['removedCount'] = ($managedTask ?? optional())->removedCount;
-            }
-
-            return $taskArray;
-        });
-
-        return $tasks;
+        return $tasks->toArray();
     }
 
     public function create(Request $request)
@@ -142,17 +124,5 @@ class TasksController extends Controller
                 ->where('type', FetchUserTweetsOperation::class)
                 ->where('status', 'completed')
                 ->get();
-    }
-
-    public function edit(Task $task)
-    {
-    }
-
-    public function update(Request $request, Task $task)
-    {
-    }
-
-    public function destroy(Task $task)
-    {
     }
 }

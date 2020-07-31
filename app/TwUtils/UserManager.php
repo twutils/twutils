@@ -2,11 +2,11 @@
 
 namespace App\TwUtils;
 
-use Auth;
 use App\User;
 use App\SocialUser;
 use Illuminate\Support\Str;
 use Laravel\Socialite\AbstractUser;
+use Illuminate\Support\Facades\Auth;
 use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
 

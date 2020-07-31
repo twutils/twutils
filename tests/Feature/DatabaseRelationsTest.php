@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use DB;
 use App\Task;
 use App\Tweep;
 use App\Tweet;
@@ -10,6 +9,7 @@ use App\Follower;
 use App\Following;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseRelationsTest extends IntegrationTestCase
 {

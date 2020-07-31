@@ -2,13 +2,13 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use Cache;
 use App\Task;
 use Exception;
 use App\SocialUser;
 use Illuminate\Support\Str;
 use App\TwUtils\JobsManager;
 use App\Jobs\CompleteTaskJob;
+use Illuminate\Support\Facades\Cache;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation

@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Storage;
 use App\Jobs\ProcessDownloadJob;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Download extends Model
 {

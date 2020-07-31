@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use Auth;
 use Mockery;
 use App\User;
 use Socialite;
 use App\SocialUser;
 use Illuminate\Support\Str;
 use Tests\IntegrationTestCase;
+use Illuminate\Support\Facades\Auth;
 
 class TwitterLoginTest extends IntegrationTestCase
 {

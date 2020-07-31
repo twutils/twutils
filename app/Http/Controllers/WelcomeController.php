@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use File;
 use App\Issue;
 use ParsedownExtra;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class WelcomeController extends Controller
 {

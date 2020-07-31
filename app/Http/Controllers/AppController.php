@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Session;
 use App\SocialUser;
 use App\Jobs\DeleteMeJob;
 use App\TwUtils\UserManager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AppController extends Controller
 {
@@ -39,7 +38,7 @@ class AppController extends Controller
         }
 
         if (request()->segment(1)) {
-            Session::put('locale', request()->segment(1));
+            session()->put('locale', request()->segment(1));
             app()->setLocale(request()->segment(1));
         }
 

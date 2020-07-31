@@ -102,7 +102,7 @@ class FetchLikesOperation extends TwitterOperation
         }
 
         foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
-            $tweets = $likesGroup->unique('id_str')->map(function ($tweet) use ($responseCollection) {
+            $tweets = $likesGroup->unique('id_str')->map(function ($tweet) {
                 $id = $tweet->id_str;
 
                 return ['favorited'=>$tweet->favorited, 'retweeted' => $tweet->retweeted, 'task_id' => $this->task->id, 'tweet_id_str' => $id];

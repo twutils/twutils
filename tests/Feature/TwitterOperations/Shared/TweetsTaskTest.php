@@ -605,7 +605,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter([
             [
                 'type'   => $this->jobName,
-                'before' => function ()  use (&$exceptionIsThrown) {
+                'before' => function () use (&$exceptionIsThrown) {
                     app()->bind('AfterHTTPRequest', function () use (&$exceptionIsThrown) {
                         if (! $exceptionIsThrown) {
                             $exceptionIsThrown = true;
@@ -837,12 +837,12 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             [
                 'type' => $this->jobName,
                 'twitterData' => $tweet,
-                'twitterHeaders' => ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')]
-            ]
+                'twitterHeaders' => ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
+            ],
         ]);
 
         $dispatchedJobs = collect($this->dispatchedJobs)
-                            ->filter( function ($job) {
+                            ->filter(function ($job) {
                                 return get_class($job) === $this->jobName;
                             })
                             ->values()

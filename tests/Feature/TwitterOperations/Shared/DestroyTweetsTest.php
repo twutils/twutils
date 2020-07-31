@@ -347,8 +347,9 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
             ],
         ], $indexLastDispatched);
 
-
-        $this->assertCount(2, collect($this->dispatchedJobs)->filter(function ($job) { return $job->delay; }));
+        $this->assertCount(2, collect($this->dispatchedJobs)->filter(function ($job) {
+            return $job->delay;
+        }));
         $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->twitterEndpoint);
 
         $this->assertFalse(Task::find(1)->tweets->where('pivot.removed', '!=', null)->count() == 0);

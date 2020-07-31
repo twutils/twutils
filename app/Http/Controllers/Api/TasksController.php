@@ -7,11 +7,7 @@ use App\TwUtils\TasksAdder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
-use App\TwUtils\TwitterOperations\destroyLikesOperation;
-use App\TwUtils\TwitterOperations\destroyTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
-use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
-use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 
 class TasksController extends Controller
 {

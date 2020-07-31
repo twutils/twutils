@@ -2,8 +2,6 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
-use Carbon\Carbon;
 use App\Jobs\DestroyTweetJob;
 
 class destroyTweetsOperation extends destroyLikesOperation

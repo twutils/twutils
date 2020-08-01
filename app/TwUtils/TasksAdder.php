@@ -2,11 +2,13 @@
 
 namespace App\TwUtils;
 
+use App\SocialUser;
 use App\Task;
 use App\User;
+use Symfony\Component\HttpFoundation\Response;
+use App\TwUtils\TwitterOperations\TwitterOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
-use App\TwUtils\TwitterOperations\TwitterOperation;
 
 class TasksAdder
 {
@@ -63,7 +65,25 @@ class TasksAdder
             return;
         }
 
-        $this->addTask();
+        $operationName = $this->availableTasks[$this->targetedTask]['operation'];
+
+        $operationClassName = TwitterOperation::getClassName($operationName);
+
+        $socialUser = $this->resolveUser(TwitterOperation::getOperationScope($operationName));
+
+        if ($socialUser == null) {
+            $this->ok = false;
+            $this->errors = [__('messages.task_add_no_privilege')];
+            $this->statusCode = Response::HTTP_UPGRADE_REQUIRED;
+
+            return;
+        }
+
+        if ($this->hasPreviousTask($operationClassName)) {
+            return;
+        }
+
+        $this->addTask($socialUser, $operationClassName);
     }
 
 
@@ -72,7 +92,7 @@ class TasksAdder
         if (! in_array($this->targetedTask, $this->getAvailableTasks())) {
             $this->ok = false;
             $this->errors = [__('messages.task_add_bad_request')];
-            $this->statusCode = 400;
+            $this->statusCode = Response::HTTP_BAD_REQUEST;
 
             return false;
         }
@@ -80,7 +100,7 @@ class TasksAdder
         if ($this->relatedTask != null && ! $this->user->can('view', $this->relatedTask)) {
             $this->ok = false;
             $this->errors = [__('messages.task_add_unauthorized_access')];
-            $this->statusCode = 401;
+            $this->statusCode = Response::HTTP_UNAUTHORIZED;
 
             return false;
         }
@@ -96,7 +116,7 @@ class TasksAdder
 
         if ($hasMaximumTasks) {
             $this->ok = false;
-            $this->statusCode = 422;
+            $this->statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
             $this->errors = [__('messages.task_add_max_number')];
 
             return false;
@@ -191,14 +211,14 @@ class TasksAdder
             return [
                 'ok'         => false,
                 'errors'     => $datesErrors,
-                'statusCode' => 422,
+                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY,
             ];
         }
 
         return [
             'ok'         => true,
             'errors'     => [],
-            'statusCode' => 200,
+            'statusCode' => Response::HTTP_OK,
         ];
     }
 
@@ -217,7 +237,7 @@ class TasksAdder
         if ($this->relatedTask === null) {
             $this->ok = false;
             $this->errors = [__('messages.task_add_target_not_found')];
-            $this->statusCode = 401;
+            $this->statusCode = Response::HTTP_UNAUTHORIZED;
 
             return false;
         }
@@ -243,25 +263,8 @@ class TasksAdder
         return ! empty($userManagedTasks);
     }
 
-    public function addTask()
+    public function addTask(SocialUser $socialUser, $operationClassName)
     {
-        $operationInstance = TwitterOperation::getInstance($this->availableTasks[$this->targetedTask]['operation']);
-
-        $socialUser = $this->resolveUser($operationInstance->getScope());
-
-
-        if ($socialUser == null) {
-            $this->ok = false;
-            $this->errors = [__('messages.task_add_no_privilege')];
-            $this->statusCode = 426;
-
-            return;
-        }
-
-        if ($this->hasPreviousTask($operationInstance)) {
-            return;
-        }
-
         $settings = ['targeted_task_id' => $this->relatedTask ? $this->relatedTask->id : null, 'settings' => $this->requestData['settings'] ?? null];
 
         if ($this->managedByTaskId && $this->hasValidManagedTaskId()) {
@@ -271,7 +274,7 @@ class TasksAdder
         $task = Task::create(
             [
                 'socialuser_id'      => $socialUser->id,
-                'type'               => get_class($operationInstance),
+                'type'               => $operationClassName,
                 'status'             => 'queued',
                 'extra'              => $settings,
                 'managed_by_task_id' => $settings['managedByTaskId'] ?? null,
@@ -284,12 +287,13 @@ class TasksAdder
         $this->data = array_merge($this->data, ['task_id' => $task->id]);
     }
 
-    public function hasPreviousTask(TwitterOperation $operationInstance)
+    public function hasPreviousTask(string $operationClassName)
     {
         $oldTasks = Task::whereIn('socialuser_id', $this->user->socialUsers->pluck('id')->toArray())
-        ->where('type', get_class($operationInstance))
+        ->where('type', $operationClassName)
         ->where('status', 'queued')
         ->get();
+
         $hasOngoingTask = $oldTasks->count() != 0;
 
         if ($hasOngoingTask) {

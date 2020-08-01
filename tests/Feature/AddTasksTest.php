@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Task;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;
+use Symfony\Component\HttpFoundation\Response;
+use App\TwUtils\TwitterOperations\FetchLikesOperation;
 
 class AddTasksTest extends IntegrationTestCase
 {
@@ -55,7 +57,161 @@ class AddTasksTest extends IntegrationTestCase
 
         $this->bindTwitterConnector([]);
         $response = $this->postJson('/api/likes/'.$task->id);
-        $response->assertStatus(401);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals(__('messages.task_add_unauthorized_access'), $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_undefined_operation_task()
+    {
+        Bus::fake();
+
+        $this->logInSocialUser('api');
+
+        $response = $this->postJson('/api/UndefinedOperation');
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals(__('messages.task_add_bad_request'), $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_maximum_limit_of_task_type()
+    {
+        Bus::fake();
+
+        config()->set('twutils.tasks_limit_per_user', 10);
+
+        $this->logInSocialUser('api');
+
+        $tasks = factory(Task::class, 10)->create([
+            'type' => FetchLikesOperation::class,
+            'socialuser_id' => auth()->user()->socialUsers[0]->id, // owner
+        ]);
+
+        $response = $this->postJson('/api/likes');
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals(__('messages.task_add_max_number'), $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_task_requires_extra_privileges()
+    {
+        Bus::fake();
+
+        $this->logInSocialUser('api');
+
+        $response = $this->postJson('/api/ManagedDestroyLikes');
+        $response->assertStatus(Response::HTTP_UPGRADE_REQUIRED);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals(__('messages.task_add_no_privilege'), $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_invalid_dates_for_managed_destroy_likes_task()
+    {
+        Bus::fake();
+
+        $this->logInSocialUserForDestroyLikes();
+
+        $response = $this->postJson('/api/ManagedDestroyLikes', ['settings' => [
+            'end_date'   => '2018-59-20',
+            'start_date' => '2013-09-22',
+            'replies'    => true,
+            'retweets'   => true,
+            'tweets'     => true,
+        ]]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_invalid_dates_for_managed_destroy_tweets_task()
+    {
+        Bus::fake();
+
+        $this->logInSocialUserForDestroyLikes();
+
+        $response = $this->postJson('/api/ManagedDestroyTweets', ['settings' => [
+            'end_date'   => '2018-59-20',
+            'start_date' => '2013-09-22',
+            'replies'    => true,
+            'retweets'   => true,
+            'tweets'     => true,
+        ]]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_invalid_dates_for_likes_task()
+    {
+        Bus::fake();
+
+        $this->logInSocialUserForDestroyLikes();
+
+        $response = $this->postJson('/api/Likes', ['settings' => [
+            'end_date'   => '2018-59-20',
+            'start_date' => '2013-09-22',
+            'replies'    => true,
+            'retweets'   => true,
+            'tweets'     => true,
+        ]]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_invalid_dates_for_destroy_likes_task()
+    {
+        Bus::fake();
+
+        $this->logInSocialUserForDestroyLikes();
+
+        factory(Task::class)->create([
+            'type' => FetchLikesOperation::class,
+            'socialuser_id' => auth()->user()->socialUsers[0]->id,
+        ]);
+
+        $response = $this->postJson('/api/destroyLikes/1', ['settings' => [
+            'end_date'   => '2018-59-20',
+            'start_date' => '2013-09-22',
+            'replies'    => true,
+            'retweets'   => true,
+            'tweets'     => true,
+        ]]);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+    }
+
+    public function test_refuse_invalid_targeted_task_for_destroy_likes_task()
+    {
+        Bus::fake();
+
+        $this->logInSocialUserForDestroyLikes();
+
+        factory(Task::class)->create([
+            'type' => FetchLikesOperation::class,
+            'socialuser_id' => auth()->user()->socialUsers[0]->id,
+        ]);
+
+        $response = $this->postJson('/api/destroyLikes/5', ['settings' => [
+            'end_date'   => '2018-01-20',
+            'start_date' => '2013-09-22',
+            'replies'    => true,
+            'retweets'   => true,
+            'tweets'     => true,
+        ]]);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertEquals(__('messages.task_add_target_not_found'), $response->decodeResponseJson('errors')[0]);
     }
 
     public function test_add_likes_task()

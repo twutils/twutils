@@ -26,11 +26,20 @@ abstract class TwitterOperation
 
     abstract public function dispatch();
 
-    public static function getInstance(string $operation)
+    public static function getClassName(string $operation)
     {
         $operationClass = "App\TwUtils\TwitterOperations\\$operation".'Operation';
 
-        return new $operationClass();
+        return $operationClass;
+    }
+
+    public static function getOperationScope(string $operation)
+    {
+        $operationClassName = static::getClassName($operation);
+
+        $operationInstance = new $operationClassName();
+
+        return $operationInstance->getScope();
     }
 
     public function initJob()

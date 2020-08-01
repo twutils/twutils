@@ -27,6 +27,7 @@ class CleaningAllTweetsAndTweeps implements ShouldQueue
         $followingsQuery = DB::table('followings')->select('tweep_id_str');
         $followersQuery = DB::table('followers')->select('tweep_id_str');
 
+        // TODO: Media for this removed tweets need to be cleaned
         DB::table('tweets')
             ->whereNotIn(
                 'id_str',

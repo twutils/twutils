@@ -59,7 +59,7 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
 
     public function initJob()
     {
-        $disks = [\Storage::disk('temporaryTasks'), \Storage::disk('tasks')];
+        $disks = [];
 
         foreach ($disks as $disk) {
             if (! $disk->exists($this->task->id)) {

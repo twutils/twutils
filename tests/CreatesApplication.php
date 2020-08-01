@@ -24,10 +24,7 @@ trait CreatesApplication
         $app->bind('HttpClient', HttpClientMock::class);
 
         \Storage::fake('local');
-        \Storage::fake('tasks');
         \Storage::fake('public');
-        \Storage::fake('htmlTasks');
-        \Storage::fake('temporaryTasks');
         \Storage::fake('tweetsMedia');
         \Storage::fake(config('filesystems.cloud'));
 

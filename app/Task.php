@@ -91,9 +91,6 @@ class Task extends Model
             Follower::where('task_id', $taskId)->delete();
 
             $disks = [
-                'tasks',
-                'temporaryTasks',
-                'htmlTasks',
                 config('filesystems.cloud'),
             ];
 

@@ -43,24 +43,9 @@ return [
 
     'disks' => [
 
-        'temporaryTasks' => [
-            'driver' => 'local',
-            'root'   => storage_path('temporaryTasks'),
-        ],
-
         'tweetsMedia' => [
             'driver' => 'local',
             'root'   => storage_path('tweetsMedia'),
-        ],
-
-        'tasks' => [
-            'driver' => 'local',
-            'root'   => storage_path('tasks'),
-        ],
-
-        'htmlTasks' => [
-            'driver' => 'local',
-            'root'   => storage_path('htmlTasks'),
         ],
 
         'localCloud' => [

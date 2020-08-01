@@ -73,7 +73,6 @@ class ZipEntitiesJob implements ShouldQueue
 
         fclose($zippedStream);
 
-        return;
-        dispatch(new CleanZippedEntitiesJob($this->task->id))->delay(now()->addSeconds(1));
+        Storage::disk('local')->deleteDirectory($this->download->id);
     }
 }

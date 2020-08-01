@@ -299,7 +299,7 @@ class TasksAdder
         if ($hasOngoingTask) {
             $this->ok = false;
             $this->data = ['task_id' => $oldTasks->last()->id];
-            $this->statusCode = 422;
+            $this->statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
 
             return true;
         }

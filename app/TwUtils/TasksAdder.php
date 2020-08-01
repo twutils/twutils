@@ -12,7 +12,7 @@ use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 
 class TasksAdder
 {
-    protected $availableTasks = [
+    protected static $availableTasks = [
         'Likes'                => ['operation' => 'FetchLikes'],
         'EntitiesLikes'        => ['operation' => 'FetchEntitiesLikes'],
         'UserTweets'           => ['operation' => 'FetchUserTweets'],
@@ -51,21 +51,13 @@ class TasksAdder
 
         // Build Task
 
-        if (! $this->validRequest()) {
-            return;
-        }
-
-        if (! $this->validTasksLimit()) {
-            return;
-        }
-
         $taskValidation = $this->{'validate'.$this->targetedTask}();
 
         if (! $taskValidation) {
             return;
         }
 
-        $operationName = $this->availableTasks[$this->targetedTask]['operation'];
+        $operationName = static::$availableTasks[$this->targetedTask]['operation'];
 
         $operationClassName = TwitterOperation::getClassName($operationName);
 
@@ -84,45 +76,6 @@ class TasksAdder
         }
 
         $this->addTask($socialUser, $operationClassName);
-    }
-
-
-    public function validRequest()
-    {
-        if (! in_array($this->targetedTask, $this->getAvailableTasks())) {
-            $this->ok = false;
-            $this->errors = [__('messages.task_add_bad_request')];
-            $this->statusCode = Response::HTTP_BAD_REQUEST;
-
-            return false;
-        }
-
-        if ($this->relatedTask != null && ! $this->user->can('view', $this->relatedTask)) {
-            $this->ok = false;
-            $this->errors = [__('messages.task_add_unauthorized_access')];
-            $this->statusCode = Response::HTTP_UNAUTHORIZED;
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public function validTasksLimit()
-    {
-        $hasMaximumTasks = Task::whereIn('socialuser_id', $this->user->socialUsers->pluck('id')->toArray())
-          ->where('managed_by_task_id', null)
-          ->count() >= config('twutils.tasks_limit_per_user');
-
-        if ($hasMaximumTasks) {
-            $this->ok = false;
-            $this->statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
-            $this->errors = [__('messages.task_add_max_number')];
-
-            return false;
-        }
-
-        return true;
     }
 
     public function validateLikes()
@@ -332,8 +285,8 @@ class TasksAdder
         return $this->statusCode;
     }
 
-    public function getAvailableTasks()
+    public static function getAvailableTasks()
     {
-        return array_keys($this->availableTasks);
+        return array_keys(static::$availableTasks);
     }
 }

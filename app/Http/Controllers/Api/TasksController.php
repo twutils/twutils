@@ -6,6 +6,7 @@ use App\Task;
 use App\TwUtils\TasksAdder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddTaskRequest;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 
@@ -25,7 +26,7 @@ class TasksController extends Controller
         return $tasks->toArray();
     }
 
-    public function create(Request $request)
+    public function create(AddTaskRequest $request)
     {
         $targetedTask = $request->segment(2);
         $relatedTask = Task::find($request->segment(3)) ?? (Task::find($request->id) ?? null);

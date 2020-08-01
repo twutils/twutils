@@ -41,7 +41,7 @@ class TasksAdder
         $this->ok = false;
         $this->errors = [];
         $this->data = [];
-        $this->statusCode = 400;
+        $this->statusCode = Response::HTTP_BAD_REQUEST;
         $this->managedByTaskId = $requestData['managedByTaskId'] ?? null;
 
         $this->targetedTask = ucfirst($targetedTask);
@@ -282,7 +282,7 @@ class TasksAdder
         );
 
         $this->ok = true;
-        $this->statusCode = 200;
+        $this->statusCode = Response::HTTP_OK;
         $this->errors = [];
         $this->data = array_merge($this->data, ['task_id' => $task->id]);
     }

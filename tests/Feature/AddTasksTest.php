@@ -214,6 +214,20 @@ class AddTasksTest extends IntegrationTestCase
         $this->assertEquals(__('messages.task_add_target_not_found'), $response->decodeResponseJson('errors')[0]);
     }
 
+    public function test_dont_refuse_invalid_managed_by_task_id_for_destroy_likes_task()
+    {
+        Bus::fake();
+
+        $this->logInSocialUserForDestroyLikes();
+
+        $response = $this->postJson('/api/likes', [
+            'managedByTaskId' => 1
+        ]);
+        $response->assertOk();
+
+        $this->assertEmpty($response->decodeResponseJson('errors'));
+    }
+
     public function test_add_likes_task()
     {
         Bus::fake();

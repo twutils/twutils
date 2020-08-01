@@ -6,6 +6,7 @@ use App\Task;
 use App\User;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
+use App\TwUtils\TwitterOperations\TwitterOperation;
 
 class TasksAdder
 {
@@ -281,7 +282,7 @@ class TasksAdder
         $this->data = array_merge($this->data, ['task_id' => $addTaskResult['task_id'] ?? null]);
     }
 
-    public function hasPreviousTask($operationInstance)
+    public function hasPreviousTask(TwitterOperation $operationInstance)
     {
         $oldTasks = Task::whereIn('socialuser_id', $this->user->socialUsers->pluck('id')->toArray())
         ->where('type', get_class($operationInstance))

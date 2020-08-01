@@ -50,12 +50,6 @@ class SnapshotsManager
                 'managed_by_task_id' => $this->data['managedByTaskId'] ?? null,
             ]
         );
-        $this->operationInstance
-        ->setSocialUser($this->socialUser)
-        ->setTask($task)
-        ->setData($this->data)
-        ->dispatch();
-        $this->operationInstance->initJob();
 
         return ['ok' => true, 'task_id' => $task->id];
     }

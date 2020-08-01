@@ -52,6 +52,18 @@ class Task extends Model
         parent::boot();
 
         static::created(function (self $task) {
+            $operationClass = $task->type;
+
+            $operationInstance = (new $operationClass());
+
+            $operationInstance
+                ->setSocialUser($task->socialUser)
+                ->setTask($task)
+                ->setData($task->extra)
+                ->dispatch();
+
+            $operationInstance->initJob();
+
             Download::create([
                 'task_id' => $task->id,
                 'type'    => Download::TYPE_HTML,

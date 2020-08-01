@@ -47,36 +47,8 @@ class TasksAdder
         $this->relatedTask = $relatedTask;
         $this->user = $user;
 
-        $this->buildTask();
-    }
+        // Build Task
 
-    public function isOk()
-    {
-        return $this->ok;
-    }
-
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
-
-    public function getAvailableTasks()
-    {
-        return array_keys($this->availableTasks);
-    }
-
-    public function buildTask()
-    {
         if (! $this->validRequest()) {
             return;
         }
@@ -92,6 +64,28 @@ class TasksAdder
         }
 
         $this->addTask();
+    }
+
+
+    public function validRequest()
+    {
+        if (! in_array($this->targetedTask, $this->getAvailableTasks())) {
+            $this->ok = false;
+            $this->errors = [__('messages.task_add_bad_request')];
+            $this->statusCode = 400;
+
+            return false;
+        }
+
+        if ($this->relatedTask != null && ! $this->user->can('view', $this->relatedTask)) {
+            $this->ok = false;
+            $this->errors = [__('messages.task_add_unauthorized_access')];
+            $this->statusCode = 401;
+
+            return false;
+        }
+
+        return true;
     }
 
     public function validTasksLimit()
@@ -251,8 +245,10 @@ class TasksAdder
 
     public function addTask()
     {
-        $addTask = SnapshotsManager::take($this->availableTasks[$this->targetedTask]['operation']);
-        $socialUser = $this->resolveUser($addTask->operationInstance->getScope());
+        $operationInstance = TwitterOperation::getInstance($this->availableTasks[$this->targetedTask]['operation']);
+
+        $socialUser = $this->resolveUser($operationInstance->getScope());
+
 
         if ($socialUser == null) {
             $this->ok = false;
@@ -262,7 +258,7 @@ class TasksAdder
             return;
         }
 
-        if ($this->hasPreviousTask($addTask->operationInstance)) {
+        if ($this->hasPreviousTask($operationInstance)) {
             return;
         }
 
@@ -272,14 +268,20 @@ class TasksAdder
             $settings['managedByTaskId'] = $this->managedByTaskId;
         }
 
-        $addTaskResult = $addTask->for($socialUser)
-        ->with($settings)
-        ->get();
+        $task = Task::create(
+            [
+                'socialuser_id'      => $socialUser->id,
+                'type'               => get_class($operationInstance),
+                'status'             => 'queued',
+                'extra'              => $settings,
+                'managed_by_task_id' => $settings['managedByTaskId'] ?? null,
+            ]
+        );
 
-        $this->ok = $addTaskResult['ok'];
-        $this->statusCode = $addTaskResult['ok'] ? 200 : 422;
-        $this->errors = $addTaskResult['errors'] ?? [];
-        $this->data = array_merge($this->data, ['task_id' => $addTaskResult['task_id'] ?? null]);
+        $this->ok = true;
+        $this->statusCode = 200;
+        $this->errors = [];
+        $this->data = array_merge($this->data, ['task_id' => $task->id]);
     }
 
     public function hasPreviousTask(TwitterOperation $operationInstance)
@@ -306,24 +308,28 @@ class TasksAdder
         return UserManager::resolveUser($this->user, $taskScope);
     }
 
-    public function validRequest()
+    public function isOk()
     {
-        if (! in_array($this->targetedTask, $this->getAvailableTasks())) {
-            $this->ok = false;
-            $this->errors = [__('messages.task_add_bad_request')];
-            $this->statusCode = 400;
+        return $this->ok;
+    }
 
-            return false;
-        }
+    public function getErrors()
+    {
+        return $this->errors;
+    }
 
-        if ($this->relatedTask != null && ! $this->user->can('view', $this->relatedTask)) {
-            $this->ok = false;
-            $this->errors = [__('messages.task_add_unauthorized_access')];
-            $this->statusCode = 401;
+    public function getData(): array
+    {
+        return $this->data;
+    }
 
-            return false;
-        }
+    public function getStatusCode(): int
+    {
+        return $this->statusCode;
+    }
 
-        return true;
+    public function getAvailableTasks()
+    {
+        return array_keys($this->availableTasks);
     }
 }

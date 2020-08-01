@@ -26,6 +26,13 @@ abstract class TwitterOperation
 
     abstract public function dispatch();
 
+    public static function getInstance(string $operation)
+    {
+        $operationClass = "App\TwUtils\TwitterOperations\\$operation".'Operation';
+
+        return new $operationClass();
+    }
+
     public function initJob()
     {
     }

@@ -7,6 +7,7 @@ use App\SocialUser;
 use App\TwUtils\TasksAdder;
 use App\Jobs\CompleteTaskJob;
 use App\Jobs\CompleteManagedDestroyLikesJob;
+use App\TwUtils\TaskAdd\Validators\DateValidator;
 
 class ManagedDestroyLikesOperation extends TwitterOperation
 {
@@ -71,5 +72,10 @@ class ManagedDestroyLikesOperation extends TwitterOperation
         $step = array_search($managedTask->type, $this->tasksQueue) + 1;
 
         call_user_func_array([$this, 'step'.$step], func_get_args());
+    }
+
+    public function getValidators() : array
+    {
+        return [DateValidator::class];
     }
 }

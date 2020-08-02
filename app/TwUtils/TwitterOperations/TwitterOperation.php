@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\TwUtils\JobsManager;
 use App\Jobs\CompleteTaskJob;
 use Illuminate\Support\Facades\Cache;
+use Symfony\Component\HttpFoundation\Response;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation
@@ -237,5 +238,10 @@ abstract class TwitterOperation
         $task->status = 'broken';
         $task->extra = array_merge($task->extra ?? [], $breakData);
         $task->save();
+    }
+
+    public function getValidators() : array
+    {
+        return [];
     }
 }

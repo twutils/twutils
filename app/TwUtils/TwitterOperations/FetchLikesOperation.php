@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
+use App\TwUtils\TaskAdd\Validators\DateValidator;
 
 class FetchLikesOperation extends TwitterOperation
 {
@@ -173,5 +174,10 @@ class FetchLikesOperation extends TwitterOperation
         $taskSettings = $this->task->extra['settings'];
 
         return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
+    }
+
+    public function getValidators() : array
+    {
+        return [DateValidator::class];
     }
 }

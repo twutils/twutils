@@ -12,7 +12,7 @@ use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 
 class TasksAdder
 {
-    protected static $availableTasks = [
+    public static $availableTasks = [
         'Likes'                => ['operation' => 'FetchLikes'],
         'EntitiesLikes'        => ['operation' => 'FetchEntitiesLikes'],
         'UserTweets'           => ['operation' => 'FetchUserTweets'],
@@ -49,153 +49,13 @@ class TasksAdder
         $this->relatedTask = $relatedTask;
         $this->user = $user;
 
-        // Build Task
-
-        $taskValidation = $this->{'validate'.$this->targetedTask}();
-
-        if (! $taskValidation) {
-            return;
-        }
-
         $operationName = static::$availableTasks[$this->targetedTask]['operation'];
 
         $operationClassName = TwitterOperation::getClassName($operationName);
 
         $socialUser = $this->resolveUser(TwitterOperation::getOperationScope($operationName));
 
-        if ($socialUser == null) {
-            $this->ok = false;
-            $this->errors = [__('messages.task_add_no_privilege')];
-            $this->statusCode = Response::HTTP_UPGRADE_REQUIRED;
-
-            return;
-        }
-
-        if ($this->hasPreviousTask($operationClassName)) {
-            return;
-        }
-
         $this->addTask($socialUser, $operationClassName);
-    }
-
-    public function validateLikes()
-    {
-        return $this->validateUserTweets();
-    }
-
-    public function validateEntitiesLikes()
-    {
-        return true;
-    }
-
-    public function validateUserTweets()
-    {
-        $hasValidDates = $this->hasValidDates();
-
-        if (! $hasValidDates['ok']) {
-            $this->ok = $hasValidDates['ok'];
-            $this->errors = $hasValidDates['errors'];
-            $this->statusCode = $hasValidDates['statusCode'];
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public function validateEntitiesUserTweets()
-    {
-        return true;
-    }
-
-    public function validateFollowing()
-    {
-        return true;
-    }
-
-    public function validateFollowers()
-    {
-        return true;
-    }
-
-    public function validateDestroyLikes()
-    {
-        return $this->validateDestroyTweets();
-    }
-
-    public function validateManagedDestroyLikes()
-    {
-        $hasValidDates = $this->hasValidDates();
-
-        if (! $hasValidDates['ok']) {
-            $this->ok = $hasValidDates['ok'];
-            $this->errors = $hasValidDates['errors'];
-            $this->statusCode = $hasValidDates['statusCode'];
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public function validateManagedDestroyTweets()
-    {
-        return $this->validateManagedDestroyLikes();
-    }
-
-    public function hasValidDates()
-    {
-        $settings = $this->requestData['settings'] ?? null;
-        // TODO: Potential bug on PHP 7.4 if $settings is null
-        $startDate = $settings['start_date'] ?? null;
-        $endDate = $settings['end_date'] ?? null;
-
-        $shouldValidate = $endDate !== null || $startDate !== null;
-
-        $datesErrors = validator()->make(
-            ['start_date' => $startDate, 'end_date' => $endDate],
-            [
-                'start_date' => 'nullable|date|date_format:Y-m-d'.(is_null($endDate) ? '' : '|before:end_date'),
-                'end_date'   => 'nullable|date|date_format:Y-m-d'.(is_null($startDate) ? '' : '|after:start_date'),
-            ]
-        )->errors()->all();
-
-        if ($shouldValidate && ! empty($datesErrors)) {
-            return [
-                'ok'         => false,
-                'errors'     => $datesErrors,
-                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY,
-            ];
-        }
-
-        return [
-            'ok'         => true,
-            'errors'     => [],
-            'statusCode' => Response::HTTP_OK,
-        ];
-    }
-
-    public function validateDestroyTweets()
-    {
-        $hasValidDates = $this->hasValidDates();
-
-        if (! $hasValidDates['ok']) {
-            $this->ok = $hasValidDates['ok'];
-            $this->errors = $hasValidDates['errors'];
-            $this->statusCode = $hasValidDates['statusCode'];
-
-            return false;
-        }
-
-        if ($this->relatedTask === null) {
-            $this->ok = false;
-            $this->errors = [__('messages.task_add_target_not_found')];
-            $this->statusCode = Response::HTTP_UNAUTHORIZED;
-
-            return false;
-        }
-
-        return true;
     }
 
     protected function hasValidManagedTaskId()

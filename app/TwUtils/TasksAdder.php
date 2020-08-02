@@ -65,29 +65,11 @@ class TasksAdder
         $this->addTask($socialUser, $operationClassName);
     }
 
-    protected function hasValidManagedTaskId()
-    {
-        $lookupType = null;
-
-        if (in_array($this->targetedTask, ['Likes', 'DestroyLikes'])) {
-            $lookupType = ManagedDestroyLikesOperation::class;
-        } elseif (in_array($this->targetedTask, ['UserTweets', 'DestroyTweets'])) {
-            $lookupType = ManagedDestroyTweetsOperation::class;
-        }
-
-        $userManagedTasks = Task::where('status', 'queued')
-        ->where('type', $lookupType)
-        ->whereIn('socialuser_id', $this->user->socialUsers->pluck('id'))
-        ->get()->last();
-
-        return ! empty($userManagedTasks);
-    }
-
     public function addTask(SocialUser $socialUser, $operationClassName)
     {
         $settings = ['targeted_task_id' => $this->relatedTask ? $this->relatedTask->id : null, 'settings' => $this->requestData['settings'] ?? null];
 
-        if ($this->managedByTaskId && $this->hasValidManagedTaskId()) {
+        if ($this->managedByTaskId) {
             $settings['managedByTaskId'] = $this->managedByTaskId;
         }
 

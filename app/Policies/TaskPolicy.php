@@ -32,7 +32,14 @@ class TaskPolicy
      */
     public function create(User $user)
     {
-        //
+        return config('twutils.tasks_limit_per_user')
+            >
+            Task::whereIn(
+                'socialuser_id',
+                $user->socialUsers->pluck('id')->toArray()
+            )
+            ->where('managed_by_task_id', null)
+            ->count();
     }
 
     /**

@@ -53,11 +53,7 @@ class TaskAddRequest extends FormRequest
 
     public function authorize()
     {
-        $hasMaximumTasks = Task::whereIn('socialuser_id', $this->user()->socialUsers->pluck('id')->toArray())
-          ->where('managed_by_task_id', null)
-          ->count() >= config('twutils.tasks_limit_per_user');
-
-        if ($hasMaximumTasks)
+        if ( $this->user()->cannot('create', Task::class))
         {
             throw new TaskAddException([__('messages.task_add_max_number')], Response::HTTP_UNPROCESSABLE_ENTITY);
         }

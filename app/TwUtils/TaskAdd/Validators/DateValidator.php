@@ -10,7 +10,7 @@ class DateValidator
     public function apply($requestData)
     {
         $settings = $requestData['settings'] ?? null;
-        // TODO: Potential bug on PHP 7.4 if $settings is null
+
         $startDate = $settings['start_date'] ?? null;
         $endDate = $settings['end_date'] ?? null;
 

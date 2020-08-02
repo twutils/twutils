@@ -39,9 +39,15 @@ class TaskAddRequest extends FormRequest
 
         $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
 
+
+        $targetedFullType = collect(TasksAdder::$availableTasks)->first(function ($operationClassName) use ($targetedTask) {
+            return $targetedTask === (new $operationClassName)->getShortName();
+        });
+
         $this->merge([
-            'targetedTask' => $targetedTask,
-            'relatedTask'  => $relatedTask,
+            'targetedTask'      => $targetedTask,
+            'targetedFullType'  => $targetedFullType,
+            'relatedTask'       => $relatedTask,
         ]);
     }
 
@@ -68,12 +74,12 @@ class TaskAddRequest extends FormRequest
 
     protected function failedAuthorization()
     {
-        throw new TaskAddException(['Error processing request'], Response::HTTP_BAD_REQUEST);
+        throw new TaskAddException(['Unhandled Error'], Response::HTTP_BAD_REQUEST);
     }
 
     protected function failedValidation(Validator $validator)
     {
-        throw new TaskAddException(['Error processing request'], Response::HTTP_BAD_REQUEST);
+        $this->failedAuthorization();
     }
 
     public function rules()
@@ -82,43 +88,18 @@ class TaskAddRequest extends FormRequest
             'targetedTask' => [
                 'bail',
                 function ($attribute, $value, $fail) {
-                    $availableTasks = TasksAdder::getAvailableTasks();
-
-                    if (! in_array($value, $availableTasks)) {
+                    if (! $this->targetedFullType)
+                    {
                         throw new TaskAddException([__('messages.task_add_bad_request')], Response::HTTP_BAD_REQUEST);
                     }
                 },
                 function ($attribute, $value, $fail) {
-                    $operationName = TasksAdder::$availableTasks[$value]['operation'];
+                    $scope = (new $this->targetedFullType)->getScope();
 
-                    $operationClassName = TwitterOperation::getClassName($operationName);
-
-                    $oldTasks = Task::whereIn('socialuser_id', $this->user()->socialUsers->pluck('id')->toArray())
-                    ->where('type', $operationClassName)
-                    ->where('status', 'queued')
-                    ->get();
-
-                    if ($oldTasks->count() != 0) {
-                        throw new TaskAddException([], Response::HTTP_UNPROCESSABLE_ENTITY, ['task_id' => $oldTasks->last()->id]);
-                    }
-                },
-                function ($attribute, $value, $fail) {
-                    $operationName = TasksAdder::$availableTasks[$value]['operation'];
-
-                    $socialUser = UserManager::resolveUser($this->user(), TwitterOperation::getOperationScope($operationName));
+                    $socialUser = UserManager::resolveUser($this->user(), $scope);
 
                     if ($socialUser == null) {
                         throw new TaskAddException([__('messages.task_add_no_privilege')], Response::HTTP_UPGRADE_REQUIRED);
-                    }
-                },
-                function ($attribute, $value, $fail) {
-                    $operationName = TasksAdder::$availableTasks[$value]['operation'];
-
-                    $operationClassName = TwitterOperation::getClassName($operationName);
-
-                    foreach((new $operationClassName)->getValidators() as $validatorClassName)
-                    {
-                        (new $validatorClassName)->apply($this->all());
                     }
                 },
             ],
@@ -131,9 +112,28 @@ class TaskAddRequest extends FormRequest
                     }
                 },
                 function ($attribute, $value, $fail) {
-                    if ($this->segment(3) && $value === null)
+                    if (($this->segment(3) || $this->has('id')) && $value === null)
                     {
                         throw new TaskAddException([__('messages.task_add_target_not_found')], Response::HTTP_UNAUTHORIZED);
+                    }
+                },
+            ],
+            'targetedFullType' => [
+                'bail',
+                function ($attribute, $value, $fail) {
+                    $oldTasks = Task::whereIn('socialuser_id', $this->user()->socialUsers->pluck('id')->toArray())
+                    ->where('type', $value)
+                    ->where('status', 'queued')
+                    ->get();
+
+                    if ($oldTasks->count() != 0) {
+                        throw new TaskAddException([], Response::HTTP_UNPROCESSABLE_ENTITY, ['task_id' => $oldTasks->last()->id]);
+                    }
+                },
+                function ($attribute, $value, $fail) {
+                    foreach((new $value)->getValidators() as $validatorClassName)
+                    {
+                        (new $validatorClassName)->apply($this->all());
                     }
                 },
             ],

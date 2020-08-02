@@ -6,23 +6,30 @@ use App\SocialUser;
 use App\Task;
 use App\User;
 use Symfony\Component\HttpFoundation\Response;
-use App\TwUtils\TwitterOperations\TwitterOperation;
+use App\TwUtils\TwitterOperations\FetchLikesOperation;
+use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchFollowingOperation;
+use App\TwUtils\TwitterOperations\FetchFollowersOperation;
+use App\TwUtils\TwitterOperations\destroyLikesOperation;
+use App\TwUtils\TwitterOperations\destroyTweetsOperation;
 
 class TasksAdder
 {
     public static $availableTasks = [
-        'Likes'                => ['operation' => 'FetchLikes'],
-        'EntitiesLikes'        => ['operation' => 'FetchEntitiesLikes'],
-        'UserTweets'           => ['operation' => 'FetchUserTweets'],
-        'EntitiesUserTweets'   => ['operation' => 'FetchEntitiesUserTweets'],
-        'Following'            => ['operation' => 'FetchFollowing'],
-        'Followers'            => ['operation' => 'FetchFollowers'],
-        'DestroyLikes'         => ['operation' => 'destroyLikes'],
-        'ManagedDestroyLikes'  => ['operation' => 'ManagedDestroyLikes'],
-        'ManagedDestroyTweets' => ['operation' => 'ManagedDestroyTweets'],
-        'DestroyTweets'        => ['operation' => 'destroyTweets'],
+        FetchLikesOperation::class,
+        FetchEntitiesLikesOperation::class,
+        FetchUserTweetsOperation::class,
+        FetchEntitiesUserTweetsOperation::class,
+        FetchFollowingOperation::class,
+        FetchFollowersOperation::class,
+        destroyLikesOperation::class,
+        ManagedDestroyLikesOperation::class,
+        ManagedDestroyTweetsOperation::class,
+        destroyTweetsOperation::class,
     ];
     protected $user;
     protected $socialUser;
@@ -49,11 +56,11 @@ class TasksAdder
         $this->relatedTask = $relatedTask;
         $this->user = $user;
 
-        $operationName = static::$availableTasks[$this->targetedTask]['operation'];
+        $operationClassName = collect(static::$availableTasks)->first(function ($operationClassName) {
+            return $this->targetedTask == (new $operationClassName)->getShortName();
+        });
 
-        $operationClassName = TwitterOperation::getClassName($operationName);
-
-        $socialUser = $this->resolveUser(TwitterOperation::getOperationScope($operationName));
+        $socialUser = $this->resolveUser((new $operationClassName)->getScope());
 
         $this->addTask($socialUser, $operationClassName);
     }
@@ -100,25 +107,6 @@ class TasksAdder
         $this->data = array_merge($this->data, ['task_id' => $task->id]);
     }
 
-    public function hasPreviousTask(string $operationClassName)
-    {
-        $oldTasks = Task::whereIn('socialuser_id', $this->user->socialUsers->pluck('id')->toArray())
-        ->where('type', $operationClassName)
-        ->where('status', 'queued')
-        ->get();
-
-        $hasOngoingTask = $oldTasks->count() != 0;
-
-        if ($hasOngoingTask) {
-            $this->ok = false;
-            $this->data = ['task_id' => $oldTasks->last()->id];
-            $this->statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
-
-            return true;
-        }
-
-        return false;
-    }
 
     public function resolveUser($taskScope)
     {

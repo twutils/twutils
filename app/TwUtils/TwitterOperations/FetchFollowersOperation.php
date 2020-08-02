@@ -11,6 +11,7 @@ use App\Jobs\FetchFollowersJob;
 
 class FetchFollowersOperation extends FetchFollowingOperation
 {
+    protected $shortName = 'Followers';
     protected $endpoint = 'followers/list';
     protected $scope = 'read';
     protected $httpMethod = 'get';

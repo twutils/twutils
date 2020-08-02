@@ -14,6 +14,7 @@ use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation
 {
+    protected $shortName;
     protected $parameters = [];
     protected $data = [];
     protected $headers = [];
@@ -26,22 +27,6 @@ abstract class TwitterOperation
     protected $doRequestParameters;
 
     abstract public function dispatch();
-
-    public static function getClassName(string $operation)
-    {
-        $operationClass = "App\TwUtils\TwitterOperations\\$operation".'Operation';
-
-        return $operationClass;
-    }
-
-    public static function getOperationScope(string $operation)
-    {
-        $operationClassName = static::getClassName($operation);
-
-        $operationInstance = new $operationClassName();
-
-        return $operationInstance->getScope();
-    }
 
     public function initJob()
     {
@@ -243,5 +228,10 @@ abstract class TwitterOperation
     public function getValidators() : array
     {
         return [];
+    }
+
+    final public function getShortName() : string
+    {
+        return $this->shortName;
     }
 }

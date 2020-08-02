@@ -230,18 +230,18 @@ class AddTasksTest extends IntegrationTestCase
         $this->assertEquals(1, $response->decodeResponseJson('data')['task_id']);
     }
 
-    public function test_dont_refuse_invalid_managed_by_task_id_for_destroy_likes_task()
+    public function test_refuse_invalid_managed_by_task_id()
     {
         Bus::fake();
 
         $this->logInSocialUserForDestroyLikes();
 
-        $response = $this->postJson('/api/likes', [
+        $response = $this->postJson('/api/destroyLikes', [
             'managedByTaskId' => 1
         ]);
-        $response->assertOk();
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertEmpty($response->decodeResponseJson('errors'));
+        $this->assertNotEmpty($response->decodeResponseJson('errors'));
     }
 
     public function test_add_likes_task()

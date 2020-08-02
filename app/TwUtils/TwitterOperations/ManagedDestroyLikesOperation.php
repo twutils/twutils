@@ -11,6 +11,7 @@ use App\TwUtils\TaskAdd\Validators\DateValidator;
 
 class ManagedDestroyLikesOperation extends TwitterOperation
 {
+    protected $shortName = 'ManagedDestroyLikes';
     protected $scope = 'write';
     protected $tasksQueue = [FetchLikesOperation::class, destroyLikesOperation::class];
     protected $firstTaskShortName = 'Likes';

@@ -6,9 +6,11 @@ use App\Task;
 use Carbon\Carbon;
 use App\Jobs\DislikeTweetJob;
 use App\TwUtils\TaskAdd\Validators\DateValidator;
+use App\TwUtils\TaskAdd\Validators\ManagedByTaskValidator;
 
 class destroyLikesOperation extends TwitterOperation
 {
+    protected $shortName = 'DestroyLikes';
     protected $endpoint = 'favorites/destroy';
     protected $scope = 'write';
     protected $httpMethod = 'post';
@@ -139,6 +141,6 @@ class destroyLikesOperation extends TwitterOperation
 
     public function getValidators() : array
     {
-        return [DateValidator::class];
+        return [DateValidator::class, ManagedByTaskValidator::class];
     }
 }

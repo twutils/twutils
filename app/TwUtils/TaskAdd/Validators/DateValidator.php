@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DateValidator
 {
-    public function apply($requestData)
+    public function apply($requestData, $user)
     {
         $settings = $requestData['settings'] ?? null;
 

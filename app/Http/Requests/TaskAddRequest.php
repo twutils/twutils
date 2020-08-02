@@ -129,7 +129,7 @@ class TaskAddRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     foreach((new $value)->getValidators() as $validatorClassName)
                     {
-                        (new $validatorClassName)->apply($this->all());
+                        (new $validatorClassName)->apply($this->all(), $this->user());
                     }
                 },
             ],

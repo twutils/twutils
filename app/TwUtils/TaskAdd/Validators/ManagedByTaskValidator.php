@@ -10,7 +10,7 @@ use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 
 class ManagedByTaskValidator
 {
-    public function apply($requestData)
+    public function apply($requestData, $user)
     {
         if (empty($requestData['managedByTaskId']))
         {
@@ -28,7 +28,7 @@ class ManagedByTaskValidator
         $userManagedTasks = Task::where('status', 'queued')
         ->where('id', $requestData['managedByTaskId'])
         ->where('type', $lookupType)
-        ->whereIn('socialuser_id', request()->user()->socialUsers->pluck('id'))
+        ->whereIn('socialuser_id', $user->socialUsers->pluck('id'))
         ->get()->last();
 
         if (empty($userManagedTasks))

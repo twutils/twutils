@@ -43,13 +43,13 @@ class TasksAdder
     protected $statusCode;
     protected $managedByTaskId;
 
-    public function __construct(string $targetedTask, array $settings, Task $relatedTask = null, User $user)
+    public function __construct(string $targetedTask, array $settings, Task $relatedTask = null, User $user, $managedByTaskId = null)
     {
         $this->ok = false;
         $this->errors = [];
         $this->data = [];
         $this->statusCode = Response::HTTP_BAD_REQUEST;
-        $this->managedByTaskId = $settings['managedByTaskId'] ?? null;
+        $this->managedByTaskId = $managedByTaskId;
 
         $this->targetedTask = $targetedTask;
         $this->settings = $settings;
@@ -62,17 +62,13 @@ class TasksAdder
 
         $settings = ['targeted_task_id' => $this->relatedTask ? $this->relatedTask->id : null, 'settings' => $this->settings];
 
-        if ($this->managedByTaskId) {
-            $settings['managedByTaskId'] = $this->managedByTaskId;
-        }
-
         $task = Task::create(
             [
                 'socialuser_id'      => $socialUser->id,
                 'type'               => $operationClassName,
                 'status'             => 'queued',
                 'extra'              => $settings,
-                'managed_by_task_id' => $settings['managedByTaskId'] ?? null,
+                'managed_by_task_id' => $managedByTaskId,
             ]
         );
 

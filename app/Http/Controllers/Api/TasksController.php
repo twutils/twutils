@@ -28,10 +28,7 @@ class TasksController extends Controller
 
     public function create(TaskAddRequest $request)
     {
-        $targetedTask = $request->targetedFullType;
-        $relatedTask = $request->relatedTask;
-
-        $addTask = new TasksAdder($targetedTask, $request->settings, $relatedTask, auth()->user());
+        $addTask = new TasksAdder($request->taskFullType, $request->settings, $request->relatedTask, auth()->user());
 
         return response(['ok'=> $addTask->isOk(), 'errors' => $addTask->getErrors(), 'data' => $addTask->getData()], $addTask->getStatusCode());
     }

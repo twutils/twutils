@@ -19,13 +19,13 @@ class TaskAddRequest extends FormRequest
         $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
 
 
-        $targetedFullType = collect(TasksAdder::$availableTasks)->first(function ($operationClassName) use ($targetedTask) {
+        $taskFullType = collect(TasksAdder::$availableTasks)->first(function ($operationClassName) use ($targetedTask) {
             return $targetedTask === (new $operationClassName)->getShortName();
         });
 
         $this->merge([
             'targetedTask'      => $targetedTask,
-            'targetedFullType'  => $targetedFullType,
+            'taskFullType'  => $taskFullType,
             'relatedTask'       => $relatedTask,
             'settings'          => $this->settings ?? [],
         ]);
@@ -47,13 +47,13 @@ class TaskAddRequest extends FormRequest
             'targetedTask' => [
                 'bail',
                 function ($attribute, $value, $fail) {
-                    if (! $this->targetedFullType)
+                    if (! $this->taskFullType)
                     {
                         throw new TaskAddException([__('messages.task_add_bad_request')], Response::HTTP_BAD_REQUEST);
                     }
                 },
                 function ($attribute, $value, $fail) {
-                    $scope = (new $this->targetedFullType)->getScope();
+                    $scope = (new $this->taskFullType)->getScope();
 
                     $socialUser = UserManager::resolveUser($this->user(), $scope);
 
@@ -77,7 +77,7 @@ class TaskAddRequest extends FormRequest
                     }
                 },
             ],
-            'targetedFullType' => [
+            'taskFullType' => [
                 'bail',
                 function ($attribute, $value, $fail) {
                     $oldTasks = Task::whereIn('socialuser_id', $this->user()->socialUsers->pluck('id')->toArray())

@@ -53,7 +53,7 @@ class ProcessDownloadJob implements ShouldQueue
 
     protected function createHtmlDownload()
     {
-        ExportsManager::createHtmlZip($this->download->task, $this->download->id);
+        ExportsManager::createHtmlZip($this->download);
     }
 
     protected function createExcelDownload()

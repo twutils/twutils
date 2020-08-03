@@ -102,16 +102,6 @@ class Task extends Model
             Following::where('task_id', $taskId)->delete();
             Follower::where('task_id', $taskId)->delete();
 
-            $disks = [
-                config('filesystems.cloud'),
-            ];
-
-            foreach ($disks as $disk) {
-                if (Storage::disk($disk)->exists($taskId)) {
-                    Storage::disk($disk)->deleteDir($taskId);
-                }
-            }
-
             $task->managedTasks->map->delete();
         });
 

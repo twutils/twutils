@@ -35,6 +35,7 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="DB_CONNECTION" value="testing"/>
         <env name="FILESYSTEM_CLOUD" value="localCloud"/>
+        <env name="FILESYSTEM_TWEETS_MEDIA" value="localTweetsMedia"/>
 
         <env name="TWITTER_CLIENT_ID" value="" />
         <env name="TWITTER_CLIENT_SECRET" value="" />

@@ -113,7 +113,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertCount(3, Task::first()->downloads);
         $this->assertEquals('success', Download::first()->status);
         $this->assertEquals('success', Media::first()->status);
-        $this->assertCount(2, Storage::disk('tweetsMedia')->allFiles(''));
+        $this->assertCount(2, Storage::disk(config('filesystems.tweetsMedia'))->allFiles(''));
         $this->assertTaskCount(1, 'completed');
 
         $this->assertZippedExists('1', [$tweet->id_str.'_1.jpeg', $tweet->id_str.'_2.jpeg']);

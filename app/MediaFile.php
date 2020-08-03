@@ -75,7 +75,7 @@ class MediaFile extends Model
 
     public static function getStorageDisk(): FilesystemAdapter
     {
-        return Storage::disk('tweetsMedia');
+        return Storage::disk(config('filesystems.tweetsMedia'));
     }
 
     protected function getDownloader(): Downloader

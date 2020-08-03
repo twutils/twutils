@@ -28,6 +28,7 @@ return [
 
     'cloud' => env('FILESYSTEM_CLOUD', 's3'),
 
+    'tweetsMedia' => env('FILESYSTEM_TWEETS_MEDIA', 'localTweetsMedia'),
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
@@ -43,9 +44,9 @@ return [
 
     'disks' => [
 
-        'tweetsMedia' => [
+        'localTweetsMedia' => [
             'driver' => 'local',
-            'root'   => storage_path('tweetsMedia'),
+            'root'   => storage_path('localTweetsMedia'),
         ],
 
         'localCloud' => [

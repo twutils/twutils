@@ -64,7 +64,7 @@ class destroyLikesOperation extends TwitterOperation
     protected function saveResponse()
     {
         $likeInstance = $this->data['likeInstance'];
-        $targetedTask = Task::find($this->task->extra['targeted_task_id']);
+        $targetedTask = $this->task->targetedTask;
 
         if ($targetedTask) {
             $targetedTask->tweets()->updateExistingPivot($likeInstance->id_str, ['removed' => now()->format('Y-m-d H:i:s'), 'removed_task_id' => $this->task->id]);
@@ -108,7 +108,7 @@ class destroyLikesOperation extends TwitterOperation
         $parameters = $this->buildParameters();
 
         try {
-            $relatedTaskLikes = Task::find($parameters['targeted_task_id'])->likes;
+            $relatedTaskLikes = $this->task->targetedTask->likes;
 
             if (! empty($parameters['settings'])) {
                 if (isset($parameters['settings']['start_date'])) {

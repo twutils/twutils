@@ -60,10 +60,11 @@ class TasksAdder
 
         $socialUser = $this->resolveUser((new $operationClassName)->getScope());
 
-        $settings = ['targeted_task_id' => $this->relatedTask ? $this->relatedTask->id : null, 'settings' => $this->settings];
+        $settings = ['settings' => $this->settings];
 
         $task = Task::create(
             [
+                'targeted_task_id'   => $this->relatedTask ? $this->relatedTask->id : null,
                 'socialuser_id'      => $socialUser->id,
                 'type'               => $operationClassName,
                 'status'             => 'queued',

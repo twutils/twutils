@@ -81,7 +81,7 @@ class TasksController extends Controller
         }
 
         if (in_array($task->baseName, Task::TWEETS_DESTROY_BASE_NAMES)) {
-            return Task::find($task->extra['targeted_task_id'])
+            return $task->targetedTask
                 ->tweets()
                 ->wherePivot('removed', '!=', null)
                 ->paginate(1000);

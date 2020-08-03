@@ -79,7 +79,7 @@ class ProcessDownloadJob implements ShouldQueue
 
         if (
             in_array($task->baseName, Task::TWEETS_DESTROY_BASE_NAMES) &&
-            ($targetedTask = Task::find($task->extra['targeted_task_id']))
+            ($targetedTask = $task->targetedTask)
         ) {
             $tweets = $targetedTask
                 ->tweets()

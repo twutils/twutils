@@ -18,7 +18,10 @@ class Task extends Model
     protected $appends = ['baseName', 'removedCount', 'componentName'];
     protected $hidden = ['exception'];
     protected $withCount = ['likes', 'followings', 'followers'];
-    protected $casts = ['extra' => 'array'];
+    protected $casts = [
+        'extra'             => 'array',
+        'targeted_task_id'  => 'int',
+    ];
 
     public const TWEETS_LISTS_BASE_NAMES = [
         'fetchlikes',
@@ -176,6 +179,11 @@ class Task extends Model
         return $this->belongsTo(self::class, 'managed_by_task_id', 'id');
     }
 
+    public function targetedTask()
+    {
+        return $this->belongsTo(self::class, 'targeted_task_id', 'id');
+    }
+
     public function managedTasks()
     {
         return $this->hasMany(self::class, 'managed_by_task_id', 'id');
@@ -219,7 +227,7 @@ class Task extends Model
         }
 
         if ($this->type === destroyLikesOperation::class) {
-            $targetedTask = self::find($this->extra['targeted_task_id']);
+            $targetedTask = $this->targetedTask;
 
             if (! $targetedTask) {
                 return '?';
@@ -237,7 +245,7 @@ class Task extends Model
         }
 
         if ($this->type === destroyTweetsOperation::class) {
-            $targetedTask = self::find($this->extra['targeted_task_id']);
+            $targetedTask = $this->targetedTask;
 
             if (! $targetedTask) {
                 return '?';

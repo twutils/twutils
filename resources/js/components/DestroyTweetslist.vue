@@ -101,7 +101,7 @@ export default {
         })
     },
     fetchRelatedTask () {
-      axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.extra.targeted_task_id}`)
+      axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.targeted_task_id}`)
         .then(response => {
           this.loading = false
           this.relatedTask = response.data

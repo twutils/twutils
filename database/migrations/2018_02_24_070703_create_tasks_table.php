@@ -20,6 +20,7 @@ class CreateTasksTable extends Migration
             $table->string('status');
             $table->text('extra')->nullable();
             $table->text('exception')->nullable();
+            $table->integer('targeted_task_id')->unsigned()->nullable();
             $table->integer('managed_by_task_id')->unsigned()->nullable();
             $table->timestamps();
         });

@@ -28,8 +28,8 @@ class TasksController extends Controller
 
     public function create(TaskAddRequest $request)
     {
-        $targetedTask = $request->segment(2);
-        $relatedTask = Task::find($request->segment(3)) ?? (Task::find($request->id) ?? null);
+        $targetedTask = $request->targetedFullType;
+        $relatedTask = $request->relatedTask;
 
         $addTask = new TasksAdder($targetedTask, $request->all(), $relatedTask, auth()->user());
 

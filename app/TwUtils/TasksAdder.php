@@ -51,14 +51,12 @@ class TasksAdder
         $this->statusCode = Response::HTTP_BAD_REQUEST;
         $this->managedByTaskId = $requestData['managedByTaskId'] ?? null;
 
-        $this->targetedTask = ucfirst($targetedTask);
+        $this->targetedTask = $targetedTask;
         $this->requestData = $requestData;
         $this->relatedTask = $relatedTask;
         $this->user = $user;
 
-        $operationClassName = collect(static::$availableTasks)->first(function ($operationClassName) {
-            return $this->targetedTask == (new $operationClassName)->getShortName();
-        });
+        $operationClassName = $targetedTask;
 
         $socialUser = $this->resolveUser((new $operationClassName)->getScope());
 

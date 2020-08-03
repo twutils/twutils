@@ -14,8 +14,8 @@ class ManagedDestroyLikesOperation extends TwitterOperation
     protected $shortName = 'ManagedDestroyLikes';
     protected $scope = 'write';
     protected $tasksQueue = [FetchLikesOperation::class, destroyLikesOperation::class];
-    protected $firstTaskShortName = 'Likes';
-    protected $secondTaskShortName = 'DestroyLikes';
+    protected $firstTaskShortName = FetchLikesOperation::class;
+    protected $secondTaskShortName = destroyLikesOperation::class;
 
     public function dispatch()
     {

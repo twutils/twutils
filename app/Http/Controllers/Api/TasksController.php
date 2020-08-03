@@ -31,7 +31,7 @@ class TasksController extends Controller
         $targetedTask = $request->targetedFullType;
         $relatedTask = $request->relatedTask;
 
-        $addTask = new TasksAdder($targetedTask, $request->all(), $relatedTask, auth()->user());
+        $addTask = new TasksAdder($targetedTask, $request->settings, $relatedTask, auth()->user());
 
         return response(['ok'=> $addTask->isOk(), 'errors' => $addTask->getErrors(), 'data' => $addTask->getData()], $addTask->getStatusCode());
     }

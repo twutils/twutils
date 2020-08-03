@@ -35,7 +35,7 @@ class TasksAdder
     protected $socialUser;
 
     protected $targetedTask;
-    protected $requestData;
+    protected $settings;
     protected $relatedTask;
     protected $ok;
     protected $errors;
@@ -43,16 +43,16 @@ class TasksAdder
     protected $statusCode;
     protected $managedByTaskId;
 
-    public function __construct(string $targetedTask, array $requestData, Task $relatedTask = null, User $user)
+    public function __construct(string $targetedTask, array $settings, Task $relatedTask = null, User $user)
     {
         $this->ok = false;
         $this->errors = [];
         $this->data = [];
         $this->statusCode = Response::HTTP_BAD_REQUEST;
-        $this->managedByTaskId = $requestData['managedByTaskId'] ?? null;
+        $this->managedByTaskId = $settings['managedByTaskId'] ?? null;
 
         $this->targetedTask = $targetedTask;
-        $this->requestData = $requestData;
+        $this->settings = $settings;
         $this->relatedTask = $relatedTask;
         $this->user = $user;
 
@@ -60,12 +60,7 @@ class TasksAdder
 
         $socialUser = $this->resolveUser((new $operationClassName)->getScope());
 
-        $this->addTask($socialUser, $operationClassName);
-    }
-
-    public function addTask(SocialUser $socialUser, $operationClassName)
-    {
-        $settings = ['targeted_task_id' => $this->relatedTask ? $this->relatedTask->id : null, 'settings' => $this->requestData['settings'] ?? null];
+        $settings = ['targeted_task_id' => $this->relatedTask ? $this->relatedTask->id : null, 'settings' => $this->settings];
 
         if ($this->managedByTaskId) {
             $settings['managedByTaskId'] = $this->managedByTaskId;

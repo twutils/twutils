@@ -57,9 +57,7 @@ class FetchLikesOperation extends TwitterOperation
 
     protected function saveResponse()
     {
-        $taskId = $this->task['id'];
         $taskSettings = $this->task->extra['settings'];
-        $likes = [];
 
         $responseCollection = collect($this->response)
             ->map(function (object $tweet) {
@@ -114,6 +112,7 @@ class FetchLikesOperation extends TwitterOperation
             TaskTweet::where('task_id', $this->task->id)
                 ->whereIn('tweet_id_str', $likesGroup->pluck('id_str'))
                 ->delete();
+
             TaskTweet::insert($tweets);
         }
     }
@@ -172,7 +171,6 @@ class FetchLikesOperation extends TwitterOperation
     public function dispatch()
     {
         $parameters = $this->buildParameters();
-        $taskSettings = $this->task->extra['settings'];
 
         return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
     }

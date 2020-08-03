@@ -4,34 +4,13 @@ namespace App\Http\Requests;
 
 use App\Task;
 use App\TwUtils\TasksAdder;
+use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
-use App\TwUtils\TwitterOperations\TwitterOperation;
-use App\TwUtils\UserManager;
 
 class TaskAddRequest extends FormRequest
 {
-    /**
-     * inherited
-     */
-/*    public function validateResolved()
-    {
-        $this->prepareForValidation();
-
-        if (! $this->passesAuthorization()) {
-            $this->failedAuthorization();
-        }
-
-        $instance = $this->getValidatorInstance();
-
-        if ($instance->fails()) {
-            $this->failedValidation($instance);
-        }
-
-        $this->passedValidation();
-    }*/
 
     protected function prepareForValidation()
     {
@@ -48,6 +27,7 @@ class TaskAddRequest extends FormRequest
             'targetedTask'      => $targetedTask,
             'targetedFullType'  => $targetedFullType,
             'relatedTask'       => $relatedTask,
+            'settings'          => $this->settings ?? [],
         ]);
     }
 
@@ -59,23 +39,6 @@ class TaskAddRequest extends FormRequest
         }
 
         return true;
-    }
-
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-
-        });
-    }
-
-    protected function failedAuthorization()
-    {
-        throw new TaskAddException(['Unhandled Error'], Response::HTTP_BAD_REQUEST);
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        $this->failedAuthorization();
     }
 
     public function rules()

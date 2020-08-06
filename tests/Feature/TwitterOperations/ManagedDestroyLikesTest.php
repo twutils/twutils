@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Jobs\DislikeTweetJob;
 use App\Jobs\FetchLikesJob;
+use App\Jobs\DislikeTweetJob;
 use Tests\Feature\TwitterOperations\Shared\ManagedDestroyTaskTest;
 
 class ManagedDestroyLikesTest extends ManagedDestroyTaskTest

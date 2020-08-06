@@ -2,20 +2,19 @@
 
 namespace App\TwUtils;
 
-use App\SocialUser;
 use App\Task;
 use App\User;
 use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
+use App\TwUtils\TwitterOperations\destroyLikesOperation;
+use App\TwUtils\TwitterOperations\destroyTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchFollowersOperation;
+use App\TwUtils\TwitterOperations\FetchFollowingOperation;
+use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
-use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
-use App\TwUtils\TwitterOperations\FetchFollowingOperation;
-use App\TwUtils\TwitterOperations\FetchFollowersOperation;
-use App\TwUtils\TwitterOperations\destroyLikesOperation;
-use App\TwUtils\TwitterOperations\destroyTweetsOperation;
 
 class TasksAdder
 {
@@ -78,7 +77,6 @@ class TasksAdder
         $this->errors = [];
         $this->data = array_merge($this->data, ['task_id' => $task->id]);
     }
-
 
     public function resolveUser($taskScope)
     {

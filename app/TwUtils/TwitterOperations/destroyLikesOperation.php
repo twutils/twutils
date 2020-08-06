@@ -2,7 +2,6 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
 use Carbon\Carbon;
 use App\Jobs\DislikeTweetJob;
 use App\TwUtils\TaskAdd\Validators\DateValidator;
@@ -139,7 +138,7 @@ class destroyLikesOperation extends TwitterOperation
         }
     }
 
-    public function getValidators() : array
+    public function getValidators(): array
     {
         return [DateValidator::class, ManagedByTaskValidator::class];
     }

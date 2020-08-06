@@ -35,7 +35,6 @@ abstract class Downloader
 
     final protected function doDownload(): void
     {
-
         $client = app('HttpClient');
 
         $response = $client->get($this->getUrl());
@@ -47,9 +46,8 @@ abstract class Downloader
         if (
             MediaFile::getStorageDisk()->exists($this->mediaFile->mediaPath) ||
             MediaFile::getCacheStorageDisk()->exists($this->mediaFile->mediaPath)
-        )
-        {
-            return ;
+        ) {
+            return;
         }
 
         $contents = $response->getBody()->getContents();
@@ -62,7 +60,7 @@ abstract class Downloader
                 $contents
             )
         ) {
-            return ;
+            return;
         }
 
         throw new \Exception('Error downloading media file: '.$this->mediaFile->id);

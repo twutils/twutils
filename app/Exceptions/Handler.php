@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use Throwable;
-use App\Exceptions\TaskAddException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -63,8 +62,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if (is_a($exception, TaskAddException::class))
-        {
+        if (is_a($exception, TaskAddException::class)) {
             return $exception->toResponse();
         }
 

@@ -11,13 +11,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TaskAddRequest extends FormRequest
 {
-
     protected function prepareForValidation()
     {
         $targetedTask = ucfirst($this->segment(2));
 
         $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
-
 
         $taskFullType = collect(TasksAdder::$availableTasks)->first(function ($operationClassName) use ($targetedTask) {
             return $targetedTask === (new $operationClassName)->getShortName();
@@ -33,8 +31,7 @@ class TaskAddRequest extends FormRequest
 
     public function authorize()
     {
-        if ( $this->user()->cannot('create', Task::class))
-        {
+        if ($this->user()->cannot('create', Task::class)) {
             throw new TaskAddException([__('messages.task_add_max_number')], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -47,8 +44,7 @@ class TaskAddRequest extends FormRequest
             'targetedTask' => [
                 'bail',
                 function ($attribute, $value, $fail) {
-                    if (! $this->taskFullType)
-                    {
+                    if (! $this->taskFullType) {
                         throw new TaskAddException([__('messages.task_add_bad_request')], Response::HTTP_BAD_REQUEST);
                     }
                 },
@@ -65,14 +61,12 @@ class TaskAddRequest extends FormRequest
             'relatedTask' => [
                 'bail',
                 function ($attribute, $value, $fail) {
-                    if ($value !== null && $this->user()->cannot('view', $value))
-                    {
+                    if ($value !== null && $this->user()->cannot('view', $value)) {
                         throw new TaskAddException([__('messages.task_add_unauthorized_access')], Response::HTTP_UNAUTHORIZED);
                     }
                 },
                 function ($attribute, $value, $fail) {
-                    if (($this->segment(3) || $this->has('id')) && $value === null)
-                    {
+                    if (($this->segment(3) || $this->has('id')) && $value === null) {
                         throw new TaskAddException([__('messages.task_add_target_not_found')], Response::HTTP_UNAUTHORIZED);
                     }
                 },
@@ -90,8 +84,7 @@ class TaskAddRequest extends FormRequest
                     }
                 },
                 function ($attribute, $value, $fail) {
-                    foreach((new $value)->getValidators() as $validatorClassName)
-                    {
+                    foreach ((new $value)->getValidators() as $validatorClassName) {
                         (new $validatorClassName)->apply($this->all(), $this->user());
                     }
                 },

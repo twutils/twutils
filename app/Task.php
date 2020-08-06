@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use App\Jobs\CleaningAllTweetsAndTweeps;
 use App\TwUtils\TwitterOperations\destroyLikesOperation;
 use App\TwUtils\TwitterOperations\destroyTweetsOperation;

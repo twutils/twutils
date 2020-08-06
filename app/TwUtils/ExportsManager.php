@@ -2,9 +2,9 @@
 
 namespace App\TwUtils;
 
-use App\Download;
 use App\Task;
 use App\Tweep;
+use App\Download;
 use PhpZip\ZipFile;
 use Illuminate\Support\Facades\Storage;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;

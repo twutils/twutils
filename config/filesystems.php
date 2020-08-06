@@ -28,7 +28,7 @@ return [
 
     'cloud' => env('FILESYSTEM_CLOUD', 's3'),
 
-    'tweetsMedia' => env('FILESYSTEM_TWEETS_MEDIA', 'localTweetsMedia'),
+    'tweetsMedia' => env('FILESYSTEM_TWEETS_MEDIA', 's3_tweetsMedia'),
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
@@ -47,6 +47,11 @@ return [
         'localTweetsMedia' => [
             'driver' => 'local',
             'root'   => storage_path('localTweetsMedia'),
+        ],
+
+        'tweetsMediaCache' => [
+            'driver' => 'local',
+            'root'   => storage_path('tweetsMediaCache'),
         ],
 
         'localCloud' => [
@@ -80,6 +85,19 @@ return [
             'secret'     => env('AWS_SECRET_ACCESS_KEY'),
             'region'     => env('AWS_DEFAULT_REGION'),
             'bucket'     => env('AWS_BUCKET'),
+            'url'        => env('AWS_URL'),
+            'endpoint'   => env('AWS_ENDPOINT'),
+        ],
+
+        's3_tweetsMedia' => [
+            'visibility' => 'private',
+            'driver'     => 's3',
+            'key'        => env('AWS_ACCESS_KEY_ID'),
+            'secret'     => env('AWS_SECRET_ACCESS_KEY'),
+            'region'     => env('AWS_DEFAULT_REGION'),
+
+            'bucket'     => env('AWS_TWEETS_MEDIA_BUCKET'),
+
             'url'        => env('AWS_URL'),
             'endpoint'   => env('AWS_ENDPOINT'),
         ],

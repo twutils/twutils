@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Task;
 use App\Download;
 use App\MediaFile;
-use App\Exports\TasksExport;
+use App\Exports\TweetsListExport;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
 use App\Exports\UsersListTaskExport;
@@ -26,6 +26,7 @@ class ProcessDownloadJob implements ShouldQueue
 
     public function __construct(Download $download)
     {
+        $this->queue = 'downloads';
         $this->download = $download;
     }
 
@@ -47,6 +48,10 @@ class ProcessDownloadJob implements ShouldQueue
             $this->createHtmlEntitiesDownload();
         }
 
+    }
+
+    protected function success()
+    {
         $this->download->status = 'success';
         $this->download->save();
     }
@@ -54,6 +59,8 @@ class ProcessDownloadJob implements ShouldQueue
     protected function createHtmlDownload()
     {
         ExportsManager::createHtmlZip($this->download);
+
+        $this->success();
     }
 
     protected function createExcelDownload()
@@ -87,7 +94,14 @@ class ProcessDownloadJob implements ShouldQueue
                 ->get();
         }
 
-        return (new TasksExport($tweets))->store($this->download->id, config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX);
+        if (
+            (new TweetsListExport($tweets))->store(
+                $this->download->id,
+                config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX
+            )
+        ) {
+            $this->success();
+        }
     }
 
     protected function createHtmlEntitiesDownload()

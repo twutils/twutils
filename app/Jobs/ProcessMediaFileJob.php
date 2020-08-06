@@ -17,6 +17,7 @@ class ProcessMediaFileJob implements ShouldQueue
 
     public function __construct(MediaFile $mediaFile)
     {
+        $this->queue = 'media';
         $this->mediaFile = $mediaFile;
     }
 

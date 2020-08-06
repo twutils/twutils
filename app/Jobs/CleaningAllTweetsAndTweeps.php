@@ -18,6 +18,7 @@ class CleaningAllTweetsAndTweeps implements ShouldQueue
 
     public function __construct()
     {
+        $this->queue = 'cleaning';
     }
 
     public function handle()

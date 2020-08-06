@@ -7,6 +7,7 @@ use App\MediaFile;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,7 +16,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class ZipEntitiesJob implements ShouldQueue
 {
-    private $download;
+    protected $download;
 
     use Dispatchable;
     use InteractsWithQueue;
@@ -24,10 +25,23 @@ class ZipEntitiesJob implements ShouldQueue
 
     public function __construct(Download $download)
     {
+        $this->queue = 'downloads';
         $this->download = $download;
     }
 
     public function handle()
+    {
+        try {
+            $this->start();
+        } catch (\Exception $e) {
+            \Log::warning($e);
+
+            $this->download->status = 'broken';
+            $this->download->save();
+        }
+    }
+
+    protected function start()
     {
         $paths = collect();
         $this->download
@@ -46,7 +60,30 @@ class ZipEntitiesJob implements ShouldQueue
         Storage::disk('local')->makeDirectory($this->download->id);
 
         $paths->map(function ($path) {
-            Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));
+
+            if (Storage::disk('local')->exists($this->download->id.'/'.$path))
+            {
+                \Log::info('Skip Copying [' . $path . ']');
+
+                return ;
+            }
+
+            if (MediaFile::getCacheStorageDisk()->exists($path))
+            {
+                \Log::info('Copying from cache [' . $path . '] to: ' . $this->download->id.'/'.$path);
+
+                Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getCacheStorageDisk()->readStream($path));
+
+                return ;
+            }
+
+            \Log::info('Copying [' . $path . '] to: ' . $this->download->id.'/'.$path);
+
+            try {
+                Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));
+            } catch (\Exception $e) {
+                Log::warning($e);
+            }
         });
 
         $fileName = $this->download->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
@@ -74,5 +111,9 @@ class ZipEntitiesJob implements ShouldQueue
         fclose($zippedStream);
 
         Storage::disk('local')->deleteDirectory($this->download->id);
+
+        $this->download->status = 'success';
+
+        $this->download->save();
     }
 }

@@ -78,6 +78,11 @@ class MediaFile extends Model
         return Storage::disk(config('filesystems.tweetsMedia'));
     }
 
+    public static function getCacheStorageDisk(): FilesystemAdapter
+    {
+        return Storage::disk('tweetsMediaCache');
+    }
+
     protected function getDownloader(): Downloader
     {
         return new $this->downloader($this);

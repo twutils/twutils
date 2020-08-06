@@ -44,6 +44,7 @@
         <env name="AWS_SECRET_ACCESS_KEY" value="" />
         <env name="AWS_DEFAULT_REGION" value="" />
         <env name="AWS_BUCKET" value="" />
+        <env name="AWS_TWEETS_MEDIA_BUCKET" value="" />
         <env name="AWS_URL" value="" />
     </php>
 </phpunit>

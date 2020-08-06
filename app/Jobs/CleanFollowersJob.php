@@ -20,6 +20,7 @@ class CleanFollowersJob implements ShouldQueue
 
     public function __construct($task)
     {
+        $this->queue = 'cleaning';
         $this->task = $task;
     }
 

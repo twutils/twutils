@@ -282,6 +282,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertLikesBelongsToTask();
         $this->assertStringContainsString($expectedTweetsAttachmentsPaths, $likeEntitiesPaths);
         $this->assertStringContainsString($expectedSavedPaths, collect($this->getZippedFiles(3))->implode(','));
+        $this->assertEquals(['success', 'success', 'success'], Task::find(1)->downloads->pluck('status')->toArray());
     }
 
     public function test_do_nothing_with_regualr_tweets()

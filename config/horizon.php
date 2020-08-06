@@ -168,20 +168,22 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      => ['default', 'media', 'avatar', 'cleaning'],
+                'queue'      => ['default', 'media', 'avatar', 'cleaning', 'downloads'],
                 'balance'    => 'auto',
                 'processes'  => 20,
                 'tries'      => 3,
+                'timeout'    => 3600,
             ],
         ],
 
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      =>['default', 'media', 'avatar', 'cleaning'],
+                'queue'      =>['default', 'media', 'avatar', 'cleaning', 'downloads'],
                 'balance'    => 'auto',
                 'processes'  => 20,
                 'tries'      => 3,
+                'timeout'    => 3600,
             ],
         ],
     ],

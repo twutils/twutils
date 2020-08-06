@@ -25,6 +25,7 @@ trait CreatesApplication
 
         \Storage::fake('local');
         \Storage::fake('public');
+        \Storage::fake('tweetsMediaCache');
         \Storage::fake(config('filesystems.tweetsMedia'));
         \Storage::fake(config('filesystems.cloud'));
 

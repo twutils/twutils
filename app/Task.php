@@ -149,7 +149,7 @@ class Task extends Model
                     ->pluck('tweep');
         }
 
-        if ($this->baseName === 'fetchfollowers') {
+        if ($this->type === FetchFollowingOperation::class) {
             $tweeps = $this->followers()
                     ->with('tweep')
                     ->get()

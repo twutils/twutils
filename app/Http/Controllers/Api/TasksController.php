@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TaskAdd\Factory as TaskFactory;
+use App\TwUtils\TwitterOperations\FetchFollowersOperation;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
@@ -70,7 +71,7 @@ class TasksController extends Controller
                     ->paginate($perPage < 500 ? 500 : $perPage);
         }
 
-        if (in_array($task->baseName, ['fetchfollowers'])) {
+        if (in_array($task->type, [FetchFollowersOperation::class])) {
             $perPage = round($task->followers_count / 15);
 
             return $task

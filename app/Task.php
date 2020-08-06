@@ -45,9 +45,9 @@ class Task extends Model
         FetchFollowersOperation::class,
     ];
 
-    public const TWEETS_DESTROY_BASE_NAMES = [
-        'destroytweets',
-        'destroylikes',
+    public const TWEETS_DESTROY_TWEETS_TYPES = [
+        destroyLikesOperation::class,
+        destroyTweetsOperation::class,
     ];
 
     public const TWEETS_MANAGED_DESTROY_BASE_NAMES = [

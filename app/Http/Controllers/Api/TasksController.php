@@ -79,7 +79,7 @@ class TasksController extends Controller
                     ->paginate($perPage < 500 ? 500 : $perPage);
         }
 
-        if (in_array($task->baseName, Task::TWEETS_DESTROY_BASE_NAMES)) {
+        if (in_array($task->type, Task::TWEETS_DESTROY_TWEETS_TYPES)) {
             return $task->targetedTask
                 ->tweets()
                 ->wherePivot('removed', '!=', null)

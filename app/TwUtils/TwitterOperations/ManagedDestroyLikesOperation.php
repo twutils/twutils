@@ -73,7 +73,7 @@ class ManagedDestroyLikesOperation extends TwitterOperation
         call_user_func_array([$this, 'step'.$step], func_get_args());
     }
 
-    public function getValidators() : array
+    public function getValidators(): array
     {
         return [DateValidator::class];
     }

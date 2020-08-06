@@ -12,9 +12,8 @@ class ManagedByTaskValidator
 {
     public function apply($requestData, $user)
     {
-        if (empty($requestData['managedByTaskId']))
-        {
-            return ;
+        if (empty($requestData['managedByTaskId'])) {
+            return;
         }
 
         $lookupType = null;
@@ -31,9 +30,8 @@ class ManagedByTaskValidator
         ->whereIn('socialuser_id', $user->socialUsers->pluck('id'))
         ->get()->last();
 
-        if (empty($userManagedTasks))
-        {
-            throw new TaskAddException(["Invalid managed-by-task value."], Response::HTTP_UNPROCESSABLE_ENTITY);
+        if (empty($userManagedTasks)) {
+            throw new TaskAddException(['Invalid managed-by-task value.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-   }
+    }
 }

@@ -5,9 +5,9 @@ namespace App\Jobs;
 use App\Task;
 use App\Download;
 use App\MediaFile;
-use App\Exports\TweetsListExport;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
+use App\Exports\TweetsListExport;
 use App\Exports\UsersListTaskExport;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -47,7 +47,6 @@ class ProcessDownloadJob implements ShouldQueue
         if ($this->download->type === Download::TYPE_HTMLENTITIES) {
             $this->createHtmlEntitiesDownload();
         }
-
     }
 
     protected function success()

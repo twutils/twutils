@@ -175,7 +175,7 @@ class FetchLikesOperation extends TwitterOperation
         return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
     }
 
-    public function getValidators() : array
+    public function getValidators(): array
     {
         return [DateValidator::class];
     }

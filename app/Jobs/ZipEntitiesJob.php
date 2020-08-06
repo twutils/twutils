@@ -60,24 +60,21 @@ class ZipEntitiesJob implements ShouldQueue
         Storage::disk('local')->makeDirectory($this->download->id);
 
         $paths->map(function ($path) {
+            if (Storage::disk('local')->exists($this->download->id.'/'.$path)) {
+                \Log::info('Skip Copying ['.$path.']');
 
-            if (Storage::disk('local')->exists($this->download->id.'/'.$path))
-            {
-                \Log::info('Skip Copying [' . $path . ']');
-
-                return ;
+                return;
             }
 
-            if (MediaFile::getCacheStorageDisk()->exists($path))
-            {
-                \Log::info('Copying from cache [' . $path . '] to: ' . $this->download->id.'/'.$path);
+            if (MediaFile::getCacheStorageDisk()->exists($path)) {
+                \Log::info('Copying from cache ['.$path.'] to: '.$this->download->id.'/'.$path);
 
                 Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getCacheStorageDisk()->readStream($path));
 
-                return ;
+                return;
             }
 
-            \Log::info('Copying [' . $path . '] to: ' . $this->download->id.'/'.$path);
+            \Log::info('Copying ['.$path.'] to: '.$this->download->id.'/'.$path);
 
             try {
                 Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));

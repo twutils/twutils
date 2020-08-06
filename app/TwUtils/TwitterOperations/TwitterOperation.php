@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use App\TwUtils\JobsManager;
 use App\Jobs\CompleteTaskJob;
 use Illuminate\Support\Facades\Cache;
-use Symfony\Component\HttpFoundation\Response;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation
@@ -225,12 +224,12 @@ abstract class TwitterOperation
         $task->save();
     }
 
-    public function getValidators() : array
+    public function getValidators(): array
     {
         return [];
     }
 
-    final public function getShortName() : string
+    final public function getShortName(): string
     {
         return $this->shortName;
     }

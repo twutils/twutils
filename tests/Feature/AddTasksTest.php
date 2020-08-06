@@ -237,7 +237,7 @@ class AddTasksTest extends IntegrationTestCase
         $this->logInSocialUserForDestroyLikes();
 
         $response = $this->postJson('/api/destroyLikes', [
-            'managedByTaskId' => 1
+            'managedByTaskId' => 1,
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 

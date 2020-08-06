@@ -19,22 +19,18 @@ class ManagedDestroyLikesOperation extends TwitterOperation
     {
         $taskAdd = new TasksAdder($this->tasksQueue[0], $this->task->extra['settings'] ?? [], $this->task, $this->socialUser->user, $this->task->id);
 
-        if ($taskAdd->isOk()) {
-            $managedTask = Task::find($taskAdd->getData()['task_id']);
+        $managedTask = $taskAdd->getTask();
 
-            return dispatch(new CompleteManagedDestroyLikesJob($managedTask, $this->socialUser, $this->task));
-        }
+        return dispatch(new CompleteManagedDestroyLikesJob($managedTask, $this->socialUser, $this->task));
     }
 
     protected function attachDestroyTweets(Task $managedTask, SocialUser $socialUser, Task $task)
     {
         $taskAdd = new TasksAdder($this->tasksQueue[1], $task->extra['settings'] ?? [], $managedTask, $socialUser->user, $task->id);
 
-        if ($taskAdd->isOk()) {
-            $managedTask = Task::find($taskAdd->getData()['task_id']);
+        $managedTask = $taskAdd->getTask();
 
-            dispatch(new CompleteManagedDestroyLikesJob($managedTask, $socialUser, $task));
-        }
+        dispatch(new CompleteManagedDestroyLikesJob($managedTask, $socialUser, $task));
     }
 
     protected function markTaskAsCompleted(Task $task)

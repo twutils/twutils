@@ -4,7 +4,6 @@ namespace App\TwUtils;
 
 use App\Task;
 use App\User;
-use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\destroyLikesOperation;
 use App\TwUtils\TwitterOperations\destroyTweetsOperation;
@@ -31,51 +30,24 @@ class TasksAdder
         destroyTweetsOperation::class,
     ];
     protected $user;
-    protected $socialUser;
+    protected $task;
 
-    protected $targetedTask;
-    protected $settings;
-    protected $relatedTask;
-    protected $ok;
-    protected $errors;
-    protected $data;
-    protected $statusCode;
-    protected $managedByTaskId;
-
-    public function __construct(string $targetedTask, array $settings, Task $relatedTask = null, User $user, $managedByTaskId = null)
+    public function __construct(string $operationClassName, array $settings, Task $relatedTask = null, User $user, $managedByTaskId = null)
     {
-        $this->ok = false;
-        $this->errors = [];
-        $this->data = [];
-        $this->statusCode = Response::HTTP_BAD_REQUEST;
-        $this->managedByTaskId = $managedByTaskId;
-
-        $this->targetedTask = $targetedTask;
-        $this->settings = $settings;
-        $this->relatedTask = $relatedTask;
         $this->user = $user;
-
-        $operationClassName = $targetedTask;
 
         $socialUser = $this->resolveUser((new $operationClassName)->getScope());
 
-        $settings = ['settings' => $this->settings];
-
-        $task = Task::create(
+        $this->task = Task::create(
             [
-                'targeted_task_id'   => $this->relatedTask ? $this->relatedTask->id : null,
+                'targeted_task_id'   => $relatedTask ? $relatedTask->id : null,
                 'socialuser_id'      => $socialUser->id,
                 'type'               => $operationClassName,
                 'status'             => 'queued',
-                'extra'              => $settings,
+                'extra'              => ['settings' => $settings],
                 'managed_by_task_id' => $managedByTaskId,
             ]
         );
-
-        $this->ok = true;
-        $this->statusCode = Response::HTTP_OK;
-        $this->errors = [];
-        $this->data = array_merge($this->data, ['task_id' => $task->id]);
     }
 
     public function resolveUser($taskScope)
@@ -83,24 +55,9 @@ class TasksAdder
         return UserManager::resolveUser($this->user, $taskScope);
     }
 
-    public function isOk()
+    public function getTask() : Task
     {
-        return $this->ok;
-    }
-
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
+        return $this->task;
     }
 
     public static function getAvailableTasks()

@@ -7,6 +7,7 @@ use App\TwUtils\TasksAdder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
+use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 
@@ -30,7 +31,7 @@ class TasksController extends Controller
     {
         $addTask = new TasksAdder($request->taskFullType, $request->settings, $request->relatedTask, auth()->user());
 
-        return response(['ok'=> $addTask->isOk(), 'errors' => $addTask->getErrors(), 'data' => $addTask->getData()], $addTask->getStatusCode());
+        return response(['ok'=> true, 'errors' => [], 'data' => ['task_id' => $addTask->getTask()->id]], Response::HTTP_OK);
     }
 
     public function show(Request $request, Task $task)

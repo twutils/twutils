@@ -28,11 +28,11 @@ class Task extends Model
         'targeted_task_id'  => 'int',
     ];
 
-    public const TWEETS_LISTS_BASE_NAMES = [
-        'fetchlikes',
-        'fetchentitieslikes',
-        'fetchusertweets',
-        'fetchentitiesusertweets',
+    public const TWEETS_LISTS_TYPES = [
+        FetchLikesOperation::class,
+        FetchEntitiesLikesOperation::class,
+        FetchUserTweetsOperation::class,
+        FetchEntitiesUserTweetsOperation::class,
     ];
 
     public const TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES = [
@@ -135,13 +135,13 @@ class Task extends Model
     {
         $tweeps = collect([]);
 
-        if (in_array($this->baseName, self::TWEETS_LISTS_BASE_NAMES)) {
+        if (in_array($this->type, self::TWEETS_LISTS_TYPES)) {
             $tweeps = $this->likes
                         ->pluck('tweep')
                         ->unique('id');
         }
 
-        if ($this->baseName === 'fetchfollowing') {
+        if ($this->type === FetchFollowingOperation::class) {
             $tweeps = $this->followings()
                     ->with('tweep')
                     ->get()

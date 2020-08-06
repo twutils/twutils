@@ -72,7 +72,7 @@ class ProcessDownloadJob implements ShouldQueue
 
         $tweets = collect([]);
 
-        if (in_array($task->baseName, Task::TWEETS_LISTS_BASE_NAMES)) {
+        if (in_array($task->type, Task::TWEETS_LISTS_TYPES)) {
             $tweets = $task->likes;
         }
 

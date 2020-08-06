@@ -35,14 +35,14 @@ class Task extends Model
         FetchEntitiesUserTweetsOperation::class,
     ];
 
-    public const TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES = [
-        'fetchentitieslikes',
-        'fetchentitiesusertweets',
+    public const TWEETS_LISTS_WITH_ENTITIES_TYPES = [
+        FetchEntitiesLikesOperation::class,
+        FetchEntitiesUserTweetsOperation::class,
     ];
 
-    public const USERS_LISTS_BASE_NAMES = [
-        'fetchfollowing',
-        'fetchfollowers',
+    public const USERS_LISTS_TYPES = [
+        FetchFollowingOperation::class,
+        FetchFollowersOperation::class,
     ];
 
     public const TWEETS_DESTROY_BASE_NAMES = [
@@ -94,7 +94,7 @@ class Task extends Model
                 'type'    => Download::TYPE_EXCEL,
             ]);
 
-            if (! in_array($task->baseName, static::TWEETS_LISTS_WITH_ENTITIES_BASE_NAMES)) {
+            if (! in_array($task->type, static::TWEETS_LISTS_WITH_ENTITIES_TYPES)) {
                 return;
             }
 

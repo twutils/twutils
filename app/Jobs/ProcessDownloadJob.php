@@ -66,7 +66,7 @@ class ProcessDownloadJob implements ShouldQueue
     {
         $task = $this->download->task;
 
-        if (in_array($task->baseName, Task::USERS_LISTS_BASE_NAMES)) {
+        if (in_array($task->type, Task::USERS_LISTS_TYPES)) {
             return (new UsersListTaskExport($task))->store($this->download->id, config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX);
         }
 

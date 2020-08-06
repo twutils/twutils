@@ -4,9 +4,9 @@ namespace App\TwUtils\TwitterOperations;
 
 use App\Task;
 use App\SocialUser;
-use App\TwUtils\TasksAdder;
 use App\Jobs\CompleteTaskJob;
 use App\Jobs\CompleteManagedDestroyLikesJob;
+use App\TwUtils\TaskAdd\Factory as TaskFactory;
 use App\TwUtils\TaskAdd\Validators\DateValidator;
 
 class ManagedDestroyLikesOperation extends TwitterOperation
@@ -17,7 +17,7 @@ class ManagedDestroyLikesOperation extends TwitterOperation
 
     public function dispatch()
     {
-        $taskAdd = new TasksAdder($this->tasksQueue[0], $this->task->extra['settings'] ?? [], $this->task, $this->socialUser->user, $this->task->id);
+        $taskAdd = new TaskFactory($this->tasksQueue[0], $this->task->extra['settings'] ?? [], $this->task, $this->socialUser->user, $this->task->id);
 
         $managedTask = $taskAdd->getTask();
 
@@ -26,7 +26,7 @@ class ManagedDestroyLikesOperation extends TwitterOperation
 
     protected function attachDestroyTweets(Task $managedTask, SocialUser $socialUser, Task $task)
     {
-        $taskAdd = new TasksAdder($this->tasksQueue[1], $task->extra['settings'] ?? [], $managedTask, $socialUser->user, $task->id);
+        $taskAdd = new TaskFactory($this->tasksQueue[1], $task->extra['settings'] ?? [], $managedTask, $socialUser->user, $task->id);
 
         $managedTask = $taskAdd->getTask();
 

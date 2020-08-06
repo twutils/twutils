@@ -3,11 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Task;
-use App\TwUtils\TasksAdder;
 use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\TwUtils\TaskAdd\Factory as TaskFactory;
 
 class TaskAddRequest extends FormRequest
 {
@@ -17,7 +17,7 @@ class TaskAddRequest extends FormRequest
 
         $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
 
-        $taskFullType = collect(TasksAdder::$availableTasks)->first(function ($operationClassName) use ($targetedTask) {
+        $taskFullType = collect(Task::AVAILABLE_OPERATIONS)->first(function ($operationClassName) use ($targetedTask) {
             return $targetedTask === (new $operationClassName)->getShortName();
         });
 

@@ -6,10 +6,16 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use App\Jobs\CleaningAllTweetsAndTweeps;
+use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\destroyLikesOperation;
 use App\TwUtils\TwitterOperations\destroyTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchFollowersOperation;
+use App\TwUtils\TwitterOperations\FetchFollowingOperation;
+use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
 
 class Task extends Model
 {
@@ -47,6 +53,19 @@ class Task extends Model
     public const TWEETS_MANAGED_DESTROY_BASE_NAMES = [
         'manageddestroytweets',
         'manageddestroylikes',
+    ];
+
+    public const AVAILABLE_OPERATIONS = [
+        FetchLikesOperation::class,
+        FetchEntitiesLikesOperation::class,
+        FetchUserTweetsOperation::class,
+        FetchEntitiesUserTweetsOperation::class,
+        FetchFollowingOperation::class,
+        FetchFollowersOperation::class,
+        destroyLikesOperation::class,
+        ManagedDestroyLikesOperation::class,
+        ManagedDestroyTweetsOperation::class,
+        destroyTweetsOperation::class,
     ];
 
     protected static function boot()

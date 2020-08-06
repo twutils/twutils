@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Task;
-use App\TwUtils\TasksAdder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\TwUtils\TaskAdd\Factory as TaskFactory;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 
@@ -29,7 +29,7 @@ class TasksController extends Controller
 
     public function create(TaskAddRequest $request)
     {
-        $addTask = new TasksAdder($request->taskFullType, $request->settings, $request->relatedTask, auth()->user());
+        $addTask = new TaskFactory($request->taskFullType, $request->settings, $request->relatedTask, auth()->user());
 
         return response(['ok'=> true, 'errors' => [], 'data' => ['task_id' => $addTask->getTask()->id]], Response::HTTP_OK);
     }

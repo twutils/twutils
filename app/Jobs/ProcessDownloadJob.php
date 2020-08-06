@@ -76,7 +76,7 @@ class ProcessDownloadJob implements ShouldQueue
             $tweets = $task->likes;
         }
 
-        if (in_array($task->baseName, Task::TWEETS_MANAGED_DESTROY_BASE_NAMES)) {
+        if (in_array($task->type, Task::TWEETS_MANAGED_DESTROY_TYPES)) {
             $task = Task::where('managed_by_task_id', $task->id)->get()
                 ->first(function (Task $task) {
                     return in_array($task->type, Task::TWEETS_DESTROY_TWEETS_TYPES);

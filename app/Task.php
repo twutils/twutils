@@ -50,9 +50,9 @@ class Task extends Model
         destroyTweetsOperation::class,
     ];
 
-    public const TWEETS_MANAGED_DESTROY_BASE_NAMES = [
-        'manageddestroytweets',
-        'manageddestroylikes',
+    public const TWEETS_MANAGED_DESTROY_TYPES = [
+        ManagedDestroyLikesOperation::class,
+        ManagedDestroyTweetsOperation::class,
     ];
 
     public const AVAILABLE_OPERATIONS = [

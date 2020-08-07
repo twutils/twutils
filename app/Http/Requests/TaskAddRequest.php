@@ -7,7 +7,6 @@ use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
-use App\TwUtils\TaskAdd\Factory as TaskFactory;
 
 class TaskAddRequest extends FormRequest
 {

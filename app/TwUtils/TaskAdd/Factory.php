@@ -30,12 +30,12 @@ class Factory
         );
     }
 
-    public function resolveUser($taskScope) : SocialUser
+    public function resolveUser($taskScope): SocialUser
     {
         return UserManager::resolveUser($this->user, $taskScope);
     }
 
-    public function getTask() : Task
+    public function getTask(): Task
     {
         return $this->task;
     }

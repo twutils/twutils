@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Jobs\CleaningAllTweetsAndTweeps;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
-use App\TwUtils\TwitterOperations\destroyTweetsOperation;
+use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;
 use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
@@ -47,7 +47,7 @@ class Task extends Model
 
     public const TWEETS_DESTROY_TWEETS_TYPES = [
         DestroyLikesOperation::class,
-        destroyTweetsOperation::class,
+        DestroyTweetsOperation::class,
     ];
 
     public const TWEETS_MANAGED_DESTROY_TYPES = [
@@ -65,7 +65,7 @@ class Task extends Model
         DestroyLikesOperation::class,
         ManagedDestroyLikesOperation::class,
         ManagedDestroyTweetsOperation::class,
-        destroyTweetsOperation::class,
+        DestroyTweetsOperation::class,
     ];
 
     protected static function boot()
@@ -235,12 +235,12 @@ class Task extends Model
         }
 
         if ($this->type === ManagedDestroyTweetsOperation::class) {
-            $managedTask = self::where('managed_by_task_id', $this->id)->where('type', destroyTweetsOperation::class)->first();
+            $managedTask = self::where('managed_by_task_id', $this->id)->where('type', DestroyTweetsOperation::class)->first();
 
             return ($managedTask ?? optional())->removedCount;
         }
 
-        if (! in_array($this->type, [DestroyLikesOperation::class, destroyTweetsOperation::class])) {
+        if (! in_array($this->type, [DestroyLikesOperation::class, DestroyTweetsOperation::class])) {
             return null;
         }
 
@@ -262,7 +262,7 @@ class Task extends Model
             return $removed->where('pivot.removed_task_id', $this->id)->count().'/'.$removeScopeCount;
         }
 
-        if ($this->type === destroyTweetsOperation::class) {
+        if ($this->type === DestroyTweetsOperation::class) {
             $targetedTask = $this->targetedTask;
 
             if (! $targetedTask) {

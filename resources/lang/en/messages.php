@@ -95,7 +95,7 @@ return [
     \App\TwUtils\TwitterOperations\FetchFollowingOperation::class          => 'Fetch Following',
     \App\TwUtils\TwitterOperations\FetchFollowersOperation::class          => 'Fetch Followers',
     \App\TwUtils\TwitterOperations\DestroyLikesOperation::class            => 'Remove Likes',
-    \App\TwUtils\TwitterOperations\destroyTweetsOperation::class           => 'Remove Tweets',
+    \App\TwUtils\TwitterOperations\DestroyTweetsOperation::class           => 'Remove Tweets',
     \App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation::class     => 'Remove Likes',
     \App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation::class    => 'Remove Tweets',
 

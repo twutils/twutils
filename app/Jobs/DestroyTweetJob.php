@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\TwUtils\TwitterOperations\destroyTweetsOperation;
+use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
 
 class DestroyTweetJob implements ShouldQueue
 {
@@ -41,7 +41,7 @@ class DestroyTweetJob implements ShouldQueue
      */
     public function handle()
     {
-        $destroyLikes = new destroyTweetsOperation();
+        $destroyLikes = new DestroyTweetsOperation();
 
         $destroyLikes->doRequest($this->socialUser, $this->task, ['index' => $this->index, 'likesCollection' => $this->likesCollection]);
     }

@@ -4,7 +4,7 @@ namespace App\TwUtils\TwitterOperations;
 
 use App\Jobs\DestroyTweetJob;
 
-class destroyTweetsOperation extends destroyLikesOperation
+class destroyTweetsOperation extends DestroyLikesOperation
 {
     protected $shortName = 'DestroyTweets';
     protected $endpoint = 'statuses/destroy';

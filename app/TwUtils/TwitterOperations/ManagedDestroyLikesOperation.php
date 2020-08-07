@@ -13,7 +13,7 @@ class ManagedDestroyLikesOperation extends TwitterOperation
 {
     protected $shortName = 'ManagedDestroyLikes';
     protected $scope = 'write';
-    protected $tasksQueue = [FetchLikesOperation::class, destroyLikesOperation::class];
+    protected $tasksQueue = [FetchLikesOperation::class, DestroyLikesOperation::class];
 
     public function dispatch()
     {
@@ -50,7 +50,7 @@ class ManagedDestroyLikesOperation extends TwitterOperation
         }
     }
 
-    // $managedTask->type = destroyLikesOperation::class
+    // $managedTask->type = DestroyLikesOperation::class
     protected function step2(Task $managedTask, SocialUser $socialUser, Task $task)
     {
         if ($managedTask->status === 'completed') {

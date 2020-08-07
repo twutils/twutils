@@ -94,7 +94,7 @@ return [
     \App\TwUtils\TwitterOperations\FetchUserTweetsOperation::class         => 'نسخ التغريدات',
     \App\TwUtils\TwitterOperations\FetchFollowingOperation::class          => 'نسخ المُتابَعين',
     \App\TwUtils\TwitterOperations\FetchFollowersOperation::class          => 'نسخ المُتابِعين',
-    \App\TwUtils\TwitterOperations\destroyLikesOperation::class            => 'حذف المفضلة',
+    \App\TwUtils\TwitterOperations\DestroyLikesOperation::class            => 'حذف المفضلة',
     \App\TwUtils\TwitterOperations\destroyTweetsOperation::class           => 'حذف التغريدات',
     \App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation::class     => 'حذف المفضلة',
     \App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation::class    => 'حذف التغريدات',

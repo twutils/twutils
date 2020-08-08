@@ -22,6 +22,7 @@ class Task extends Model
     protected $guarded = ['id'];
     protected $appends = ['baseName', 'removedCount', 'componentName'];
     protected $hidden = ['exception'];
+    protected $with = ['downloads'];
     protected $withCount = ['likes', 'followings', 'followers'];
     protected $casts = [
         'extra'             => 'array',
@@ -155,7 +156,8 @@ class Task extends Model
     {
         return $this->belongsToMany(Tweet::class, 'task_tweet', 'task_id', 'tweet_id_str', 'id', 'id_str', 'tweets')
             ->using(TaskTweet::class)
-            ->withPivot(['favorited', 'retweeted', 'removed', 'removed_task_id']);
+            ->withPivot(['favorited', 'retweeted', 'removed', 'removed_task_id'])
+            ->with('media.mediaFiles');
     }
 
     public function socialUser()

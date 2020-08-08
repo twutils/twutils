@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
-use App\TwUtils\TaskAdd\Validators\DateValidator;
+use App\TwUtils\Tasks\Validators\DateValidator;
 
 class FetchLikesOperation extends TwitterOperation
 {

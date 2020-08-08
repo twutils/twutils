@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils\TaskAdd;
+namespace App\TwUtils\Tasks;
 
 use App\Task;
 use App\User;

@@ -6,8 +6,8 @@ use App\Task;
 use App\SocialUser;
 use App\Jobs\CompleteTaskJob;
 use App\Jobs\CompleteManagedDestroyLikesJob;
-use App\TwUtils\TaskAdd\Factory as TaskFactory;
-use App\TwUtils\TaskAdd\Validators\DateValidator;
+use App\TwUtils\Tasks\Factory as TaskFactory;
+use App\TwUtils\Tasks\Validators\DateValidator;
 
 class ManagedDestroyLikesOperation extends TwitterOperation
 {

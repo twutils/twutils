@@ -4,8 +4,8 @@ namespace App\TwUtils\TwitterOperations;
 
 use Carbon\Carbon;
 use App\Jobs\DislikeTweetJob;
-use App\TwUtils\TaskAdd\Validators\DateValidator;
-use App\TwUtils\TaskAdd\Validators\ManagedByTaskValidator;
+use App\TwUtils\Tasks\Validators\DateValidator;
+use App\TwUtils\Tasks\Validators\ManagedByTaskValidator;
 
 class DestroyLikesOperation extends TwitterOperation
 {

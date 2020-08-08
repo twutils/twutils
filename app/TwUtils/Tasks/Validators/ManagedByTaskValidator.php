@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils\TaskAdd\Validators;
+namespace App\TwUtils\Tasks\Validators;
 
 use App\Task;
 use App\Exceptions\TaskAddException;

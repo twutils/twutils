@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils\TaskAdd\Validators;
+namespace App\TwUtils\Tasks\Validators;
 
 use App\Exceptions\TaskAddException;
 use Symfony\Component\HttpFoundation\Response;

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
 use Symfony\Component\HttpFoundation\Response;
-use App\TwUtils\TaskAdd\Factory as TaskFactory;
+use App\TwUtils\Tasks\Factory as TaskFactory;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;

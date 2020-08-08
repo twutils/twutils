@@ -22,7 +22,7 @@ class TaskAddRequest extends FormRequest
 
         $this->merge([
             'targetedTask'      => $targetedTask,
-            'taskFullType'  => $taskFullType,
+            'taskFullType'      => $taskFullType,
             'relatedTask'       => $relatedTask,
             'settings'          => $this->settings ?? [],
         ]);

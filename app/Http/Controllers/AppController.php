@@ -31,15 +31,15 @@ class AppController extends Controller
         return redirect()->back();
     }
 
-    public function switchLang()
+    public function switchLang(Request $request)
     {
-        if (! in_array(request()->segment(1), ['en', 'ar'])) {
+        if (! in_array($request->segment(1), ['en', 'ar'])) {
             return redirect()->route('welcome');
         }
 
-        if (request()->segment(1)) {
-            session()->put('locale', request()->segment(1));
-            app()->setLocale(request()->segment(1));
+        if ($request->segment(1)) {
+            session()->put('locale', $request->segment(1));
+            app()->setLocale($request->segment(1));
         }
 
         if (auth()->guest() && session('url.intended')) {
@@ -48,8 +48,8 @@ class AppController extends Controller
 
         $previousRouteName = app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName();
 
-        if (request()->has('returnUrl')) {
-            session()->flash('returnUrl', request()->get('returnUrl'));
+        if ($request->has('returnUrl')) {
+            session()->flash('returnUrl', $request->get('returnUrl'));
         }
 
         // This way, the selected language will remain in the url. Better URLs.
@@ -92,9 +92,9 @@ class AppController extends Controller
         }
 
         $deleteDate = now()
-                    ->addDays(request()->get('day') ?? 0)
-                    ->addHours(request()->get('hour') ?? 0)
-                    ->addMinutes(request()->get('minute') ?? 0);
+                    ->addDays($request->get('day') ?? 0)
+                    ->addHours($request->get('hour') ?? 0)
+                    ->addMinutes($request->get('minute') ?? 0);
 
         $user->remove_at = $deleteDate;
         $user->save();

@@ -116,13 +116,7 @@ class UserManager
 
     public static function resolveUser(User $appUser, string $scope)
     {
-        try {
-            $socialUser = $appUser->socialUsers()->where('scope', 'like', "%{$scope}%")->get()[0];
-
-            return $socialUser;
-        } catch (\Exception $e) {
-            return null;
-        }
+        return $appUser->socialUsers()->where('scope', 'like', "%{$scope}%")->first();
     }
 
     public static function createAppUserFromSocialUser(SocialUser $socialUser): User

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Task;
 use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
+use App\TwUtils\TasksManager;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,9 +17,7 @@ class TaskAddRequest extends FormRequest
 
         $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
 
-        $taskFullType = collect(Task::AVAILABLE_OPERATIONS)->first(function ($operationClassName) use ($targetedTask) {
-            return $targetedTask === (new $operationClassName)->getShortName();
-        });
+        $taskFullType = TasksManager::findOperationTypeByShortName($targetedTask);
 
         $this->merge([
             'targetedTask'      => $targetedTask,

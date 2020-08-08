@@ -55,19 +55,6 @@ class Task extends Model
         ManagedDestroyTweetsOperation::class,
     ];
 
-    public const AVAILABLE_OPERATIONS = [
-        FetchLikesOperation::class,
-        FetchEntitiesLikesOperation::class,
-        FetchUserTweetsOperation::class,
-        FetchEntitiesUserTweetsOperation::class,
-        FetchFollowingOperation::class,
-        FetchFollowersOperation::class,
-        DestroyLikesOperation::class,
-        ManagedDestroyLikesOperation::class,
-        ManagedDestroyTweetsOperation::class,
-        DestroyTweetsOperation::class,
-    ];
-
     protected static function boot()
     {
         parent::boot();

@@ -73,9 +73,7 @@ class Task extends Model
         parent::boot();
 
         static::created(function (self $task) {
-            $operationClass = $task->type;
-
-            $operationInstance = (new $operationClass());
+            $operationInstance = (new $task->type());
 
             $operationInstance
                 ->setSocialUser($task->socialUser)

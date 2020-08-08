@@ -18,7 +18,7 @@
                 </a>
             </div>
             <small class="versionLabel">
-                {{config('app.version', '1.0.0-beta13')}}
+                {{config('app.version', 'x.x.x-x')}}
             </small>
         </div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#welcomeNavbar" aria-controls="welcomeNavbar" aria-expanded="false" aria-label="Toggle navigation">

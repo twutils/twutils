@@ -57,7 +57,7 @@ class MediaFile extends Model
             dispatch(new ProcessMediaFileJob($mediaFile));
         });
 
-        static::deleted(function (self $mediaFile) {
+        static::deleting(function (self $mediaFile) {
             if ($mediaFile->getStorageDisk()->exists($mediaFile->mediaPath))
             {
                 $mediaFile->getStorageDisk()->delete($mediaFile->mediaPath);

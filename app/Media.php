@@ -58,7 +58,7 @@ class Media extends Model
             dispatch(new ProcessMediaJob($media));
         });
 
-        static::deleted(function (self $media) {
+        static::deleting(function (self $media) {
             $media->mediaFiles->map->delete();
         });
     }

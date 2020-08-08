@@ -122,6 +122,7 @@ class Task extends Model
             Follower::where('task_id', $taskId)->delete();
 
             $task->managedTasks->map->delete();
+            $task->downloads->map->delete();
         });
 
         static::deleted(function (self $task) {

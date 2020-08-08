@@ -5,6 +5,7 @@ namespace App;
 use App\Jobs\ProcessDownloadJob;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class Download extends Model
 {
@@ -54,6 +55,13 @@ class Download extends Model
         static::saved(function (self $download) {
             dispatch(new ProcessDownloadJob($download));
         });
+
+        static::deleted(function (self $download) {
+            if ( static::getStorageDisk()->exists($download->id))
+            {
+                static::getStorageDisk()->delete($download->id);
+            }
+        });
     }
 
     public function task()
@@ -63,6 +71,11 @@ class Download extends Model
 
     public function toResponse()
     {
-        return Storage::disk(config('filesystems.cloud'))->response($this->id);
+        return static::getStorageDisk()->response($this->id);
+    }
+
+    public static function getStorageDisk(): FilesystemAdapter
+    {
+        return Storage::disk(config('filesystems.cloud'));
     }
 }

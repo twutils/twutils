@@ -116,6 +116,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertEquals('success', Download::first()->status);
         $this->assertEquals('success', Media::first()->status);
         $this->assertCount(2, Storage::disk(config('filesystems.tweetsMedia'))->allFiles(''));
+        $this->assertCount(3, Storage::disk(config('filesystems.cloud'))->allFiles(''));
         $this->assertTaskCount(1, 'completed');
 
         $this->assertZippedExists('1', [$tweet->id_str.'_1.jpeg', $tweet->id_str.'_2.jpeg']);
@@ -128,7 +129,9 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertCount(0, Media::all());
         $this->assertCount(0, MediaFile::all());
         $this->assertCount(0, Task::all());
+        $this->assertCount(0, Download::all());
         $this->assertCount(0, Storage::disk(config('filesystems.tweetsMedia'))->allFiles(''));
+        $this->assertCount(0, Storage::disk(config('filesystems.cloud'))->allFiles(''));
     }
 
     public function test_basic_save_gif()

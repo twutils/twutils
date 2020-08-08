@@ -31,7 +31,7 @@ class Tweet extends Model
             $tweet->initMedia();
         });
 
-        static::deleted(function (self $tweet) {
+        static::deleting(function (self $tweet) {
             $tweet->media->map->delete();
         });
     }

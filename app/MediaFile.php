@@ -35,26 +35,33 @@ class MediaFile extends Model
             $mediaFile->status = 'initial';
         });
 
-        static::updating(function (self $media) {
-            if (! array_key_exists('status', $media->getDirty())) {
+        static::updating(function (self $mediaFile) {
+            if (! array_key_exists('status', $mediaFile->getDirty())) {
                 return;
             }
 
-            if ($media->status === static::STATUS_STARTED) {
-                $media->started_at = now();
+            if ($mediaFile->status === static::STATUS_STARTED) {
+                $mediaFile->started_at = now();
             }
 
-            if ($media->status === static::STATUS_SUCCESS) {
-                $media->success_at = now();
+            if ($mediaFile->status === static::STATUS_SUCCESS) {
+                $mediaFile->success_at = now();
             }
 
-            if ($media->status === static::STATUS_BROKEN) {
-                $media->broken_at = now();
+            if ($mediaFile->status === static::STATUS_BROKEN) {
+                $mediaFile->broken_at = now();
             }
         });
 
-        static::saved(function (self $media) {
-            dispatch(new ProcessMediaFileJob($media));
+        static::saved(function (self $mediaFile) {
+            dispatch(new ProcessMediaFileJob($mediaFile));
+        });
+
+        static::deleted(function (self $mediaFile) {
+            if ($mediaFile->getStorageDisk()->exists($mediaFile->mediaPath))
+            {
+                $mediaFile->getStorageDisk()->delete($mediaFile->mediaPath);
+            }
         });
     }
 

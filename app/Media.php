@@ -57,6 +57,10 @@ class Media extends Model
         static::saved(function (self $media) {
             dispatch(new ProcessMediaJob($media));
         });
+
+        static::deleted(function (self $media) {
+            $media->mediaFiles->map->delete();
+        });
     }
 
     public function initMediaFiles()

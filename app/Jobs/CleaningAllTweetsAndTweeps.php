@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Tweet;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;
@@ -28,12 +29,12 @@ class CleaningAllTweetsAndTweeps implements ShouldQueue
         $followingsQuery = DB::table('followings')->select('tweep_id_str');
         $followersQuery = DB::table('followers')->select('tweep_id_str');
 
-        // TODO: Media for this removed tweets need to be cleaned
-        DB::table('tweets')
-            ->whereNotIn(
+        Tweet::whereNotIn(
                 'id_str',
                 $taskTweetQuery
             )
+            ->get()
+            ->map
             ->delete();
 
         $tweepsQuery = DB::table('tweeps')

@@ -104,6 +104,8 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
+        $lastJobIndex = count($this->dispatchedJobs);
+
         $this->assertLikesBelongsToTask();
         $this->assertCount(2, Tweet::first()->media);
         $this->assertCount(2, Media::all());
@@ -117,6 +119,16 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertTaskCount(1, 'completed');
 
         $this->assertZippedExists('1', [$tweet->id_str.'_1.jpeg', $tweet->id_str.'_2.jpeg']);
+
+        $this->deleteJson("api/tasks/1");
+
+        $this->fireJobsAndBindTwitter([], $lastJobIndex);
+
+        $this->assertCount(0, Tweet::all());
+        $this->assertCount(0, Media::all());
+        $this->assertCount(0, MediaFile::all());
+        $this->assertCount(0, Task::all());
+        $this->assertCount(0, Storage::disk(config('filesystems.tweetsMedia'))->allFiles(''));
     }
 
     public function test_basic_save_gif()

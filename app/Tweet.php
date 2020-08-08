@@ -30,6 +30,10 @@ class Tweet extends Model
         static::created(function (self $tweet) {
             $tweet->initMedia();
         });
+
+        static::deleted(function (self $tweet) {
+            $tweet->media->map->delete();
+        });
     }
 
     public function tweep()

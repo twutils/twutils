@@ -2,7 +2,6 @@
 
 namespace App\TwUtils;
 
-use App\Task;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyTweetsOperation;

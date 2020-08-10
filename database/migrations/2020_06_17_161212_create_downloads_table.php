@@ -18,6 +18,7 @@ class CreateDownloadsTable extends Migration
             $table->unsignedInteger('task_id');
             $table->string('type', 20); // 'html', 'excel', 'htmlEntities'
             $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
+            $table->string('filename')->nullable();
 
             $table->dateTime('started_at')->nullable();
             $table->dateTime('broken_at')->nullable();

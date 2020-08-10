@@ -26,6 +26,12 @@ class Download extends Model
     public const TYPE_EXCEL = 'excel';
     public const TYPE_HTMLENTITIES = 'htmlEntities';
 
+    public const EXTENSIONS = [
+        self::TYPE_EXCEL        => 'xlsx',
+        self::TYPE_HTML         => 'zip',
+        self::TYPE_HTMLENTITIES => 'zip',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -44,6 +50,17 @@ class Download extends Model
             }
 
             if ($download->status === static::STATUS_SUCCESS) {
+                $download->filename = implode('', [
+
+                    $download->task->socialUser->nickname,
+                    '-',
+                    $download->task->shortName,
+                    '-',
+                    $download->created_at->format('m-d-Y_hia'),
+                    '.',
+                    static::EXTENSIONS[$download->type],
+                ]);
+
                 $download->success_at = now();
             }
 
@@ -71,7 +88,7 @@ class Download extends Model
 
     public function toResponse()
     {
-        return static::getStorageDisk()->response($this->id);
+        return static::getStorageDisk()->response($this->id, $this->filename);
     }
 
     public static function getStorageDisk(): FilesystemAdapter

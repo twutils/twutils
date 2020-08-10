@@ -22,5 +22,7 @@ class LikesJobTest extends TweetsTaskTest
             'tweet_mode',
             'user_id',
         ];
+
+        $this->exportTaskShortName = 'backup-likes';
     }
 }

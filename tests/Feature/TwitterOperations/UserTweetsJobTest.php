@@ -25,5 +25,7 @@ class UserTweetsJobTest extends TweetsTaskTest
             'tweet_mode',
             'user_id',
         ];
+
+        $this->exportTaskShortName = 'backup-tweets';
     }
 }

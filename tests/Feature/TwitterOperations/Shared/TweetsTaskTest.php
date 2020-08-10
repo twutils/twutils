@@ -20,6 +20,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
     protected $jobName;
     protected $apiEndpoint;
     protected $twitterEndpoint;
+    protected $exportTaskShortName;
 
     public function test_basic_test()
     {
@@ -1098,6 +1099,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
     public function test_basic_export_tweets_excel()
     {
+        \Carbon\Carbon::setTestNow('1990-11-27');
+
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
@@ -1113,8 +1116,19 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->get('task/1/download/1');
         $response->assertStatus(200);
 
+
+        $response->assertHeader(
+            'content-disposition',
+            "inline; filename=any0-" . $this->exportTaskShortName . "-11-27-1990_1200am.zip",
+        );
+
         $response = $this->get('task/1/download/2');
         $response->assertStatus(200);
+
+        $response->assertHeader(
+            'content-disposition',
+            "inline; filename=any0-" . $this->exportTaskShortName . "-11-27-1990_1200am.xlsx",
+        );
 
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 
@@ -1156,6 +1170,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
     public function test_basic_export_tweets_html()
     {
+        \Carbon\Carbon::setTestNow('1990-11-27');
+
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
@@ -1171,6 +1187,11 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->actingAs(auth()->user(), 'web');
         $response = $this->get('task/1/download/1');
         $response->assertStatus(200);
+
+        $response->assertHeader(
+            'content-disposition',
+            "inline; filename=any0-" . $this->exportTaskShortName . "-11-27-1990_1200am.zip",
+        );
 
         $fileAsString = $response->streamedContent();
 

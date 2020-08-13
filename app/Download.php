@@ -61,6 +61,7 @@ class Download extends Model
                     static::EXTENSIONS[$download->type],
                 ]);
 
+                $download->size = static::getStorageDisk()->size($download->id);
                 $download->success_at = now();
             }
 

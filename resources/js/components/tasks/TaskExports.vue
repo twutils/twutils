@@ -31,9 +31,9 @@
         </div>
         <div :class="`btn-group float-${isRtl? 'left':'right'} ltr`">
             <task-export-button
-              :key="_export.id"
-              :export="_export"
-              v-for="_export in featuredExports"
+              :key="taskExport.id"
+              :taskExport="taskExport"
+              v-for="taskExport in featuredExports"
             ></task-export-button>
             <button
              type="button"

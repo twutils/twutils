@@ -1,7 +1,7 @@
 <style scoped>
 </style>
 <template>
-<a :href="`${window.TwUtils.baseUrl}task/${export.task_id}/export/..`" :class="`btn btn-outline-gray btn-sm d-flex justify-content-center align-items-center`" download target="_blank">
+<a :href="`${window.TwUtils.baseUrl}task/${taskExport.task_id}/export/..`" :class="`btn btn-outline-gray btn-sm d-flex justify-content-center align-items-center`" download target="_blank">
     <span class="oi" data-glyph="data-transfer-download"></span>
     <span class="sr-only">
     {{__('download')}}
@@ -19,7 +19,7 @@ export default {
   components: {
   },
   props: {
-    export: {
+    taskExport: {
       type: Object,
     },
   },

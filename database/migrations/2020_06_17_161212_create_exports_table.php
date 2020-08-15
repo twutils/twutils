@@ -19,7 +19,7 @@ class CreateExportsTable extends Migration
             $table->string('type', 20); // 'html', 'excel', 'htmlEntities'
             $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
             $table->string('filename')->nullable();
-            $table->integer('size')->nullable();
+            $table->unsignedInteger('size')->nullable();
 
             $table->dateTime('started_at')->nullable();
             $table->dateTime('broken_at')->nullable();

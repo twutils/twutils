@@ -16,16 +16,16 @@ export default {
   },
   props: {
     download: {
-        type: Object,
+      type: Object,
     },
   },
-  data() {
+  data () {
     return {
-      
+
     }
   },
-  mounted() {
-    
+  mounted () {
+
   },
   methods: {
   },

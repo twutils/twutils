@@ -58,31 +58,30 @@ export default {
   },
   props: {
     task: {
-        type: Object,
+      type: Object,
     },
     downloads: {
-        type: Array,
+      type: Array,
     },
   },
-  data() {
+  data () {
     return {
-      
+
     }
   },
-  mounted() {
-    
+  mounted () {
+
   },
   methods: {
   },
   computed: {
-    featuredDownloads() {
-        if (this.downloads.length <= 2)
-            return this.downloads
+    featuredDownloads () {
+      if (this.downloads.length <= 2) { return this.downloads }
 
-        return this.downloads
-               .filter(x => ['excel', 'htmlEntities'].includes(x.type))
-               .slice(-2)
-    }
+      return this.downloads
+        .filter(x => [`excel`, `htmlEntities`,].includes(x.type))
+        .slice(-2)
+    },
   },
 }
 </script>

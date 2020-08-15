@@ -112,8 +112,8 @@ class ProcessExportJob implements ShouldQueue
             ->load('media.mediaFiles')
             ->pluck('media.*.mediaFiles.*')
             ->map(function ($mediaFilesCollection) {
-                return collect($mediaFilesCollection)->map(function ($i) {
-                    if (in_array($i->status, [MediaFile::STATUS_STARTED, MediaFile::STATUS_INITIAL])) {
+                return collect($mediaFilesCollection)->map(function (MediaFile $mediaFile) {
+                    if (in_array($mediaFile->status, [MediaFile::STATUS_STARTED, MediaFile::STATUS_INITIAL])) {
                         $this->mediaFilesIsCompleted = false;
                     }
                 });

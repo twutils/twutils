@@ -6,7 +6,11 @@
     <span class="sr-only">
     {{__('download')}}
     </span>
-    <span :class="`oi float-${isRtl ? 'left' : 'right'} downloadType__icon--hint`" title="HTML" data-glyph="globe"></span>
+    <span
+      :class="`oi float-${isRtl ? 'left' : 'right'} downloadType__icon--hint`"
+      title="HTML"
+      data-glyph="globe"
+    ></span>
 </a>
 </template>
 <script>

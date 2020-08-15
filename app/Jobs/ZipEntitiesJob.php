@@ -61,20 +61,17 @@ class ZipEntitiesJob implements ShouldQueue
 
         $paths->map(function ($path) {
             if (Storage::disk('local')->exists($this->export->id.'/'.$path)) {
-                \Log::info('Skip Copying ['.$path.']');
 
                 return;
             }
 
             if (MediaFile::getCacheStorageDisk()->exists($path)) {
-                \Log::info('Copying from cache ['.$path.'] to: '.$this->export->id.'/'.$path);
 
                 Storage::disk('local')->put($this->export->id.'/'.$path, MediaFile::getCacheStorageDisk()->readStream($path));
 
                 return;
             }
 
-            \Log::info('Copying ['.$path.'] to: '.$this->export->id.'/'.$path);
 
             try {
                 Storage::disk('local')->put($this->export->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));

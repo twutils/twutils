@@ -37,14 +37,14 @@
                 :has-tooltip="true"
             ></from-now>
           </div>
-          <div class="d-flex flex-row flex-sm-column justify-content-between align-items-end" style="min-width: 60px;">
+          <div class="d-flex flex-row flex-sm-column justify-content-between align-items-end" style="min-width: 150px;">
             <button v-if="!isLocal && task.managed_by_task_id === null" @click="remove" class="btn btn-outline-danger btn-sm">
               <span class="oi" data-glyph="trash"></span>
               <span class="sr-only">
                 {{__('remove')}}
               </span>
             </button>
-            <task-downloads :task="task" v-if="!isLocal"></task-downloads>
+            <task-downloads :task="task" :downloads="task.downloads" v-if="!isLocal"></task-downloads>
           </div>
         </div>
       </div>

@@ -1,40 +1,67 @@
 <style scoped>
 </style>
 <template>
-  <div :class="`btn-group float-${isRtl? 'left':'right'} ltr`">
-    <a :href="`${window.TwUtils.baseUrl}task/${task.id}/download${isMediaTask(task) ? '/html' : ''}`" :class="`btn btn-outline-gray btn-sm d-flex justify-content-center align-items-center`" download target="_blank">
-      <span class="oi" data-glyph="data-transfer-download"></span>
-      <span class="sr-only">
-        {{__('download')}}
-      </span>
-      <span v-if="!isMediaTask(task)" :class="`oi float-${isRtl ? 'left' : 'right'} downloadType__icon--hint`" title="Excel" data-glyph="grid-three-up"></span>
-      <span v-if="isMediaTask(task)" :class="`oi float-${isRtl ? 'left' : 'right'} downloadType__icon--hint`" title="HTML" data-glyph="globe"></span>
-    </a>
-    <button type="button" class="btn btn-outline-gray dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fa fa-ellipsis-v"></i>
-      <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <div class="dropdown-menu dropdown-menu-right">
-      <a :href="`${window.TwUtils.baseUrl}task/${task.id}/download`" :class="`dropdown-item float-${isRtl? 'left':'right'} text-center`" download target="_blank">
-        Excel
-        <span class="oi float-right" data-glyph="grid-three-up"></span>
-      </a>
-      <div class="dropdown-divider"></div>
-      <a :href="`${window.TwUtils.baseUrl}task/${task.id}/download/html`" :class="`dropdown-item float-${isRtl? 'left':'right'} text-center`" download target="_blank">
-        HTML
-        <span class="oi float-right" data-glyph="globe"></span>
-      </a>
+    <div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="taskDownloads">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
+                  <h5 :class="`modal-title`">
+                    <span v-if="locale === 'en'">
+                      ({{__(task.type)}}) Exports
+                    </span>
+                    <span v-if="locale === 'ar'">
+                      تصديرات مهمة ({{__(task.type)}})
+                    </span>
+                  </h5>
+                  <button type="button" :class="`close m-0 p-1 ${isRtl ? 'mr-auto':'ml-auto'}`" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div :class="`modal-body ${isRtl ? 'rtl': 'ltr'}`">
+                  ....
+                </div>
+                <div :class="`modal-footer ${isRtl ? 'rtl': 'ltr'}`">
+                  <button type="button" class="btn btn-soft-gray" data-dismiss="modal">
+                    <span>{{__('close')}}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div :class="`btn-group float-${isRtl? 'left':'right'} ltr`">
+            <task-download-button
+              :key="download.id"
+              :download="download"
+              v-for="download in featuredDownloads"
+            ></task-download-button>
+            <button
+             type="button"
+             class="btn btn-outline-gray dropdown-toggle-split"
+             data-toggle="modal"
+             data-target="#taskDownloads"
+             aria-haspopup="true"
+             aria-expanded="false"
+            >
+              <i class="fa fa-ellipsis-v"></i>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+        </div>
     </div>
-  </div>
 </template>
 <script>
+import taskDownloadButton from '@/components/tasks/TaskDownloadButton'
 
 export default {
   components: {
+    taskDownloadButton,
   },
   props: {
     task: {
         type: Object,
+    },
+    downloads: {
+        type: Array,
     },
   },
   data() {
@@ -46,6 +73,16 @@ export default {
     
   },
   methods: {
+  },
+  computed: {
+    featuredDownloads() {
+        if (this.downloads.length <= 2)
+            return this.downloads
+
+        return this.downloads
+               .filter(x => ['excel', 'htmlEntities'].includes(x.type))
+               .slice(-2)
+    }
   },
 }
 </script>

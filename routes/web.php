@@ -42,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('revokeSocialUser/{socialUser}', 'AppController@revokeSocialUser')->name('revokeSocialUser');
     Route::post('deleteMe', 'AppController@deleteMe')->name('deleteMe');
     Route::get('cancelDeleteMe', 'AppController@cancelDeleteMe')->name('cancelDeleteMe');
-    Route::get('task/{task}/download/{download}', 'DownloadsController@show')->name('downloads.show');
+    Route::get('task/{task}/export/{export}', 'ExportsController@show')->name('exports.show');
 });
 
 Route::get('/{lang?}', 'AppController@switchLang')->name('switchLang');

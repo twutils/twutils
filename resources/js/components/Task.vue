@@ -44,7 +44,7 @@
                 {{__('remove')}}
               </span>
             </button>
-            <task-downloads :task="task" :downloads="task.downloads" v-if="!isLocal"></task-downloads>
+            <task-exports :task="task" :exports="task.exports" v-if="!isLocal"></task-exports>
           </div>
         </div>
       </div>
@@ -123,7 +123,7 @@ import taskFetchfollowers from '@/components/tasks/TaskFetchfollowers'
 import taskDestroylikes from '@/components/tasks/TaskDestroylikes'
 import taskDestroytweets from '@/components/tasks/TaskDestroytweets'
 import taskManagedtask from '@/components/tasks/TaskManagedtask'
-import taskDownloads from '@/components/tasks/TaskDownloads'
+import taskExports from '@/components/tasks/TaskExports'
 import EventBus from '../EventBus'
 import fromNow from './FromNow'
 import get from 'lodash/get'
@@ -141,7 +141,7 @@ export default {
     taskDestroylikes,
     taskDestroytweets,
     taskManagedtask,
-    taskDownloads,
+    taskExports,
   },
   data () {
     return {

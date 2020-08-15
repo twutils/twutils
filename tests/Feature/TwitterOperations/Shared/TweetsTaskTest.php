@@ -1113,7 +1113,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $response = $this->get('task/1/download/1');
+        $response = $this->get('task/1/export/1');
         $response->assertStatus(200);
 
 
@@ -1122,7 +1122,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             "inline; filename=any0-" . $this->exportTaskShortName . "-11-27-1990_1200am.zip",
         );
 
-        $response = $this->get('task/1/download/2');
+        $response = $this->get('task/1/export/2');
         $response->assertStatus(200);
 
         $response->assertHeader(
@@ -1185,7 +1185,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->fireJobsAndBindTwitter();
 
         $this->actingAs(auth()->user(), 'web');
-        $response = $this->get('task/1/download/1');
+        $response = $this->get('task/1/export/1');
         $response->assertStatus(200);
 
         $response->assertHeader(

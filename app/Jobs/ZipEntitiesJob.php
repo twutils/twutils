@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Download;
+use App\Export;
 use App\MediaFile;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
@@ -16,17 +16,17 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class ZipEntitiesJob implements ShouldQueue
 {
-    protected $download;
+    protected $export;
 
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    public function __construct(Download $download)
+    public function __construct(Export $export)
     {
-        $this->queue = 'downloads';
-        $this->download = $download;
+        $this->queue = 'exports';
+        $this->export = $export;
     }
 
     public function handle()
@@ -36,15 +36,15 @@ class ZipEntitiesJob implements ShouldQueue
         } catch (\Exception $e) {
             \Log::warning($e);
 
-            $this->download->status = 'broken';
-            $this->download->save();
+            $this->export->status = 'broken';
+            $this->export->save();
         }
     }
 
     protected function start()
     {
         $paths = collect();
-        $this->download
+        $this->export
             ->task
             ->likes
             ->load('media.mediaFiles')
@@ -57,40 +57,40 @@ class ZipEntitiesJob implements ShouldQueue
                 });
             });
 
-        Storage::disk('local')->makeDirectory($this->download->id);
+        Storage::disk('local')->makeDirectory($this->export->id);
 
         $paths->map(function ($path) {
-            if (Storage::disk('local')->exists($this->download->id.'/'.$path)) {
+            if (Storage::disk('local')->exists($this->export->id.'/'.$path)) {
                 \Log::info('Skip Copying ['.$path.']');
 
                 return;
             }
 
             if (MediaFile::getCacheStorageDisk()->exists($path)) {
-                \Log::info('Copying from cache ['.$path.'] to: '.$this->download->id.'/'.$path);
+                \Log::info('Copying from cache ['.$path.'] to: '.$this->export->id.'/'.$path);
 
-                Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getCacheStorageDisk()->readStream($path));
+                Storage::disk('local')->put($this->export->id.'/'.$path, MediaFile::getCacheStorageDisk()->readStream($path));
 
                 return;
             }
 
-            \Log::info('Copying ['.$path.'] to: '.$this->download->id.'/'.$path);
+            \Log::info('Copying ['.$path.'] to: '.$this->export->id.'/'.$path);
 
             try {
-                Storage::disk('local')->put($this->download->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));
+                Storage::disk('local')->put($this->export->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));
             } catch (\Exception $e) {
                 Log::warning($e);
             }
         });
 
-        $fileName = $this->download->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
+        $fileName = $this->export->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
 
-        $fileAbsolutePath = Storage::disk('local')->path($this->download->id).'/'.$fileName;
+        $fileAbsolutePath = Storage::disk('local')->path($this->export->id).'/'.$fileName;
 
-        $zipFile = ExportsManager::makeTaskZipObject($this->download->task);
+        $zipFile = ExportsManager::makeTaskZipObject($this->export->task);
 
         // Include media in the zip file, and save it
-        foreach (collect(Storage::disk('local')->allFiles($this->download->id))
+        foreach (collect(Storage::disk('local')->allFiles($this->export->id))
         ->chunk(5) as $filesChunk) {
             $filesChunk->map(function ($file) use (&$zipFile) {
                 $zipFile->addFile(Storage::disk('local')->path($file), 'media/'.Str::after($file, '/'));
@@ -103,14 +103,14 @@ class ZipEntitiesJob implements ShouldQueue
 
         $zippedStream = fopen($fileAbsolutePath, 'r');
 
-        Storage::disk(config('filesystems.cloud'))->put($this->download->id, $zippedStream);
+        Storage::disk(config('filesystems.cloud'))->put($this->export->id, $zippedStream);
 
         fclose($zippedStream);
 
-        Storage::disk('local')->deleteDirectory($this->download->id);
+        Storage::disk('local')->deleteDirectory($this->export->id);
 
-        $this->download->status = 'success';
+        $this->export->status = 'success';
 
-        $this->download->save();
+        $this->export->save();
     }
 }

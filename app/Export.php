@@ -2,12 +2,12 @@
 
 namespace App;
 
-use App\Jobs\ProcessDownloadJob;
+use App\Jobs\ProcessExportJob;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
 
-class Download extends Model
+class Export extends Model
 {
     protected $guarded = ['id'];
 
@@ -36,48 +36,48 @@ class Download extends Model
     {
         parent::boot();
 
-        static::creating(function (self $download) {
-            $download->status = 'initial';
+        static::creating(function (self $export) {
+            $export->status = 'initial';
         });
 
-        static::updating(function (self $download) {
-            if (! array_key_exists('status', $download->getDirty())) {
+        static::updating(function (self $export) {
+            if (! array_key_exists('status', $export->getDirty())) {
                 return;
             }
 
-            if ($download->status === static::STATUS_STARTED) {
-                $download->started_at = now();
+            if ($export->status === static::STATUS_STARTED) {
+                $export->started_at = now();
             }
 
-            if ($download->status === static::STATUS_SUCCESS) {
-                $download->filename = implode('', [
+            if ($export->status === static::STATUS_SUCCESS) {
+                $export->filename = implode('', [
 
-                    $download->task->socialUser->nickname,
+                    $export->task->socialUser->nickname,
                     '-',
-                    $download->task->shortName,
+                    $export->task->shortName,
                     '-',
-                    $download->created_at->format('m-d-Y_hia'),
+                    $export->created_at->format('m-d-Y_hia'),
                     '.',
-                    static::EXTENSIONS[$download->type],
+                    static::EXTENSIONS[$export->type],
                 ]);
 
-                $download->size = static::getStorageDisk()->size($download->id);
-                $download->success_at = now();
+                $export->size = static::getStorageDisk()->size($export->id);
+                $export->success_at = now();
             }
 
-            if ($download->status === static::STATUS_BROKEN) {
-                $download->broken_at = now();
+            if ($export->status === static::STATUS_BROKEN) {
+                $export->broken_at = now();
             }
         });
 
-        static::saved(function (self $download) {
-            dispatch(new ProcessDownloadJob($download));
+        static::saved(function (self $export) {
+            dispatch(new ProcessExportJob($export));
         });
 
-        static::deleted(function (self $download) {
-            if ( static::getStorageDisk()->exists($download->id))
+        static::deleted(function (self $export) {
+            if ( static::getStorageDisk()->exists($export->id))
             {
-                static::getStorageDisk()->delete($download->id);
+                static::getStorageDisk()->delete($export->id);
             }
         });
     }

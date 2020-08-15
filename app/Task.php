@@ -22,7 +22,7 @@ class Task extends Model
     protected $guarded = ['id'];
     protected $appends = ['baseName', 'removedCount', 'componentName'];
     protected $hidden = ['exception'];
-    protected $with = ['downloads'];
+    protected $with = ['exports'];
     protected $withCount = ['likes', 'followings', 'followers'];
     protected $casts = [
         'extra'             => 'array',
@@ -71,22 +71,22 @@ class Task extends Model
 
             $operationInstance->initJob();
 
-            Download::create([
+            Export::create([
                 'task_id' => $task->id,
-                'type'    => Download::TYPE_HTML,
+                'type'    => Export::TYPE_HTML,
             ]);
-            Download::create([
+            Export::create([
                 'task_id' => $task->id,
-                'type'    => Download::TYPE_EXCEL,
+                'type'    => Export::TYPE_EXCEL,
             ]);
 
             if (! in_array($task->type, static::TWEETS_LISTS_WITH_ENTITIES_TYPES)) {
                 return;
             }
 
-            Download::create([
+            Export::create([
                 'task_id' => $task->id,
-                'type'    => Download::TYPE_HTMLENTITIES,
+                'type'    => Export::TYPE_HTMLENTITIES,
             ]);
         });
 
@@ -95,9 +95,9 @@ class Task extends Model
                 $task->status === 'completed' &&
                 array_key_exists('status', $task->getDirty())
             ) {
-                $task->downloads->map(function (Download $download) {
-                    $download->status = 'started';
-                    $download->save();
+                $task->exports->map(function (Export $export) {
+                    $export->status = 'started';
+                    $export->save();
                 });
             }
         });
@@ -110,7 +110,7 @@ class Task extends Model
             Follower::where('task_id', $taskId)->delete();
 
             $task->managedTasks->map->delete();
-            $task->downloads->map->delete();
+            $task->exports->map->delete();
         });
 
         static::deleted(function (self $task) {
@@ -165,9 +165,9 @@ class Task extends Model
         return $this->belongsTo(SocialUser::class, 'socialuser_id', 'id');
     }
 
-    public function downloads()
+    public function exports()
     {
-        return $this->hasMany(Download::class, 'task_id', 'id');
+        return $this->hasMany(Export::class, 'task_id', 'id');
     }
 
     public function followings()

@@ -4,7 +4,7 @@ namespace App\TwUtils;
 
 use App\Task;
 use App\Tweep;
-use App\Download;
+use App\Export;
 use PhpZip\ZipFile;
 use Illuminate\Support\Facades\Storage;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
@@ -12,11 +12,11 @@ use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 
 class ExportsManager
 {
-    public static function createHtmlZip(Download $download): string
+    public static function createHtmlZip(Export $export): string
     {
-        $zipFile = static::makeTaskZipObject($download->task);
+        $zipFile = static::makeTaskZipObject($export->task);
 
-        $fileAbsolutePath = Storage::disk('local')->path($download->id);
+        $fileAbsolutePath = Storage::disk('local')->path($export->id);
 
         $zipFile
             ->saveAsFile($fileAbsolutePath)
@@ -24,9 +24,9 @@ class ExportsManager
 
         $zippedStream = fopen($fileAbsolutePath, 'r');
 
-        Storage::disk(config('filesystems.cloud'))->put($download->id, $zippedStream);
+        Storage::disk(config('filesystems.cloud'))->put($export->id, $zippedStream);
 
-        Storage::disk('local')->delete($download->id);
+        Storage::disk('local')->delete($export->id);
 
         return $fileAbsolutePath;
     }

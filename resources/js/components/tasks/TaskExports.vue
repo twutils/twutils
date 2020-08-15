@@ -2,7 +2,7 @@
 </style>
 <template>
     <div>
-        <div class="modal fade" tabindex="-1" role="dialog" id="taskDownloads">
+        <div class="modal fade" tabindex="-1" role="dialog" id="taskExports">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
                 <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
@@ -30,16 +30,16 @@
             </div>
         </div>
         <div :class="`btn-group float-${isRtl? 'left':'right'} ltr`">
-            <task-download-button
-              :key="download.id"
-              :download="download"
-              v-for="download in featuredDownloads"
-            ></task-download-button>
+            <task-export-button
+              :key="_export.id"
+              :export="_export"
+              v-for="_export in featuredExports"
+            ></task-export-button>
             <button
              type="button"
              class="btn btn-outline-gray dropdown-toggle-split"
              data-toggle="modal"
-             data-target="#taskDownloads"
+             data-target="#taskExports"
              aria-haspopup="true"
              aria-expanded="false"
             >
@@ -50,17 +50,17 @@
     </div>
 </template>
 <script>
-import taskDownloadButton from '@/components/tasks/TaskDownloadButton'
+import taskExportButton from '@/components/tasks/TaskExportButton'
 
 export default {
   components: {
-    taskDownloadButton,
+    taskExportButton,
   },
   props: {
     task: {
       type: Object,
     },
-    downloads: {
+    exports: {
       type: Array,
     },
   },
@@ -75,10 +75,10 @@ export default {
   methods: {
   },
   computed: {
-    featuredDownloads () {
-      if (this.downloads.length <= 2) { return this.downloads }
+    featuredExports () {
+      if (this.exports.length <= 2) { return this.exports }
 
-      return this.downloads
+      return this.exports
         .filter(x => [`excel`, `htmlEntities`,].includes(x.type))
         .slice(-2)
     },

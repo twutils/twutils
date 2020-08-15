@@ -6,7 +6,7 @@ use Config;
 use App\Task;
 use App\Media;
 use App\Tweet;
-use App\Download;
+use App\Export;
 use App\MediaFile;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
@@ -112,8 +112,8 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertCount(2, MediaFile::all());
         $this->assertCount(1, Media::find(1)->mediaFiles);
         $this->assertCount(1, Media::find(2)->mediaFiles);
-        $this->assertCount(3, Task::first()->downloads);
-        $this->assertEquals('success', Download::first()->status);
+        $this->assertCount(3, Task::first()->exports);
+        $this->assertEquals('success', Export::first()->status);
         $this->assertEquals('success', Media::first()->status);
         $this->assertCount(2, Storage::disk(config('filesystems.tweetsMedia'))->allFiles(''));
         $this->assertCount(3, Storage::disk(config('filesystems.cloud'))->allFiles(''));
@@ -129,7 +129,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertCount(0, Media::all());
         $this->assertCount(0, MediaFile::all());
         $this->assertCount(0, Task::all());
-        $this->assertCount(0, Download::all());
+        $this->assertCount(0, Export::all());
         $this->assertCount(0, Storage::disk(config('filesystems.tweetsMedia'))->allFiles(''));
         $this->assertCount(0, Storage::disk(config('filesystems.cloud'))->allFiles(''));
     }
@@ -182,7 +182,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertEquals($tweet->id_str.'_1.jpeg', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
         $this->assertEquals($tweet->id_str.'_2.mp4', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][1]['mediaPath']);
 
-        $response = $this->get('task/1/download/1');
+        $response = $this->get('task/1/export/1');
         $response->assertStatus(200);
 
         $fileAsString = $response->streamedContent();
@@ -297,7 +297,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertLikesBelongsToTask();
         $this->assertStringContainsString($expectedTweetsAttachmentsPaths, $likeEntitiesPaths);
         $this->assertStringContainsString($expectedSavedPaths, collect($this->getZippedFiles(3))->implode(','));
-        $this->assertEquals(['success', 'success', 'success'], Task::find(1)->downloads->pluck('status')->toArray());
+        $this->assertEquals(['success', 'success', 'success'], Task::find(1)->exports->pluck('status')->toArray());
     }
 
     public function test_do_nothing_with_regualr_tweets()
@@ -455,9 +455,9 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
     protected function assertZippedExists($taskId, $files)
     {
-        $downloadId = \App\Task::find($taskId)->downloads->where('type', Download::TYPE_HTMLENTITIES)->first()->id;
+        $exportId = \App\Task::find($taskId)->exports->where('type', Export::TYPE_HTMLENTITIES)->first()->id;
 
-        $zippedFilesList = $this->getZippedFiles($downloadId);
+        $zippedFilesList = $this->getZippedFiles($exportId);
 
         foreach ((array) $files as $file) {
             $this->assertContains('media/'.$file, $zippedFilesList);
@@ -472,10 +472,10 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         }
     }
 
-    protected function getZippedFiles($downloadId)
+    protected function getZippedFiles($exportId)
     {
         $disk = \Storage::disk(config('filesystems.cloud'));
-        $path = $disk->path($downloadId);
+        $path = $disk->path($exportId);
 
         $zipFile = new \PhpZip\ZipFile();
         $zipFile->openFile($path);

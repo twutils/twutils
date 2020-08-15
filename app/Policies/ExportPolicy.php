@@ -4,19 +4,19 @@ namespace App\Policies;
 
 use App\Task;
 use App\User;
-use App\Download;
+use App\Export;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class DownloadPolicy
+class ExportPolicy
 {
     use HandlesAuthorization;
 
-    public function view(User $user, Download $download, Task $task)
+    public function view(User $user, Export $export, Task $task)
     {
         if ($user->cannot('view', $task)) {
             return false;
         }
 
-        return $download->task_id === $task->id;
+        return $export->task_id === $task->id;
     }
 }

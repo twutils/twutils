@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Task;
-use App\Download;
+use App\Export;
 use App\MediaFile;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
@@ -14,9 +14,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ProcessDownloadJob implements ShouldQueue
+class ProcessExportJob implements ShouldQueue
 {
-    protected $download;
+    protected $export;
     protected $mediaFilesIsCompleted;
 
     use Dispatchable;
@@ -24,50 +24,50 @@ class ProcessDownloadJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(Download $download)
+    public function __construct(Export $export)
     {
-        $this->queue = 'downloads';
-        $this->download = $download;
+        $this->queue = 'exports';
+        $this->export = $export;
     }
 
     public function handle()
     {
-        if ($this->download->status !== Download::STATUS_STARTED) {
+        if ($this->export->status !== Export::STATUS_STARTED) {
             return;
         }
 
-        if ($this->download->type === Download::TYPE_HTML) {
-            $this->createHtmlDownload();
+        if ($this->export->type === Export::TYPE_HTML) {
+            $this->createHtmlExport();
         }
 
-        if ($this->download->type === Download::TYPE_EXCEL) {
-            $this->createExcelDownload();
+        if ($this->export->type === Export::TYPE_EXCEL) {
+            $this->createExcelExport();
         }
 
-        if ($this->download->type === Download::TYPE_HTMLENTITIES) {
-            $this->createHtmlEntitiesDownload();
+        if ($this->export->type === Export::TYPE_HTMLENTITIES) {
+            $this->createHtmlEntitiesExport();
         }
     }
 
     protected function success()
     {
-        $this->download->status = 'success';
-        $this->download->save();
+        $this->export->status = 'success';
+        $this->export->save();
     }
 
-    protected function createHtmlDownload()
+    protected function createHtmlExport()
     {
-        ExportsManager::createHtmlZip($this->download);
+        ExportsManager::createHtmlZip($this->export);
 
         $this->success();
     }
 
-    protected function createExcelDownload()
+    protected function createExcelExport()
     {
-        $task = $this->download->task;
+        $task = $this->export->task;
 
         if (in_array($task->type, Task::USERS_LISTS_TYPES)) {
-            return (new UsersListTaskExport($task))->store($this->download->id, config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX);
+            return (new UsersListTaskExport($task))->store($this->export->id, config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX);
         }
 
         $tweets = collect([]);
@@ -95,7 +95,7 @@ class ProcessDownloadJob implements ShouldQueue
 
         if (
             (new TweetsListExport($tweets))->store(
-                $this->download->id,
+                $this->export->id,
                 config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX
             )
         ) {
@@ -103,11 +103,11 @@ class ProcessDownloadJob implements ShouldQueue
         }
     }
 
-    protected function createHtmlEntitiesDownload()
+    protected function createHtmlEntitiesExport()
     {
         $this->mediaFilesIsCompleted = true;
 
-        $this->download->task
+        $this->export->task
             ->likes
             ->load('media.mediaFiles')
             ->pluck('media.*.mediaFiles.*')
@@ -120,9 +120,9 @@ class ProcessDownloadJob implements ShouldQueue
             });
 
         if (! $this->mediaFilesIsCompleted) {
-            return dispatch(new self($this->download))->delay(now()->addSeconds(10));
+            return dispatch(new self($this->export))->delay(now()->addSeconds(10));
         }
 
-        (new ZipEntitiesJob($this->download))->handle();
+        (new ZipEntitiesJob($this->export))->handle();
     }
 }

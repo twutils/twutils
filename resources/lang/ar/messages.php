@@ -83,6 +83,10 @@ return [
     'removedLikes'  => 'التغريدات المفضّلة المحذوفة',
     'removedTweets' => 'التغريدات المحذوفة',
 
+    'initial'                                                              => 'استعداد',
+    'started'                                                              => 'بدأت',
+    'success'                                                              => 'ناجحة',
+
     'download'                                                             => 'تحميل',
     'completed'                                                            => 'مكتملة',
     'staging'                                                              => 'تقريباً مكتملة',

@@ -51,7 +51,7 @@
         @endif
             @yield('content')
         </main>
-        <portal-target name="modal"></portal-target>
+        <portal-target name="modal" multiple></portal-target>
     </div>
     <div class="loading-gif">
         <span class="loading-gif-content"></span>

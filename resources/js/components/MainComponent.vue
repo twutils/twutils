@@ -17,7 +17,7 @@
     <transition :name="transitionName" mode="out-in">
       <router-view></router-view>
     </transition>
-    <portal-target v-if="env === 'test'" name="modal"></portal-target>
+    <portal-target v-if="env === 'test'" name="modal" multiple></portal-target>
   </div>
 </template>
 

@@ -104,6 +104,9 @@ export default {
 
       return false
     },
+    momentCalendar(date) {
+      return window.moment(date).calendar(null, {sameElse: 'YYYY-MMM-DD h:m A'})
+    },
   },
   computed: {
     intlFormat (vm) {

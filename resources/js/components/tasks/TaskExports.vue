@@ -2,6 +2,7 @@
 </style>
 <template>
     <div class="taskExports">
+      <portal to="modal">
         <div class="modal fade" tabindex="-1" role="dialog" id="taskExports">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
@@ -19,7 +20,7 @@
                   </button>
                 </div>
                 <div :class="`modal-body ${isRtl ? 'rtl': 'ltr'}`">
-                  ....
+                  <task-exports-details :exports="exports" :task="task"></task-exports-details>
                 </div>
                 <div :class="`modal-footer ${isRtl ? 'rtl': 'ltr'}`">
                   <button type="button" class="btn btn-soft-gray" data-dismiss="modal">
@@ -29,6 +30,7 @@
               </div>
             </div>
         </div>
+      </portal>
         <div :class="`btn-group float-${isRtl? 'left':'right'} ${isRtl ? 'rtl': 'ltr'}`">
             <task-export-button
               :key="taskExport.id"
@@ -51,11 +53,13 @@
 </template>
 <script>
 import taskExportButton from '@/components/tasks/TaskExportButton'
+import taskExportsDetails from '@/components/tasks/TaskExportsDetails'
 import EventBus from '@/EventBus'
 
 export default {
   components: {
     taskExportButton,
+    taskExportsDetails,
   },
   props: {
     task: {
@@ -67,12 +71,12 @@ export default {
   },
   data () {
     return {
-
+      systemExports: Object.keys(window.TwUtils.exports),
     }
   },
   mounted () {
     EventBus.listen('open-taskExports-modal', type => {
-      $(this.$el).find('#taskExports').modal('show')
+      $('#taskExports').modal('show')
     })
   },
   methods: {

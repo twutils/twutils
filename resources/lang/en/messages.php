@@ -83,6 +83,10 @@ return [
     'removedLikes'  => 'Removed Likes',
     'removedTweets' => 'Removed Tweets',
 
+    'initial'                                                              => 'Initial',
+    'started'                                                              => 'Started',
+    'success'                                                              => 'Success',
+
     'download'                                                             => 'Download',
     'completed'                                                            => 'Completed',
     'staging'                                                              => 'Staging',

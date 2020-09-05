@@ -4,12 +4,6 @@
   .task {
     background: rgba($body-background, 0.8);
   }
-  .downloadType__icon--hint {
-    position: absolute;
-    bottom: -1px;
-    font-size: 8px;
-    right: 2px;
-  }
 </style>
 <template>
   <div class="task task__container">

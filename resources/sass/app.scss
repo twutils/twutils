@@ -484,3 +484,85 @@ $tooltip-font-size: 12px;
   margin-left: unset;
   margin-right: -1.25rem;
 }
+
+.taskExports
+.taskExport__more {
+    width: calc(40px - 0.75rem + 3px);
+    height: 40px;
+    background: #e8e8e8;
+    border: 1px solid #ccc;
+    background: #e8e8e8;
+
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+
+    @at-root .locale-ar & {
+      border-top-left-radius: 50%;
+      border-bottom-left-radius: 50%;
+
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &:focus {
+      outline: 2px dotted #b1acac;
+    }
+}
+
+.taskExport__button {
+    border: 1px solid #ccc;
+    background: #e8e8e8;
+    height: 40px;
+    max-width: 150px;
+    position: relative;
+    padding: 0.25rem;
+}
+
+.taskExport__icon--type {
+    padding-right: 0.5rem;
+
+    @at-root .locale-ar & {
+      padding-right: 0;
+      padding-left: 0.5rem;
+    }
+}
+
+$taskExport-bg: darken(theme-color-level('success', $alert-bg-level), 10%);
+$taskExport-text: darken(theme-color('success'), 10%);
+
+.taskExport__button--success {
+    background: $taskExport-bg;
+    color: var(--taskExport-text);
+}
+
+.taskExport__fileSize {
+    position: absolute;
+    top: -28px;
+    font-size: 12px;
+    right: -1px;
+    color: var(--taskExport-text);
+    background: $taskExport-bg;
+    padding: 0.25rem;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+
+.taskExport__icon--status.taskExport__icon--status--success {}
+
+.taskExport__icon--status {
+    display: none;
+}
+
+.taskExport__desc {
+    font-size: 14px;
+}

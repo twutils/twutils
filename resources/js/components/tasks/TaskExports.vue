@@ -1,7 +1,7 @@
 <style scoped>
 </style>
 <template>
-    <div>
+    <div class="taskExports">
         <div class="modal fade" tabindex="-1" role="dialog" id="taskExports">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
@@ -29,7 +29,7 @@
               </div>
             </div>
         </div>
-        <div :class="`btn-group float-${isRtl? 'left':'right'} ltr`">
+        <div :class="`btn-group float-${isRtl? 'left':'right'} ${isRtl ? 'rtl': 'ltr'}`">
             <task-export-button
               :key="taskExport.id"
               :taskExport="taskExport"
@@ -37,7 +37,7 @@
             ></task-export-button>
             <button
              type="button"
-             class="btn btn-outline-gray dropdown-toggle-split"
+             class="taskExport__more"
              data-toggle="modal"
              data-target="#taskExports"
              aria-haspopup="true"
@@ -51,6 +51,7 @@
 </template>
 <script>
 import taskExportButton from '@/components/tasks/TaskExportButton'
+import EventBus from '@/EventBus'
 
 export default {
   components: {
@@ -70,7 +71,9 @@ export default {
     }
   },
   mounted () {
-
+    EventBus.listen('open-taskExports-modal', type => {
+      $(this.$el).find('#taskExports').modal('show')
+    })
   },
   methods: {
   },

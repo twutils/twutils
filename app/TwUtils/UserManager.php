@@ -53,6 +53,11 @@ class UserManager
             'langStore'  => __('messages'),
             'routes'     => ['twitter.rw.login' => route('twitter.rw.login')],
             'user'       => auth()->user() ? auth()->user()->load('socialUsers') : null,
+            'exports'    => [
+                'excel'         => \App\Export::TYPE_EXCEL,
+                'html'          => \App\Export::TYPE_HTML,
+                'htmlEntities'  => \App\Export::TYPE_HTMLENTITIES,
+            ],
         ];
     }
 

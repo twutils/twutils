@@ -7,7 +7,12 @@
 }
 
 .locale-ar {
+  .tooltip-inner {
+    direction: rtl;
+  }
+
   .popover-body {
+    direction: rtl;
     text-align: right;
   }
   .dropdown-item, .call-to-action {

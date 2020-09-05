@@ -168,4 +168,15 @@ return [
     'start_date'                  => 'Start Date',
     'end_date'                    => 'End Date',
     'removed'                     => 'Removed',
+
+    'exports'   => [
+        \App\Export::TYPE_EXCEL         => 'Excel',
+        \App\Export::TYPE_HTML          => 'HTML',
+        \App\Export::TYPE_HTMLENTITIES  => 'HTML & Media',
+    ],
+    'exports_desc'   => [
+        \App\Export::TYPE_EXCEL         => 'Excel File',
+        \App\Export::TYPE_HTML          => 'Zipped HTML',
+        \App\Export::TYPE_HTMLENTITIES  => 'Zipped HTML with Media',
+    ],
 ];

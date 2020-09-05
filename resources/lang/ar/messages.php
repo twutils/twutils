@@ -168,4 +168,15 @@ return [
     'start_date'                  => 'تاريخ البداية',
     'end_date'                    => 'تاريخ النهاية',
     'removed'                     => 'المحذوف',
+
+    'exports'   => [
+        \App\Export::TYPE_EXCEL         => 'إكسل',
+        \App\Export::TYPE_HTML          => 'HTML',
+        \App\Export::TYPE_HTMLENTITIES  => 'HTML مع الوسائط',
+    ],
+    'exports_desc'   => [
+        \App\Export::TYPE_EXCEL         => 'ملف إكسل',
+        \App\Export::TYPE_HTML          => 'ملف مضغوط HTML',
+        \App\Export::TYPE_HTMLENTITIES  => 'ملف مضغوط HTML مع الوسائط',
+    ],
 ];

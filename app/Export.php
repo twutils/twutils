@@ -56,7 +56,7 @@ class Export extends Model
                     '-',
                     $export->task->shortName,
                     '-',
-                    $export->created_at->format('m-d-Y_hia'),
+                    $export->created_at->format('Y-m-d_hia'),
                     '.',
                     static::EXTENSIONS[$export->type],
                 ]);

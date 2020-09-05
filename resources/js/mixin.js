@@ -14,6 +14,7 @@ export default {
   data () {
     return {
       window: window,
+      TwUtils: window.TwUtils,
       locale: window.TwUtils.locale,
       isRtl: window.TwUtils.locale === `ar`,
       routes: window.TwUtils.routes,

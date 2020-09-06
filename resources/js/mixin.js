@@ -112,5 +112,20 @@ export default {
     intlFormat (vm) {
       return number => new Intl.NumberFormat().format(number)
     },
+    getExportTypeIcon(vm) {
+      return exportType => {
+        if ([TwUtils.exports.excel].includes(exportType))
+        {
+          return 'grid-three-up'
+        }
+
+        if ([TwUtils.exports.html, TwUtils.exports.htmlEntities].includes(exportType))
+        {
+          return 'globe'
+        }
+
+        return 'data-transfer-download'
+      }
+    }
   },
 }

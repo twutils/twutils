@@ -19,6 +19,8 @@ class ProcessExportJob implements ShouldQueue
     protected $export;
     protected $mediaFilesIsCompleted;
 
+    public $deleteWhenMissingModels = true;
+
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;

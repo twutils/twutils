@@ -13,6 +13,8 @@ class ProcessMediaFileJob implements ShouldQueue
 {
     protected $mediaFile;
 
+    public $deleteWhenMissingModels = true;
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(MediaFile $mediaFile)

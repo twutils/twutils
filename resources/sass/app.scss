@@ -557,12 +557,6 @@ $taskExport-text: darken(theme-color('success'), 10%);
     border-bottom: none;
 }
 
-.taskExport__icon--status.taskExport__icon--status--success {}
-
-.taskExport__icon--status {
-    display: none;
-}
-
 .taskExport__desc {
     font-size: 14px;
 }
@@ -663,6 +657,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
 
 .taskExportsDetails td
 {
+    position: relative;
     padding: 0.5rem;
     padding-bottom: 2px;
     font-size: 0.8rem;
@@ -683,4 +678,11 @@ $taskExport-text: darken(theme-color('success'), 10%);
 
 .taskExportsDetails__notApplicable {
   filter: blur(2px);
+}
+
+.taskExportsDetails__typeIcon {
+    position: absolute;
+    top: 6px;
+    font-size: 20px;
+    color: #ccc;
 }

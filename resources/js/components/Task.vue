@@ -147,6 +147,10 @@ export default {
   mounted () {
     window.preventHideLoadingOnReady = true
 
+    EventBus.listen(`refresh-task`, routerData => {
+      this.$nextTick(this.fetchTask)
+    })
+
     EventBus.listen(`force-refresh-task`, routerData => {
       this.removing = false
       this.errors = []

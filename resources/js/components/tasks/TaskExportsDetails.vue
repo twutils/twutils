@@ -52,6 +52,10 @@
                 :rowspan="(systemExport.userExports.length == 0 ? [false] : systemExport.userExports).length"
                 v-if="index === 0"
               >
+                <span
+                  :class="`oi taskExportsDetails__typeIcon`"
+                  :data-glyph="getExportTypeIcon(systemExport.name)"
+                ></span>
                 <span class="taskExportsDetails__type">
                   {{__(`exports.${systemExport.name}`)}}
                 </span>

@@ -18,6 +18,8 @@ class ZipEntitiesJob implements ShouldQueue
 {
     protected $export;
 
+    public $deleteWhenMissingModels = true;
+
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;

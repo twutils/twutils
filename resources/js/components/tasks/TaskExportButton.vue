@@ -16,15 +16,8 @@
     </span>
     <span
       :class="`oi float-${isRtl ? 'left' : 'right'} taskExport__icon--type`"
-      v-if="[TwUtils.exports.excel].includes(taskExport.type)"
       :title="taskExport.filename"
-      data-glyph="grid-three-up"
-    ></span>
-    <span
-      :class="`oi float-${isRtl ? 'left' : 'right'} taskExport__icon--type`"
-      v-if="[TwUtils.exports.html, TwUtils.exports.htmlEntities].includes(taskExport.type)"
-      :title="taskExport.filename"
-      data-glyph="globe"
+      :data-glyph="getExportTypeIcon(taskExport.type)"
     ></span>
     <span class="taskExport__desc">
       {{__(`exports.${taskExport.type}`)}}
@@ -32,10 +25,6 @@
     <span v-if="taskExport.size && taskExport.size > 0" class="taskExport__fileSize">
       {{ filesize(taskExport.size, {round: 0}) }}
     </span>
-    <span
-      :class="`taskExport__icon--status taskExport__icon--status--${taskExport.status} oi`"
-      :data-glyph="`${taskExport.status === 'success' ? 'circle-check' : 'circle-x'}`"
-    ></span>
 </a>
 </template>
 <script>

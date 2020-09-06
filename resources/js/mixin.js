@@ -114,12 +114,12 @@ export default {
     },
     getExportTypeIcon(vm) {
       return exportType => {
-        if ([TwUtils.exports.excel].includes(exportType))
+        if ([window.TwUtils.exports.excel].includes(exportType))
         {
           return 'grid-three-up'
         }
 
-        if ([TwUtils.exports.html, TwUtils.exports.htmlEntities].includes(exportType))
+        if ([window.TwUtils.exports.html, window.TwUtils.exports.htmlEntities].includes(exportType))
         {
           return 'globe'
         }

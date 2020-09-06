@@ -56,6 +56,14 @@
                   :class="`oi taskExportsDetails__typeIcon`"
                   :data-glyph="getExportTypeIcon(systemExport.name)"
                 ></span>
+                <button
+                  @click="add(systemExport)"
+                  :disabled="! canAdd(systemExport.name)"
+                  type="button"
+                  :class="`taskExportsDetails__button btn btn-outline-${canAdd(systemExport.name) ? 'primary':'disabled disabled'}`"
+                >
+                  <span class="oi" data-glyph="plus"></span>
+                </button>
                 <span class="taskExportsDetails__type">
                   {{__(`exports.${systemExport.name}`)}}
                 </span>
@@ -215,12 +223,12 @@ export default {
     filesize,
     canAdd(exportType)
     {
-      if (exportType === 'htmlEntitites')
+      if (exportType === window.TwUtils.exports.htmlEntities)
       {
         return ! ['fetchfollowing', 'fetchfollowers',].includes(this.task.baseName)
       }
 
-      return false
+      return true
     },
     canDownload(userExport)
     {

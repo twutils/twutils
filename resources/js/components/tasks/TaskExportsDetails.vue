@@ -1,96 +1,18 @@
-<style scoped lang="scss">
-.taskExportsDetails
-{
-
-}
-.taskExportsDetails__type
-{
-  font-weight: 600;
-  display: block;
-  text-align: center;
-  font-size: 1rem;
-}
-
-.taskExportsDetails__typeDesc
-{
-  font-weight: 100;
-  font-size: 80%;
-  display: block;
-}
-.taskExportsDetails__date
-{padding-left: 1rem;margin-bottom: 0.5rem;}
-.taskExportsDetails__date--started
-{
-
-}
-.taskExportsDetails__date--_broken
-{
-
-}
-.taskExportsDetails__date--success
-{
-
-}
-.taskExportsDetails__filename
-{
-  border: 1px solid #eee;
-  display: block;
-  width: 100%;
-  font-size: 13px;
-  font-weight: 100;
-  padding: 8px;
-  word-break: break-all;
-  font-family: "Roboto Mono", monospace;
-}
-
-.taskExportsDetails__size
-{
-
-}
-
-.taskExportsDetails__row--excel
-{
-    background: linear-gradient(-45deg, #f3fff3, transparent);
-}
-.taskExportsDetails__row--html
-{
-    background: hsl(210 100% 98% / 1);
-}
-.taskExportsDetails__row--htmlEntities
-{
-    background: linear-gradient(45deg, hsl(12deg 100% 98%), hsl(208deg 100% 98%));
-}
-
-.taskExportsDetails td
-{
-    padding: 0.5rem;
-    padding-bottom: 2px;
-    font-size: 0.8rem;
-    vertical-align: middle;
-    min-width: 70px;
-    max-width: 200px;
-    height: 100px;
-}
-
-.taskExportsDetails__status
-{
-    display: block;
-    font-weight: 500;
-    font-size: 1rem;
-    box-shadow: 0 0 5px #dad7d7;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.taskExportsDetails__notApplicable {
-  filter: blur(2px);
-}
+<style>
 </style>
 <template>
 <div class="container taskExportsDetails">
   <div class="row">
     <div class="col-12">
       <table class="table">
+        <colgroup>
+          <col width="25%">
+          <col width="25%">
+          <col width="20%">
+          <col width="10%">
+          <col width="10%">
+          <col width="10%">
+        </colgroup>
         <thead class="thead-dark">
           <tr>
             <th>
@@ -106,7 +28,10 @@
               Size
             </th>
             <th>
-              Action
+              
+            </th>
+            <th>
+              
             </th>
           </tr>
         </thead>
@@ -114,10 +39,14 @@
           <tr
             v-for="systemExport in systemExports"
             :key="systemExport.name"
-            :class="`taskExportsDetails__row--${systemExport.name}`"
+            :class="[
+              'taskExportsDetails__row--' + systemExport.name,
+              selectedExportType === systemExport.name ? 'highlightBoxShadowThenLeave' : '',
+              ]"
           >
             <td
               :class="`${! systemExport.userExport && ! canAdd(systemExport.name) ? 'taskExportsDetails__notApplicable' : ''}`"
+              rowspan="1"
             >
               <span class="taskExportsDetails__type">
                 {{__(`exports.${systemExport.name}`)}}
@@ -130,35 +59,54 @@
               v-if="systemExport.userExport"
             >
               <td>
-                <span :class="`taskExportsDetails__status ${systemExport.userExport.status === 'success' ? 'border-success border' : ''}`">
-                  {{__(systemExport.userExport.status)}}
+                <div
+                  v-if="systemExport.userExport.created_at"
+                  class="taskExportsDetails__statusWrapper"
+                >
+                <span
+                  :class="`taskExportsDetails__status ${systemExport.userExport.status === 'initial' ? 'border-secondary border' : ''}`"
+                >
+                  Initial
                 </span>
+                  <div class="taskExportsDetails__date taskExportsDetails__date--started">
+                    {{ momentCalendar(systemExport.userExport.created_at) }}
+                  </div>
+                </div>
                 <div
                   v-if="systemExport.userExport.started_at"
+                  class="taskExportsDetails__statusWrapper"
                 >
-                  <span class="text-muted">
-                    Started at:
-                  </span>
+                <span
+                  :class="`taskExportsDetails__status ${systemExport.userExport.status === 'started' ? 'border-primary border' : ''}`"
+                >
+                  Started
+                </span>
                   <div class="taskExportsDetails__date taskExportsDetails__date--started">
                     {{ momentCalendar(systemExport.userExport.started_at) }}
                   </div>
                 </div>
                 <div
                   v-if="systemExport.userExport.broken_at"
+                  class="taskExportsDetails__statusWrapper"
                 >
-                  <span class="text-muted">
-                    Broken at:
-                  </span>
+                <span
+                  :class="`taskExportsDetails__status ${systemExport.userExport.status === 'broken' ? 'border-danger border' : ''}`"
+                >
+                  Broken
+                </span>
                   <div class="taskExportsDetails__date taskExportsDetails__date--_broken">
                     {{ momentCalendar(systemExport.userExport.broken_at) }}
                   </div>
                 </div>
                 <div
                   v-if="systemExport.userExport.success_at"
+                  class="taskExportsDetails__statusWrapper"
                 >
-                  <span class="text-muted">
-                    Success at:
-                  </span>
+                <span
+                  :class="`taskExportsDetails__status ${systemExport.userExport.status === 'success' ? 'border-success border' : ''}`"
+                >
+                  Success
+                </span>
                   <div class="taskExportsDetails__date taskExportsDetails__date--success">
                     {{ momentCalendar(systemExport.userExport.success_at) }}
                   </div>
@@ -190,7 +138,26 @@
               </td>
             </template>
             <td>
-              Action
+              <button
+                @click="download(systemExport)"
+                v-if="systemExport.userExport"
+                :disabled="! (systemExport.userExport && canDownload(systemExport.userExport))"
+                type="button"
+                :class="`btn btn-outline-${systemExport.userExport && canDownload(systemExport.userExport) ? 'primary':'disabled disabled'}`"
+              >
+                <i class="fa fa-download" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <button
+                @click="remove(systemExport)"
+                v-if="systemExport.userExport"
+                :disabled="! (systemExport.userExport && canRemove(systemExport.userExport))"
+                type="button"
+                :class="`btn btn-outline-${systemExport.userExport && canRemove(systemExport.userExport) ? 'danger':'disabled disabled'}`"
+              >
+                <span data-glyph="trash" class="oi"></span>
+              </button>              
             </td>
           </tr>
         </tbody>
@@ -208,6 +175,7 @@
 </div>
 </template>
 <script>
+import EventBus from '@/EventBus'
 import filesize from 'filesize'
 
 export default {
@@ -223,9 +191,13 @@ export default {
   },
   data () {
     return {
+      selectedExportType: '',
     }
   },
   mounted () {
+    EventBus.listen('open-taskExports-modal', type => {
+      this.selectedExportType = type
+    })
   },
   methods: {
     filesize,
@@ -237,7 +209,21 @@ export default {
       }
 
       return false
-    }
+    },
+    canDownload(userExport)
+    {
+      return userExport.status === 'success'
+    },
+    canRemove(userExport)
+    {
+      return true
+    },
+    download(systemExport) {
+      console.log('download')
+    },
+    remove(systemExport) {
+      console.log('remove')
+    },
   },
   computed: {
     systemExports() {

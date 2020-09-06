@@ -566,3 +566,113 @@ $taskExport-text: darken(theme-color('success'), 10%);
 .taskExport__desc {
     font-size: 14px;
 }
+
+.taskExportsDetails__statusWrapper {
+    border-top: 1px solid #dee2e6;
+    margin-top: 0rem;
+    padding-top: 7px;
+}
+
+.taskExportsDetails
+{
+
+}
+.taskExportsDetails__type
+{
+  font-weight: 600;
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.taskExportsDetails__typeDesc
+{
+  font-weight: 100;
+  font-size: 80%;
+  display: block;
+}
+.taskExportsDetails__date
+{
+  padding-left: 15px;
+  margin-bottom: 0.5rem;
+  font-size: 12px;
+  color: hsl(0 0% 67% / 1);
+  
+  @include media-breakpoint-down(sm) {
+    & {
+      padding-left: 1px;
+    }
+  }
+}
+
+.taskExportsDetails__date--started
+{
+
+}
+.taskExportsDetails__date--_broken
+{
+
+}
+.taskExportsDetails__date--success
+{
+
+}
+.taskExportsDetails__filename
+{
+  border: 1px solid #eee;
+  display: block;
+  width: 100%;
+  font-size: 13px;
+  font-weight: 100;
+  padding: 8px;
+  word-break: break-all;
+  font-family: "Roboto Mono", monospace;
+
+  @include media-breakpoint-down(sm) {
+    & {
+      font-size: 70%;
+    }
+  }
+}
+
+.taskExportsDetails__size
+{
+
+}
+
+.taskExportsDetails__row--excel
+{
+    background: linear-gradient(-45deg, #f3fff3, transparent);
+}
+.taskExportsDetails__row--html
+{
+    background: hsl(210 100% 98% / 1);
+}
+.taskExportsDetails__row--htmlEntities
+{
+    background: linear-gradient(45deg, hsl(12deg 100% 98%), hsl(208deg 100% 98%));
+}
+
+.taskExportsDetails td
+{
+    padding: 0.5rem;
+    padding-bottom: 2px;
+    font-size: 0.8rem;
+    vertical-align: middle;
+    max-width: 200px;
+    height: 100px;
+}
+
+.taskExportsDetails__status
+{
+    display: block;
+    font-weight: 500;
+    font-size: 1rem;
+    box-shadow: 0 0 5px #dad7d7;
+    text-align: center;
+    margin: 0;
+}
+
+.taskExportsDetails__notApplicable {
+  filter: blur(2px);
+}

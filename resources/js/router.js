@@ -5,7 +5,20 @@ import addTask from '@/components/TaskAdd'
 import EventBus from '@/EventBus'
 const router = new VueRouter({})
 
+let openModals = []
+
+$(document).on('shown.bs.modal', function(event) {
+   openModals.push(event.target)
+});
+
 router.beforeEach((to, from, next) => {
+
+  openModals.map(modal => {
+    $(modal).modal('hide')
+  })
+
+  openModals = []
+
   if (from.name === `task.show` && to.name === `task.show`) { EventBus.fire(`force-refresh-task`) }
 
   if (from.name === `task.show` || to.name === `task.show`) { EventBus.fire(`on-transition`) } else { EventBus.fire(`off-transition`) }

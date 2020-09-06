@@ -14,11 +14,15 @@
     <span class="sr-only">
     {{__('download')}}
     </span>
-    <span
-      :class="`oi float-${isRtl ? 'left' : 'right'} taskExport__icon--type`"
-      :title="taskExport.filename"
-      :data-glyph="getExportTypeIcon(taskExport.type)"
-    ></span>
+    <div class="taskExport__iconWrapper">
+      <span
+          v-for="(icon,index) in getExportTypeIcon(taskExport.type)"
+          :class="`oi float-${isRtl ? 'left' : 'right'} taskExport__icon taskExport__icon--type index-${index}`"
+          :title="taskExport.filename"
+          :key="taskExport.id + 'icon' + index"
+          :data-glyph="icon"
+      ></span>
+    </div>
     <span class="taskExport__desc">
       {{__(`exports.${taskExport.type}`)}}
     </span>

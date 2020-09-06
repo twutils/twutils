@@ -116,15 +116,20 @@ export default {
       return exportType => {
         if ([window.TwUtils.exports.excel].includes(exportType))
         {
-          return 'grid-three-up'
+          return ['grid-three-up']
         }
 
-        if ([window.TwUtils.exports.html, window.TwUtils.exports.htmlEntities].includes(exportType))
+        if ([window.TwUtils.exports.html].includes(exportType))
         {
-          return 'globe'
+          return ['globe']
         }
 
-        return 'data-transfer-download'
+        if ([window.TwUtils.exports.htmlEntities].includes(exportType))
+        {
+          return ['globe', 'image']
+        }
+
+        return ['data-transfer-download']
       }
     }
   },

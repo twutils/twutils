@@ -52,10 +52,14 @@
                 :rowspan="(systemExport.userExports.length == 0 ? [false] : systemExport.userExports).length"
                 v-if="index === 0"
               >
-                <span
-                  :class="`oi taskExportsDetails__typeIcon`"
-                  :data-glyph="getExportTypeIcon(systemExport.name)"
-                ></span>
+                <div class="taskExport__iconWrapper">
+                  <span
+                    v-for="(icon,index) in getExportTypeIcon(systemExport.name)"
+                    :class="`oi taskExport__icon taskExportsDetails__typeIcon index-${index}`"
+                    :key="systemExport.name + 'icon' + index"
+                    :data-glyph="icon"
+                  ></span>
+                </div>
                 <button
                   @click="add(systemExport)"
                   :disabled="! canAdd(systemExport.name)"

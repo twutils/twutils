@@ -619,14 +619,19 @@ $taskExport-text: darken(theme-color('success'), 10%);
 }
 .taskExportsDetails__filename
 {
+  direction: ltr;
+  text-align: left;
+
   border: 1px solid #eee;
   display: block;
   width: 100%;
   font-size: 13px;
-  font-weight: 100;
+  font-weight: 300;
   padding: 8px;
   word-break: break-all;
   font-family: "Roboto Mono", monospace;
+  color: #333;
+  background: white;
 
   @include media-breakpoint-down(sm) {
     & {
@@ -637,6 +642,9 @@ $taskExport-text: darken(theme-color('success'), 10%);
 
 .taskExportsDetails__size
 {
+  direction: ltr;
+  text-align: left;
+
 
 }
 

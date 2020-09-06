@@ -85,7 +85,7 @@ return [
 
     'initial'                                                              => 'استعداد',
     'started'                                                              => 'بدأت',
-    'success'                                                              => 'ناجحة',
+    'success'                                                              => 'نجحت',
 
     'download'                                                             => 'تحميل',
     'completed'                                                            => 'مكتملة',

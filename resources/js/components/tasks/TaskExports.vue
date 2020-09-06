@@ -55,6 +55,7 @@
 import taskExportButton from '@/components/tasks/TaskExportButton'
 import taskExportsDetails from '@/components/tasks/TaskExportsDetails'
 import EventBus from '@/EventBus'
+import maxBy from 'lodash/maxBy'
 
 export default {
   components: {
@@ -85,8 +86,11 @@ export default {
     featuredExports () {
       if (this.exports.length <= 2) { return this.exports }
 
-      return this.exports
-        .filter(x => [`excel`, `htmlEntities`,].includes(x.type))
+      return [`html`, `excel`, `htmlEntities`,]
+        .map(exportType => {
+          return maxBy(this.exports.filter(x => x.type === exportType), 'id')
+        })
+        .filter(x => x)
         .slice(-2)
     },
   },

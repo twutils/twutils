@@ -39,16 +39,18 @@
           <template
             v-for="systemExport in systemExports"
           >
-            <tr
-              :key="systemExport.name"
-              :class="[
-                'taskExportsDetails__row--' + systemExport.name,
-                selectedExportType === systemExport.name ? 'highlightBoxShadowThenLeave' : '',
-                ]"
+          <tr
+            v-for="(userExport, index) in (systemExport.userExports.length == 0 ? [false] : systemExport.userExports)"
+            :key="systemExport.name + index"
+            :class="[
+              'taskExportsDetails__row--' + systemExport.name,
+              selectedExportType === systemExport.name ? 'highlightBoxShadowThenLeave' : '',
+              ]"
             >
               <td
-                :class="`${! systemExport.userExport && ! canAdd(systemExport.name) ? 'taskExportsDetails__notApplicable' : ''}`"
-                rowspan="1"
+                :class="`${! userExport && ! canAdd(systemExport.name) ? 'taskExportsDetails__notApplicable' : ''}`"
+                :rowspan="(systemExport.userExports.length == 0 ? [false] : systemExport.userExports).length"
+                v-if="index === 0"
               >
                 <span class="taskExportsDetails__type">
                   {{__(`exports.${systemExport.name}`)}}
@@ -58,79 +60,82 @@
                 </span>
               </td>
               <template
-                v-if="systemExport.userExport"
+                v-if="userExport"
               >
                 <td>
                   <div
-                    v-if="systemExport.userExport.created_at"
+                    v-if="userExport.created_at"
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${systemExport.userExport.status === 'initial' ? 'border-secondary border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'border-secondary border' : ''}`"
                   >
-                    Initial
+                    {{__('initial')}}
                   </span>
                     <div class="taskExportsDetails__date taskExportsDetails__date--started">
-                      {{ momentCalendar(systemExport.userExport.created_at) }}
+                      {{ momentCalendar(userExport.created_at) }}
                     </div>
                   </div>
                   <div
-                    v-if="systemExport.userExport.started_at"
+                    v-if="userExport.started_at"
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${systemExport.userExport.status === 'started' ? 'border-primary border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'started' ? 'border-primary border' : ''}`"
                   >
-                    Started
+                    {{__('started')}}
                   </span>
                     <div class="taskExportsDetails__date taskExportsDetails__date--started">
-                      {{ momentCalendar(systemExport.userExport.started_at) }}
+                      {{ momentCalendar(userExport.started_at) }}
                     </div>
                   </div>
                   <div
-                    v-if="systemExport.userExport.broken_at"
+                    v-if="userExport.broken_at"
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${systemExport.userExport.status === 'broken' ? 'border-danger border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'border-danger border' : ''}`"
                   >
-                    Broken
+                    {{__('broken')}}
                   </span>
                     <div class="taskExportsDetails__date taskExportsDetails__date--_broken">
-                      {{ momentCalendar(systemExport.userExport.broken_at) }}
+                      {{ momentCalendar(userExport.broken_at) }}
                     </div>
                   </div>
                   <div
-                    v-if="systemExport.userExport.success_at"
+                    v-if="userExport.success_at"
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${systemExport.userExport.status === 'success' ? 'border-success border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'border-success border' : ''}`"
                   >
-                    Success
+                    {{__('success')}}
                   </span>
                     <div class="taskExportsDetails__date taskExportsDetails__date--success">
-                      {{ momentCalendar(systemExport.userExport.success_at) }}
+                      {{ momentCalendar(userExport.success_at) }}
                     </div>
                   </div>
                 </td>
                 <td>
-                  <span
+                  <div class="text-muted text-left dir-ltr">
+                    #{{userExport.id}}
+                  </div>
+                  <code
                     class="taskExportsDetails__filename"
                   >
-                    {{systemExport.userExport.filename}}
-                  </span>
+                    {{userExport.filename}}
+                  </code>
                 </td>
                 <td>
                   <span
                     class="taskExportsDetails__size"
                   >
-                    {{ filesize(systemExport.userExport.size, {round: 0}) }}
+                    {{ filesize(userExport.size, {round: 0}) }}
                   </span>
                 </td>
               </template>
               <template
-                v-if="! systemExport.userExport"
+                v-if="! userExport"
               >
                 <td
                   :class="`taskExportsDetails__notExist ${canAdd(systemExport.name) ? '' : 'taskExportsDetails__notApplicable'}`"
@@ -142,10 +147,10 @@
               <td>
                 <button
                   @click="download(systemExport)"
-                  v-if="systemExport.userExport"
-                  :disabled="! (systemExport.userExport && canDownload(systemExport.userExport))"
+                  v-if="userExport"
+                  :disabled="! (userExport && canDownload(userExport))"
                   type="button"
-                  :class="`btn btn-outline-${systemExport.userExport && canDownload(systemExport.userExport) ? 'primary':'disabled disabled'}`"
+                  :class="`btn btn-outline-${userExport && canDownload(userExport) ? 'primary':'disabled disabled'}`"
                 >
                   <i class="fa fa-download" aria-hidden="true"></i>
                 </button>
@@ -153,15 +158,15 @@
               <td>
                 <button
                   @click="remove(systemExport)"
-                  v-if="systemExport.userExport"
-                  :disabled="! (systemExport.userExport && canRemove(systemExport.userExport))"
+                  v-if="userExport"
+                  :disabled="! (userExport && canRemove(userExport))"
                   type="button"
-                  :class="`btn btn-outline-${systemExport.userExport && canRemove(systemExport.userExport) ? 'danger':'disabled disabled'}`"
+                  :class="`btn btn-outline-${userExport && canRemove(userExport) ? 'danger':'disabled disabled'}`"
                 >
                   <span data-glyph="trash" class="oi"></span>
                 </button>              
               </td>
-            </tr>          
+          </tr>
           </template>
         </tbody>
       </table>
@@ -234,7 +239,7 @@ export default {
         .map(x => {
           return {
             name: x,
-            userExport: this.exports.find(y => y.type === x)
+            userExports: this.exports.filter(y => y.type === x)
           }
         })
     },

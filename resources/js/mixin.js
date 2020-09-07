@@ -126,7 +126,7 @@ export default {
 
         if ([window.TwUtils.exports.htmlEntities].includes(exportType))
         {
-          return ['globe', 'image']
+          return ['image']
         }
 
         return ['data-transfer-download']

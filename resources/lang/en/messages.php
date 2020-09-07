@@ -134,6 +134,7 @@ return [
     'loading_destroy_tweets' => 'Destroy Tweets, waiting for response',
     'ongoing_destroy_tweets' => 'There is ongoing task already for cleaning your Tweets, please wait until it\'s completed..',
 
+    'create' => 'Create',
     'close' => 'Close',
 
     'name'    => 'Name',

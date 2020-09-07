@@ -51,29 +51,33 @@
                 :class="`${! userExport && ! canAdd(systemExport.name) ? 'taskExportsDetails__notApplicable' : ''}`"
                 :rowspan="(systemExport.userExports.length == 0 ? [false] : systemExport.userExports).length"
                 v-if="index === 0"
+                style="vertical-align: top;"
               >
-                <div class="taskExport__iconWrapper">
-                  <span
-                    v-for="(icon,index) in getExportTypeIcon(systemExport.name)"
-                    :class="`oi taskExport__icon taskExportsDetails__typeIcon index-${index}`"
-                    :key="systemExport.name + 'icon' + index"
-                    :data-glyph="icon"
-                  ></span>
+                <div class="taskExport__typeContainer">
+                  <div class="taskExport__iconWrapper">
+                    <span
+                      v-for="(icon,index) in getExportTypeIcon(systemExport.name)"
+                      :class="`oi taskExport__icon taskExportsDetails__typeIcon index-${index}`"
+                      :key="systemExport.name + 'icon' + index"
+                      :data-glyph="icon"
+                    ></span>
+                    <span class="taskExportsDetails__type">
+                      {{__(`exports.${systemExport.name}`)}}
+                    </span>
+                  </div>
+                  <span class="taskExportsDetails__typeDesc">
+                    {{__(`exports_desc.${systemExport.name}`)}}
+                  </span>
+                  <button
+                    @click="add(systemExport)"
+                    :disabled="! canAdd(systemExport.name)"
+                    type="button"
+                    :class="`taskExportsDetails__button btn btn-outline-${canAdd(systemExport.name) ? 'primary':'disabled disabled'}`"
+                  >
+                    <span class="oi" data-glyph="plus"></span>
+                    {{__('create')}}
+                  </button>
                 </div>
-                <button
-                  @click="add(systemExport)"
-                  :disabled="! canAdd(systemExport.name)"
-                  type="button"
-                  :class="`taskExportsDetails__button btn btn-outline-${canAdd(systemExport.name) ? 'primary':'disabled disabled'}`"
-                >
-                  <span class="oi" data-glyph="plus"></span>
-                </button>
-                <span class="taskExportsDetails__type">
-                  {{__(`exports.${systemExport.name}`)}}
-                </span>
-                <span class="taskExportsDetails__typeDesc">
-                  {{__(`exports_desc.${systemExport.name}`)}}
-                </span>
               </td>
               <template
                 v-if="userExport"
@@ -84,7 +88,7 @@
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'border-secondary border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'current bg-secondary' : ''}`"
                   >
                     {{__('initial')}}
                   </span>
@@ -97,7 +101,7 @@
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${userExport.status === 'started' ? 'border-primary border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'started' ? 'current bg-primary' : ''}`"
                   >
                     {{__('started')}}
                   </span>
@@ -110,7 +114,7 @@
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'border-danger border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'current bg-danger' : ''}`"
                   >
                     {{__('broken')}}
                   </span>
@@ -123,7 +127,7 @@
                     class="taskExportsDetails__statusWrapper"
                   >
                   <span
-                    :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'border-success border' : ''}`"
+                    :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'current bg-success' : ''}`"
                   >
                     {{__('success')}}
                   </span>
@@ -247,6 +251,9 @@ export default {
     },
     remove(systemExport) {
       console.log('remove')
+    },
+    add(systemExport) {
+      console.log('add')
     },
   },
   computed: {

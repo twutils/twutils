@@ -27,6 +27,9 @@ Route::middleware('auth:api', 'throttle:100,1')->group(function () {
     Route::get('tasks/{task}/managedTasks', 'Api\TasksController@getManagedTasks')->name('tasks.getManagedTasks');
     Route::delete('tasks/{task}', 'Api\TasksController@delete')->name('tasks.delete');
 
+    Route::post('exports/{task}/{exportType}', 'Api\ExportsController@add')->name('exports.add');
+    Route::delete('exports/{export}', 'Api\ExportsController@delete')->name('exports.delete');
+
     Route::post('{any}/{task?}', 'Api\TasksController@create')->name('tasks.create');
     Route::get('{any}/{task?}', 'Api\TasksController@create')->name('tasks.getCreate');
 });

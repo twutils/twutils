@@ -19,4 +19,22 @@ class ExportPolicy
 
         return $export->task_id === $task->id;
     }
+
+    public function delete(User $user, Export $export)
+    {
+        return $user->can('view', [$export, $export->task]);
+    }
+
+    public function add(User $user, Task $task, $exportType)
+    {
+        if ($user->cannot('view', $task)) {
+            return false;
+        }
+
+        if ($exportType === Export::TYPE_HTMLENTITIES && in_array($task->type, Task::USERS_LISTS_TYPES)) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -148,7 +148,7 @@ export default {
     window.preventHideLoadingOnReady = true
 
     EventBus.listen(`refresh-task`, routerData => {
-      this.$nextTick(this.fetchTask)
+      this.$nextTick(x => this.fetchTask(x => this.hideLoading, {hideLoading: true}))
     })
 
     EventBus.listen(`force-refresh-task`, routerData => {
@@ -183,12 +183,21 @@ export default {
           return this.errors.push(`There is an error removing this task`)
         })
     },
-    fetchTask () {
-      this.showLoading()
+    fetchTask (callback = null, options = {}) {
+      if ( ! options.hideLoading )
+      {
+        this.showLoading()
+      }
+
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.id}`)
         .then((response) => {
           this.task = response.data
           this.tooltip()
+
+          if (callback)
+          {
+            callback()
+          }
         })
     },
   },

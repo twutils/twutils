@@ -4,7 +4,7 @@
     <div class="taskExports">
       <portal to="modal">
         <div class="modal fade" tabindex="-1" role="dialog" id="taskExports">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog modal-xl" role="document">
               <div class="modal-content">
                 <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
                   <h5 :class="`modal-title`">
@@ -78,6 +78,20 @@ export default {
   mounted () {
     EventBus.listen('open-taskExports-modal', type => {
       $('#taskExports').modal('show')
+    })
+
+    let refreshInterval = null
+
+    this.$nextTick(x => {
+      $('#taskExports').on('shown.bs.modal', () => {
+        refreshInterval = setInterval(x => {
+          EventBus.fire('refresh-task')
+        }, 5000)
+      })
+
+      $('#taskExports').on('hidden.bs.modal', () => {
+        clearInterval(refreshInterval)
+      })
     })
   },
   methods: {

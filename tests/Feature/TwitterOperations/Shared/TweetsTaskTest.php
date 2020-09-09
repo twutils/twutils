@@ -1119,7 +1119,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $response->assertHeader(
             'content-disposition',
-            "inline; filename=any0-" . $this->exportTaskShortName . "-11-27-1990_1200am.zip",
+            "inline; filename=any0-" . $this->exportTaskShortName . "-1990-11-27_1200am.zip",
         );
 
         $response = $this->get('task/1/export/2');
@@ -1127,7 +1127,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $response->assertHeader(
             'content-disposition',
-            "inline; filename=any0-" . $this->exportTaskShortName . "-11-27-1990_1200am.xlsx",
+            "inline; filename=any0-" . $this->exportTaskShortName . "-1990-11-27_1200am.xlsx",
         );
 
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
@@ -1190,7 +1190,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $response->assertHeader(
             'content-disposition',
-            "inline; filename=any0-" . $this->exportTaskShortName . "-11-27-1990_1200am.zip",
+            "inline; filename=any0-" . $this->exportTaskShortName . "-1990-11-27_1200am.zip",
         );
 
         $fileAsString = $response->streamedContent();

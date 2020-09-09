@@ -48,6 +48,7 @@ return [
     'startTask' => 'Start..',
 
     'confirmDeleteMe' => 'Are you sure you want to delete your account? This action cannot be undone',
+    'confirmRemoveExport' => 'Are you sure you want to remove this export?',
 
     'goto_home' => 'Start using it..',
     'features'  => 'Features',
@@ -134,6 +135,7 @@ return [
     'loading_destroy_tweets' => 'Destroy Tweets, waiting for response',
     'ongoing_destroy_tweets' => 'There is ongoing task already for cleaning your Tweets, please wait until it\'s completed..',
 
+    'start' => 'Start',
     'create' => 'Create',
     'close' => 'Close',
 

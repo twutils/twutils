@@ -4,7 +4,7 @@
 <div class="container taskExportsDetails">
   <div class="row">
     <div class="col-12">
-      <table class="table">
+      <table class="table table-responsive">
         <colgroup>
           <col width="25%">
           <col width="25%">
@@ -164,9 +164,11 @@
                   Doesn't exist
                 </td>
               </template>
-              <td>
+              <td
+                v-if="!(userExport && confirmRemoveMode === userExport.id)"
+              >
                 <button
-                  @click="download(systemExport)"
+                  @click="download(userExport)"
                   v-if="userExport"
                   :disabled="! (userExport && canDownload(userExport))"
                   type="button"
@@ -175,16 +177,39 @@
                   <i class="fa fa-download" aria-hidden="true"></i>
                 </button>
               </td>
-              <td>
+              <td
+                :colspan="userExport && confirmRemoveMode === userExport.id ? 2 : 1"
+              >
+                <template
+                  v-if="userExport && confirmRemoveMode === userExport.id"
+                >
+                  <span>
+                    {{__('confirmRemoveExport')}}
+                  </span>
+                  <button
+                    @click="confirmRemoveMode = false"
+                    type="button"
+                    :class="`btn btn-outline-primary`"
+                  >
+                    {{__('cancel')}}
+                  </button>
+                  <button
+                    @click="doRemove(userExport)"
+                    type="button"
+                    :class="`btn btn-outline-danger`"
+                  >
+                    {{__('remove')}}
+                  </button>
+                </template>
                 <button
-                  @click="remove(systemExport)"
-                  v-if="userExport"
+                  @click="remove(userExport)"
+                  v-if="userExport && confirmRemoveMode !== userExport.id"
                   :disabled="! (userExport && canRemove(userExport))"
                   type="button"
                   :class="`btn btn-outline-${userExport && canRemove(userExport) ? 'danger':'disabled disabled'}`"
                 >
                   <span data-glyph="trash" class="oi"></span>
-                </button>              
+                </button>
               </td>
           </tr>
           </template>
@@ -220,6 +245,7 @@ export default {
   data () {
     return {
       selectedExportType: '',
+      confirmRemoveMode: false,
     }
   },
   mounted () {
@@ -246,14 +272,28 @@ export default {
     {
       return true
     },
-    download(systemExport) {
-      console.log('download')
-    },
-    remove(systemExport) {
-      console.log('remove')
-    },
     add(systemExport) {
-      console.log('add')
+      axios.post(
+        `${window.TwUtils.apiBaseUrl}exports/${this.task.id}/${systemExport.name}`,
+        {
+          type: systemExport.name,
+        }
+      )
+      .then(response => {
+        EventBus.fire('refresh-task')
+      })
+    },
+    download(userExport) {
+      window.location.href = `${window.TwUtils.baseUrl}task/${userExport.task_id}/export/${userExport.id}`
+    },
+    remove(userExport) {
+      this.confirmRemoveMode = userExport.id
+    },
+    doRemove(userExport) {
+      axios.delete(`${window.TwUtils.apiBaseUrl}exports/${userExport.id}`)
+      .then(response => {
+        EventBus.fire('refresh-task')
+      })
     },
   },
   computed: {

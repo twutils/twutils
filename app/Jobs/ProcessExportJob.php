@@ -69,7 +69,16 @@ class ProcessExportJob implements ShouldQueue
         $task = $this->export->task;
 
         if (in_array($task->type, Task::USERS_LISTS_TYPES)) {
-            return (new UsersListTaskExport($task))->store($this->export->id, config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX);
+            if (
+                (new UsersListTaskExport($task))->store(
+                    $this->export->id,
+                    config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX
+                )
+            ) {
+                $this->success();
+            }
+
+            return ;
         }
 
         $tweets = collect([]);

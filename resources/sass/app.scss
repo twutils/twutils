@@ -666,12 +666,14 @@ $taskExport-text: darken(theme-color('success'), 10%);
     padding-bottom: 2px;
     font-size: 0.8rem;
     vertical-align: middle;
-    max-width: 200px;
     height: 100px;
 }
 
 .taskExportsDetails__status
 {
+    max-width: 160px;
+    margin: auto;
+
   &.current {
     font-size: 1rem;
   }

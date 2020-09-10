@@ -148,7 +148,12 @@ export default {
     window.preventHideLoadingOnReady = true
 
     EventBus.listen(`refresh-task`, routerData => {
-      this.$nextTick(x => this.fetchTask(x => this.hideLoading, {hideLoading: true}))
+      this.$nextTick(x => this.fetchTask(x => {
+        if (typeof routerData === 'function')
+        {
+          routerData()
+        }
+      }, {hideLoading: true}))
     })
 
     EventBus.listen(`force-refresh-task`, routerData => {

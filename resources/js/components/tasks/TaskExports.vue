@@ -80,17 +80,25 @@ export default {
       $('#taskExports').modal('show')
     })
 
-    let refreshInterval = null
+    let shouldRefresh = true
+
+    let refreshTask = () => {
+      if ( ! shouldRefresh)
+        return false;
+
+      setTimeout(function () {
+        EventBus.fire('refresh-task', refreshTask)
+      }, 5000)
+    }
 
     this.$nextTick(x => {
       $('#taskExports').on('shown.bs.modal', () => {
-        refreshInterval = setInterval(x => {
-          EventBus.fire('refresh-task')
-        }, 5000)
+        shouldRefresh = true
+        refreshTask()
       })
 
       $('#taskExports').on('hidden.bs.modal', () => {
-        clearInterval(refreshInterval)
+        shouldRefresh = false
       })
     })
   },

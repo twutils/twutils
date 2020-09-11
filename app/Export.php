@@ -81,6 +81,16 @@ class Export extends Model
         });
 
         static::saved(function (self $export) {
+            $dirtyKeys = array_keys($export->getDirty());
+
+            if (
+                in_array('progress', $dirtyKeys) ||
+                in_array('progress_end', $dirtyKeys)
+            )
+            {
+                return ;
+            }
+
             dispatch(new ProcessExportJob($export));
         });
 

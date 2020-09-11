@@ -142,7 +142,9 @@ class ProcessExportJob implements ShouldQueue
                         $this->mediaFilesIsCompleted = false;
                     }
 
-                    $this->export->progress +=1;
+                    if (in_array($mediaFile->status, [MediaFile::STATUS_SUCCESS])) {
+                        $this->export->progress +=1;
+                    }
                 });
             });
 

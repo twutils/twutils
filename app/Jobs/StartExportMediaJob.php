@@ -33,9 +33,17 @@ class StartExportMediaJob implements ShouldQueue
             ->filter(fn (Tweet $tweet) => AssetsManager::hasMedia($tweet))
             ->values();
 
-        $totalTweets = $tweetsWithMedia->count();
+        $mediaFiles = $this->export->task->fresh()
+            ->tweets()
+            ->with('media.mediaFiles')
+            ->get()
+            ->pluck('media.*.mediaFiles.*')
+            ->map(function ($mediaFiles) {
+                return count($mediaFiles);
+            })
+            ->sum();
 
-        $this->export->progress_end = $totalTweets;
+        $this->export->progress_end = $mediaFiles;
         $this->export->save();
 
         $tweetsWithMedia->map(function ($tweet) {

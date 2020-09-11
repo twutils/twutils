@@ -111,5 +111,6 @@ class ZipEntitiesJob implements ShouldQueue
         $this->export->status = 'success';
 
         $this->export->save();
+
     }
 }

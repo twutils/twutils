@@ -5,7 +5,9 @@ namespace App\TwUtils\TwitterOperations;
 use App\Task;
 use App\Media;
 use App\Tweet;
+use App\Export;
 use App\TwUtils\AssetsManager;
+use App\Jobs\StartExportMediaJob;
 use App\Jobs\FetchEntitiesLikesJob;
 
 class FetchEntitiesLikesOperation extends FetchLikesOperation
@@ -23,21 +25,16 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
             return false;
         }
 
+        $entitiesExport = $this->task->exports()->where('type', Export::TYPE_HTMLENTITIES)->first();
+
+        if ($entitiesExport)
+        {
+            dispatch(new StartExportMediaJob($entitiesExport));
+        }
+
         $shouldBuild = $response->count() >= config('twutils.minimum_expected_likes');
 
         if (! $shouldBuild) {
-            $tweetsWithMedia = $this->task->tweets
-                ->filter(fn (Tweet $tweet) => AssetsManager::hasMedia($tweet))
-                ->values();
-
-            $totalTweets = $tweetsWithMedia->count();
-
-            $tweetsWithMedia->map(function ($tweet) {
-                $tweet->media->map(function (Media $media) {
-                    $media->status = Media::STATUS_STARTED;
-                    $media->save();
-                });
-            });
 
             $this->setCompletedTask($this->task);
         }

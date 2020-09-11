@@ -3,11 +3,14 @@
 namespace App\Jobs;
 
 use App\Task;
+use App\Tweet;
 use App\Export;
 use App\MediaFile;
 use Illuminate\Bus\Queueable;
+use App\TwUtils\AssetsManager;
 use App\TwUtils\ExportsManager;
 use App\Exports\TweetsListExport;
+use App\Jobs\StartExportMediaJob;
 use App\Exports\UsersListTaskExport;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -34,6 +37,14 @@ class ProcessExportJob implements ShouldQueue
 
     public function handle()
     {
+        $this->export = $this->export->fresh();
+        if (
+            $this->export->type === Export::TYPE_HTMLENTITIES &&
+            in_array($this->export->status, [Export::STATUS_INITIAL, Export::STATUS_STARTED])
+        ) {
+            dispatch(new StartExportMediaJob($this->export));
+        }
+
         if ($this->export->status !== Export::STATUS_STARTED) {
             return;
         }
@@ -118,7 +129,10 @@ class ProcessExportJob implements ShouldQueue
     {
         $this->mediaFilesIsCompleted = true;
 
+        $this->export->progress = 0;
+
         $this->export->task
+            ->fresh()
             ->likes
             ->load('media.mediaFiles')
             ->pluck('media.*.mediaFiles.*')
@@ -127,11 +141,15 @@ class ProcessExportJob implements ShouldQueue
                     if (in_array($mediaFile->status, [MediaFile::STATUS_STARTED, MediaFile::STATUS_INITIAL])) {
                         $this->mediaFilesIsCompleted = false;
                     }
+
+                    $this->export->progress +=1;
                 });
             });
 
+        $this->export->save();
+
         if (! $this->mediaFilesIsCompleted) {
-            return dispatch(new self($this->export))->delay(now()->addSeconds(10));
+            return dispatch(new self($this->export))->delay(now()->addSeconds(5));
         }
 
         (new ZipEntitiesJob($this->export))->handle();

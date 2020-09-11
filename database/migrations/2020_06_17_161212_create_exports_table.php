@@ -25,6 +25,9 @@ class CreateExportsTable extends Migration
             $table->dateTime('broken_at')->nullable();
             $table->dateTime('success_at')->nullable();
 
+            $table->unsignedInteger('progress')->nullable();
+            $table->unsignedInteger('progress_end')->nullable();
+
             $table->timestamps();
 
             $table->foreign('task_id')

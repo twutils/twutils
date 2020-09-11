@@ -28,22 +28,6 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
         dispatch(new FetchEntitiesLikesJob($parameters, $this->socialUser, $this->task))->delay($nextJobDelay);
     }
 
-    public function initJob()
-    {
-        $disks = [];
-
-        foreach ($disks as $disk) {
-            if (! $disk->exists($this->task->id)) {
-                $disk->makeDirectory($this->task->id);
-            }
-        }
-    }
-
-    protected function afterCompletedTask(Task $task)
-    {
-        parent::afterCompletedTask($task);
-    }
-
     public function dispatch()
     {
         $parameters = $this->buildParameters();

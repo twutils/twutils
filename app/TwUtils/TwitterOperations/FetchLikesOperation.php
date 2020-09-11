@@ -4,11 +4,13 @@ namespace App\TwUtils\TwitterOperations;
 
 use App\Task;
 use App\Tweet;
+use App\Export;
 use App\TaskTweet;
 use Carbon\Carbon;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
+use App\Jobs\StartExportMediaJob;
 use App\TwUtils\Tasks\Validators\DateValidator;
 
 class FetchLikesOperation extends TwitterOperation
@@ -40,6 +42,14 @@ class FetchLikesOperation extends TwitterOperation
 
         if ($this->task->status != 'queued') {
             return false;
+        }
+
+        if ($this->downloadTweetsWithMedia)
+        {
+            if ($entitiesExport = $this->task->exports()->where('type', Export::TYPE_HTMLENTITIES)->first())
+            {
+                dispatch(new StartExportMediaJob($entitiesExport));
+            }
         }
 
         $shouldBuild = $response->count() >= config('twutils.minimum_expected_likes');

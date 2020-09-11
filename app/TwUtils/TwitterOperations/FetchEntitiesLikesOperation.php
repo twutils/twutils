@@ -15,33 +15,6 @@ class FetchEntitiesLikesOperation extends FetchLikesOperation
     protected $shortName = 'EntitiesLikes';
     protected $downloadTweetsWithMedia = true;
 
-    protected function shouldBuildNextJob()
-    {
-        $response = collect($this->response);
-
-        $this->task = $this->task->fresh();
-
-        if ($this->task->status != 'queued') {
-            return false;
-        }
-
-        $entitiesExport = $this->task->exports()->where('type', Export::TYPE_HTMLENTITIES)->first();
-
-        if ($entitiesExport)
-        {
-            dispatch(new StartExportMediaJob($entitiesExport));
-        }
-
-        $shouldBuild = $response->count() >= config('twutils.minimum_expected_likes');
-
-        if (! $shouldBuild) {
-
-            $this->setCompletedTask($this->task);
-        }
-
-        return $shouldBuild;
-    }
-
     protected function buildNextJob()
     {
         $nextJobDelay = $this->data['nextJobDelay'];

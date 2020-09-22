@@ -6,6 +6,8 @@
 
 @section('head_end')
 <script>
+    window.TwUtils.export = @json($export, JSON_HEX_APOS)
+
     window.TwUtils.tasks = []
 
     @foreach($tasks as $key => $task)

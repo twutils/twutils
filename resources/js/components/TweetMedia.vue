@@ -64,6 +64,8 @@ export default {
     }
   },
   mounted () {
+    this.isLocal = this.isLocal && window.TwUtils.export.type === window.TwUtils.exports.htmlEntities
+
     if ([`video`, `animated_gif`].includes(this.media.type))
     {
       this.setVideoSrcAttributes()

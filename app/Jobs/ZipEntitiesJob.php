@@ -86,7 +86,7 @@ class ZipEntitiesJob implements ShouldQueue
 
         $fileAbsolutePath = Storage::disk('local')->path($this->export->id).'/'.$fileName;
 
-        $zipFile = ExportsManager::makeTaskZipObject($this->export->task);
+        $zipFile = ExportsManager::makeTaskZipObject($this->export);
 
         // Include media in the zip file, and save it
         foreach (collect(Storage::disk('local')->allFiles($this->export->id))

@@ -14,7 +14,7 @@ class ExportsManager
 {
     public static function createHtmlZip(Export $export): string
     {
-        $zipFile = static::makeTaskZipObject($export->task);
+        $zipFile = static::makeTaskZipObject($export);
 
         $fileAbsolutePath = Storage::disk('local')->path($export->id);
 
@@ -31,15 +31,17 @@ class ExportsManager
         return $fileAbsolutePath;
     }
 
-    public static function makeTaskZipObject(Task $task): ZipFile
+    public static function makeTaskZipObject(Export $export): ZipFile
     {
+        $task = $export->task;
+
         $zipFile = new \PhpZip\ZipFile();
 
         $taskId = $task->id;
 
         $task = $task->load('likes', 'followings', 'followings.tweep', 'followers', 'followers.tweep');
 
-        $taskData = ['tasks' => [$task], 'isLocal' => true];
+        $taskData = ['tasks' => [$task], 'isLocal' => true, 'export' => $export->fresh()->toArray()];
 
         if (in_array($task->type, [ManagedDestroyLikesOperation::class, ManagedDestroyTweetsOperation::class])) {
             $taskData['managedTasks'] = Task::with('likes', 'followings', 'followings.tweep', 'followers', 'followers.tweep')

@@ -120,7 +120,7 @@
                         {{ momentCalendar(userExport.started_at) }}
                       </div>
                       <div
-                        v-if="userExport.progress_end && userExport.type === TwUtils.exports.htmlEntities"
+                        v-if="userExport.progress !== userExport.progress_end && userExport.progress_end && userExport.type === TwUtils.exports.htmlEntities"
                         class="progress"
                       >
                         <div
@@ -257,6 +257,9 @@ import EventBus from '@/EventBus'
 import filesize from 'filesize'
 
 export default {
+  beforeDestroy() {
+    EventBus.$off('refresh-task')
+  },
   components: {
   },
   props: {

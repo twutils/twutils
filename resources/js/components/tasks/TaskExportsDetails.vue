@@ -119,6 +119,19 @@
                       <div class="taskExportsDetails__date taskExportsDetails__date--started">
                         {{ momentCalendar(userExport.started_at) }}
                       </div>
+                      <div
+                        v-if="userExport.progress_end && userExport.type === TwUtils.exports.htmlEntities"
+                        class="progress"
+                      >
+                        <div
+                          class="progress-bar progress-bar-striped bg-info"
+                          role="progressbar"
+                          :style="`width: ${(userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress) * 100 / userExport.progress_end}%`"
+                          :aria-valuenow="userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress"
+                          aria-valuemin="0"
+                          :aria-valuemax="userExport.progress_end"
+                        ></div>
+                      </div>
                     </div>
                     <div
                       v-if="userExport.broken_at"

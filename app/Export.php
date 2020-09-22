@@ -16,6 +16,8 @@ class Export extends Model
         'task_id' => 'int',
         'started_at' => 'datetime',
         'success_at' => 'datetime',
+        'progress' => 'int',
+        'progress_end' => 'int',
     ];
 
     public const STATUS_INITIAL = 'initial';
@@ -84,6 +86,7 @@ class Export extends Model
             $dirtyKeys = array_keys($export->getDirty());
 
             if (
+                empty($dirtyKeys) ||
                 in_array('progress', $dirtyKeys) ||
                 in_array('progress_end', $dirtyKeys)
             )

@@ -82,7 +82,7 @@ class ZipEntitiesJob implements ShouldQueue
             }
         });
 
-        $fileName = $this->export->task->socialUser->nickname.'_'.date('d-m-Y_H-i-s').'.zip';
+        $fileName = $this->export->id .'.zip';
 
         $fileAbsolutePath = Storage::disk('local')->path($this->export->id).'/'.$fileName;
 
@@ -100,7 +100,7 @@ class ZipEntitiesJob implements ShouldQueue
         ->saveAsFile($fileAbsolutePath)
         ->close();
 
-        $zippedStream = fopen($fileAbsolutePath, 'r');
+        $zippedStream = fopen($fileAbsolutePath, 'rb');
 
         Storage::disk(config('filesystems.cloud'))->put($this->export->id, $zippedStream);
 
@@ -109,8 +109,12 @@ class ZipEntitiesJob implements ShouldQueue
         Storage::disk('local')->deleteDirectory($this->export->id);
 
         $this->export->status = 'success';
+        $this->export->progress = $this->export->progress_end;
 
-        $this->export->save();
-
+        // Check export wasn't removed while processing..
+        if ($this->export->fresh())
+        {
+            $this->export->save();
+        }
     }
 }

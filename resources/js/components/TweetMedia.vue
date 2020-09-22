@@ -3,34 +3,29 @@
 </style>
 <template>
   <div>
-    <div class="d-flex flex-column" v-if="videoVariants.length > 0 && !isChild && isLocal && get(tweet, videoSrcArrayPath)">
-      <video :width="width" :height="height" :poster="localVideoPoster" :src="localVideoSrc" controls preload>
-        <source :src="localVideoSrc">
-      </video>
-      <a :href="localVideoSrc" target="_blank" download>
-        Download
-      </a>
-    </div>
-    <div class="d-flex flex-column" v-if="videoVariants.length > 0 && !isLocal">
-      <video :width="width" :height="height" :poster="media.media_url_https" :src="videoDownloadUrl" controls preload>
-        <source v-for="source in videoVariants" :src="source.url" :type="source.content_type">
-      </video>
-      <a :href="videoDownloadUrl" target="_blank" download>
-        Download
-      </a>
-    </div>
     <a
-      v-if="media.type !== 'video'"
+      v-if="media.type === 'photo'"
       data-toggle="lightbox"
       data-type="image"
       :data-title="`@${tweet.tweep.screen_name}`"
-      :data-footer="`<a href='${imgSrc}' download target='_blank'>Download</a><span class='tweetImageCaption__text text-${isRtlText(tweet.text) ? 'right dir-rtl' : 'left'}'>${tweet.text}</span>`"
+      :data-footer="`<a href='${imgSrc}' download target='_blank'>${__('download')}</a><span class='tweetImageCaption__text text-${isRtlText(tweet.text) ? 'right dir-rtl' : 'left'}'>${tweet.text}</span>`"
       :data-gallery="tweet.id_str"
       :href="imgSrc"
       target="_blank"
     >
       <img style="max-width: 150px; width: 150px;" class="tweetImage__thumb" :src="`${imgSrc}${isLocal ? '' : ':thumb'}`" :alt="tweet.text">
     </a>
+    <div
+      v-if="[`video`, `animated_gif`].includes(media.type)"
+      class="d-flex flex-column"
+    >
+      <video :width="width" :height="height" :poster="imgSrc" controls preload="metadata" :autoplay="media.type === `animated_gif`">
+        <source v-for="source in videoVariants" :src="source.url" :type="source.content_type">
+      </video>
+      <a :href="videoDownloadUrl" target="_blank" download>
+        Download
+      </a>
+    </div>
   </div>
 </template>
 
@@ -38,7 +33,8 @@
 import get from 'lodash/get'
 import maxBy from 'lodash/maxBy'
 
-const videoSrcArrayPath = `pivot.attachments.paths[0][1]`
+const mime = require('mime/lite');
+
 
 export default {
   props: {
@@ -61,59 +57,76 @@ export default {
   },
   data () {
     return {
-      get,
-      videoSrcArrayPath,
-      imageSrcArrayPath: ``,
       videoVariants: [],
-      videoDownloadUrl: `#`,
+      videoDownloadUrl: '#',
+      width: 150,
+      height: 150,
     }
   },
   mounted () {
-    this.imageSrcArrayPath = `pivot.attachments.paths[${this.index}][0]`
+    if ([`video`, `animated_gif`].includes(this.media.type))
+    {
+      this.setVideoSrcAttributes()
+      this.setVideoDimensionsAttributes()
+    }
+  },
+  methods: {
+    setVideoSrcAttributes() {
+      if (this.isLocal)
+      {
+        let media = this.media.media_files[1]
+        this.videoVariants = [
+          {
+            url: `media/` + media.mediaPath,
+            content_type: mime.getType(media.extension),
+          }
+        ]
 
-    if (this.media.type === `video` && this.media.video_info) {
-      this.videoVariants = this.media.video_info.variants.reverse()
+        this.videoDownloadUrl = this.videoVariants[0].url
+
+        return ;
+      }
+
+      this.videoVariants = get(this.media.raw, 'video_info.variants') || []
 
       const maxBitrate = maxBy(this.videoVariants, `bitrate`)
 
-      if (maxBitrate != null) { this.videoDownloadUrl = maxBitrate.url } else { this.videoDownloadUrl = this.videoVariants[0].url }
+      if (maxBitrate != null)
+      {
+        this.videoDownloadUrl = maxBitrate.url
+      } else {
+        this.videoDownloadUrl = this.videoVariants[0].url
+      }
+    },
+    setVideoDimensionsAttributes() {
+      const aspectRatio = get(this.media.raw, 'video_info.aspect_ratio')
+
+      if (! aspectRatio)
+        return ;
+
+      const [width, height, ] = aspectRatio
+
+      if (width > height) {
+        this.width = 300
+        this.height = (height * 300) / (width)
+      } else {
+        this.width = (width * 300) / (height)
+        this.height = 300
+      }
     }
   },
   computed: {
-    localVideoPoster () {
-      if (!get(this.tweet, this.imageSrcArrayPath)) { return null }
-
-      return `media/` + get(this.tweet, this.imageSrcArrayPath)
-    },
-    localVideoSrc () {
-      if (!get(this.tweet, videoSrcArrayPath)) { return null }
-
-      return `media/` + get(this.tweet, videoSrcArrayPath)
-    },
     imgSrc () {
-      if (this.media.type === `video`) { return null }
+      if (
+        !this.isChild &&
+        this.isLocal &&
+        this.media.media_files[0].mediaPath
+      )
+      {
+        return `media/` + this.media.media_files[0].mediaPath
+      }
 
-      if (!this.isChild && this.isLocal && this.media.type === `photo` && get(this.tweet, this.imageSrcArrayPath)) { return `media/` + get(this.tweet, this.imageSrcArrayPath) }
-
-      return this.media.media_url_https
-    },
-    width () {
-      if (this.media.type !== `video` || !this.media.video_info || !this.media.video_info.aspect_ratio) { return 150 }
-
-      const [width, height, ] = this.media.video_info.aspect_ratio
-
-      if (width > height) { return 300 }
-
-      return (width * 300) / (height)
-    },
-    height () {
-      if (this.media.type !== `video` || !this.media.video_info || !this.media.video_info.aspect_ratio) { return 150 }
-
-      const [width, height, ] = this.media.video_info.aspect_ratio
-
-      if (height > width) { return 300 }
-
-      return (height * 300) / (width)
+      return this.media.raw.media_url_https
     },
   },
 }

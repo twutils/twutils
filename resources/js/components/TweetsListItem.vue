@@ -34,8 +34,8 @@
           </div>
             <div class="col-12 col-md-12 text-center">
               <div :class="`tweetText text-${isRtlText(refinedTweet.text) ? 'right dir-rtl' : 'left'}`" v-html="parseTweet(refinedTweet.text)"></div>
-              <div v-if="refinedTweet.extended_entities && refinedTweet.extended_entities.media" class="d-flex flex-wrap tweetImagesContainer">
-                <tweet-media :isChild="isChild" :tweet="refinedTweet" :index="index" :media="media" v-for="(media, index) in refinedTweet.extended_entities.media" :key="index"></tweet-media>
+              <div v-if="refinedTweet.media" class="d-flex flex-wrap tweetImagesContainer">
+                <tweet-media :isChild="isChild" :tweet="refinedTweet" :index="index" :media="media" v-for="(media, index) in refinedTweet.media" :key="index"></tweet-media>
               </div>
               <self v-if="refinedTweet.is_quote_status && refinedTweet.quoted_status" :tweet="quotedStatus" :isChild="true" class="childQuotedStatus"></self>
               <div class="d-flex pt-2 justify-content-around align-items-center">

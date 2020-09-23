@@ -3,11 +3,10 @@
 namespace App\Jobs;
 
 use App\Task;
-use App\Tweet;
 use App\Export;
+use Exception;
 use App\MediaFile;
 use Illuminate\Bus\Queueable;
-use App\TwUtils\AssetsManager;
 use App\TwUtils\ExportsManager;
 use App\Exports\TweetsListExport;
 use App\Jobs\StartExportMediaJob;
@@ -37,6 +36,15 @@ class ProcessExportJob implements ShouldQueue
 
     public function handle()
     {
+        try {
+            $this->init();
+        } catch (Exception $e) {
+            $this->handleException($e);
+        }
+    }
+
+    protected function init()
+    {
         $this->export = $this->export->fresh();
         if (
             $this->export->type === Export::TYPE_HTMLENTITIES &&
@@ -59,6 +67,15 @@ class ProcessExportJob implements ShouldQueue
 
         if ($this->export->type === Export::TYPE_HTMLENTITIES) {
             $this->createHtmlEntitiesExport();
+        }
+    }
+
+    protected function handleException(Exception $e)
+    {
+        if ($this->export->status !== Export::STATUS_BROKEN)
+        {
+            $this->export->status = Export::STATUS_BROKEN;
+            $this->export->save();
         }
     }
 

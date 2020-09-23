@@ -38,7 +38,7 @@ class ZipEntitiesJob implements ShouldQueue
         } catch (\Exception $e) {
             \Log::warning($e);
 
-            $this->export->status = 'broken';
+            $this->export->status = Export::STATUS_BROKEN;
             $this->export->save();
         }
     }

@@ -207,20 +207,20 @@
                   <template
                     v-if="userExport && confirmRemoveMode === userExport.id"
                   >
-                    <span>
+                    <div>
                       {{__('confirmRemoveExport')}}
-                    </span>
+                    </div>
                     <button
                       @click="confirmRemoveMode = false"
                       type="button"
-                      :class="`btn btn-outline-primary`"
+                      :class="`btn btn-outline-primary btn-sm animated fadeIn`"
                     >
                       {{__('cancel')}}
                     </button>
                     <button
                       @click="doRemove(userExport)"
                       type="button"
-                      :class="`btn btn-outline-danger`"
+                      :class="`btn btn-outline-danger btn-sm animated fadeIn`"
                     >
                       {{__('remove')}}
                     </button>

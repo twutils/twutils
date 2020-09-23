@@ -571,7 +571,8 @@ export default {
     shouldShowExpectedToFinish () {
       return this.task.status == `queued` &&
               [`fetchfollowing`, `fetchfollowers`,].includes(this.task.baseName) &&
-              get(this.user, `social_users[0].followers_count`, 0) > 2800
+              get(this.user, `social_users[0].followers_count`, 0) > 2800 &&
+              parseInt(this.taskExpectedToFinishInMins) > 0
     },
     taskExpectedToFinishInMins () {
       if (![`fetchfollowing`, `fetchfollowers`,].includes(this.task.baseName)) {

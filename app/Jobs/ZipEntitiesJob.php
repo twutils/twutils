@@ -100,7 +100,7 @@ class ZipEntitiesJob implements ShouldQueue
         ->saveAsFile($fileAbsolutePath)
         ->close();
 
-        $zippedStream = fopen($fileAbsolutePath, 'rb');
+        $zippedStream = fopen($fileAbsolutePath, 'r');
 
         Storage::disk(config('filesystems.cloud'))->put($this->export->id, $zippedStream);
 
@@ -109,7 +109,7 @@ class ZipEntitiesJob implements ShouldQueue
         Storage::disk('local')->deleteDirectory($this->export->id);
 
         $this->export->status = 'success';
-        $this->export->progress = $this->export->progress_end;
+        $this->export->progress = $this->export->fresh()->progress_end;
 
         // Check export wasn't removed while processing..
         if ($this->export->fresh())

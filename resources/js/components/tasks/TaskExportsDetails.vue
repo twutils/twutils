@@ -120,7 +120,7 @@
                         {{ momentCalendar(userExport.started_at) }}
                       </div>
                       <div
-                        v-if="userExport.progress !== userExport.progress_end && userExport.progress_end && userExport.type === TwUtils.exports.htmlEntities"
+                        v-if="userExport.status === 'started' && userExport.progress_end && userExport.type === TwUtils.exports.htmlEntities"
                         class="progress"
                       >
                         <div
@@ -240,14 +240,6 @@
           </tbody>
         </table>
       </div>
-    </div>
-    <div class="col-12">
-      Highlighted Export
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      Logs:
     </div>
   </div>
 </div>

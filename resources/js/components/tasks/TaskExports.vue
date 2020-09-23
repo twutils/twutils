@@ -9,10 +9,10 @@
                 <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
                   <h5 :class="`modal-title`">
                     <span v-if="locale === 'en'">
-                      ({{__(task.type)}}) Exports
+                      (<span class="taskExport__title__type">{{__(task.type)}}</span>) Exports
                     </span>
                     <span v-if="locale === 'ar'">
-                      تصديرات مهمة ({{__(task.type)}})
+                      تصديرات مهمة (<span class="taskExport__title__type">{{__(task.type)}}</span>)
                     </span>
                   </h5>
                   <button type="button" :class="`close m-0 p-1 ${isRtl ? 'mr-auto':'ml-auto'}`" data-dismiss="modal" aria-label="Close">

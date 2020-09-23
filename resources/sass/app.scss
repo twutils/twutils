@@ -717,3 +717,9 @@ $taskExport-text: darken(theme-color('success'), 10%);
     margin-top: 5px;
     border-radius: 0;
 }
+
+.taskExport__title__type {
+    padding: 0.2rem 1rem;
+    font-size: 1rem;
+    background: #f8f8f8;
+}

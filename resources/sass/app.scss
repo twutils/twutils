@@ -723,3 +723,17 @@ $taskExport-text: darken(theme-color('success'), 10%);
     font-size: 1rem;
     background: #f8f8f8;
 }
+
+.taskExportsDetails__statusesWrapper {
+    height: 90px;
+    overflow-y: auto;
+}
+
+.taskExportsDetails__statusesWrapper::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 2px;
+}
+.taskExportsDetails__statusesWrapper::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: rgb(204 204 204 / 50%);
+}

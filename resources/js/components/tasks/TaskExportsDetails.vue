@@ -94,69 +94,71 @@
                   v-if="userExport"
                 >
                   <td>
-                    <div
-                      v-if="userExport.created_at"
-                      class="taskExportsDetails__statusWrapper"
-                    >
-                    <span
-                      :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'current bg-secondary' : ''}`"
-                    >
-                      {{__('initial')}}
-                    </span>
-                      <div class="taskExportsDetails__date taskExportsDetails__date--started">
-                        {{ momentCalendar(userExport.created_at) }}
-                      </div>
-                    </div>
-                    <div
-                      v-if="userExport.started_at"
-                      class="taskExportsDetails__statusWrapper"
-                    >
-                    <span
-                      :class="`taskExportsDetails__status ${userExport.status === 'started' ? 'current bg-primary' : ''}`"
-                    >
-                      {{__('started')}}
-                    </span>
-                      <div class="taskExportsDetails__date taskExportsDetails__date--started">
-                        {{ momentCalendar(userExport.started_at) }}
+                    <div class="taskExportsDetails__statusesWrapper">
+                      <div
+                        v-if="userExport.created_at"
+                        class="taskExportsDetails__statusWrapper"
+                      >
+                      <span
+                        :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'current bg-secondary' : ''}`"
+                      >
+                        {{__('initial')}}
+                      </span>
+                        <div class="taskExportsDetails__date taskExportsDetails__date--started">
+                          {{ momentCalendar(userExport.created_at) }}
+                        </div>
                       </div>
                       <div
-                        v-if="userExport.status === 'started' && userExport.progress_end && userExport.type === TwUtils.exports.htmlEntities"
-                        class="progress"
+                        v-if="userExport.started_at"
+                        class="taskExportsDetails__statusWrapper"
                       >
+                      <span
+                        :class="`taskExportsDetails__status ${userExport.status === 'started' ? 'current bg-primary' : ''}`"
+                      >
+                        {{__('started')}}
+                      </span>
+                        <div class="taskExportsDetails__date taskExportsDetails__date--started">
+                          {{ momentCalendar(userExport.started_at) }}
+                        </div>
                         <div
-                          class="progress-bar progress-bar-striped bg-info"
-                          role="progressbar"
-                          :style="`width: ${(userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress) * 100 / userExport.progress_end}%`"
-                          :aria-valuenow="userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress"
-                          aria-valuemin="0"
-                          :aria-valuemax="userExport.progress_end"
-                        ></div>
+                          v-if="userExport.status === 'started' && userExport.progress_end && userExport.type === TwUtils.exports.htmlEntities"
+                          class="progress"
+                        >
+                          <div
+                            class="progress-bar progress-bar-striped bg-info"
+                            role="progressbar"
+                            :style="`width: ${(userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress) * 100 / userExport.progress_end}%`"
+                            :aria-valuenow="userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress"
+                            aria-valuemin="0"
+                            :aria-valuemax="userExport.progress_end"
+                          ></div>
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      v-if="userExport.broken_at"
-                      class="taskExportsDetails__statusWrapper"
-                    >
-                    <span
-                      :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'current bg-danger' : ''}`"
-                    >
-                      {{__('broken')}}
-                    </span>
-                      <div class="taskExportsDetails__date taskExportsDetails__date--_broken">
-                        {{ momentCalendar(userExport.broken_at) }}
+                      <div
+                        v-if="userExport.broken_at"
+                        class="taskExportsDetails__statusWrapper"
+                      >
+                      <span
+                        :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'current bg-danger' : ''}`"
+                      >
+                        {{__('broken')}}
+                      </span>
+                        <div class="taskExportsDetails__date taskExportsDetails__date--_broken">
+                          {{ momentCalendar(userExport.broken_at) }}
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      v-if="userExport.success_at"
-                      class="taskExportsDetails__statusWrapper"
-                    >
-                    <span
-                      :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'current bg-success' : ''}`"
-                    >
-                      {{__('success')}}
-                    </span>
-                      <div class="taskExportsDetails__date taskExportsDetails__date--success">
-                        {{ momentCalendar(userExport.success_at) }}
+                      <div
+                        v-if="userExport.success_at"
+                        class="taskExportsDetails__statusWrapper"
+                      >
+                      <span
+                        :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'current bg-success' : ''}`"
+                      >
+                        {{__('success')}}
+                      </span>
+                        <div class="taskExportsDetails__date taskExportsDetails__date--success">
+                          {{ momentCalendar(userExport.success_at) }}
+                        </div>
                       </div>
                     </div>
                   </td>

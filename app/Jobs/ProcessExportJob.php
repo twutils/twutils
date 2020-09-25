@@ -3,9 +3,10 @@
 namespace App\Jobs;
 
 use App\Task;
-use App\Export;
 use Exception;
+use App\Export;
 use App\MediaFile;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
 use App\Exports\TweetsListExport;
@@ -75,6 +76,7 @@ class ProcessExportJob implements ShouldQueue
         if ($this->export->status !== Export::STATUS_BROKEN)
         {
             $this->export->status = Export::STATUS_BROKEN;
+            $this->export->exception = Str::limit($e->__toString(), 10000);
             $this->export->save();
         }
     }

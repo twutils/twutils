@@ -214,7 +214,7 @@ abstract class TwitterOperation
         \Log::info('Task '.$task->id.' was broken. Exception: '.($exception ? $exception.'' : ''));
 
         if (! is_null($exception)) {
-            $task->exception = Str::limit($exception->__toString(), 2000);
+            $task->exception = Str::limit($exception->__toString(), 10000);
 
             $breakData['exceptionClass'] = get_class($exception);
         }

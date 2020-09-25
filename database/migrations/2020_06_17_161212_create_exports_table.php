@@ -20,6 +20,7 @@ class CreateExportsTable extends Migration
             $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
             $table->string('filename')->nullable();
             $table->unsignedInteger('size')->nullable();
+            $table->unsignedInteger('list_size')->nullable();
 
             $table->dateTime('started_at')->nullable();
             $table->dateTime('broken_at')->nullable();
@@ -27,6 +28,8 @@ class CreateExportsTable extends Migration
 
             $table->unsignedInteger('progress')->nullable();
             $table->unsignedInteger('progress_end')->nullable();
+
+            $table->text('exception')->nullable();
 
             $table->timestamps();
 

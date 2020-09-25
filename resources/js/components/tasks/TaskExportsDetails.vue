@@ -96,16 +96,29 @@
                   <td>
                     <div class="taskExportsDetails__statusesWrapper">
                       <div
-                        v-if="userExport.created_at"
+                        v-if="userExport.success_at"
                         class="taskExportsDetails__statusWrapper"
                       >
                       <span
-                        :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'current bg-secondary' : ''}`"
+                        :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'current bg-success' : ''}`"
                       >
-                        {{__('initial')}}
+                        {{__('success')}}
                       </span>
-                        <div class="taskExportsDetails__date taskExportsDetails__date--started">
-                          {{ momentCalendar(userExport.created_at) }}
+                        <div class="taskExportsDetails__date taskExportsDetails__date--success">
+                          {{ momentCalendar(userExport.success_at) }}
+                        </div>
+                      </div>
+                      <div
+                        v-if="userExport.broken_at"
+                        class="taskExportsDetails__statusWrapper"
+                      >
+                      <span
+                        :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'current bg-danger' : ''}`"
+                      >
+                        {{__('broken')}}
+                      </span>
+                        <div class="taskExportsDetails__date taskExportsDetails__date--_broken">
+                          {{ momentCalendar(userExport.broken_at) }}
                         </div>
                       </div>
                       <div
@@ -135,29 +148,16 @@
                         </div>
                       </div>
                       <div
-                        v-if="userExport.broken_at"
+                        v-if="userExport.created_at"
                         class="taskExportsDetails__statusWrapper"
                       >
                       <span
-                        :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'current bg-danger' : ''}`"
+                        :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'current bg-secondary' : ''}`"
                       >
-                        {{__('broken')}}
+                        {{__('initial')}}
                       </span>
-                        <div class="taskExportsDetails__date taskExportsDetails__date--_broken">
-                          {{ momentCalendar(userExport.broken_at) }}
-                        </div>
-                      </div>
-                      <div
-                        v-if="userExport.success_at"
-                        class="taskExportsDetails__statusWrapper"
-                      >
-                      <span
-                        :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'current bg-success' : ''}`"
-                      >
-                        {{__('success')}}
-                      </span>
-                        <div class="taskExportsDetails__date taskExportsDetails__date--success">
-                          {{ momentCalendar(userExport.success_at) }}
+                        <div class="taskExportsDetails__date taskExportsDetails__date--started">
+                          {{ momentCalendar(userExport.created_at) }}
                         </div>
                       </div>
                     </div>

@@ -25,7 +25,7 @@ For each application, In the **Keys and tokens** tab, you will have **Consumer A
 
 This keys will be used later to authenticate users and to be used as an access point for TwUtils.
 
-Consumer API Keys will be used in the `.env` file.
+Consumer API Keys will be used in the `.env` file, [4. Updating Environment Variables (Twitter OAuth)](#4-updating-environment-variables-twitter-oauth).
 
 > Note: Do not forget to **"Enable Sign in with Twitter"** while creating the applications.
 
@@ -33,7 +33,7 @@ Consumer API Keys will be used in the `.env` file.
 
 ### 2. Laravel-Ready Environment
 
-This application is built on top of Laravel Framework v5.8, It assumes `composer` is installed and `php` has the needed extensions. For details please refer to [Laravel 5.8 Installation documentation](https://laravel.com/docs/5.7/installation).
+This application is built on top of Laravel Framework v7, It assumes `composer` is installed and `php` has the needed extensions. For details please refer to [Laravel 7 Installation documentation](https://laravel.com/docs/7.x#installation).
 
 
 ## Local Development: Setup

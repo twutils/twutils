@@ -136,7 +136,7 @@ class Task extends Model
                     ->pluck('tweep');
         }
 
-        if ($this->type === FetchFollowingOperation::class) {
+        if ($this->type === FetchFollowersOperation::class) {
             $tweeps = $this->followers()
                     ->with('tweep')
                     ->get()

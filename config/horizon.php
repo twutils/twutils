@@ -168,7 +168,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      => ['default', 'media', 'avatar', 'cleaning', 'exports'],
+                'queue'      => ['default', 'media', 'avatars', 'cleaning', 'exports'],
                 'balance'    => 'auto',
                 'processes'  => 20,
                 'tries'      => 3,
@@ -179,7 +179,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      =>['default', 'media', 'avatar', 'cleaning', 'exports'],
+                'queue'      =>['default', 'media', 'avatars', 'cleaning', 'exports'],
                 'balance'    => 'auto',
                 'processes'  => 20,
                 'tries'      => 3,

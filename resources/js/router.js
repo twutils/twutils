@@ -7,14 +7,13 @@ const router = new VueRouter({})
 
 let openModals = []
 
-$(document).on('shown.bs.modal', function(event) {
-   openModals.push(event.target)
-});
+$(document).on(`shown.bs.modal`, function (event) {
+  openModals.push(event.target)
+})
 
 router.beforeEach((to, from, next) => {
-
   openModals.map(modal => {
-    $(modal).modal('hide')
+    $(modal).modal(`hide`)
   })
 
   openModals = []

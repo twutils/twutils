@@ -149,11 +149,10 @@ export default {
 
     EventBus.listen(`refresh-task`, routerData => {
       this.$nextTick(x => this.fetchTask(x => {
-        if (typeof routerData === 'function')
-        {
+        if (typeof routerData === `function`) {
           routerData()
         }
-      }, {hideLoading: true}))
+      }, { hideLoading: true, }))
     })
 
     EventBus.listen(`force-refresh-task`, routerData => {
@@ -189,8 +188,7 @@ export default {
         })
     },
     fetchTask (callback = null, options = {}) {
-      if ( ! options.hideLoading )
-      {
+      if (!options.hideLoading) {
         this.showLoading()
       }
 
@@ -199,8 +197,7 @@ export default {
           this.task = response.data
           this.tooltip()
 
-          if (callback)
-          {
+          if (callback) {
             callback()
           }
         })

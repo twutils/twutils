@@ -29,10 +29,10 @@
                 Size
               </th>
               <th>
-                
+
               </th>
               <th>
-                
+
               </th>
             </tr>
           </thead>
@@ -251,8 +251,8 @@ import EventBus from '@/EventBus'
 import filesize from 'filesize'
 
 export default {
-  beforeDestroy() {
-    EventBus.$off('refresh-task')
+  beforeDestroy () {
+    EventBus.$off(`refresh-task`)
   },
   components: {
   },
@@ -266,65 +266,61 @@ export default {
   },
   data () {
     return {
-      selectedExportType: '',
+      selectedExportType: ``,
       confirmRemoveMode: false,
     }
   },
   mounted () {
-    EventBus.listen('open-taskExports-modal', type => {
+    EventBus.listen(`open-taskExports-modal`, type => {
       this.selectedExportType = type
     })
   },
   methods: {
     filesize,
-    canAdd(exportType)
-    {
-      if (exportType === window.TwUtils.exports.htmlEntities)
-      {
-        return ! ['fetchfollowing', 'fetchfollowers',].includes(this.task.baseName)
+    canAdd (exportType) {
+      if (exportType === window.TwUtils.exports.htmlEntities) {
+        return ![`fetchfollowing`, `fetchfollowers`,].includes(this.task.baseName)
       }
 
       return true
     },
-    canDownload(userExport)
-    {
-      return userExport.status === 'success'
+    canDownload (userExport) {
+      return userExport.status === `success`
     },
-    canRemove(userExport)
-    {
+    canRemove (userExport) {
       return true
     },
-    add(systemExport) {
+    add (systemExport) {
       axios.post(
         `${window.TwUtils.apiBaseUrl}exports/${this.task.id}/${systemExport.name}`,
         {
           type: systemExport.name,
         }
       )
-      .then(response => {
-        EventBus.fire('refresh-task')
-      })
+        .then(response => {
+          EventBus.fire(`refresh-task`)
+        })
     },
-    download(userExport) {
+    download (userExport) {
       window.location.href = `${window.TwUtils.baseUrl}task/${userExport.task_id}/export/${userExport.id}`
     },
-    remove(userExport) {
+    remove (userExport) {
       this.confirmRemoveMode = userExport.id
     },
-    doRemove(userExport) {
+    doRemove (userExport) {
       axios.delete(`${window.TwUtils.apiBaseUrl}exports/${userExport.id}`)
-      .then(response => {
-        EventBus.fire('refresh-task')
-      })
+        .then(response => {
+          EventBus.fire(`refresh-task`)
+        })
     },
   },
   computed: {
-    systemExports() {
+    systemExports () {
       return Object.keys(window.TwUtils.exports)
         .map(x => {
           return {
             name: x,
-            userExports: this.exports.filter(y => y.type === x)
+            userExports: this.exports.filter(y => y.type === x),
           }
         })
     },

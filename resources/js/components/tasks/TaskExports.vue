@@ -76,28 +76,27 @@ export default {
     }
   },
   mounted () {
-    EventBus.listen('open-taskExports-modal', type => {
-      $('#taskExports').modal('show')
+    EventBus.listen(`open-taskExports-modal`, type => {
+      $(`#taskExports`).modal(`show`)
     })
 
     let shouldRefresh = true
 
-    let refreshTask = () => {
-      if ( ! shouldRefresh)
-        return false;
+    const refreshTask = () => {
+      if (!shouldRefresh) { return false }
 
       setTimeout(function () {
-        EventBus.fire('refresh-task', refreshTask)
+        EventBus.fire(`refresh-task`, refreshTask)
       }, 5000)
     }
 
     this.$nextTick(x => {
-      $('#taskExports').on('shown.bs.modal', () => {
+      $(`#taskExports`).on(`shown.bs.modal`, () => {
         shouldRefresh = true
         refreshTask()
       })
 
-      $('#taskExports').on('hidden.bs.modal', () => {
+      $(`#taskExports`).on(`hidden.bs.modal`, () => {
         shouldRefresh = false
       })
     })
@@ -110,7 +109,7 @@ export default {
 
       return [`html`, `excel`, `htmlEntities`,]
         .map(exportType => {
-          return maxBy(this.exports.filter(x => x.type === exportType), 'id')
+          return maxBy(this.exports.filter(x => x.type === exportType), `id`)
         })
         .filter(x => x)
         .slice(-2)

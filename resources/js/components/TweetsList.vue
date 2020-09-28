@@ -292,34 +292,29 @@ export default {
 
       if (this.searchFilter !== null && this.searchKeywords.length > 0) { filters.push(this.searchFilter) }
 
-      if (this.searchOptions.withTextOnly)
-      {
-        let filterFunc = tweets => tweets.filter(x => x.media.length === 0)
+      if (this.searchOptions.withTextOnly) {
+        const filterFunc = tweets => tweets.filter(x => x.media.length === 0)
         filterFunc.isOrOperatorFilter = true
         filters.push(filterFunc)
       }
 
-      if (this.searchOptions.withPhotos)
-      {
-        let filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === 'photo')
+      if (this.searchOptions.withPhotos) {
+        const filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === `photo`)
         filterFunc.isOrOperatorFilter = true
         filters.push(filterFunc)
       }
 
-      if (this.searchOptions.withGifs)
-      {
-        let filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === 'animated_gif')
+      if (this.searchOptions.withGifs) {
+        const filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === `animated_gif`)
         filterFunc.isOrOperatorFilter = true
         filters.push(filterFunc)
       }
 
-      if (this.searchOptions.withVideos)
-      {
-        let filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === 'video')
+      if (this.searchOptions.withVideos) {
+        const filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === `video`)
         filterFunc.isOrOperatorFilter = true
         filters.push(filterFunc)
       }
-
 
       if ((filters.length == 0 || this.searchOnlyInMonth) && this.yearAndMonthFilter !== null) { filters.push(this.yearAndMonthFilter) }
 
@@ -329,17 +324,16 @@ export default {
           tweets = filter(tweets)
         })
 
-      let orOperatorResults = [];
+      let orOperatorResults = []
 
       filters
         .filter(filter => filter.isOrOperatorFilter)
         .forEach((filter) => {
-          orOperatorResults = orOperatorResults.concat(filter(tweets));
+          orOperatorResults = orOperatorResults.concat(filter(tweets))
         })
 
-      if (filters.find(filter => filter.isOrOperatorFilter))
-      {
-        tweets = sortBy(uniqBy(orOperatorResults, 'id'), 'tweet_created_at').reverse();
+      if (filters.find(filter => filter.isOrOperatorFilter)) {
+        tweets = sortBy(uniqBy(orOperatorResults, `id`), `tweet_created_at`).reverse()
       }
 
       this.resultsCount = tweets.length
@@ -383,7 +377,7 @@ export default {
   watch: {
     searchOptions: {
       deep: true,
-      handler(newValue) {
+      handler (newValue) {
         this.debouncedAfterFiltering()
       },
     },

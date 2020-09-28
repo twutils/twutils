@@ -33,8 +33,7 @@
 import get from 'lodash/get'
 import maxBy from 'lodash/maxBy'
 
-const mime = require('mime/lite');
-
+const mime = require(`mime/lite`)
 
 export default {
   props: {
@@ -58,7 +57,7 @@ export default {
   data () {
     return {
       videoVariants: [],
-      videoDownloadUrl: '#',
+      videoDownloadUrl: `#`,
       width: 150,
       height: 150,
     }
@@ -66,45 +65,41 @@ export default {
   mounted () {
     this.isLocal = this.isLocal && window.TwUtils.export.type === window.TwUtils.exports.htmlEntities
 
-    if ([`video`, `animated_gif`].includes(this.media.type))
-    {
+    if ([`video`, `animated_gif`, ].includes(this.media.type)) {
       this.setVideoSrcAttributes()
       this.setVideoDimensionsAttributes()
     }
   },
   methods: {
-    setVideoSrcAttributes() {
-      if (this.isLocal)
-      {
-        let media = this.media.media_files[1]
+    setVideoSrcAttributes () {
+      if (this.isLocal) {
+        const media = this.media.media_files[1]
         this.videoVariants = [
           {
             url: `media/` + media.mediaPath,
             content_type: mime.getType(media.extension),
-          }
+          },
         ]
 
         this.videoDownloadUrl = this.videoVariants[0].url
 
-        return ;
+        return
       }
 
-      this.videoVariants = get(this.media.raw, 'video_info.variants') || []
+      this.videoVariants = get(this.media.raw, `video_info.variants`) || []
 
       const maxBitrate = maxBy(this.videoVariants, `bitrate`)
 
-      if (maxBitrate != null)
-      {
+      if (maxBitrate != null) {
         this.videoDownloadUrl = maxBitrate.url
       } else {
         this.videoDownloadUrl = this.videoVariants[0].url
       }
     },
-    setVideoDimensionsAttributes() {
-      const aspectRatio = get(this.media.raw, 'video_info.aspect_ratio')
+    setVideoDimensionsAttributes () {
+      const aspectRatio = get(this.media.raw, `video_info.aspect_ratio`)
 
-      if (! aspectRatio)
-        return ;
+      if (!aspectRatio) { return }
 
       const [width, height, ] = aspectRatio
 
@@ -115,7 +110,7 @@ export default {
         this.width = (width * 300) / (height)
         this.height = 300
       }
-    }
+    },
   },
   computed: {
     imgSrc () {
@@ -123,8 +118,7 @@ export default {
         !this.isChild &&
         this.isLocal &&
         this.media.media_files[0].mediaPath
-      )
-      {
+      ) {
         return `media/` + this.media.media_files[0].mediaPath
       }
 

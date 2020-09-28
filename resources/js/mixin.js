@@ -104,33 +104,30 @@ export default {
 
       return false
     },
-    momentCalendar(date) {
-      return window.moment(date).calendar(null, {sameElse: 'YYYY-MMM-DD h:m A'})
+    momentCalendar (date) {
+      return window.moment(date).calendar(null, { sameElse: `YYYY-MMM-DD h:m A`, })
     },
   },
   computed: {
     intlFormat (vm) {
       return number => new Intl.NumberFormat().format(number)
     },
-    getExportTypeIcon(vm) {
+    getExportTypeIcon (vm) {
       return exportType => {
-        if ([window.TwUtils.exports.excel].includes(exportType))
-        {
-          return ['grid-three-up']
+        if ([window.TwUtils.exports.excel, ].includes(exportType)) {
+          return [`grid-three-up`,]
         }
 
-        if ([window.TwUtils.exports.html].includes(exportType))
-        {
-          return ['globe']
+        if ([window.TwUtils.exports.html, ].includes(exportType)) {
+          return [`globe`,]
         }
 
-        if ([window.TwUtils.exports.htmlEntities].includes(exportType))
-        {
-          return ['image']
+        if ([window.TwUtils.exports.htmlEntities, ].includes(exportType)) {
+          return [`image`,]
         }
 
-        return ['data-transfer-download']
+        return [`data-transfer-download`,]
       }
-    }
+    },
   },
 }

@@ -53,14 +53,12 @@ export default {
   },
   methods: {
     filesize,
-    clicked() {
-      if (this.taskExport.status === 'success')
-      {
-        return ;
+    clicked () {
+      if (this.taskExport.status === `success`) {
+        return
       }
 
-      EventBus.fire('open-taskExports-modal', this.taskExport.type)
-      return ;
+      EventBus.fire(`open-taskExports-modal`, this.taskExport.type)
     },
   },
 }

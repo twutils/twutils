@@ -2,7 +2,7 @@
 
 # TwUtils: Twitter Utilities
 
-Twitter Utilities (TwUtils) is a set of utilities for managing your twitter account.. Built with Laravel, VueJs.
+Twitter Utilities (TwUtils) is an open source platform offers set of utilities for managing your twitter account.. Built with Laravel, VueJs.
 
 ## Local Development: Prerequisites
 
@@ -25,7 +25,7 @@ For each application, In the **Keys and tokens** tab, you will have **Consumer A
 
 This keys will be used later to authenticate users and to be used as an access point for TwUtils.
 
-Consumer API Keys will be used in the `.env` file, [4. Updating Environment Variables (Twitter OAuth)](#4-updating-environment-variables-twitter-oauth).
+Consumer API Keys will be used in the `.env` file, explanation [below](#4-updating-environment-variables-twitter-oauth).
 
 > Note: Do not forget to **"Enable Sign in with Twitter"** while creating the applications.
 

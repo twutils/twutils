@@ -25,7 +25,7 @@
 			  <div class="col-sm-3 col-6 order-sm-2 order-3 text-muted">
 			    <from-now
 			      :value="task.created_at"
-			      :title="moment(task.created_at).format('YYYY-MMM-DD hh:mm:ss A')"
+			      :title="moment(task.created_at).format('YYYY-MMM-DD hh:mm A')"
 			      data-placement="bottom"
 			      :has-tooltip="true"
 			    ></from-now>

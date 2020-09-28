@@ -26,7 +26,7 @@
             <strong>{{__(task.status)}}</strong>
             <from-now
                 :value="task.created_at"
-                :title="moment(task.created_at).format('YYYY-MMM-DD hh:mm:ss A')"
+                :title="moment(task.created_at).format('YYYY-MMM-DD hh:mm A')"
                 data-placement="bottom"
                 :has-tooltip="true"
             ></from-now>
@@ -225,14 +225,14 @@ export default {
       if (status === `completed`) {
         if (this.isRtl) {
           return `اكتملت المهمة بنجاح، بدأت: ` +
-                  window.moment(this.task.created_at).format(`hh:mm:ss A DD-MMM-YYYY`) +
+                  window.moment(this.task.created_at).format(`hh:mm A DD-MMM-YYYY`) +
                   `، وانتهت: ` +
-                  window.moment(this.task.updated_at).format(`hh:mm:ss A DD-MMM-YYYY`)
+                  window.moment(this.task.updated_at).format(`hh:mm A DD-MMM-YYYY`)
         }
         return `The task completed successfully, started: ` +
-                window.moment(this.task.created_at).format(`hh:mm:ss A YYYY-MMM-DD`) +
+                window.moment(this.task.created_at).format(`hh:mm A YYYY-MMM-DD`) +
                 `, ended: ` +
-                window.moment(this.task.updated_at).format(`hh:mm:ss A YYYY-MMM-DD`)
+                window.moment(this.task.updated_at).format(`hh:mm A YYYY-MMM-DD`)
       }
 
       if (this.isMediaTask(this.task) && status === `staging`) {

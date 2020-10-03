@@ -1284,7 +1284,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response->assertJson([
           'count'               => 160,
           'tweets_text_only'    => 20,
-          'tweets_with_photos'  => 80,
+          'tweets_with_photos'  => 50,
           'tweets_with_videos'  => 40,
           'tweets_with_gifs'    => 50,
           'months' => [

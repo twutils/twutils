@@ -58,25 +58,24 @@ class BuildTaskView implements ShouldQueue
                     continue;
                 }
 
-                $taskView->tweets_with_photos += $tweet->media
-                    ->filter(
-                        fn (Media $media) => $media->type === Media::TYPE_PHOTO)
-                    ->count();
+                $taskView->tweets_with_photos += $this->countMedia($tweet, Media::TYPE_PHOTO);
 
-                $taskView->tweets_with_videos += $tweet->media
-                    ->filter(
-                        fn (Media $media) => $media->type === Media::TYPE_VIDEO)
-                    ->count();
+                $taskView->tweets_with_videos += $this->countMedia($tweet, Media::TYPE_VIDEO);
 
-                $taskView->tweets_with_gifs += $tweet->media
-                    ->filter(
-                        fn (Media $media) => $media->type === Media::TYPE_ANIMATED_GIF)
-                    ->count();
+                $taskView->tweets_with_gifs += $this->countMedia($tweet, Media::TYPE_ANIMATED_GIF);
             }
         });
 
         $taskView->months = $months;
 
         $taskView->save();
+    }
+
+    protected function countMedia(Tweet $tweet, $type)
+    {
+        return $tweet->media
+            ->filter(
+                fn (Media $media) => $media->type === $type)
+            ->isEmpty() ? 0 : 1;
     }
 }

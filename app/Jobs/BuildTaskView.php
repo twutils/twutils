@@ -21,7 +21,6 @@ class BuildTaskView implements ShouldQueue
     use SerializesModels;
 
     protected Task $task;
-    protected TaskView $taskView;
 
     public function __construct(Task $task)
     {
@@ -30,20 +29,20 @@ class BuildTaskView implements ShouldQueue
 
     public function handle()
     {
+        $taskView = new TaskView ([
+            'task_id' => $this->task->id,
+        ]);
+
         if (! in_array($this->task->type, Task::TWEETS_LISTS_TYPES) )
         {
             return ;
         }
 
-        $this->taskView = new TaskView ([
-            'task_id' => $this->task->id,
-        ]);
-
         $months = [];
 
-        $this->task->tweets()->chunk(100, function ($tweets) use (& $months) {
+        $this->task->tweets()->chunk(100, function ($tweets) use (& $taskView, & $months) {
             foreach ($tweets as $tweet) {
-                $this->taskView->count += 1;
+                $taskView->count += 1;
 
                 $monthPath = $tweet->tweet_created_at->year . '.' . $tweet->tweet_created_at->month;
 
@@ -55,29 +54,29 @@ class BuildTaskView implements ShouldQueue
 
                 if ($tweet->media->isEmpty())
                 {
-                    $this->taskView->tweets_text_only += 1;
+                    $taskView->tweets_text_only += 1;
                     continue;
                 }
 
-                $this->taskView->tweets_with_photos += $tweet->media
+                $taskView->tweets_with_photos += $tweet->media
                     ->filter(
                         fn (Media $media) => $media->type === Media::TYPE_PHOTO)
                     ->count();
 
-                $this->taskView->tweets_with_videos += $tweet->media
+                $taskView->tweets_with_videos += $tweet->media
                     ->filter(
                         fn (Media $media) => $media->type === Media::TYPE_VIDEO)
                     ->count();
 
-                $this->taskView->tweets_with_gifs += $tweet->media
+                $taskView->tweets_with_gifs += $tweet->media
                     ->filter(
                         fn (Media $media) => $media->type === Media::TYPE_ANIMATED_GIF)
                     ->count();
             }
         });
 
-        $this->taskView->months = $months;
+        $taskView->months = $months;
 
-        $this->taskView->save();
+        $taskView->save();
     }
 }

@@ -40,7 +40,7 @@ class TasksController extends Controller
     {
         $this->authorize('view', $task);
 
-        return $task;
+        return $task->load('view');
     }
 
     public function view(Request $request, Task $task)

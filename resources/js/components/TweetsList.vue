@@ -363,11 +363,11 @@ export default {
     }, 300)
     this.buildSearch()
 
-    if (this.task.likes === undefined) {
-      this.fetchTweetsList()
-    } else {
+    if (this.isLocal) {
       this.tweets = this.task.likes
       this.autoSelectLatestTweet()
+    } else {
+      this.fetchTweetsList()
     }
 
     this.buildHistory()

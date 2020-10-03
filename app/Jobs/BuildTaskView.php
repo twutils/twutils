@@ -35,11 +35,6 @@ class BuildTaskView implements ShouldQueue
             return ;
         }
 
-        $this->init();
-    }
-
-    public function init()
-    {
         $this->taskView = new TaskView ([
             'task_id' => $this->task->id,
         ]);

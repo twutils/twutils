@@ -1036,7 +1036,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
-        $this->assertCountDispatchedJobs(10, null);
+        $this->assertCountDispatchedJobs(11, null);
         $this->fireJobsAndBindTwitter([], 1);
 
         $this->assertTaskCount(1, 'completed');
@@ -1203,5 +1203,102 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertContains('index.html', $zippedFiles);
         $this->assertContains('assets/build_css/app.css', $zippedFiles);
         $this->assertContains('assets/js/app.js', $zippedFiles);
+    }
+
+    public function test_task_view_is_built_successfully()
+    {
+        $this->withoutJobs();
+
+        $this->logInSocialUser('api');
+
+        $tweetWithOnePhoto = $this->getStub('tweet_with_one_photo.json');
+        $tweetWithTwoPhotos = $this->getStub('tweet_with_two_photos.json');
+        $tweetWithVideo = $this->getStub('tweet_with_video.json');
+        $tweetWithGif = $this->getStub('tweet_with_animated_gif.json');
+
+        config()->set(['twutils.minimum_expected_likes' => 10]);
+
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $decTweets = collect($this->generateUniqueTweets(10))
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::parse('2019-12');
+                return $tweet;
+            })
+            ->toArray();
+
+        $janTweets = collect($this->generateUniqueTweets(10))
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::parse('2020-01');
+                return $tweet;
+            })
+            ->toArray();
+
+        $febTweets = collect($this->generateUniqueTweets(20, $tweetWithOnePhoto))
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::parse('2020-02');
+                return $tweet;
+            })
+            ->toArray();
+
+        $marTweets = collect($this->generateUniqueTweets(30, $tweetWithTwoPhotos))
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::parse('2020-03');
+                return $tweet;
+            })
+            ->toArray();
+
+        $aprTweets = collect($this->generateUniqueTweets(40, $tweetWithVideo))
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::parse('2020-04');
+                return $tweet;
+            })
+            ->toArray();
+
+        $mayTweets = collect($this->generateUniqueTweets(50, $tweetWithGif))
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::parse('2020-05');
+                return $tweet;
+            })
+            ->toArray();
+
+        $this->fireJobsAndBindTwitter(
+            [
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_merge(
+                        $decTweets, $janTweets, $febTweets, $marTweets, $aprTweets, $mayTweets,
+                    ),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [],
+                ],
+            ]
+        );
+
+        $response = $this->getJson('api/tasks/1/view');
+        $response->assertStatus(200);
+
+        $response->assertJson([
+          'count'               => 160,
+          'tweets_text_only'    => 20,
+          'tweets_with_photos'  => 80,
+          'tweets_with_videos'  => 40,
+          'tweets_with_gifs'    => 50,
+          'months' => [
+            2019 => [
+                12 => 10,
+            ],
+            2020 => [
+              1 => 10,
+              2 => 20,
+              3 => 30,
+              4 => 40,
+              5 => 50,
+            ],
+          ]
+        ]);
     }
 }

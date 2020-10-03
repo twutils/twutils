@@ -54,15 +54,15 @@ class AssetsManager
 
     public static function getMediaDownloaders(Media $media): array
     {
-        if ($media->type == 'photo') {
+        if ($media->type == Media::TYPE_PHOTO) {
             return [ImageDownloader::class];
         }
 
-        if ($media->type == 'video') {
+        if ($media->type == Media::TYPE_VIDEO) {
             return [ImageDownloader::class, VideoDownloader::class];
         }
 
-        if ($media->type == 'animated_gif') {
+        if ($media->type == Media::TYPE_ANIMATED_GIF) {
             return [ImageDownloader::class, GifDownloader::class];
         }
     }

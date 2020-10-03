@@ -43,6 +43,13 @@ class TasksController extends Controller
         return $task;
     }
 
+    public function view(Request $request, Task $task)
+    {
+        $this->authorize('view', $task);
+
+        return $task->view;
+    }
+
     public function getManagedTasks(Request $request, Task $task)
     {
         $this->authorize('seeManagedTasks', $task);

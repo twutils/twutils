@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Jobs\BuildTaskView;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -99,6 +100,8 @@ class Task extends Model
                     $export->status = 'started';
                     $export->save();
                 });
+
+                dispatch(new BuildTaskView($task));
             }
         });
 
@@ -168,6 +171,11 @@ class Task extends Model
     public function exports()
     {
         return $this->hasMany(Export::class, 'task_id', 'id');
+    }
+
+    public function view()
+    {
+        return $this->hasOne(TaskView::class, 'task_id', 'id');
     }
 
     public function followings()

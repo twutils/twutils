@@ -35,6 +35,7 @@ class CreateTweetsTable extends Migration
             $table->text('retweeted_status')->nullable();
             $table->integer('favorite_count')->nullable();
             $table->text('extended_entities')->nullable();
+            $table->text('entities')->nullable();
             $table->timestamps();
         });
     }

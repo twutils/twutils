@@ -17,6 +17,7 @@ class Tweet extends Model
     protected $casts = [
         'attachments'             => 'array',
         'extended_entities'       => 'array',
+        'entities'                => 'array',
         'quoted_status'           => 'array',
         'quoted_status_permalink' => 'array',
         'retweeted_status'        => 'array',

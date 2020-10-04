@@ -270,7 +270,7 @@
                   <td>
                     <div
                       :class="`pre-line text-${isRtlText(row.description) ? 'right dir-rtl' : 'left'}`"
-                      v-html="parseTweet(row.description)"
+                      v-html="parseTweetText(row.description)"
                     >
                     </div>
                   </td>

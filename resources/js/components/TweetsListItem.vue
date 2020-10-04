@@ -33,7 +33,7 @@
             </a>
           </div>
             <div class="col-12 col-md-12 text-center">
-              <div :class="`tweetText text-${isRtlText(refinedTweet.text) ? 'right dir-rtl' : 'left'}`" v-html="parseTweet(refinedTweet.text)"></div>
+              <div :class="`tweetText text-${isRtlText(refinedTweet.text) ? 'right dir-rtl' : 'left'}`" v-html="parseTweetText(refinedTweet.text)"></div>
               <div v-if="refinedTweet.media" class="d-flex flex-wrap tweetImagesContainer">
                 <tweet-media :isChild="isChild" :tweet="refinedTweet" :index="index" :media="media" v-for="(media, index) in refinedTweet.media" :key="index"></tweet-media>
               </div>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import get from 'lodash/get'
 import TweetMedia from './TweetMedia'
 
 export default {
@@ -105,6 +106,33 @@ export default {
         pivot: this.tweet.pivot,
       }
     },
+    sanitizeTweet(tweet) {
+      let tweetText = tweet.text || tweet.full_text
+
+      if (tweet.quoted_status_permalink)
+      {
+        tweetText = tweetText.replaceAll(tweet.quoted_status_permalink.url, tweet.quoted_status_permalink.expanded)
+      }
+
+      if (get(tweet, 'extended_entities.media'))
+      {
+        get(tweet, 'extended_entities.media').map(media => {
+          tweetText = tweetText.replaceAll(media.url, media.media_url_https)
+        })
+      }
+
+      if (get(tweet, 'entities.urls'))
+      {
+        get(tweet, 'entities.urls').map(url => {
+          tweetText = tweetText.replaceAll(url.url, url.expanded_url)
+        })
+      }
+
+      return {
+        ...tweet,
+        text: tweetText,
+      }
+    },
   },
   computed: {
     tweepAvatar () {
@@ -115,7 +143,7 @@ export default {
 
       if (this.tweet.pivot && this.tweet.pivot.retweeted && this.tweet.retweeted_status) { return this.buildTweet(this.tweet.retweeted_status) }
 
-      return this.tweet
+      return this.sanitizeTweet(this.tweet)
     },
     tweetPivot () {
       return this.tweet.pivot === undefined ? {} : this.tweet.pivot
@@ -124,6 +152,10 @@ export default {
       if (!this.refinedTweet.quoted_status) { return }
       return {
         ...this.buildTweet(this.refinedTweet.quoted_status),
+        pivot: {
+          favorited: this.refinedTweet.quoted_status.favorited,
+          retweeted: this.refinedTweet.quoted_status.retweeted,
+        }
       }
     },
   },

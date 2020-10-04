@@ -43,7 +43,7 @@ export default {
     hideLoading () {
       $(`.loading-gif`).fadeOut()
     },
-    parseTweet (tweet) {
+    parseTweetText (tweet) {
       return twitterText.autoLink(twitterText.htmlEscape(tweet), { targetBlank: true, })
     },
     isRtlText (text) {

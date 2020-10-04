@@ -61,6 +61,7 @@ class TweetsManager
         return [
             'id_str'                  => $tweet['id_str'],
             'extended_entities'       => $tweet['extended_entities'] ?? [],
+            'entities'                => $tweet['entities'] ?? [],
             'text'                    => $tweet['full_text'],
             'lang'                    => $tweet['lang'],
             'retweet_count'           => $tweet['retweet_count'] ?? null,

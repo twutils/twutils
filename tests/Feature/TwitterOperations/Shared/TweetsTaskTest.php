@@ -1301,4 +1301,56 @@ abstract class TweetsTaskTest extends IntegrationTestCase
           ]
         ]);
     }
+
+    public function test_task_view_is_built_successfully_ensure_zeros()
+    {
+        $this->withoutJobs();
+
+        $this->logInSocialUser('api');
+
+        $tweetWithVideo = $this->getStub('tweet_with_video.json');
+
+        config()->set(['twutils.minimum_expected_likes' => 10]);
+
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $aprTweets = collect($this->generateUniqueTweets(5, $tweetWithVideo))
+            ->map(function ($tweet) {
+                $tweet->created_at = Carbon::parse('2020-04');
+                return $tweet;
+            })
+            ->toArray();
+
+        $this->fireJobsAndBindTwitter(
+            [
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => array_merge(
+                        $aprTweets,
+                    ),
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [],
+                ],
+            ]
+        );
+
+        $response = $this->getJson('api/tasks/1/view');
+        $response->assertStatus(200);
+
+        $response->assertJson([
+          'count'               => 5,
+          'tweets_text_only'    => 0,
+          'tweets_with_photos'  => 0,
+          'tweets_with_videos'  => 5,
+          'tweets_with_gifs'    => 0,
+          'months' => [
+            2020 => [
+              4 => 5,
+            ],
+          ]
+        ]);
+    }
 }

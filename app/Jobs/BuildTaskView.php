@@ -31,6 +31,7 @@ class BuildTaskView implements ShouldQueue
     {
         $taskView = new TaskView ([
             'task_id' => $this->task->id,
+            'tweets_text_only' => 0,
         ]);
 
         if (! in_array($this->task->type, Task::TWEETS_LISTS_TYPES) )

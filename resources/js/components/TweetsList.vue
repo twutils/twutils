@@ -131,7 +131,7 @@
                 Tweets without Media
               </template>
               <small class="text-muted">
-                ({{tweets.filter(x => x.media.length === 0).length}})
+                ({{tweetsWithoutMedia}})
               </small>
             </label>
           </div>
@@ -142,10 +142,10 @@
                 تغريدات تحتوي على صور
               </template>
               <template v-if="locale === 'en'">
-                Tweets with photos
+                Tweets with Photos
               </template>
               <small class="text-muted">
-                ({{tweets.filter(x => x.media[0] && x.media[0].type === 'photo').length}})
+                ({{ tweetsWithPhotos }})
               </small>
             </label>
           </div>
@@ -159,7 +159,7 @@
                 Tweets with Gif
               </template>
               <small class="text-muted">
-                ({{tweets.filter(x => x.media[0] && x.media[0].type === 'animated_gif').length}})
+                ({{ tweetsWithGif }})
               </small>
             </label>
           </div>
@@ -173,7 +173,7 @@
                 Tweets with Videos
               </template>
               <small class="text-muted">
-                ({{tweets.filter(x => x.media[0] && x.media[0].type === 'video').length}})
+                ({{ tweetsWithVideos }})
               </small>
             </label>
           </div>
@@ -283,6 +283,8 @@ export default {
       resultsLength: 200,
       resultsStart: 0,
       resultsCount: 0,
+
+      taskView: null,
     }
   },
   computed: {
@@ -356,6 +358,18 @@ export default {
     totalPages () {
       return Math.ceil(this.resultsCount / this.resultsLength)
     },
+    tweetsWithoutMedia() {
+      return this.taskView ? this.taskView.tweets_text_only : this.tweets.filter(x => x.media.length === 0).length
+    },
+    tweetsWithPhotos() {
+      return this.taskView ? this.taskView.tweets_with_photos : this.tweets.filter(x => x.media[0] && x.media[0].type === 'photo').length
+    },
+    tweetsWithGif() {
+      return this.taskView ? this.taskView.tweets_with_gifs : this.tweets.filter(x => x.media[0] && x.media[0].type === 'animated_gif').length
+    },
+    tweetsWithVideos() {
+      return this.taskView ? this.taskView.tweets_with_videos : this.tweets.filter(x => x.media[0] && x.media[0].type === 'video').length
+    },
   },
   mounted () {
     this.debouncedAfterFiltering = debounce(t => {
@@ -366,6 +380,11 @@ export default {
     if (this.isLocal) {
       this.tweets = this.task.likes
       this.autoSelectLatestTweet()
+    } else if (this.task.status === 'completed') {
+      axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`)
+      .then(resp => {
+        this.taskView = resp.data
+      })
     } else {
       this.fetchTweetsList()
     }

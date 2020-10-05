@@ -47,7 +47,7 @@ class TasksController extends Controller
     {
         $this->authorize('view', $task);
 
-        return $task->view;
+        return $task->view->toArray() + $task->tweets()->paginate()->toArray();
     }
 
     public function getManagedTasks(Request $request, Task $task)

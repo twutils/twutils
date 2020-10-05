@@ -190,9 +190,24 @@
             {{year}} (<small>{{ getYearTweetsLength(year) }}</small>)
           </h5>
         </div>
-        <div @click="filterTweetsByYearAndMonth(year, monthIndex)" data-toggle="tooltip" data-placement="bottom" :title="`${year}-${month} ${getYearAndMonthTweetsLength(year, monthIndex)} ${__('tweets')}`" v-for="(month, monthIndex) in months" :class="`col-1 monthTweetsBarContainer ${selected.year === year && selected.month === monthIndex ? 'selected':''} ${getYearAndMonthTweetsLength(year, monthIndex) > 0 ? 'selectable':''}`" style="height: 50px;" :key="monthIndex">
-          <small class="monthTweetsBar" :style="`height: ${getMonthBarHeight(year, monthIndex)}px;`">&nbsp;</small>
-          <small class="monthTweetsBarLabel" v-if="monthIndex == 0 || monthIndex == 11" v-text="month.substr(0,3).toUpperCase()"></small>
+        <div
+          @click="filterTweetsByYearAndMonth(year, monthIndex)"
+          data-toggle="tooltip"
+          data-placement="bottom"
+          :title="`${year}-${month} ${getYearAndMonthTweetsLength(year, monthIndex)} ${__('tweets')}`"
+          v-for="(month, monthIndex) in months"
+          :class="`col-1 monthTweetsBarContainer ${selected.year === year && selected.month === monthIndex ? 'selected':''} ${getYearAndMonthTweetsLength(year, monthIndex) > 0 ? 'selectable':''}`"
+          style="height: 50px;"
+          :key="monthIndex"
+        >
+          <small
+            class="monthTweetsBar"
+            :style="`height: ${getMonthBarHeight(year, monthIndex)}px;`">&nbsp;</small>
+          <small
+            class="monthTweetsBarLabel"
+            v-if="monthIndex == 0 || monthIndex == 11"
+            v-text="month.substr(0,3).toUpperCase()"
+          ></small>
         </div>
       </div>
     </div>
@@ -383,7 +398,32 @@ export default {
     } else if (this.task.status === 'completed') {
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`)
       .then(resp => {
-        this.taskView = resp.data
+
+        let months = {}
+
+        Object.keys(resp.data.months).map(year => {
+          months[year] = {}
+
+          Object.keys(resp.data.months[year]).map(month => {
+            months[year][parseInt(month)-1] = resp.data.months[year][month]
+          })
+        })
+
+        this.taskView = {
+          ...resp.data,
+          months,
+        }
+
+        this.tweets = resp.data.data
+        this.tweetsCopy = this.tweets.map(tweet => {
+          return {
+            ...tweet,
+            tweet_created_at: new Date(tweet.tweet_created_at),
+          }
+        })
+
+        this.buildHistory()
+        this.$nextTick(this.autoSelectLatestTweet)
       })
     } else {
       this.fetchTweetsList()
@@ -443,6 +483,41 @@ export default {
         })
     },
     buildHistory () {
+      this.historyYears = []
+
+      if (this.taskView)
+      {
+        this.buildHistoryFromTaskView()
+      } else {
+        this.buildHistoryFromTweets()
+      }
+
+      this.historyYears.sort().reverse() // Start from maximum tweet year to minimum..
+
+      this.$nextTick(x => {
+        $(this.$el).find(`[data-toggle="tooltip"]`).tooltip(`dispose`)
+        this.tooltip()
+      })
+    },
+    buildHistoryFromTaskView() {
+        let tweetsYearsOnly = Object.keys(this.taskView.months).sort().reverse()
+
+        for (var i = min(tweetsYearsOnly); i <= max(tweetsYearsOnly); i++) {
+          if (!this.historyYears.includes(parseInt(i))) {
+            this.historyYears.push(parseInt(i))
+          }
+        }
+
+        this.maximumMonthlyTweets = max(
+          this.historyYears.map(year => {
+            return Object.keys(this.taskView.months[year] || {})
+            .map(month => {
+              return this.taskView.months[year][month]
+            })
+          }).reduce((a,b) => a.concat(b), [])
+        )
+    },
+    buildHistoryFromTweets() {
       this.tweetsCopy = this.tweets.map(tweet => {
         return {
           ...tweet,
@@ -454,7 +529,6 @@ export default {
       const tweetsYearsOnly = Object.keys(tweetsByYears)
 
       this.tweetsByYearsAndMonths = {}
-      this.historyYears = []
 
       tweetsYearsOnly.map(year => {
         this.tweetsByYearsAndMonths[year] = groupBy(tweetsByYears[year], (tweet) => tweet.tweet_created_at.getMonth())
@@ -465,13 +539,6 @@ export default {
           this.historyYears.push(parseInt(i))
         }
       }
-
-      this.historyYears.sort().reverse() // Start from maximum tweet year to minimum..
-
-      this.$nextTick(x => {
-        $(this.$el).find(`[data-toggle="tooltip"]`).tooltip(`dispose`)
-        this.tooltip()
-      })
     },
     navigatePrev () {
       if (this.canNavigatePrev) {
@@ -516,6 +583,8 @@ export default {
       this.debouncedAfterFiltering()
     },
     filterTweetsByYearAndMonth (year, month) {
+      console.log({year, month})
+
       if (this.getYearAndMonthTweetsLength(year, month) === 0) { return }
 
       this.resultsStart = 0
@@ -546,6 +615,14 @@ export default {
       })
     },
     getYearTweetsLength (year) {
+      if (this.taskView)
+      {
+        return Object.keys(this.taskView.months[year] || {})
+          .map(month => {
+            return this.taskView.months[year][month]
+          })
+          .reduce((a, b) => a + b, 0);
+      }
       return this.months
         .map((month, monthIndex) => {
           const monthTweets = get(this.tweetsByYearsAndMonths, [year, monthIndex, ].join(`.`))
@@ -554,6 +631,11 @@ export default {
         .reduce((a, b) => a + b)
     },
     getYearAndMonthTweetsLength (year, month) {
+      if (this.taskView)
+      {
+        return get(this.taskView, `months.${[year, month, ].join(`.`)}`, 0)
+      }
+
       const yearAndMonthTweets = get(this.tweetsByYearsAndMonths, [year, month, ].join(`.`))
       const yearAndMonthTweetsLength = yearAndMonthTweets == undefined ? 0 : yearAndMonthTweets.length
 

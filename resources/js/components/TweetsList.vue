@@ -191,7 +191,7 @@
           </h5>
         </div>
         <div
-          @click="filterTweetsByYearAndMonth(year, monthIndex)"
+          @click="selectYearAndMonth(year, monthIndex)"
           data-toggle="tooltip"
           data-placement="bottom"
           :title="`${year}-${month} ${getYearAndMonthTweetsLength(year, monthIndex)} ${__('tweets')}`"
@@ -396,35 +396,7 @@ export default {
       this.tweets = this.task.likes
       this.autoSelectLatestTweet()
     } else if (this.task.status === 'completed') {
-      axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`)
-      .then(resp => {
-
-        let months = {}
-
-        Object.keys(resp.data.months).map(year => {
-          months[year] = {}
-
-          Object.keys(resp.data.months[year]).map(month => {
-            months[year][parseInt(month)-1] = resp.data.months[year][month]
-          })
-        })
-
-        this.taskView = {
-          ...resp.data,
-          months,
-        }
-
-        this.tweets = resp.data.data
-        this.tweetsCopy = this.tweets.map(tweet => {
-          return {
-            ...tweet,
-            tweet_created_at: new Date(tweet.tweet_created_at),
-          }
-        })
-
-        this.buildHistory()
-        this.$nextTick(this.autoSelectLatestTweet)
-      })
+      this.fetchTweetsFromView()
     } else {
       this.fetchTweetsList()
     }
@@ -456,6 +428,42 @@ export default {
         const latestTweet = this.tweetsCopy.length == 0 ? null : this.tweetsCopy.reduce((a, b) => a.tweet_created_at > b.tweet_created_at ? a : b)
 
         this.filterTweetsByTweet(latestTweet)
+      })
+    },
+    fetchTweetsFromView() {
+      axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
+        params: {
+          year: this.selected.year,
+          month: this.selected.month ? (this.selected.month + 1) : null,
+        }
+      })
+      .then(resp => {
+
+        let months = {}
+
+        Object.keys(resp.data.months).map(year => {
+          months[year] = {}
+
+          Object.keys(resp.data.months[year]).map(month => {
+            months[year][parseInt(month)-1] = resp.data.months[year][month]
+          })
+        })
+
+        this.taskView = {
+          ...resp.data,
+          months,
+        }
+
+        this.tweets = resp.data.data
+        this.tweetsCopy = this.tweets.map(tweet => {
+          return {
+            ...tweet,
+            tweet_created_at: new Date(tweet.tweet_created_at),
+          }
+        })
+
+        this.buildHistory()
+        this.$nextTick(this.autoSelectLatestTweet)
       })
     },
     fetchTweetsList (page = 1) {
@@ -582,9 +590,15 @@ export default {
       }
       this.debouncedAfterFiltering()
     },
-    filterTweetsByYearAndMonth (year, month) {
-      console.log({year, month})
+    selectYearAndMonth (year, month) {
+      this.filterTweetsByYearAndMonth(year, month)
 
+      if (this.taskView)
+      {
+        this.fetchTweetsFromView()
+      }
+    },
+    filterTweetsByYearAndMonth (year, month) {
       if (this.getYearAndMonthTweetsLength(year, month) === 0) { return }
 
       this.resultsStart = 0

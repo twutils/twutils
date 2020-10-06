@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
-use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\Tasks\Factory as TaskFactory;
+use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;
@@ -47,7 +48,37 @@ class TasksController extends Controller
     {
         $this->authorize('view', $task);
 
-        return $task->view->toArray() + $task->tweets()->paginate()->toArray();
+        $this->validate($request, [
+            'month' => ['sometimes', 'integer', 'min:1', 'max:12'],
+            'year'  => ['sometimes', 'integer', 'min:2006', 'max:' . now()->year],
+        ]);
+
+        $query = $task->tweets();
+
+        $selectedMonth  = $request->month;
+        $selectedYear   = $request->year;
+
+        if (
+            (is_null($selectedMonth) || is_null($selectedYear)) &&
+            ($lastTweetData = $query->max('tweet_created_at'))
+        )
+        {
+            $lastTweetData = Carbon::parse($lastTweetData);
+
+            $selectedMonth = $lastTweetData->startOfMonth()->format('m');
+            $selectedYear = $lastTweetData->startOfMonth()->format('Y');
+        }
+
+        if (! (is_null($selectedMonth) || is_null($selectedYear)))
+        {
+            dump($selectedYear . '-' . $selectedMonth);
+            $startOfMonth = Carbon::parse($selectedYear . '-' . $selectedMonth);
+            
+            $query = $query->where('tweets.tweet_created_at', '>=', $startOfMonth)
+                           ->where('tweets.tweet_created_at', '<', (clone $startOfMonth)->endOfMonth());
+        }
+
+        return $task->view->toArray() + $query->paginate()->toArray();
     }
 
     public function getManagedTasks(Request $request, Task $task)

@@ -71,14 +71,13 @@ class TasksController extends Controller
 
         if (! (is_null($selectedMonth) || is_null($selectedYear)))
         {
-            dump($selectedYear . '-' . $selectedMonth);
             $startOfMonth = Carbon::parse($selectedYear . '-' . $selectedMonth);
             
             $query = $query->where('tweets.tweet_created_at', '>=', $startOfMonth)
                            ->where('tweets.tweet_created_at', '<', (clone $startOfMonth)->endOfMonth());
         }
 
-        return $task->view->toArray() + $query->paginate()->toArray();
+        return $task->view->toArray() + $query->paginate($request->perPage ?? 200)->toArray();
     }
 
     public function getManagedTasks(Request $request, Task $task)

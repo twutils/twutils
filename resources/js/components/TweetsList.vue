@@ -213,7 +213,7 @@
     </div>
     <div :class="`col-sm-8 order-sm-1 my-2`">
       <div class="row">
-        <div v-if="resultsCount  > paginatedFilteredTweets.length" class="col-12 chevronNavigateContainer d-flex justify-content-around">
+        <div v-if="shouldShowNavigation" class="col-12 chevronNavigateContainer d-flex justify-content-around">
           <div :class="`chevronNavigateCircle ${canNavigatePrev ? '':'inactive'}`" @click="navigatePrev">
             <span class="oi" data-glyph="chevron-left"></span>
           </div>
@@ -221,11 +221,11 @@
             {{__('page')}} {{ currentPage+1 }} / {{ totalPages }}
             <br>
             <small class="ltr" v-if="locale === 'en'">
-              showing {{resultsCount - resultsStart > resultsLength ? resultsLength : resultsCount - resultsStart }} tweet out of {{resultsCount}} tweet
+              showing {{paginatedFilteredTweets.length }} tweet{{paginatedFilteredTweets.length > 1 ? 's':''}} out of {{resultsCount}} tweet{{resultsCount>1 ? 's':''}}
             </small>
             <small class="rtl" v-if="locale === 'ar'">
               عرض
-              {{resultsCount - resultsStart > resultsLength ? resultsLength : resultsCount - resultsStart }}
+              {{paginatedFilteredTweets.length }}
                تغريدة من أصل
               {{resultsCount}}
                تغريدة
@@ -304,6 +304,12 @@ export default {
   },
   computed: {
     paginatedFilteredTweets () {
+      if ( this.taskView )
+      {
+        this.resultsCount = this.taskView.total
+        return this.taskView.data
+      }
+
       let tweets = this.tweetsCopy
       const filters = []
 
@@ -358,20 +364,38 @@ export default {
       return tweets.slice(this.resultsStart, this.resultsStart + this.resultsLength)
     },
     canNavigatePrev () {
+      if ( this.taskView )
+      {
+        return this.taskView.current_page > 1
+      }
+
       const prevStart = this.resultsStart - this.resultsLength
 
       return prevStart >= 0
     },
     canNavigateNext () {
+      if ( this.taskView )
+      {
+        return this.taskView.current_page < this.taskView.last_page
+      }
+
       const nextStart = this.resultsStart + this.resultsLength
 
       return nextStart < this.resultsCount
     },
+    shouldShowNavigation() {
+      if ( this.taskView )
+      {
+        return this.taskView.last_page !== 1
+      }
+
+      return this.resultsCount  > this.paginatedFilteredTweets.length
+    },
     currentPage () {
-      return Math.ceil(this.resultsStart / this.resultsLength)
+      return this.taskView ? (this.taskView.current_page-1) : Math.ceil(this.resultsStart / this.resultsLength)
     },
     totalPages () {
-      return Math.ceil(this.resultsCount / this.resultsLength)
+      return this.taskView ? this.taskView.last_page : Math.ceil(this.resultsCount / this.resultsLength)
     },
     tweetsWithoutMedia() {
       return this.taskView ? this.taskView.tweets_text_only : this.tweets.filter(x => x.media.length === 0).length
@@ -430,11 +454,13 @@ export default {
         this.filterTweetsByTweet(latestTweet)
       })
     },
-    fetchTweetsFromView() {
+    fetchTweetsFromView(page = 1) {
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
         params: {
           year: this.selected.year,
           month: this.selected.month ? (this.selected.month + 1) : null,
+          page,
+          perPage: this.resultsLength,
         }
       })
       .then(resp => {
@@ -549,20 +575,34 @@ export default {
       }
     },
     navigatePrev () {
-      if (this.canNavigatePrev) {
-        this.showLoading()
-        this.resultsStart = this.resultsStart - this.resultsLength
-        this.$nextTick(this.hideLoading)
-        this.debouncedAfterFiltering()
+      if (! this.canNavigatePrev)
+        return ;
+
+      if ( this.taskView )
+      {
+        this.fetchTweetsFromView(this.taskView.current_page - 1)
+        return ;
       }
+
+      this.showLoading()
+      this.resultsStart = this.resultsStart - this.resultsLength
+      this.$nextTick(this.hideLoading)
+      this.debouncedAfterFiltering()
     },
     navigateNext () {
-      if (this.canNavigateNext) {
-        this.showLoading()
-        this.resultsStart = this.resultsStart + this.resultsLength
-        this.$nextTick(this.hideLoading)
-        this.debouncedAfterFiltering()
+      if (! this.canNavigateNext)
+        return ;
+
+      if ( this.taskView )
+      {
+        this.fetchTweetsFromView(this.taskView.current_page + 1)
+        return ;
       }
+
+      this.showLoading()
+      this.resultsStart = this.resultsStart + this.resultsLength
+      this.$nextTick(this.hideLoading)
+      this.debouncedAfterFiltering()
     },
     buildSearch () {
       this.debouncedSearch = debounce(t => {

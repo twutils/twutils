@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
 use App\TwUtils\Tasks\Factory as TaskFactory;
@@ -51,6 +52,10 @@ class TasksController extends Controller
         $this->validate($request, [
             'month' => ['sometimes', 'integer', 'min:1', 'max:12'],
             'year'  => ['sometimes', 'integer', 'min:2006', 'max:' . now()->year],
+            'searchOptions' => ['sometimes', 'array'],
+            'searchOptions.*' => [ Rule::in(['withPhotos', 'withGifs', 'withVideos', 'withTextOnly'])],
+            'searchKeywords' => ['nullable', 'string'],
+            'searchOnlyInMonth' => ['sometimes', 'boolean'],
         ]);
 
         $query = $task->tweets();
@@ -59,6 +64,7 @@ class TasksController extends Controller
         $selectedYear   = $request->year;
 
         if (
+            empty($request->searchKeywords) &&
             (is_null($selectedMonth) || is_null($selectedYear)) &&
             ($lastTweetData = $query->max('tweet_created_at'))
         )
@@ -69,12 +75,46 @@ class TasksController extends Controller
             $selectedYear = $lastTweetData->startOfMonth()->format('Y');
         }
 
-        if (! (is_null($selectedMonth) || is_null($selectedYear)))
+        if (
+            (empty($request->searchKeywords) || $request->searchOnlyInMonth) &&
+            ! (is_null($selectedMonth) || is_null($selectedYear))
+        )
         {
             $startOfMonth = Carbon::parse($selectedYear . '-' . $selectedMonth);
             
             $query = $query->where('tweets.tweet_created_at', '>=', $startOfMonth)
                            ->where('tweets.tweet_created_at', '<', (clone $startOfMonth)->endOfMonth());
+        }
+
+        $query = $query->where(function ($query) use ($request) {
+            foreach (($request->searchOptions ?? []) as $searchOption) {
+                if ($searchOption === 'withTextOnly')
+                {
+                    $query = $query->OrwhereDoesntHave('media');
+                    continue;
+                }
+
+                $lookupTypes = [
+                    'withPhotos' => 'photo',
+                    'withGifs' => 'animated_gif',
+                    'withVideos' => 'video',
+                ];
+
+                $lookup = $lookupTypes[$searchOption];
+
+                $query = $query->OrWhereHas('media', function ($query) use ($lookup) {
+                    return $query->where('type', $lookup);
+                });
+            }
+        });
+
+        if ($request->searchKeywords)
+        {
+            $query = $query->where(function ($query) use ($request) {
+                foreach (explode(' ', $request->searchKeywords) as $keyword) {
+                    $query = $query->where('text', 'like', '%' . $keyword . '%');
+                }
+            });
         }
 
         return $task->view->toArray() + $query->paginate($request->perPage ?? 200)->toArray();

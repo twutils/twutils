@@ -433,6 +433,11 @@ export default {
     searchOptions: {
       deep: true,
       handler (newValue) {
+        if (this.taskView)
+        {
+          return this.$nextTick(x => this.fetchTweetsFromView(this.taskView.current_page))
+        }
+
         this.debouncedAfterFiltering()
       },
     },
@@ -454,13 +459,16 @@ export default {
         this.filterTweetsByTweet(latestTweet)
       })
     },
-    fetchTweetsFromView(page = 1) {
+    fetchTweetsFromView(page = 1, callback = null) {
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
         params: {
           year: this.selected.year,
           month: this.selected.month ? (this.selected.month + 1) : null,
           page,
           perPage: this.resultsLength,
+          searchOptions: Object.keys(this.searchOptions).filter(x => this.searchOptions[x]),
+          searchKeywords: this.searchKeywords,
+          searchOnlyInMonth: this.searchOnlyInMonth ? 1 : 0,
         }
       })
       .then(resp => {
@@ -489,6 +497,12 @@ export default {
         })
 
         this.buildHistory()
+
+        if (callback)
+        {
+          return callback()
+        }
+
         this.$nextTick(this.autoSelectLatestTweet)
       })
     },
@@ -614,6 +628,10 @@ export default {
       this.filterTweetsByYearAndMonth(tweet.tweet_created_at.getFullYear(), tweet.tweet_created_at.getMonth())
     },
     search () {
+      if (this.taskView) {
+        return this.$nextTick(x => this.fetchTweetsFromView(this.taskView.current_page, this.debouncedAfterFiltering))
+      }
+
       const searchKeywords = this.searchKeywords
       if (searchKeywords === ``) {
         this.searchFilter = (tweets) => tweets
@@ -621,6 +639,7 @@ export default {
         this.debouncedAfterFiltering()
         return
       }
+
 
       this.resultsStart = 0
 

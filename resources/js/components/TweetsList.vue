@@ -24,6 +24,7 @@
 //  padding-top: 1.5rem;
   white-space: pre-wrap;
   padding: 0rem 1rem;
+  word-break: break-word;
 }
 .monthTweetsBarContainer {
   background: rgb(245, 245, 245);
@@ -97,98 +98,138 @@
   <div class="my-3 row tweetsList">
     <slot></slot>
     <div class="col-12">
-      <div class="row">
-        <div class="col-sm-4">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <span class="oi" data-glyph="magnifying-glass"></span>
-              </span>
+      <div class="row tweetsList__controls__container">
+        <div class="col-sm-8 p-0 mh-100 d-flex flex-column justify-content-between" :style="`border-${isRtl ? 'left':'right'}: 1px dashed #ccc;`">
+          <div class="tweetsList__searchInfo__container d-flex justify-content-between" style="border-bottom: 1px solid #ccc;">
+            <div class="tweetsList__searchInfo" style="border-top-left-radius: 1rem; border-right: 1px solid #ccc;">
+              {{__('total_tweets')}}: {{intlFormat(resultsCount)}}
             </div>
-            <input v-model="searchKeywords" type="text" class="form-control" :placeholder="__('search')" aria-label="Search">
+            <div class="flex-1 d-flex align-items-center p-1">
+              <div class="small text-muted" style="min-width: 70px;">
+                {{__('sorted_by')}}:
+              </div>
+              <div class="tweetsList__sortDescription__container">
+                ...
+              </div>
+            </div>
+            <div class="tweetsList__searchInfo" style="border-left: 1px solid #ccc;">
+              {{__('search_results')}}: {{intlFormat(resultsCount)}}
+            </div>
+          </div>
+          <div class="d-flex flex-column p-3">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group form-check d-inline-block mx-2">
+                  <input v-model="searchOptions.withTextOnly" type="checkbox" class="form-check-input">
+                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withTextOnly = !searchOptions.withTextOnly ">
+                    <template v-if="locale === 'ar'">
+                      تغريدات بلا وسائط
+                    </template>
+                    <template v-if="locale === 'en'">
+                      Tweets without Media
+                    </template>
+                    <small class="text-muted">
+                      ({{tweetsWithoutMedia}})
+                    </small>
+                  </label>
+                </div>
+                <div class="form-group form-check d-inline-block mx-2">
+                  <input v-model="searchOptions.withPhotos" type="checkbox" class="form-check-input">
+                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withPhotos = !searchOptions.withPhotos ">
+                    <template v-if="locale === 'ar'">
+                      تغريدات تحتوي على صور
+                    </template>
+                    <template v-if="locale === 'en'">
+                      Tweets with Photos
+                    </template>
+                    <small class="text-muted">
+                      ({{ tweetsWithPhotos }})
+                    </small>
+                  </label>
+                </div>
+                <div class="form-group form-check d-inline-block mx-2">
+                  <input v-model="searchOptions.withGifs" type="checkbox" class="form-check-input">
+                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withGifs = !searchOptions.withGifs ">
+                    <template v-if="locale === 'ar'">
+                      تغريدات تحتوي على صور متحركة
+                    </template>
+                    <template v-if="locale === 'en'">
+                      Tweets with Gif
+                    </template>
+                    <small class="text-muted">
+                      ({{ tweetsWithGif }})
+                    </small>
+                  </label>
+                </div>
+                <div class="form-group form-check d-inline-block mx-2">
+                  <input v-model="searchOptions.withVideos" type="checkbox" class="form-check-input">
+                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withVideos = !searchOptions.withVideos ">
+                    <template v-if="locale === 'ar'">
+                      تغريدات تحتوي على فيديوهات
+                    </template>
+                    <template v-if="locale === 'en'">
+                      Tweets with Videos
+                    </template>
+                    <small class="text-muted">
+                      ({{ tweetsWithVideos }})
+                    </small>
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-sm-4 offset-sm-2">
-          <div class="form-group form-check pt-2">
-            <input v-model="searchOnlyInMonth" type="checkbox" class="form-check-input">
-            <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOnlyInMonth = !searchOnlyInMonth ">
-              <template v-if="locale === 'ar'">
-                البحث فقط في شهر
-              </template>
-              <template v-if="locale === 'en'">Search Only in</template>
-              {{ selected.year === null || selected.month === null ? (locale === 'ar' ?  'الشهر المختار' : 'the selected month') : `${selected.year}-${months[selected.month]}`}}
-            </label>
+        <div class="col-sm-4 mh-100">
+          <div class="w-100 p-3">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <span class="oi" data-glyph="magnifying-glass"></span>
+                </span>
+              </div>
+              <input v-model="searchKeywords" type="text" class="form-control" :placeholder="__('search')" aria-label="Search">
+            </div>
           </div>
-        </div>
-        <div class="col-sm-12">
-          <div class="form-group form-check d-inline-block mx-2">
-            <input v-model="searchOptions.withTextOnly" type="checkbox" class="form-check-input">
-            <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withTextOnly = !searchOptions.withTextOnly ">
-              <template v-if="locale === 'ar'">
-                تغريدات بلا وسائط
-              </template>
-              <template v-if="locale === 'en'">
-                Tweets without Media
-              </template>
-              <small class="text-muted">
-                ({{tweetsWithoutMedia}})
-              </small>
-            </label>
+          <div class="w-100 px-3">
+            <div class="">
+              <label class="small" for="perPage">{{__('per_page')}}: {{perPage}}</label>
+              <input type="range" class="custom-range" id="perPage" min="100" max="1000" step="10" v-model="perPage">
+            </div>
           </div>
-          <div class="form-group form-check d-inline-block mx-2">
-            <input v-model="searchOptions.withPhotos" type="checkbox" class="form-check-input">
-            <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withPhotos = !searchOptions.withPhotos ">
-              <template v-if="locale === 'ar'">
-                تغريدات تحتوي على صور
-              </template>
-              <template v-if="locale === 'en'">
-                Tweets with Photos
-              </template>
-              <small class="text-muted">
-                ({{ tweetsWithPhotos }})
-              </small>
-            </label>
-          </div>
-          <div class="form-group form-check d-inline-block mx-2">
-            <input v-model="searchOptions.withGifs" type="checkbox" class="form-check-input">
-            <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withGifs = !searchOptions.withGifs ">
-              <template v-if="locale === 'ar'">
-                تغريدات تحتوي على صور متحركة
-              </template>
-              <template v-if="locale === 'en'">
-                Tweets with Gif
-              </template>
-              <small class="text-muted">
-                ({{ tweetsWithGif }})
-              </small>
-            </label>
-          </div>
-          <div class="form-group form-check d-inline-block mx-2">
-            <input v-model="searchOptions.withVideos" type="checkbox" class="form-check-input">
-            <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withVideos = !searchOptions.withVideos ">
-              <template v-if="locale === 'ar'">
-                تغريدات تحتوي على فيديوهات
-              </template>
-              <template v-if="locale === 'en'">
-                Tweets with Videos
-              </template>
-              <small class="text-muted">
-                ({{ tweetsWithVideos }})
-              </small>
-            </label>
-          </div>
-        </div>
-        <div class="col-12" v-if="searchKeywords !== '' && searchSummaryMessage !== '' ">
-          {{ searchSummaryMessage }}
         </div>
       </div>
     </div>
     <div class="col-sm-4 order-sm-2">
       <div v-for="(year, yearIndex) in historyYears" class="row" :key="yearIndex">
-        <div class="col-12 mt-3">
+        <div class="col-12 mt-3 d-flex justify-content-between">
           <h5>
             {{year}} (<small>{{ getYearTweetsLength(year) }}</small>)
           </h5>
+          <div
+            v-if="yearIndex === 0"
+            class="btn-group"
+            data-toggle="buttons"
+          >
+            <label :class="`btn btn-outline-dark ${searchOnlyInMonth === true ? 'active':''}`">
+              <input class="invisibleRadio" type="radio" name="searchOnlyInMonth" v-model="searchOnlyInMonth" :value="true">
+                <template v-if="locale === 'ar'">
+                  البحث فقط في
+                </template>
+                <template v-if="locale === 'en'">
+                  Search Only in
+                </template>
+                {{ selected.year === null || selected.month === null ? (locale === 'ar' ?  'الشهر المختار' : 'the selected month') : `${selected.year}-${months[selected.month]}`}}
+            </label>
+            <label :class="`btn btn-outline-dark ${searchOnlyInMonth === false ? 'active':''}`">
+              <input class="invisibleRadio" type="radio" name="searchOnlyInMonth" v-model="searchOnlyInMonth" :value="false">
+              <template v-if="locale === 'ar'">
+                الكل
+              </template>
+              <template v-if="locale === 'en'">
+                All
+              </template>
+            </label>
+          </div>
         </div>
         <div
           @click="selectYearAndMonth(year, monthIndex)"
@@ -265,7 +306,6 @@ export default {
   },
   data () {
     return {
-      isMounted: false,
       filters: [],
       yearAndMonthFilter: null,
       searchFilter: null,
@@ -294,8 +334,7 @@ export default {
       jsSearch: searchTweets,
       debouncedSearch: null,
       debouncedAfterFiltering: null,
-      searchSummaryMessage: ``,
-      resultsLength: 200,
+      perPage: 200,
       resultsStart: 0,
       resultsCount: 0,
 
@@ -361,7 +400,7 @@ export default {
 
       this.resultsCount = tweets.length
 
-      return tweets.slice(this.resultsStart, this.resultsStart + this.resultsLength)
+      return tweets.slice(this.resultsStart, this.resultsStart + this.perPage)
     },
     canNavigatePrev () {
       if ( this.taskView )
@@ -369,7 +408,7 @@ export default {
         return this.taskView.current_page > 1
       }
 
-      const prevStart = this.resultsStart - this.resultsLength
+      const prevStart = this.resultsStart - this.perPage
 
       return prevStart >= 0
     },
@@ -379,7 +418,7 @@ export default {
         return this.taskView.current_page < this.taskView.last_page
       }
 
-      const nextStart = this.resultsStart + this.resultsLength
+      const nextStart = this.resultsStart + this.perPage
 
       return nextStart < this.resultsCount
     },
@@ -392,10 +431,10 @@ export default {
       return this.resultsCount  > this.paginatedFilteredTweets.length
     },
     currentPage () {
-      return this.taskView ? (this.taskView.current_page-1) : Math.ceil(this.resultsStart / this.resultsLength)
+      return this.taskView ? (this.taskView.current_page-1) : Math.ceil(this.resultsStart / this.perPage)
     },
     totalPages () {
-      return this.taskView ? this.taskView.last_page : Math.ceil(this.resultsCount / this.resultsLength)
+      return this.taskView ? this.taskView.last_page : Math.ceil(this.resultsCount / this.perPage)
     },
     tweetsWithoutMedia() {
       return this.taskView ? this.taskView.tweets_text_only : this.tweets.filter(x => x.media.length === 0).length
@@ -444,7 +483,15 @@ export default {
     searchKeywords (...args) {
       this.$nextTick(this.debouncedSearch)
     },
-    searchOnlyInMonth (...args) {
+    searchOnlyInMonth (newValue) {
+      if (! newValue)
+      {
+        this.selected = {
+          year: null,
+          month: null,
+        }
+      }
+
       this.$nextTick(this.debouncedSearch)
     },
     tweets () {
@@ -463,9 +510,9 @@ export default {
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
         params: {
           year: this.selected.year,
-          month: this.selected.month ? (this.selected.month + 1) : null,
+          month: this.selected.month !== null ? (this.selected.month + 1) : null,
           page,
-          perPage: this.resultsLength,
+          perPage: this.perPage,
           searchOptions: Object.keys(this.searchOptions).filter(x => this.searchOptions[x]),
           searchKeywords: this.searchKeywords,
           searchOnlyInMonth: this.searchOnlyInMonth ? 1 : 0,
@@ -503,7 +550,7 @@ export default {
           return callback()
         }
 
-        this.$nextTick(this.autoSelectLatestTweet)
+        this.$nextTick(this.afterFiltering)
       })
     },
     fetchTweetsList (page = 1) {
@@ -544,7 +591,12 @@ export default {
 
       this.$nextTick(x => {
         $(this.$el).find(`[data-toggle="tooltip"]`).tooltip(`dispose`)
+
         this.tooltip()
+
+        $(this.$el).find('[name=searchOnlyInMonth]').change((ev) => {
+          this.searchOnlyInMonth = ev.target.value === 'true'
+        })
       })
     },
     buildHistoryFromTaskView() {
@@ -599,7 +651,7 @@ export default {
       }
 
       this.showLoading()
-      this.resultsStart = this.resultsStart - this.resultsLength
+      this.resultsStart = this.resultsStart - this.perPage
       this.$nextTick(this.hideLoading)
       this.debouncedAfterFiltering()
     },
@@ -614,7 +666,7 @@ export default {
       }
 
       this.showLoading()
-      this.resultsStart = this.resultsStart + this.resultsLength
+      this.resultsStart = this.resultsStart + this.perPage
       this.$nextTick(this.hideLoading)
       this.debouncedAfterFiltering()
     },
@@ -652,16 +704,25 @@ export default {
     selectYearAndMonth (year, month) {
       this.filterTweetsByYearAndMonth(year, month)
 
-      if (this.taskView)
-      {
-        this.fetchTweetsFromView()
-      }
+
     },
     filterTweetsByYearAndMonth (year, month) {
+
+      if (this.searchOnlyInMonth)
+      {
+        this.$nextTick(this.debouncedSearch)
+      }
+
+      this.searchOnlyInMonth = true
+
       if (this.getYearAndMonthTweetsLength(year, month) === 0) { return }
 
       this.resultsStart = 0
-      this.searchKeywords = ``
+
+      if (! this.taskView)
+      {
+        this.searchKeywords = ``
+      }
 
       const monthStart = new Date(year, month, 1, 0, 0, 0, 0)
       const monthEnd = new Date(year, month, 1, 0, 0, 0, 0)

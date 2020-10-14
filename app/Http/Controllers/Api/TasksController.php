@@ -64,7 +64,7 @@ class TasksController extends Controller
         $selectedYear   = $request->year;
 
         if (
-            empty($request->searchKeywords) &&
+            $request->searchOnlyInMonth &&
             (is_null($selectedMonth) || is_null($selectedYear)) &&
             ($lastTweetData = $query->max('tweet_created_at'))
         )

@@ -71,7 +71,14 @@ class FetchLikesOperation extends TwitterOperation
 
         $responseCollection = collect($this->response)
             ->map(function (object $tweet) {
+
+                $tweetIdStr = $tweet->id_str;
+
+                $tweet = isset($tweet->retweeted_status) ? $tweet->retweeted_status : $tweet;
+
+                $tweet->id_str = $tweetIdStr;
                 $tweet->created_at = Carbon::createFromTimestamp(strtotime($tweet->created_at ?? 1));
+
 
                 return $tweet;
             });

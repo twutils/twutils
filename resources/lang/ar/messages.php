@@ -163,6 +163,7 @@ return [
     'with_media'        => 'مع الوسائط',
 
     'total_users'    => 'كل المستخدمين',
+    'total_tweets'   => 'كل التغريدات',
     'sorted_by'      => 'مرتبة بحسب',
     'search_results' => 'نتائج البحث',
     'per_page'       => 'في الصفحة الواحدة',

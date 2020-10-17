@@ -88,7 +88,7 @@
                       {{row.following_id.toString().padStart(10, '0')}}
                     </span>
                     <img
-                      style="width: 48px;"
+                      style="width: 48px; height: 48px;"
                       @error="avatarOnError"
                       :src="userPlaceholder"
                       :data-src="`${isLocal ? '' : window.TwUtils.assetsUrl}avatars/${row.id_str}.png`"

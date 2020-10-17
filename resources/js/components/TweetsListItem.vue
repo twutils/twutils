@@ -15,7 +15,7 @@
             <a class="tweetAvatarLink d-flex flex-row justify-content-start flex-wrap text-left" :href="`https://twitter.com/${refinedTweet.tweep.screen_name}`"  target="_blank" rel="noopener">
               <img
                 v-if="! isChild"
-                style="width: 48px;"
+                style="width: 48px; height: 48px;"
                 @error="avatarOnError"
                 :src="userPlaceholder"
                 :data-src="tweepAvatar"
@@ -103,6 +103,7 @@ export default {
         tweet_created_at: tweet.created_at,
         text: tweet.full_text,
         pivot: this.tweet.pivot,
+        media: get(tweet, 'extended_entities.media'),
       }
     },
     sanitizeTweet(tweet) {
@@ -140,7 +141,7 @@ export default {
     refinedTweet () {
       if (typeof this.tweet.tweet_created_at === `string`) { this.tweet.tweet_created_at = new Date(this.tweet.tweet_created_at) }
 
-      if (this.tweet.pivot && this.tweet.pivot.retweeted && this.tweet.retweeted_status) { return this.buildTweet(this.tweet.retweeted_status) }
+      if (this.tweet.pivot && this.tweet.pivot.retweeted && this.tweet.retweeted_status) { return this.sanitizeTweet(this.buildTweet(this.tweet.retweeted_status)) }
 
       return this.sanitizeTweet(this.tweet)
     },

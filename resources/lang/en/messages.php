@@ -163,6 +163,7 @@ return [
     'with_media'        => 'With Media',
 
     'total_users'    => 'Total Users',
+    'total_tweets'   => 'Total Tweets',
     'sorted_by'      => 'Sorted By',
     'search_results' => 'Search Results',
     'per_page'       => 'Per Page',

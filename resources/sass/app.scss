@@ -831,3 +831,59 @@ $taskExport-text: darken(theme-color('success'), 10%);
   opacity: 0;
   position: absolute;
 }
+
+.tweetImageCaption__text {
+  word-break: break-word;
+}
+
+.searchOptions__container {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  flex-direction: row;
+  flex: 1;
+}
+
+.searchOption__wrapper {
+  border-left: 1px solid rgb(204, 204, 204);
+  margin: 0;
+  padding: 0.5rem;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  .form-check-input {
+    margin: 0;
+    position: relative;
+  }
+
+  .form-check-label {
+    display: block;
+    width: 100%;
+    padding-left: 1rem;
+    color: $gray-600;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .searchOptions__container {
+    flex-direction: column;
+  }
+
+  .searchOption__wrapper {
+    border-left: none;
+    border-bottom: 1px solid rgb(204, 204, 204);
+  }
+}
+
+
+.searchOption__description {
+    color: $gray-600;
+    font-size: 12px;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+}

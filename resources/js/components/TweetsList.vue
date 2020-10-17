@@ -99,10 +99,10 @@
     <slot></slot>
     <div class="col-12">
       <div class="row tweetsList__controls__container">
-        <div class="col-sm-8 p-0 mh-100 d-flex flex-column justify-content-between" :style="`border-${isRtl ? 'left':'right'}: 1px dashed #ccc;`">
+        <div class="col-sm-8 p-0 mh-100" :style="`border-${isRtl ? 'left':'right'}: 1px dashed #ccc;`">
           <div class="tweetsList__searchInfo__container d-flex justify-content-between" style="border-bottom: 1px solid #ccc;">
             <div class="tweetsList__searchInfo" style="border-top-left-radius: 1rem; border-right: 1px solid #ccc;">
-              {{__('total_tweets')}}: {{intlFormat(resultsCount)}}
+              {{__('total_tweets')}}: {{intlFormat(totalTweets)}}
             </div>
             <div class="flex-1 d-flex align-items-center p-1">
               <div class="small text-muted" style="min-width: 70px;">
@@ -116,65 +116,66 @@
               {{__('search_results')}}: {{intlFormat(resultsCount)}}
             </div>
           </div>
-          <div class="d-flex flex-column p-3">
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="form-group form-check d-inline-block mx-2">
-                  <input v-model="searchOptions.withTextOnly" type="checkbox" class="form-check-input">
-                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withTextOnly = !searchOptions.withTextOnly ">
-                    <template v-if="locale === 'ar'">
-                      تغريدات بلا وسائط
-                    </template>
-                    <template v-if="locale === 'en'">
-                      Tweets without Media
-                    </template>
-                    <small class="text-muted">
-                      ({{tweetsWithoutMedia}})
-                    </small>
-                  </label>
-                </div>
-                <div class="form-group form-check d-inline-block mx-2">
-                  <input v-model="searchOptions.withPhotos" type="checkbox" class="form-check-input">
-                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withPhotos = !searchOptions.withPhotos ">
-                    <template v-if="locale === 'ar'">
-                      تغريدات تحتوي على صور
-                    </template>
-                    <template v-if="locale === 'en'">
-                      Tweets with Photos
-                    </template>
-                    <small class="text-muted">
-                      ({{ tweetsWithPhotos }})
-                    </small>
-                  </label>
-                </div>
-                <div class="form-group form-check d-inline-block mx-2">
-                  <input v-model="searchOptions.withGifs" type="checkbox" class="form-check-input">
-                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withGifs = !searchOptions.withGifs ">
-                    <template v-if="locale === 'ar'">
-                      تغريدات تحتوي على صور متحركة
-                    </template>
-                    <template v-if="locale === 'en'">
-                      Tweets with Gif
-                    </template>
-                    <small class="text-muted">
-                      ({{ tweetsWithGif }})
-                    </small>
-                  </label>
-                </div>
-                <div class="form-group form-check d-inline-block mx-2">
-                  <input v-model="searchOptions.withVideos" type="checkbox" class="form-check-input">
-                  <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withVideos = !searchOptions.withVideos ">
-                    <template v-if="locale === 'ar'">
-                      تغريدات تحتوي على فيديوهات
-                    </template>
-                    <template v-if="locale === 'en'">
-                      Tweets with Videos
-                    </template>
-                    <small class="text-muted">
-                      ({{ tweetsWithVideos }})
-                    </small>
-                  </label>
-                </div>
+          <div class="d-flex">
+            <div class="searchOption__description">
+              Filter by Media:
+            </div>
+            <div class="searchOptions__container">
+              <div class="searchOption__wrapper">
+                <input v-model="searchOptions.withTextOnly" type="checkbox" class="form-check-input">
+                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withTextOnly = !searchOptions.withTextOnly ">
+                  <template v-if="locale === 'ar'">
+                    تغريدات بلا وسائط
+                  </template>
+                  <template v-if="locale === 'en'">
+                    Tweets without Media
+                  </template>
+                  <small class="text-muted">
+                    ({{tweetsWithoutMedia}})
+                  </small>
+                </label>
+              </div>
+              <div class="searchOption__wrapper">
+                <input v-model="searchOptions.withPhotos" type="checkbox" class="form-check-input">
+                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withPhotos = !searchOptions.withPhotos ">
+                  <template v-if="locale === 'ar'">
+                    تغريدات تحتوي على صور
+                  </template>
+                  <template v-if="locale === 'en'">
+                    Tweets with Photos
+                  </template>
+                  <small class="text-muted">
+                    ({{ tweetsWithPhotos }})
+                  </small>
+                </label>
+              </div>
+              <div class="searchOption__wrapper">
+                <input v-model="searchOptions.withGifs" type="checkbox" class="form-check-input">
+                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withGifs = !searchOptions.withGifs ">
+                  <template v-if="locale === 'ar'">
+                    تغريدات تحتوي على صور متحركة
+                  </template>
+                  <template v-if="locale === 'en'">
+                    Tweets with Gif
+                  </template>
+                  <small class="text-muted">
+                    ({{ tweetsWithGif }})
+                  </small>
+                </label>
+              </div>
+              <div class="searchOption__wrapper">
+                <input v-model="searchOptions.withVideos" type="checkbox" class="form-check-input">
+                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withVideos = !searchOptions.withVideos ">
+                  <template v-if="locale === 'ar'">
+                    تغريدات تحتوي على فيديوهات
+                  </template>
+                  <template v-if="locale === 'en'">
+                    Tweets with Videos
+                  </template>
+                  <small class="text-muted">
+                    ({{ tweetsWithVideos }})
+                  </small>
+                </label>
               </div>
             </div>
           </div>
@@ -336,19 +337,15 @@ export default {
       debouncedAfterFiltering: null,
       perPage: 200,
       resultsStart: 0,
-      resultsCount: 0,
 
       taskView: null,
     }
   },
   computed: {
-    paginatedFilteredTweets () {
-      if ( this.taskView )
-      {
-        this.resultsCount = this.taskView.total
-        return this.taskView.data
-      }
-
+    totalTweets() {
+      return this.task.likes_count
+    },
+    filteredTweets () {
       let tweets = this.tweetsCopy
       const filters = []
 
@@ -378,7 +375,7 @@ export default {
         filters.push(filterFunc)
       }
 
-      if ((filters.length == 0 || this.searchOnlyInMonth) && this.yearAndMonthFilter !== null) { filters.push(this.yearAndMonthFilter) }
+      if (this.searchOnlyInMonth && this.yearAndMonthFilter !== null) { filters.push(this.yearAndMonthFilter) }
 
       filters
         .filter(filter => !filter.isOrOperatorFilter)
@@ -398,9 +395,23 @@ export default {
         tweets = sortBy(uniqBy(orOperatorResults, `id`), `tweet_created_at`).reverse()
       }
 
-      this.resultsCount = tweets.length
+      return tweets
+    },
+    paginatedFilteredTweets () {
+      if ( this.taskView )
+      {
+        return this.taskView.data
+      }
 
-      return tweets.slice(this.resultsStart, this.resultsStart + this.perPage)
+      return this.filteredTweets.slice(this.resultsStart, this.resultsStart + this.perPage)
+    },
+    resultsCount() {
+      if ( this.taskView )
+      {
+        return this.taskView.total
+      }
+
+      return this.filteredTweets.length
     },
     canNavigatePrev () {
       if ( this.taskView )
@@ -474,7 +485,7 @@ export default {
       handler (newValue) {
         if (this.taskView)
         {
-          return this.$nextTick(x => this.fetchTweetsFromView(this.taskView.current_page))
+          return this.$nextTick(this.debouncedSearch)
         }
 
         this.debouncedAfterFiltering()
@@ -681,7 +692,7 @@ export default {
     },
     search () {
       if (this.taskView) {
-        return this.$nextTick(x => this.fetchTweetsFromView(this.taskView.current_page, this.debouncedAfterFiltering))
+        return this.$nextTick(x => this.fetchTweetsFromView(1, this.debouncedAfterFiltering))
       }
 
       const searchKeywords = this.searchKeywords

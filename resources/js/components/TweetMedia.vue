@@ -86,7 +86,7 @@ export default {
         return
       }
 
-      this.videoVariants = get(this.media.raw, `video_info.variants`) || []
+      this.videoVariants = get(this.media.raw || this.media, `video_info.variants`) || []
 
       const maxBitrate = maxBy(this.videoVariants, `bitrate`)
 
@@ -97,7 +97,7 @@ export default {
       }
     },
     setVideoDimensionsAttributes () {
-      const aspectRatio = get(this.media.raw, `video_info.aspect_ratio`)
+      const aspectRatio = get(this.media.raw || this.media, `video_info.aspect_ratio`)
 
       if (!aspectRatio) { return }
 
@@ -117,12 +117,13 @@ export default {
       if (
         !this.isChild &&
         this.isLocal &&
+        this.media.media_files &&
         this.media.media_files[0].mediaPath
       ) {
         return `media/` + this.media.media_files[0].mediaPath
       }
 
-      return this.media.raw.media_url_https
+      return get(this.media.raw || this.media, `media_url_https`)
     },
   },
 }

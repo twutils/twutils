@@ -22,6 +22,7 @@ export default {
       userPlaceholder: `${isLocal ? `assets/` : window.TwUtils.baseUrl}images/user-placeholder.gif`,
       isLocal,
       loadingGifSrc: `${isLocal ? `assets/` : window.TwUtils.baseUrl}images/loading.gif`,
+      grayBase64Image: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNc+B8AAkcBolySrScAAAAASUVORK5CYII=`,
     }
   },
   methods: {

@@ -209,23 +209,29 @@
                   <template
                     v-if="userExport && confirmRemoveMode === userExport.id"
                   >
-                    <div>
-                      {{__('confirmRemoveExport')}}
+                    <div class="text-center" v-if="removingMode">
+                      {{ __('removing') }}...
+                      <img :src="loadingGifSrc" class="m-auto loadingGif" width="20px" height="20px">
                     </div>
-                    <button
-                      @click="confirmRemoveMode = false"
-                      type="button"
-                      :class="`btn btn-outline-primary btn-sm animated fadeIn`"
-                    >
-                      {{__('cancel')}}
-                    </button>
-                    <button
-                      @click="doRemove(userExport)"
-                      type="button"
-                      :class="`btn btn-outline-danger btn-sm animated fadeIn`"
-                    >
-                      {{__('remove')}}
-                    </button>
+                    <template v-if="!removingMode">
+                      <div>
+                        {{__('confirmRemoveExport')}}
+                      </div>
+                      <button
+                        @click="confirmRemoveMode = false"
+                        type="button"
+                        :class="`btn btn-outline-primary btn-sm animated fadeIn`"
+                      >
+                        {{__('cancel')}}
+                      </button>
+                      <button
+                        @click="doRemove(userExport)"
+                        type="button"
+                        :class="`btn btn-outline-danger btn-sm animated fadeIn`"
+                      >
+                        {{__('remove')}}
+                      </button>
+                    </template>
                   </template>
                   <button
                     @click="remove(userExport)"
@@ -268,6 +274,7 @@ export default {
     return {
       selectedExportType: ``,
       confirmRemoveMode: false,
+      removingMode: false,
     }
   },
   mounted () {
@@ -308,9 +315,15 @@ export default {
       this.confirmRemoveMode = userExport.id
     },
     doRemove (userExport) {
+      this.removingMode = true
+
       axios.delete(`${window.TwUtils.apiBaseUrl}exports/${userExport.id}`)
         .then(response => {
+          this.removingMode = false
           EventBus.fire(`refresh-task`)
+        })
+        .catch(err => {
+          this.removingMode = false
         })
     },
   },

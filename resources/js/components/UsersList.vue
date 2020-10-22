@@ -83,33 +83,42 @@
           >
               <template slot-scope="{ row, columns }">
                 <tr>
-                  <td>
-                    <span class="d-none">
-                      {{row.following_id.toString().padStart(10, '0')}}
-                    </span>
+                  <td
+                  >
+                    <div
+                      v-if="!row.background_image && row.background_color"
+                      :class="`user__backgroundImage`"
+                      :style="`background: #${row.background_color}`"
+                    ></div>
                     <img
-                      style="width: 48px; height: 48px;"
-                      @error="avatarOnError"
+                      v-if="row.background_image"
+                      @error="imageOnError"
                       :src="userPlaceholder"
-                      :data-src="`${isLocal ? '' : window.TwUtils.assetsUrl}avatars/${row.id_str}.png`"
-                      :data-tweep-avatar="row.avatar"
-                      class="lazy rounded-circle user__avatar"
+                      :data-src="`${row.background_image}`"
+                      class="lazy user__backgroundImage"
                     >
-                    <span class="d-none">
-                      verified:{{row.verified ? 'yes' : 'no'}}
-                    </span>
-                    <span
-                      v-if="row.verified"
-                      class="verifiedMark"
-                    >
-                      <span class="oi" data-glyph="check"></span>
-                    </span>
-                    <span v-if="row.followed_by">
-                      <br>
-                      <span class="followedByMark">
-                        Follows You
+                    <div class="user__avatarContainer">
+                      <img
+                        style="width: 48px; height: 48px;"
+                        @error="avatarOnError"
+                        :src="userPlaceholder"
+                        :data-src="`${isLocal ? '' : window.TwUtils.assetsUrl}avatars/${row.id_str}.png`"
+                        :data-tweep-avatar="row.avatar"
+                        class="lazy rounded-circle user__avatar"
+                      >
+                      <span
+                        v-if="row.verified"
+                        class="verifiedMark"
+                      >
+                        <span class="oi" data-glyph="check"></span>
                       </span>
-                    </span>
+                      <span v-if="row.followed_by">
+                        <br>
+                        <span class="followedByMark">
+                          Follows You
+                        </span>
+                      </span>
+                    </div>
                   </td>
                   <td>
                     <a
@@ -449,12 +458,16 @@ export default {
       const el = e.target
 
       if (el.isRemote) {
-        el.src = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNc+B8AAkcBolySrScAAAAASUVORK5CYII=`
+        el.src = this.grayBase64Image
         return
       }
 
       el.isRemote = true
       el.src = el.dataset.tweepAvatar
+    },
+    imageOnError (e) {
+      const el = e.target
+      el.src = this.grayBase64Image
     },
   },
   computed: {

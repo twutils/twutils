@@ -84,7 +84,7 @@ export default {
       const el = e.target
 
       if (el.isRemote) {
-        el.src = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNc+B8AAkcBolySrScAAAAASUVORK5CYII=`
+        el.src = this.grayBase64Image
         return
       }
 

@@ -176,6 +176,7 @@ return [
     'start_date'                  => 'Start Date',
     'end_date'                    => 'End Date',
     'removed'                     => 'Removed',
+    'removing'                    => 'Removing',
 
     'exports'   => [
         \App\Export::TYPE_EXCEL         => 'Excel',

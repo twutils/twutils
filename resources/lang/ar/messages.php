@@ -176,6 +176,7 @@ return [
     'start_date'                  => 'تاريخ البداية',
     'end_date'                    => 'تاريخ النهاية',
     'removed'                     => 'المحذوف',
+    'removing'                    => 'جاري الحذف',
 
     'exports'   => [
         \App\Export::TYPE_EXCEL         => 'إكسل',

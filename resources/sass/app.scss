@@ -565,6 +565,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
 .taskExportsDetails__statusWrapper {
     margin-top: 0rem;
     padding-bottom: 7px;
+    padding-top: 1rem;
 }
 
 .taskExportsDetails
@@ -578,6 +579,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
   text-align: center;
   font-size: 1rem;
   margin-left: 1rem;
+  color: $gray-600;
 
   @at-root .rtl & {
     margin-left: 0;
@@ -587,9 +589,13 @@ $taskExport-text: darken(theme-color('success'), 10%);
 
 .taskExportsDetails__typeDesc
 {
-  font-weight: 200;
+  font-weight: 400;
   display: block;
+  font-size: 90%;
+  color: $gray-600;
+  padding-left: 1rem;
 }
+
 .taskExportsDetails__date
 {
   padding-left: 15px;
@@ -608,7 +614,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
 {
 
 }
-.taskExportsDetails__date--_broken
+.taskExportsDetails__date--broken
 {
 
 }
@@ -650,14 +656,30 @@ $taskExport-text: darken(theme-color('success'), 10%);
 .taskExportsDetails__row--excel
 {
     background: linear-gradient(-45deg, #f3fff3, transparent);
+
+    .taskExportsDetails__typeIcon 
+    {
+      color: darken(#f3fff3, 10%);
+    }
 }
+
 .taskExportsDetails__row--html
 {
     background: hsl(210 100% 98% / 1);
+
+    .taskExportsDetails__typeIcon 
+    {
+      color: darken(hsl(210 100% 98% / 1), 10%);
+    }
 }
 .taskExportsDetails__row--htmlEntities
 {
     background: linear-gradient(45deg, hsl(12deg 100% 98%), hsl(208deg 100% 98%));
+
+    .taskExportsDetails__typeIcon 
+    {
+      color: darken(hsl(12deg 100% 98%), 10%);
+    }
 }
 
 .taskExportsDetails td
@@ -687,10 +709,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
     top: 6px;
     font-size: 20px;
     color: #ccc;
-}
-
-.taskExportsDetails__typeDesc {
-    font-size: 90%;
+    text-shadow: 1px 1px 1px #ccc;
 }
 
 .taskExportsDetails__button {
@@ -703,7 +722,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
 
 .taskExport__iconWrapper {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -918,4 +937,35 @@ $taskExport-text: darken(theme-color('success'), 10%);
 .user__avatarContainer .user__avatar {
   box-shadow: 0px 0px 10px #929292;
   margin-left: 1rem;
+}
+
+
+.taskExportsDetails__status {
+    max-width: 60px;
+    font-size: 0.7rem;
+    background: #acacac;
+}
+
+.taskExportsDetails__status.current {
+    max-width: 90px;
+    font-size: 1rem;
+    box-shadow: 0px 0px 4px #929292;
+    padding: 0.3rem;
+}
+
+
+.taskExportsDetails__statusWrapper {
+    background: white;
+}
+
+.taskExport__typeContainer {
+    box-shadow: 2px 2px 4px #eee;
+    position: relative;
+}
+
+button.taskExportsDetails__button.btn.btn-outline-primary {
+    position: absolute;
+    display: block;
+    top: 20px;
+    right: 4px;
 }

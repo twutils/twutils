@@ -100,7 +100,7 @@
                         class="taskExportsDetails__statusWrapper"
                       >
                       <span
-                        :class="`taskExportsDetails__status ${userExport.status === 'success' ? 'current bg-success' : ''}`"
+                        :class="`taskExportsDetails__status taskExportsDetails__status--success ${userExport.status === 'success' ? 'current bg-gradient-success' : ''}`"
                       >
                         {{__('success')}}
                       </span>
@@ -113,11 +113,11 @@
                         class="taskExportsDetails__statusWrapper"
                       >
                       <span
-                        :class="`taskExportsDetails__status ${userExport.status === 'broken' ? 'current bg-danger' : ''}`"
+                        :class="`taskExportsDetails__status taskExportsDetails__status--broken ${userExport.status === 'broken' ? 'current bg-gradient-danger' : ''}`"
                       >
                         {{__('broken')}}
                       </span>
-                        <div class="taskExportsDetails__date taskExportsDetails__date--_broken">
+                        <div class="taskExportsDetails__date taskExportsDetails__date--broken">
                           {{ momentCalendar(userExport.broken_at) }}
                         </div>
                       </div>
@@ -126,7 +126,7 @@
                         class="taskExportsDetails__statusWrapper"
                       >
                       <span
-                        :class="`taskExportsDetails__status ${userExport.status === 'started' ? 'current bg-primary' : ''}`"
+                        :class="`taskExportsDetails__status taskExportsDetails__status--started ${userExport.status === 'started' ? 'current bg-gradient-primary' : ''}`"
                       >
                         {{__('started')}}
                       </span>
@@ -138,7 +138,7 @@
                           class="progress"
                         >
                           <div
-                            class="progress-bar progress-bar-striped bg-info"
+                            class="progress-bar progress-bar-striped bg-gradient-info"
                             role="progressbar"
                             :style="`width: ${(userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress) * 100 / userExport.progress_end}%`"
                             :aria-valuenow="userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress"
@@ -152,11 +152,11 @@
                         class="taskExportsDetails__statusWrapper"
                       >
                       <span
-                        :class="`taskExportsDetails__status ${userExport.status === 'initial' ? 'current bg-secondary' : ''}`"
+                        :class="`taskExportsDetails__status taskExportsDetails__status--initial ${userExport.status === 'initial' ? 'current bg-secondary' : ''}`"
                       >
                         {{__('initial')}}
                       </span>
-                        <div class="taskExportsDetails__date taskExportsDetails__date--started">
+                        <div class="taskExportsDetails__date taskExportsDetails__date--initial">
                           {{ momentCalendar(userExport.created_at) }}
                         </div>
                       </div>

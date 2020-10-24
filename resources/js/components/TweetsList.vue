@@ -105,11 +105,7 @@
               {{__('total_tweets')}}: {{intlFormat(totalTweets)}}
             </div>
             <div class="flex-1 d-flex align-items-center p-1">
-              <div class="small text-muted" style="min-width: 70px;">
-                {{__('sorted_by')}}:
-              </div>
               <div class="tweetsList__sortDescription__container">
-                ...
               </div>
             </div>
             <div class="tweetsList__searchInfo" style="border-left: 1px solid #ccc;">

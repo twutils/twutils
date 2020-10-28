@@ -15,8 +15,7 @@ if (app('env') != 'production' && file_exists($tempRoutes = base_path('temp/temp
     include $tempRoutes;
 }
 
-Route::get('/', 'WelcomeController@index')->name('welcome');
-Route::post('/', 'WelcomeController@index');
+Route::any('/', 'WelcomeController@index')->name('welcome');
 
 Route::get('/about', 'WelcomeController@about')->name('about');
 

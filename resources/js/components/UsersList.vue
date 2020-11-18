@@ -386,6 +386,12 @@ export default {
       this.loading = true
       this.$nextTick(this.debouncedSearch)
     },
+    selectedSorts() {
+      if (this.taskView)
+      {
+        this.debouncedSearch()
+      }
+    },
   },
   mounted () {
     this.debouncedSearch = debounce(t => {
@@ -443,6 +449,8 @@ export default {
           page: this.page,
           perPage: this.perPage,
           search: this.searchKeywords,
+          orderFields: this.orderFields,
+          orderDirections: this.orderDirections,
         }
         })
         .then(resp => {
@@ -516,7 +524,12 @@ export default {
         })
     },
     sort (el, event) {
-      if (el.sortState === 0) { el.sortState = 1 } else if (el.sortState === 1) { el.sortState = -1 } else if (el.sortState === -1) { el.sortState = 0 }
+      if (el.sortState === 1)
+      {
+        el.sortState = -1
+      } else {
+        el.sortState += 1;
+      }
 
       this.$delete(this.selectedSorts, el.sortField)
 

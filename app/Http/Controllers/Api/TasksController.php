@@ -148,14 +148,52 @@ class TasksController extends Controller
 
     protected function getUsersListView(Request $request,Task $task)
     {
+        $this->validate($request, [
+            'orderFields'       => [
+                'array',
+                'max:8',
+                'required_with:orderDirections',
+                'lte:orderDirections',
+                'gte:orderDirections',
+            ],
+            'orderFields.*' => [
+                'string',
+                Rule::in([
+                    'following_id',
+                    'screen_name',
+                    'name',
+                    $task->type === FetchFollowingOperation::class ? 'followed_by' : 'followed_by_me',
+                    'friends_count',
+                    'followers_count',
+                    'statuses_count',
+                    'description',
+                ]),
+            ],
+            'orderDirections'   => [
+                'array',
+                'max:8',
+                'required_with:orderFields',
+                'lte:orderFields',
+                'gte:orderFields',
+            ],
+            'orderDirections.*' => [
+                'string',
+                Rule::in(['asc', 'desc',]),
+            ],
+        ]);
+
         $query = null;
+
+        $relatedTableName = null;
 
         if (in_array($task->type, [FetchFollowingOperation::class])) {
             $query = $task->followings()->with('tweep');
+            $relatedTableName = 'followings';
         }
 
         if (in_array($task->type, [FetchFollowersOperation::class])) {
             $query = $task->followers()->with('tweep');
+            $relatedTableName = 'followers';
         }
 
         $totalCount = $query->count();
@@ -170,6 +208,25 @@ class TasksController extends Controller
                     return $query;
                 });
             });
+
+        }
+
+        $query = $query->join('tweeps', 'tweeps.id_str', '=', $relatedTableName . '.tweep_id_str');
+
+        foreach (($request->orderFields ?? []) as $key => $field) {
+            $orderColumn = 'tweeps.' . $field;
+
+            if ($field === 'following_id')
+            {
+                $orderColumn = $relatedTableName . '.id';
+            }
+
+            if ( in_array($field , ['followed_by', 'followed_by_me']))
+            {
+                $orderColumn = $relatedTableName . '.' . $field;
+            }
+
+            $query = $query->orderBy($orderColumn, $request->orderDirections[$key]);
         }
 
         return array_merge($query->paginate($request->perPage ?? 200)->toArray() , ['totalCount' => $totalCount]);

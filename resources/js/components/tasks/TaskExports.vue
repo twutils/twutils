@@ -19,7 +19,7 @@
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <div :class="`modal-body ${isRtl ? 'rtl': 'ltr'}`">
+                <div :class="`modal-body ${isRtl ? 'ltr': 'ltr'}`">
                   <task-exports-details :exports="exports" :task="task"></task-exports-details>
                 </div>
                 <div :class="`modal-footer ${isRtl ? 'rtl': 'ltr'}`">

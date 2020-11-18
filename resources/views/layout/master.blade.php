@@ -11,6 +11,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{asset("/apple-touch-icon.png")}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{asset("/favicon-32x32.png")}}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{asset("/favicon-16x16.png")}}">
+
+    <link rel="preload" as="image" href="{{ empty($isLocal) ? asset('images/loading.gif') : 'assets/images/loading.gif' }}">
+
     <link rel="manifest" href="{{asset("/site.webmanifest")}}">
     <link rel="mask-icon" href="{{asset("/safari-pinned-tab.svg")}}" color="#535353">
     <meta name="msapplication-TileColor" content="#da532c">

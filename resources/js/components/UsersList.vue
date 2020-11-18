@@ -1,6 +1,17 @@
-<style lang="scss">
+<style lang="scss" scoped>
+.ph-item {
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 1.5rem;
+}
 
+.ph-picture {
+  margin: 0;
+  padding: 1rem;
+}
 </style>
+<!--  SHOULD BE BACKEND -->
 <template>
   <div class="my-3 row">
     <slot></slot>
@@ -23,10 +34,12 @@
     <div :class="`col-12 ${isRtl ? 'rtl':''}`">
       <div class="row usersList__controls__container">
         <div class="col-sm-8 p-0 mh-100 d-flex flex-column justify-content-between" :style="`border-${isRtl ? 'left':'right'}: 1px dashed #ccc;`">
-          <div class="usersList__searchInfo__container d-flex justify-content-between" style="border-bottom: 1px solid #ccc;">
-            <div class="usersList__searchInfo" style="border-top-left-radius: 1rem; border-right: 1px solid #ccc;">
-              {{__('total_users')}}: {{intlFormat(users.length)}}
-              <img v-if="loading" style="height: 30px;" :src="loadingGifSrc" class="m-auto loadingGif">
+          <div class="usersList__searchInfo__container d-flex justify-content-between" style="border-bottom: 1px solid #ccc; max-height: 50px;">
+            <div class="usersList__searchInfo" style="border-top-left-radius: 1rem; border-right: 1px solid #ccc; min-width: 170px;">
+              <span>
+                {{__('total_users')}}: {{intlFormat(totalUsers)}}
+              </span>
+              <img v-if="loading" style="height: 30px;" :src="loadingGifSrc" class="loadingGif">
             </div>
             <div class="flex-1 d-flex align-items-center p-1">
               <div class="small text-muted" style="min-width: 70px;">
@@ -60,7 +73,7 @@
                   <span class="oi" data-glyph="magnifying-glass"></span>
                 </span>
               </div>
-              <input v-model="searchKeywords" type="text" class="form-control" :placeholder="__('search')" aria-label="Search">
+              <input v-model="searchKeywords" type="text" class="form-control" :placeholder="__('search_in_users_list')" aria-label="Search">
             </div>
           </div>
           <div class="w-100 px-3">
@@ -82,7 +95,49 @@
             :data="filteredUsers"
           >
               <template slot-scope="{ row, columns }">
-                <tr>
+                <tr v-if="row === undefined || loading" class="">
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s p-0 d-block">
+                      <div class="ph-picture m-auto" style="height: 50px; width: 50px; border-radius: 100%;"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s">
+                      <span class="ph-picture" style="height: 20px; width: 60px;"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s">
+                      <span class="ph-picture" style="height: 20px; width: 60px;"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s">
+                      <span class="ph-picture" style="height: 20px; width: 60px;"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s">
+                      <span class="ph-picture" style="height: 20px; width: 60px;"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s">
+                      <span class="ph-picture" style="height: 20px; width: 60px;"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s">
+                      <span class="ph-picture" style="height: 20px; width: 60px;"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ph-item animated fadeOut infinite animation-3s">
+                      <span class="ph-picture" style="height: 20px; width: 100px;"></span>
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="! loading && row !== undefined">
                   <td
                   >
                     <div
@@ -247,6 +302,8 @@ Vue.use(usersListDatatable)
 const isRtl = window.TwUtils.locale === `ar`
 
 export default {
+  components: {
+  },
   props: {
     refineUserFunc: {
       type: Function,
@@ -312,12 +369,21 @@ export default {
       loading: true,
       searchKeywords: ``,
       debouncedSearch: null,
+      debouncedAfterFiltering: null,
       searchFilter: users => users,
       selectedSorts: {},
+      taskView: null,
     }
   },
   watch: {
     searchKeywords (...args) {
+      this.$nextTick(this.debouncedSearch)
+    },
+    page() {
+      this.search()
+    },
+    perPage() {
+      this.loading = true
       this.$nextTick(this.debouncedSearch)
     },
   },
@@ -325,6 +391,10 @@ export default {
     this.debouncedSearch = debounce(t => {
       return this.search()
     }, 1000)
+    this.debouncedAfterFiltering = debounce(t => {
+      return this.afterFiltering()
+    }, 300)
+
 
     if (this.task.baseName === `fetchfollowers`) {
       this.initFollowers()
@@ -348,6 +418,9 @@ export default {
         return
       }
 
+      if (this.task.status === 'completed') {
+        return this.fetchUsersFromView()
+      }
       this.fetchUsers(1)
     },
     initFollowings () {
@@ -357,7 +430,32 @@ export default {
         return
       }
 
+      if (this.task.status === 'completed') {
+        return this.fetchUsersFromView()
+      }
       this.fetchUsers(1)
+    },
+    fetchUsersFromView() {
+      this.loading = true
+
+      axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
+        params: {
+          page: this.page,
+          perPage: this.perPage,
+          search: this.searchKeywords,
+        }
+        })
+        .then(resp => {
+          const currentPage = resp.data.current_page
+          const lastPage = resp.data.last_page
+
+          this.taskView = resp.data
+          this.users = resp.data.data.map(this.refineUserFunc)
+
+          this.$nextTick(this.debouncedAfterFiltering)
+
+          this.loading = false
+        })
     },
     fetchUsers (page) {
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/data?page=${page}`)
@@ -368,7 +466,7 @@ export default {
           this.users = this.users.concat(resp.data.data.map(this.refineUserFunc))
 
           if (currentPage === 1) {
-            this.$nextTick(this.pageChanged)
+            this.$nextTick(this.debouncedAfterFiltering)
           }
 
           if (currentPage !== lastPage) {
@@ -439,15 +537,25 @@ export default {
         $(el).addClass(`fa-sort-down`)
       }
 
-      this.$nextTick(this.pageChanged)
+      this.$nextTick(this.debouncedAfterFiltering)
     },
     search () {
+      if (this.taskView)
+      {
+        this.fetchUsersFromView()
+
+        return ;
+      }
       const searchFields = [`screen_name`, `name`, `description`,]
       this.searchFilter = users => searchArrayByFields(users, this.searchKeywords, searchFields)
 
-      this.$nextTick(this.pageChanged)
+      this.$nextTick(this.debouncedAfterFiltering)
     },
-    pageChanged () {
+    pageChanged() {
+//      this.debouncedAfterFiltering()
+    },
+    afterFiltering() {
+      this.loading = false
       this.$refs[`userslist-datatable`].$el.querySelectorAll(`.user__avatar`).forEach(x => x.isRemote = false)
       $(this.$refs[`userslist-datatable`]).find(`.user__avatar`).attr(`src`, this.userPlaceholder)
       this.$nextTick(x => {
@@ -471,6 +579,13 @@ export default {
     },
   },
   computed: {
+    totalUsers() {
+      if (this.taskView)
+      {
+        return this.taskView.totalCount
+      }
+      return this.users.length
+    },
     orderFields () {
       return Object.keys(this.selectedSorts)
     },
@@ -478,6 +593,11 @@ export default {
       return Object.values(this.selectedSorts)
     },
     filteredUsers () {
+      if (this.taskView)
+      {
+        return (Array((this.taskView.from || 1)-1)).concat(this.users).concat((Array(this.taskView.total - (this.taskView.to || 0))))
+      }
+
       let users = this.users
       const filters = []
 

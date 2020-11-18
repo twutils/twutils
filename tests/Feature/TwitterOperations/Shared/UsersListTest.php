@@ -199,6 +199,47 @@ abstract class UsersListTest extends IntegrationTestCase
         $this->assertEquals($this->getDBTable()->count(), 10);
     }
 
+    public function test_task_view_endpoint_returns_succeful_results()
+    {
+        $this->withoutJobs();
+        $this->logInSocialUser('api');
+        $this->getJson($this->apiEndpoint)
+        ->assertStatus(200);
+
+        $tweeps = $this->fetchTwitterResponse(1);
+
+        $tweeps->users[0]->screen_name = 'Mohannad';
+
+        $this->fireJobsAndBindTwitter(
+            [
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => $tweeps,
+                ],
+                [
+                    'type'        => $this->jobName,
+                    'twitterData' => [],
+                ],
+            ]
+        );
+
+        $this->assertCountDispatchedJobs(1, $this->cleaningJobName);
+        $this->assertEquals($this->getDBTable()->count(), 1);
+
+        $response = $this->getJson('api/tasks/1/view');
+        $response->assertStatus(200);
+
+        $response->assertJsonPath('current_page', 1);
+
+        $response = $this->getJson('api/tasks/1/view?search=Mohannad');
+        $response->assertStatus(200)
+            ->assertJsonCount(1,'data')
+            ->assertJsonCount(1,'total')
+            ->assertJsonPath('data.0.tweep.screen_name', 'Mohannad');
+
+        $response->assertJsonPath('current_page', 1);
+    }
+
     // test: response doesn't have 'next_cursor_str' or 'users'
     // test: catch 'TwitterOAuthException' and twitter connectivity exceptions
     // test: after catching 'TwitterOAuthException', the rebuilt job should be delayed

@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
+use Illuminate\Database\Eloquent\Builder;
 use App\TwUtils\Tasks\Factory as TaskFactory;
 use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
@@ -48,76 +49,21 @@ class TasksController extends Controller
     public function view(Request $request, Task $task)
     {
         $this->authorize('view', $task);
-
         $this->validate($request, [
-            'month' => ['sometimes', 'integer', 'min:1', 'max:12'],
-            'year'  => ['sometimes', 'integer', 'min:2006', 'max:' . now()->year],
-            'searchOptions' => ['sometimes', 'array'],
-            'searchOptions.*' => [ Rule::in(['withPhotos', 'withGifs', 'withVideos', 'withTextOnly'])],
-            'searchKeywords' => ['nullable', 'string'],
-            'searchOnlyInMonth' => ['sometimes', 'boolean'],
+            'search' => ['nullable', 'string']
         ]);
 
-        $query = $task->tweets();
-
-        $selectedMonth  = $request->month;
-        $selectedYear   = $request->year;
-
-        if (
-            $request->searchOnlyInMonth &&
-            (is_null($selectedMonth) || is_null($selectedYear)) &&
-            ($lastTweetData = $query->max('tweet_created_at'))
-        )
+        if ( in_array($task->type, Task::TWEETS_LISTS_TYPES ) )
         {
-            $lastTweetData = Carbon::parse($lastTweetData);
-
-            $selectedMonth = $lastTweetData->startOfMonth()->format('m');
-            $selectedYear = $lastTweetData->startOfMonth()->format('Y');
+            return $this->getTweetsListView($request,$task);
         }
 
-        if (
-            (empty($request->searchKeywords) || $request->searchOnlyInMonth) &&
-            ! (is_null($selectedMonth) || is_null($selectedYear))
-        )
+        if ( in_array($task->type, Task::USERS_LISTS_TYPES ) )
         {
-            $startOfMonth = Carbon::parse($selectedYear . '-' . $selectedMonth);
-            
-            $query = $query->where('tweets.tweet_created_at', '>=', $startOfMonth)
-                           ->where('tweets.tweet_created_at', '<', (clone $startOfMonth)->endOfMonth());
+            return $this->getUsersListView($request,$task);
         }
 
-        $query = $query->where(function ($query) use ($request) {
-            foreach (($request->searchOptions ?? []) as $searchOption) {
-                if ($searchOption === 'withTextOnly')
-                {
-                    $query = $query->OrwhereDoesntHave('media');
-                    continue;
-                }
-
-                $lookupTypes = [
-                    'withPhotos' => 'photo',
-                    'withGifs' => 'animated_gif',
-                    'withVideos' => 'video',
-                ];
-
-                $lookup = $lookupTypes[$searchOption];
-
-                $query = $query->OrWhereHas('media', function ($query) use ($lookup) {
-                    return $query->where('type', $lookup);
-                });
-            }
-        });
-
-        if ($request->searchKeywords)
-        {
-            $query = $query->where(function ($query) use ($request) {
-                foreach (explode(' ', $request->searchKeywords) as $keyword) {
-                    $query = $query->where('text', 'like', '%' . $keyword . '%');
-                }
-            });
-        }
-
-        return $task->view->toArray() + $query->paginate($request->perPage ?? 200)->toArray();
+        return [];
     }
 
     public function getManagedTasks(Request $request, Task $task)
@@ -198,5 +144,107 @@ class TasksController extends Controller
                 ->where('type', FetchUserTweetsOperation::class)
                 ->where('status', 'completed')
                 ->get();
+    }
+
+    protected function getUsersListView(Request $request,Task $task)
+    {
+        $query = null;
+
+        if (in_array($task->type, [FetchFollowingOperation::class])) {
+            $query = $task->followings()->with('tweep');
+        }
+
+        if (in_array($task->type, [FetchFollowersOperation::class])) {
+            $query = $task->followers()->with('tweep');
+        }
+
+        $totalCount = $query->count();
+
+        if ($request->search)
+        {
+            $query = $query->whereHas('tweep', function (Builder $query) use ($request) {
+                return $query->where(function (Builder $query) use ($request) {
+                    foreach (['screen_name', 'name', 'description'] as $field) {
+                        $query = $query->OrwhereRaw('lower(' . $field . ') like ?', ['%' . mb_strtolower($request->search) . '%']);
+                    }
+                    return $query;
+                });
+            });
+        }
+
+        return array_merge($query->paginate($request->perPage ?? 200)->toArray() , ['totalCount' => $totalCount]);
+    }
+
+    protected function getTweetsListView(Request $request,Task $task)
+    {
+        $this->validate($request, [
+            'month' => ['sometimes', 'integer', 'min:1', 'max:12'],
+            'year'  => ['sometimes', 'integer', 'min:2006', 'max:' . now()->year],
+            'searchOptions' => ['sometimes', 'array'],
+            'searchOptions.*' => [ Rule::in(['withPhotos', 'withGifs', 'withVideos', 'withTextOnly'])],
+            'searchKeywords' => ['nullable', 'string'],
+            'searchOnlyInMonth' => ['sometimes', 'boolean'],
+        ]);
+
+        $query = $task->tweets();
+
+        $selectedMonth  = $request->month;
+        $selectedYear   = $request->year;
+
+        if (
+            $request->searchOnlyInMonth &&
+            (is_null($selectedMonth) || is_null($selectedYear)) &&
+            ($lastTweetData = $query->max('tweet_created_at'))
+        )
+        {
+            $lastTweetData = Carbon::parse($lastTweetData);
+
+            $selectedMonth = $lastTweetData->startOfMonth()->format('m');
+            $selectedYear = $lastTweetData->startOfMonth()->format('Y');
+        }
+
+        if (
+            (empty($request->searchKeywords) || $request->searchOnlyInMonth) &&
+            ! (is_null($selectedMonth) || is_null($selectedYear))
+        )
+        {
+            $startOfMonth = Carbon::parse($selectedYear . '-' . $selectedMonth);
+            
+            $query = $query->where('tweets.tweet_created_at', '>=', $startOfMonth)
+                           ->where('tweets.tweet_created_at', '<', (clone $startOfMonth)->endOfMonth());
+        }
+
+        $query = $query->where(function ($query) use ($request) {
+            foreach (($request->searchOptions ?? []) as $searchOption) {
+                if ($searchOption === 'withTextOnly')
+                {
+                    $query = $query->OrwhereDoesntHave('media');
+                    continue;
+                }
+
+                $lookupTypes = [
+                    'withPhotos' => 'photo',
+                    'withGifs' => 'animated_gif',
+                    'withVideos' => 'video',
+                ];
+
+                $lookup = $lookupTypes[$searchOption];
+
+                $query = $query->OrWhereHas('media', function ($query) use ($lookup) {
+                    return $query->where('type', $lookup);
+                });
+            }
+        });
+
+        if ($request->searchKeywords)
+        {
+            $query = $query->where(function ($query) use ($request) {
+                foreach (explode(' ', $request->searchKeywords) as $keyword) {
+                    $query = $query->where('text', 'like', '%' . $keyword . '%');
+                }
+            });
+        }
+
+        return $task->view->toArray() + $query->paginate($request->perPage ?? 200)->toArray();
     }
 }

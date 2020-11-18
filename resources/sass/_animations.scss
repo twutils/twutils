@@ -1,6 +1,7 @@
 @import "~animate.css/source/_base";
 @import "~animate.css/source/bouncing_entrances/bounceInDown";
 @import "~animate.css/source/fading_entrances/fadeIn";
+@import "~animate.css/source/fading_exits/fadeOut";
 
 // ------------- Custom Ready-to-use Animations Classes
 
@@ -57,4 +58,9 @@
 {
   transform: translateX(10px);
   opacity: 0;
+}
+
+
+.animation-3s {
+  animation-duration: 3s;
 }

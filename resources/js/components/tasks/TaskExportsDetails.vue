@@ -231,6 +231,7 @@
                       >
                         {{__('remove')}}
                       </button>
+                      <img :src="loadingGifSrc" class="m-auto loadingGif" style="opacity: 0;" width="20px" height="20px">
                     </template>
                   </template>
                   <button

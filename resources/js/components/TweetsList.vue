@@ -106,6 +106,7 @@
             </div>
             <div class="flex-1 d-flex align-items-center p-1">
               <div class="tweetsList__sortDescription__container">
+                <img v-if="!isLocal && loading" style="width: 36px; height: 36px;" :src="loadingGifSrc" class="m-auto loadingGif">
               </div>
             </div>
             <div class="tweetsList__searchInfo" style="border-left: 1px solid #ccc;">
@@ -335,6 +336,7 @@ export default {
       resultsStart: 0,
 
       taskView: null,
+      loading: true,
     }
   },
   computed: {
@@ -465,6 +467,7 @@ export default {
     if (this.isLocal) {
       this.tweets = this.task.likes
       this.autoSelectLatestTweet()
+      this.$nextTick(x => this.loading = false)
     } else if (this.task.status === 'completed') {
       this.fetchTweetsFromView()
     } else {
@@ -490,6 +493,14 @@ export default {
     searchKeywords (...args) {
       this.$nextTick(this.debouncedSearch)
     },
+    perPage (...args) {
+        if (this.taskView)
+        {
+          return this.$nextTick(this.debouncedSearch)
+        }
+
+        this.debouncedAfterFiltering()
+    },
     searchOnlyInMonth (newValue) {
       if (! newValue)
       {
@@ -514,6 +525,8 @@ export default {
       })
     },
     fetchTweetsFromView(page = 1, callback = null) {
+      this.loading = true
+
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
         params: {
           year: this.selected.year,
@@ -526,6 +539,7 @@ export default {
         }
       })
       .then(resp => {
+        this.$nextTick(x => this.loading = false)
 
         let months = {}
 
@@ -561,8 +575,12 @@ export default {
       })
     },
     fetchTweetsList (page = 1) {
+      this.loading = true
+
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/data?page=${page}`)
         .then(resp => {
+          this.loading = false
+
           const currentPage = resp.data.current_page
           const lastPage = resp.data.last_page
 
@@ -582,6 +600,7 @@ export default {
           if (currentPage !== lastPage) {
             this.fetchTweetsList(currentPage + 1)
           }
+
         })
     },
     buildHistory () {

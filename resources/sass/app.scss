@@ -23,6 +23,7 @@ $tooltip-font-size: 12px;
 @import "~datatables.net-select-bs4/css/select.bootstrap4";
 @import "~datatables.net-responsive-bs4/css/responsive.bootstrap4";
 @import "~ekko-lightbox/dist/ekko-lightbox";
+@import "~placeholder-loading/src/scss/placeholder-loading";
 
 @import "./core.scss";
 @import "./scrollbar";
@@ -486,6 +487,14 @@ $tooltip-font-size: 12px;
   margin-right: -1.25rem;
 }
 
+.taskExports {
+  @at-root .locale-en & {
+    margin-right: 2px;
+  }
+  @at-root .locale-ar & {
+    margin-left: 2px;
+  }
+}
 .taskExports
 .taskExport__more {
     width: calc(40px - 0.75rem + 3px);
@@ -802,6 +811,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
     font-size: 0.8rem;
     word-break: break-word;
     padding: 0.2rem;
+    vertical-align: middle;
   }
 
   thead > tr > th > span {
@@ -833,7 +843,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
     padding: 1rem;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 .usersList__sortDescription__container, .tweetsList__sortDescription__container {
     font-size: 0.7rem;

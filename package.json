@@ -42,6 +42,7 @@
         "moment": "^2.26.0",
         "moment-timezone": "^0.5.31",
         "open-iconic": "^1.1.1",
+        "placeholder-loading": "^0.2.6",
         "popper.js": "^1.16.1",
         "portal-vue": "^1.5.1",
         "turbolinks": "^5.2.0",

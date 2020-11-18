@@ -171,6 +171,8 @@ return [
     'ascending'      => 'Ascending',
     'descending'     => 'Descending',
 
+    'search_in_users_list'  => 'Search in Handler + Name + Bio',
+
     'selected_tweets_source'      => 'Selected Tweets Source',
     'selected_tweets_source_desc' => 'In order to delete the tweets, we need to copy it\'s current state from your account before. To do so, the system created a new copying/backup task, so it can be used later as the source of deletion.',
     'start_date'                  => 'Start Date',

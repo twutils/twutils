@@ -35,7 +35,7 @@
                 Here is what you should know:
                 <ul>
                   <li>
-                    The numbers in your Twitter profile is not correct! <br>
+                    The numbers in your Twitter profile are not correct! <br>
                     It's cached, and it's not updated properly. Twitter admits this themselves
                     <a href="https://help.twitter.com/en/using-twitter/missing-tweets" target="_blank">
                       here

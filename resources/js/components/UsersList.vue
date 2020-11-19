@@ -31,7 +31,7 @@
         </span>
       </div>
     </div>
-    <div :class="`col-12 ${isRtl ? 'rtl':''}`">
+    <div :class="`col-12 usersList__controls__fluidContainer ${isRtl ? 'rtl':''}`">
       <div class="row usersList__controls__container">
         <div class="col-sm-8 p-0 usersList__controls__wrapper">
           <div class="usersList__searchInfo__container d-flex justify-content-between">
@@ -63,7 +63,6 @@
               {{__('search_results')}}: {{intlFormat(filteredUsers.length)}}
             </div>
           </div>
-          <portal-target class="overflow-auto py-1" name="userslist-pager" />
         </div>
         <div class="col-sm-4">
           <div class="w-100 p-3">
@@ -84,6 +83,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="col-12">
+        <portal-target class="overflow-auto py-1" name="userslist-pager" />
     </div>
     <div :class="`col-12 ${isRtl ? 'rtl':''}`">
         <div class="table-responsive users__container">
@@ -288,7 +290,7 @@ const usersListDatatable = DatatableFactory.useDefaultType(false).registerTableT
         classes: {
           li: `page-item`,
           a: `page-link`,
-          pager: `pagination text-center m-0 p-3 w-100`,
+          pager: `pagination text-center m-0 px-3 w-100`,
           selected: `active`,
         },
       },

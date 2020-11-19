@@ -793,6 +793,11 @@ $taskExport-text: darken(theme-color('success'), 10%);
       }
   }
 }
+
+.usersList__controls__fluidContainer, .tweetsList__controls__fluidContainer {
+  border-bottom: 1px solid #ccc;
+}
+
 .usersList__controls__container, .tweetsList__controls__container {
   background: whitesmoke;
   border-radius: 1rem;
@@ -808,6 +813,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
     text-align: right;
   }
 }
+
 .usersList__controls__wrapper, .tweetsList__controls__wrapper {
   border-right: 1px dashed #ccc;
   display: flex;
@@ -821,6 +827,11 @@ $taskExport-text: darken(theme-color('success'), 10%);
 
   & > :first-child {
     border-bottom: 1px solid #ccc;
+    max-height: 50px;
+    border-top: unset !important;
+  }
+  & > :last-child {
+    border-top: 1px solid #ccc;
     max-height: 50px;
   }
 }
@@ -915,7 +926,6 @@ $taskExport-text: darken(theme-color('success'), 10%);
 .searchOptions__container {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid rgb(204, 204, 204);
   flex-direction: row;
   flex: 1;
 }

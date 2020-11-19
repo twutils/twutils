@@ -97,7 +97,7 @@
 <template>
   <div class="my-3 row tweetsList">
     <slot></slot>
-    <div class="col-12">
+    <div class="col-12 tweetsList__controls__fluidContainer">
       <div class="row tweetsList__controls__container">
         <div class="col-sm-8 p-0 tweetsList__controls__wrapper">
           <div class="tweetsList__searchInfo__container d-flex justify-content-between">

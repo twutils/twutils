@@ -95,6 +95,7 @@ export default {
       return 0
     },
     shouldShowTwitterLimitations () {
+      return true
       const tweetsCountFromProfile = this.getCountFromProfileByTask(this.task)
 
       const tweetsCountFromTask = this.getTweetsCountFromTask(this.task)

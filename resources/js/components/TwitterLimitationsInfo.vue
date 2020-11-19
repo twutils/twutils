@@ -1,9 +1,9 @@
 <style lang="scss">
 </style>
 <template>
-<div class="d-inline-block mb-3">
-  <button data-toggle="modal" data-target="#twitterLimitationInfo" type="button"  class="btn btn-default rounded-circle border mx-3">
-    <i style="font-size: 1.3rem;" class="fa fa-info-circle" aria-hidden="true"></i>
+<div class="twitterLimitationInfo">
+  <button data-toggle="modal" data-target="#twitterLimitationInfo" type="button"  class="btn btn-default rounded-circle border twitterLimitationInfo__button">
+    <i class="fa fa-info-circle twitterLimitationInfo__icon" aria-hidden="true"></i>
   </button>
   <div class="modal fade" tabindex="-1" role="dialog" id="twitterLimitationInfo">
     <div class="modal-dialog modal-lg" role="document">

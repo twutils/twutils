@@ -7,10 +7,6 @@
         <h4 v-if="task != null" :class="`float-${isRtl? 'right':'left'}`">
           {{__('tweets')}}: {{task.likes_count}}
         </h4>
-        <twitter-limitations-info
-          v-if="shouldShowTwitterLimitations()"
-          :task="task"
-        ></twitter-limitations-info>
       </div>
     </tweets-list>
   </div>

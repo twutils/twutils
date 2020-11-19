@@ -878,7 +878,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
     justify-content: space-between;
 
     &:first-child {
-      min-width: 170px;
+      min-width: 180px;
 
       border-top-left-radius: 1rem;
       border-right: 1px solid #ccc;
@@ -1042,4 +1042,30 @@ button.taskExportsDetails__button.btn.btn-outline-primary {
     display: block;
     top: 20px;
     right: 4px;
+}
+
+$twitter-limitation-info-icon-size: 20px;
+.twitterLimitationInfo {
+
+}
+
+.twitterLimitationInfo__icon {
+  font-size: $twitter-limitation-info-icon-size;
+  width: $twitter-limitation-info-icon-size;
+  height: $twitter-limitation-info-icon-size;
+}
+
+.twitterLimitationInfo__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    background: white;
+}
+
+.loadingGif {
+  &--xs {
+    width: 30px;
+    height: 30px;
+  }
 }

@@ -39,7 +39,7 @@
               <span>
                 {{__('total_users')}}: {{intlFormat(totalUsers)}}
               </span>
-              <img v-if="loading" style="height: 30px;" :src="loadingGifSrc" class="loadingGif">
+              <img v-if="loading" :src="loadingGifSrc" class="loadingGif loadingGif--xs">
             </div>
             <div class="flex-1 d-flex align-items-center p-1">
               <div class="small text-muted" style="min-width: 70px;">

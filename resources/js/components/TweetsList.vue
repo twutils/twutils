@@ -102,11 +102,17 @@
         <div class="col-sm-8 p-0 tweetsList__controls__wrapper">
           <div class="tweetsList__searchInfo__container d-flex justify-content-between">
             <div class="tweetsList__searchInfo">
-              {{__('total_tweets')}}: {{intlFormat(totalTweets)}}
+              <span>
+                {{__('total_tweets')}}: {{intlFormat(totalTweets)}}
+              </span>
+              <img v-if="loading" :src="loadingGifSrc" class="loadingGif loadingGif--xs">
+              <twitter-limitations-info
+                v-if="shouldShowTwitterLimitations()"
+                :task="task"
+              ></twitter-limitations-info>
             </div>
             <div class="flex-1 d-flex align-items-center p-1">
               <div class="tweetsList__sortDescription__container">
-                <img v-if="!isLocal && loading" style="width: 36px; height: 36px;" :src="loadingGifSrc" class="m-auto loadingGif">
               </div>
             </div>
             <div class="tweetsList__searchInfo">
@@ -290,12 +296,14 @@ import max from 'lodash/max'
 import min from 'lodash/min'
 import searchTweets from '../search'
 import tweetsListItem from './TweetsListItem'
+import twitterLimitationsInfo from '@/components/TwitterLimitationsInfo'
 
 const months = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`, ]
 
 export default {
   components: {
     'tweets-list-item': tweetsListItem,
+    twitterLimitationsInfo,
   },
   props: {
     task: {

@@ -14,23 +14,22 @@
           <div class="form-check" style="min-width: 150px;">
             <input v-model="withMedia" class="form-check-input" id="withMedia" type="checkbox" autocomplete="off">
             <label class="form-check-label" for="withMedia">
-              {{__('with_media')}}
+              {{__('with_media_task_description')}}
             </label>
           </div>
           <div :class="`addTask__optionInfo px-4`">
             <div class="d-flex align-items-center">
               <i class="fa fa-info-circle p-3" aria-hidden="true"></i>
-              <span v-if="!isRtl">
-                Media option gives you the ability to download the tweets <b>along with it's associated media (Videos, Images, Gifs).</b>
-              </span>
-              <span v-if="isRtl">
-                خيار مع الوسائط يوفّر لك إمكانية تحميل التغريدات <b>بالإضافة إلى الوسائط المرتبطة بها (فيديوهات، صور، صور متحركة Gifs).</b>
-              </span>
+              <span>{{__('you_can_do_this_later')}}</span>
             </div>
             <div class="d-flex align-items-center">
               <i class="fa fa-info-circle p-3" aria-hidden="true"></i>
-              <i v-if="!isRtl">Enabling this option may results in a larger ZIP file</i>
-              <i v-if="isRtl">تفعيل هذا الخيار سيجعل ملف التحميل ZIP أكبر حجماً</i>
+              <span v-if="!isRtl">
+                By enabling this option, you'll be able to download a local copy of the tweets <b>along with it's associated media (Videos, Images, Gifs).</b> after the succesful task completion.
+              </span>
+              <span v-if="isRtl">
+                بتفعيل هذا الخيار، سيمكنك تحميل نسخة من التغريدات <b>بالإضافة إلى الوسائط المرتبطة بها (فيديوهات، صور، صور متحركة Gifs).</b> بعد اكتمال المهمة بنجاح.
+              </span>
             </div>
           </div>
         </div>

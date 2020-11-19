@@ -99,9 +99,9 @@
     <slot></slot>
     <div class="col-12">
       <div class="row tweetsList__controls__container">
-        <div class="col-sm-8 p-0 mh-100" :style="`border-${isRtl ? 'left':'right'}: 1px dashed #ccc;`">
-          <div class="tweetsList__searchInfo__container d-flex justify-content-between" style="border-bottom: 1px solid #ccc;">
-            <div class="tweetsList__searchInfo" style="border-top-left-radius: 1rem; border-right: 1px solid #ccc;">
+        <div class="col-sm-8 p-0 tweetsList__controls__wrapper">
+          <div class="tweetsList__searchInfo__container d-flex justify-content-between">
+            <div class="tweetsList__searchInfo">
               {{__('total_tweets')}}: {{intlFormat(totalTweets)}}
             </div>
             <div class="flex-1 d-flex align-items-center p-1">
@@ -109,13 +109,13 @@
                 <img v-if="!isLocal && loading" style="width: 36px; height: 36px;" :src="loadingGifSrc" class="m-auto loadingGif">
               </div>
             </div>
-            <div class="tweetsList__searchInfo" style="border-left: 1px solid #ccc;">
+            <div class="tweetsList__searchInfo">
               {{__('search_results')}}: {{intlFormat(resultsCount)}}
             </div>
           </div>
           <div class="d-flex">
             <div class="searchOption__description">
-              Filter by Media:
+              {{__('filter_by_media')}}
             </div>
             <div class="searchOptions__container">
               <div class="searchOption__wrapper">
@@ -177,7 +177,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4 mh-100">
+        <div class="col-sm-4">
           <div class="w-100 p-3">
             <div class="input-group">
               <div class="input-group-prepend">

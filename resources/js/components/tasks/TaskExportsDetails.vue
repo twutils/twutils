@@ -144,7 +144,9 @@
                             :aria-valuenow="userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress"
                             aria-valuemin="0"
                             :aria-valuemax="userExport.progress_end"
-                          ></div>
+                          >
+                            {{parseInt((userExport.progress === userExport.progress_end ? userExport.progress_end : userExport.progress) * 100 / userExport.progress_end)}}%
+                          </div>
                         </div>
                       </div>
                       <div

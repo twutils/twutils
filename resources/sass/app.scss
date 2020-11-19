@@ -802,6 +802,27 @@ $taskExport-text: darken(theme-color('success'), 10%);
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   margin-bottom: 0;
+
+  @at-root .locale-ar & {
+    direction: rtl;
+    text-align: right;
+  }
+}
+.usersList__controls__wrapper, .tweetsList__controls__wrapper {
+  border-right: 1px dashed #ccc;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
+  @at-root .locale-ar & {
+    border-right: unset;
+    border-left: 1px dashed #ccc;
+  }
+
+  & > :first-child {
+    border-bottom: 1px solid #ccc;
+    max-height: 50px;
+  }
 }
 
 .usersList__table, .tweetsList__table {
@@ -844,7 +865,32 @@ $taskExport-text: darken(theme-color('success'), 10%);
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    &:first-child {
+      min-width: 170px;
+
+      border-top-left-radius: 1rem;
+      border-right: 1px solid #ccc;
+
+      @at-root .locale-ar & {
+        border-top-left-radius: unset;
+        border-right: unset;
+
+        border-top-right-radius: 1rem;
+        border-left: 1px solid #ccc;
+      }
+    }
+
+    &:last-child {
+      border-left: 1px solid #ccc;
+
+      @at-root .locale-ar & {
+        border-left: unset;
+        border-right: 1px solid #ccc;
+      }
+    }
 }
+
 .usersList__sortDescription__container, .tweetsList__sortDescription__container {
     font-size: 0.7rem;
 }
@@ -883,6 +929,8 @@ $taskExport-text: darken(theme-color('success'), 10%);
   justify-content: flex-start;
   align-items: center;
 
+  font-size: 0.8rem;
+
   .form-check-input {
     margin: 0;
     position: relative;
@@ -891,8 +939,14 @@ $taskExport-text: darken(theme-color('success'), 10%);
   .form-check-label {
     display: block;
     width: 100%;
-    padding-left: 1rem;
     color: $gray-600;
+
+    padding-left: 0.7rem;
+
+    @at-root .locale-ar & {
+      padding-left: unset;
+      padding-right: 0.7rem;
+    }
   }
 }
 
@@ -911,7 +965,7 @@ $taskExport-text: darken(theme-color('success'), 10%);
 .searchOption__description {
     color: $gray-600;
     font-size: 12px;
-    width: 60px;
+    width: 90px;
     display: flex;
     justify-content: center;
     align-items: center;

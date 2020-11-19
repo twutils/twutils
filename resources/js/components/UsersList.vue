@@ -33,9 +33,9 @@
     </div>
     <div :class="`col-12 ${isRtl ? 'rtl':''}`">
       <div class="row usersList__controls__container">
-        <div class="col-sm-8 p-0 mh-100 d-flex flex-column justify-content-between" :style="`border-${isRtl ? 'left':'right'}: 1px dashed #ccc;`">
-          <div class="usersList__searchInfo__container d-flex justify-content-between" style="border-bottom: 1px solid #ccc; max-height: 50px;">
-            <div class="usersList__searchInfo" style="border-top-left-radius: 1rem; border-right: 1px solid #ccc; min-width: 170px;">
+        <div class="col-sm-8 p-0 usersList__controls__wrapper">
+          <div class="usersList__searchInfo__container d-flex justify-content-between">
+            <div class="usersList__searchInfo">
               <span>
                 {{__('total_users')}}: {{intlFormat(totalUsers)}}
               </span>
@@ -59,13 +59,13 @@
                 </span>
               </div>
             </div>
-            <div class="usersList__searchInfo" style="border-left: 1px solid #ccc;">
+            <div class="usersList__searchInfo">
               {{__('search_results')}}: {{intlFormat(filteredUsers.length)}}
             </div>
           </div>
           <portal-target class="overflow-auto py-1" name="userslist-pager" />
         </div>
-        <div class="col-sm-4 mh-100">
+        <div class="col-sm-4">
           <div class="w-100 p-3">
             <div class="input-group">
               <div class="input-group-prepend">

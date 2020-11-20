@@ -827,12 +827,12 @@ $taskExport-text: darken(theme-color('success'), 10%);
 
   & > :first-child {
     border-bottom: 1px solid #ccc;
-    max-height: 50px;
+    min-height: 50px;
     border-top: unset !important;
   }
   & > :last-child {
     border-top: 1px solid #ccc;
-    max-height: 50px;
+    min-height: 50px;
   }
 }
 

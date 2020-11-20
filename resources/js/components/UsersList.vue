@@ -85,13 +85,13 @@
       </div>
     </div>
     <div class="col-12">
-        <portal-target class="overflow-auto py-1" name="userslist-pager" />
+        <portal-target class="overflow-auto py-1" name="users-list-pager" />
     </div>
     <div :class="`col-12 ${isRtl ? 'rtl':''}`">
         <div class="table-responsive users__container">
-          <userslist-datatable
+          <users-list-datatable
             class="usersList__table"
-            ref="userslist-datatable"
+            ref="users-list-datatable"
             :per-page="perPageInt"
             :columns="columns"
             :data="filteredUsers"
@@ -255,15 +255,14 @@
                   </td>
                 </tr>
               </template>
-          </userslist-datatable>
-          <portal-target name="userslist-pager" />
-          <portal to="userslist-pager">
-            <userslist-datatable-pager
+          </users-list-datatable>
+          <portal-target name="users-list-pager" />
+          <portal to="users-list-pager">
+            <users-list-datatable-pager
               v-model="page"
               type="long"
               :per-page="perPageInt"
-              @change="pageChanged"
-            ></userslist-datatable-pager>
+            ></users-list-datatable-pager>
           </portal>
         </div>
     </div>
@@ -280,7 +279,7 @@ import DatatableFactory from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
 import { searchArrayByFields } from '@/search'
 
 const usersListDatatable = DatatableFactory.useDefaultType(false).registerTableType(
-  `userslist-datatable`,
+  `users-list-datatable`,
   tableType => {
     tableType.mergeSettings({
       table: {
@@ -299,7 +298,7 @@ const usersListDatatable = DatatableFactory.useDefaultType(false).registerTableT
   }
 )
 
-Vue.use(usersListDatatable)
+usersListDatatable.install(Vue)
 
 const isRtl = window.TwUtils.locale === `ar`
 
@@ -502,10 +501,10 @@ export default {
         colGroup.appendChild(colEl)
       })
 
-      $(this.$refs[`userslist-datatable`].$el)
+      $(this.$refs[`users-list-datatable`].$el)
         .prepend(colGroup)
 
-      $(this.$refs[`userslist-datatable`].$el)
+      $(this.$refs[`users-list-datatable`].$el)
         .find(`thead th`)
         .each((i, th) => {
           if (!sortFields[i]) { return }
@@ -566,13 +565,10 @@ export default {
 
       this.$nextTick(this.debouncedAfterFiltering)
     },
-    pageChanged() {
-//      this.debouncedAfterFiltering()
-    },
     afterFiltering() {
       this.loading = false
-      this.$refs[`userslist-datatable`].$el.querySelectorAll(`.user__avatar`).forEach(x => x.isRemote = false)
-      $(this.$refs[`userslist-datatable`]).find(`.user__avatar`).attr(`src`, this.userPlaceholder)
+      this.$refs[`users-list-datatable`].$el.querySelectorAll(`.user__avatar`).forEach(x => x.isRemote = false)
+      $(this.$refs[`users-list-datatable`]).find(`.user__avatar`).attr(`src`, this.userPlaceholder)
       this.$nextTick(x => {
         $(`img.lazy`).unveil(100)
       }, 100)

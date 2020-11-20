@@ -119,7 +119,7 @@
               {{__('search_results')}}: {{intlFormat(resultsCount)}}
             </div>
           </div>
-          <div class="d-flex">
+          <div class="d-flex line-height-1_0rem">
             <div class="searchOption__description">
               {{__('filter_by_media')}}
             </div>

@@ -231,10 +231,10 @@ abstract class UsersListTest extends IntegrationTestCase
 
         $response->assertJsonPath('current_page', 1);
 
-        $response = $this->getJson('api/tasks/1/view?search=Mohannad');
-        $response->assertStatus(200)
+        $response = $this->getJson('api/tasks/1/view?search=Mohannad')
+            ->assertStatus(200)
             ->assertJsonCount(1,'data')
-            ->assertJsonCount(1,'total')
+            ->assertJsonPath('total', 1)
             ->assertJsonPath('data.0.tweep.screen_name', 'Mohannad');
 
         $response->assertJsonPath('current_page', 1);

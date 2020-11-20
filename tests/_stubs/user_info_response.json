@@ -1,0 +1,191 @@
+{
+    "id": 302955358,
+    "id_str": "302955358",
+    "name": "Mohannad Najjar",
+    "screen_name": "MohannadNaj",
+    "location": "Riyadh - Jeddah",
+    "profile_location": null,
+    "description": "204 No Content",
+    "url": "https:\/\/t.co\/VrujxuPyrP",
+    "entities":
+    {
+        "url":
+        {
+            "urls": [
+            {
+                "url": "https:\/\/t.co\/VrujxuPyrP",
+                "expanded_url": "https:\/\/www.mohannad.io",
+                "display_url": "mohannad.io",
+                "indices": [0, 23]
+            }]
+        },
+        "description":
+        {
+            "urls": []
+        }
+    },
+    "protected": false,
+    "followers_count": 4424,
+    "friends_count": 1235,
+    "listed_count": 32,
+    "created_at": "Sun May 22 02:03:35 +0000 2011",
+    "favourites_count": 367,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": false,
+    "statuses_count": 527,
+    "lang": null,
+    "status":
+    {
+        "created_at": "Sun Oct 11 23:00:56 +0000 2020",
+        "id": 1315427189161111553,
+        "id_str": "1315427189161111553",
+        "full_text": "@Abdullah_Asiri_ @RedaBanjar Sorry, not yet https:\/\/t.co\/wdMASmWCVT",
+        "truncated": false,
+        "display_text_range": [29, 43],
+        "entities":
+        {
+            "hashtags": [],
+            "symbols": [],
+            "user_mentions": [
+            {
+                "screen_name": "Abdullah_Asiri_",
+                "name": "Abdullah Asiri",
+                "id": 185994206,
+                "id_str": "185994206",
+                "indices": [0, 16]
+            },
+            {
+                "screen_name": "RedaBanjar",
+                "name": "\u0631\u0636\u0627 \u0628\u0646\u062c\u0631",
+                "id": 1050848036233117697,
+                "id_str": "1050848036233117697",
+                "indices": [17, 28]
+            }],
+            "urls": [],
+            "media": [
+            {
+                "id": 1315427181988909060,
+                "id_str": "1315427181988909060",
+                "indices": [44, 67],
+                "media_url": "http:\/\/pbs.twimg.com\/media\/EkFWDXZXkAQjhRl.jpg",
+                "media_url_https": "https:\/\/pbs.twimg.com\/media\/EkFWDXZXkAQjhRl.jpg",
+                "url": "https:\/\/t.co\/wdMASmWCVT",
+                "display_url": "pic.twitter.com\/wdMASmWCVT",
+                "expanded_url": "https:\/\/twitter.com\/MohannadNaj\/status\/1315427189161111553\/photo\/1",
+                "type": "photo",
+                "sizes":
+                {
+                    "thumb":
+                    {
+                        "w": 150,
+                        "h": 150,
+                        "resize": "crop"
+                    },
+                    "small":
+                    {
+                        "w": 496,
+                        "h": 458,
+                        "resize": "fit"
+                    },
+                    "large":
+                    {
+                        "w": 496,
+                        "h": 458,
+                        "resize": "fit"
+                    },
+                    "medium":
+                    {
+                        "w": 496,
+                        "h": 458,
+                        "resize": "fit"
+                    }
+                }
+            }]
+        },
+        "extended_entities":
+        {
+            "media": [
+            {
+                "id": 1315427181988909060,
+                "id_str": "1315427181988909060",
+                "indices": [44, 67],
+                "media_url": "http:\/\/pbs.twimg.com\/media\/EkFWDXZXkAQjhRl.jpg",
+                "media_url_https": "https:\/\/pbs.twimg.com\/media\/EkFWDXZXkAQjhRl.jpg",
+                "url": "https:\/\/t.co\/wdMASmWCVT",
+                "display_url": "pic.twitter.com\/wdMASmWCVT",
+                "expanded_url": "https:\/\/twitter.com\/MohannadNaj\/status\/1315427189161111553\/photo\/1",
+                "type": "photo",
+                "sizes":
+                {
+                    "thumb":
+                    {
+                        "w": 150,
+                        "h": 150,
+                        "resize": "crop"
+                    },
+                    "small":
+                    {
+                        "w": 496,
+                        "h": 458,
+                        "resize": "fit"
+                    },
+                    "large":
+                    {
+                        "w": 496,
+                        "h": 458,
+                        "resize": "fit"
+                    },
+                    "medium":
+                    {
+                        "w": 496,
+                        "h": 458,
+                        "resize": "fit"
+                    }
+                }
+            }]
+        },
+        "source": "<a href=\"http:\/\/twitter.com\/download\/iphone\" rel=\"nofollow\">Twitter for iPhone<\/a>",
+        "in_reply_to_status_id": 1315409303222837248,
+        "in_reply_to_status_id_str": "1315409303222837248",
+        "in_reply_to_user_id": 185994206,
+        "in_reply_to_user_id_str": "185994206",
+        "in_reply_to_screen_name": "Abdullah_Asiri_",
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "retweet_count": 0,
+        "favorite_count": 1,
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "en"
+    },
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "131516",
+    "profile_background_image_url": "http:\/\/abs.twimg.com\/images\/themes\/theme14\/bg.gif",
+    "profile_background_image_url_https": "https:\/\/abs.twimg.com\/images\/themes\/theme14\/bg.gif",
+    "profile_background_tile": true,
+    "profile_image_url": "http:\/\/pbs.twimg.com\/profile_images\/569995048654086144\/ymy1MpNn_normal.jpeg",
+    "profile_image_url_https": "https:\/\/pbs.twimg.com\/profile_images\/569995048654086144\/ymy1MpNn_normal.jpeg",
+    "profile_banner_url": "https:\/\/pbs.twimg.com\/profile_banners\/302955358\/1563820023",
+    "profile_link_color": "009999",
+    "profile_sidebar_border_color": "FFFFFF",
+    "profile_sidebar_fill_color": "EFEFEF",
+    "profile_text_color": "333333",
+    "profile_use_background_image": true,
+    "has_extended_profile": true,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": false,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "none",
+    "suspended": false,
+    "needs_phone_verification": false
+}

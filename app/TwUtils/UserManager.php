@@ -2,6 +2,7 @@
 
 namespace App\TwUtils;
 
+use App\Jobs\FetchUserInfoJob;
 use App\User;
 use App\SocialUser;
 use Illuminate\Support\Str;
@@ -103,9 +104,7 @@ class UserManager
 
     public static function updateProfile(SocialUser $socialUser)
     {
-        $fetchUserInfoOperation = new FetchUserInfoOperation();
-
-        $fetchUserInfoOperation->setSocialUser($socialUser)->dispatch();
+        dispatch(new FetchUserInfoJob($socialUser));
     }
 
     public static function revokeAccessToken(SocialUser $socialUser)

@@ -287,6 +287,9 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import DatatableFactory from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
+
 import debounce from 'lodash/debounce'
 import get from 'lodash/get'
 import sortBy from 'lodash/sortBy'
@@ -299,6 +302,28 @@ import tweetsListItem from './TweetsListItem'
 import twitterLimitationsInfo from '@/components/TwitterLimitationsInfo'
 
 const months = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`, ]
+
+const tweetsListDatatable = DatatableFactory.useDefaultType(false).registerTableType(
+  `tweets-list-datatable`,
+  tableType => {
+    tableType.mergeSettings({
+      table: {
+        class: `table table-hover tweetsList__table`,
+      },
+      pager: {
+        classes: {
+          li: `page-item`,
+          a: `page-link`,
+          pager: `pagination text-center m-0 px-3 w-100`,
+          selected: `active`,
+        },
+      },
+    })
+    return tableType
+  }
+)
+
+tweetsListDatatable.install(Vue)
 
 export default {
   components: {
@@ -345,6 +370,7 @@ export default {
 
       taskView: null,
       loading: true,
+      page: 0,
     }
   },
   computed: {

@@ -297,6 +297,12 @@ $tooltip-font-size: 12px;
   }
 }
 
+.taskType--in-modal-title {
+  padding: 0.2rem 1rem;
+  font-size: 1rem;
+  background: #f8f8f8;
+}
+
 .taskType__header {
   margin-bottom: 0.5rem;
 }
@@ -744,12 +750,6 @@ $taskExport-text: darken(theme-color('success'), 10%);
 .taskExportsDetails__button {
     margin-top: 5px;
     border-radius: 0;
-}
-
-.taskExport__title__type {
-    padding: 0.2rem 1rem;
-    font-size: 1rem;
-    background: #f8f8f8;
 }
 
 .taskExportsDetails__statusesWrapper {

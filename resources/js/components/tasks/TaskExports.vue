@@ -9,7 +9,7 @@
                 <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
                   <h5 :class="`modal-title`">
                     <span v-if="locale === 'en'">
-                      (<span class="taskExport__title__type">{{__(task.type)}}</span>) Exports
+                      (<span class="taskType--in-modal-title taskExport__title__type">{{__(task.type)}}</span>) Exports
                     </span>
                     <span v-if="locale === 'ar'">
                       تصديرات مهمة (<span class="taskExport__title__type">{{__(task.type)}}</span>)

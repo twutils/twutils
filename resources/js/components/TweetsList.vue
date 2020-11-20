@@ -258,30 +258,44 @@
     </div>
     <div :class="`col-sm-8 order-sm-1 my-2`">
       <div class="row">
-        <div v-if="shouldShowNavigation" class="col-12 chevronNavigateContainer d-flex justify-content-around">
-          <div :class="`chevronNavigateCircle ${canNavigatePrev ? '':'inactive'}`" @click="navigatePrev">
-            <span class="oi" data-glyph="chevron-left"></span>
-          </div>
-          <div>
-            {{__('page')}} {{ currentPage+1 }} / {{ totalPages }}
-            <br>
-            <small class="ltr" v-if="locale === 'en'">
-              showing {{paginatedFilteredTweets.length }} tweet{{paginatedFilteredTweets.length > 1 ? 's':''}} out of {{resultsCount}} tweet{{resultsCount>1 ? 's':''}}
-            </small>
-            <small class="rtl" v-if="locale === 'ar'">
-              عرض
-              {{paginatedFilteredTweets.length }}
-               تغريدة من أصل
-              {{resultsCount}}
-               تغريدة
-            </small>
-          </div>
-          <div :class="`chevronNavigateCircle ${canNavigateNext ? '':'inactive'}`" @click="navigateNext">
-            <span class="oi" data-glyph="chevron-right"></span>
-          </div>
-        </div>
       </div>
-      <tweets-list-item :ref="tweet.id" v-for="(tweet,index) in paginatedFilteredTweets" :tweet="tweet" :key="tweet.id"></tweets-list-item>
+      <div class="col-12">
+          <portal-target class="overflow-auto py-1" name="tweets-list-pager" />
+      </div>
+      <div :class="`col-12 ${isRtl ? 'rtl':''}`">
+          <div class="table-responsive tweets__container">
+            <tweets-list-datatable
+              class="tweetsList__table"
+              ref="tweets-list-datatable"
+              :per-page="perPageInt"
+              :columns="[{}]"
+              :data="tweetsList"
+            >
+                <template slot-scope="{ row, columns }">
+                  <tr v-if="row === undefined || loading" class="">
+                    <td>
+                      <div class="ph-item animated fadeOut infinite animation-3s">
+                        <span class="ph-picture" style="height: 20px; width: 100px;"></span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr v-if="! loading && row !== undefined">
+                    <td>
+                      <tweets-list-item :ref="row.id" :tweet="row" :key="row.id"></tweets-list-item>
+                    </td>
+                  </tr>
+                </template>
+            </tweets-list-datatable>
+            <portal-target name="tweets-list-pager" />
+            <portal to="tweets-list-pager">
+              <tweets-list-datatable-pager
+                v-model="page"
+                type="long"
+                :per-page="perPageInt"
+              ></tweets-list-datatable-pager>
+            </portal>
+          </div>
+      </div>
     </div>
   </div>
 </template>
@@ -308,7 +322,7 @@ const tweetsListDatatable = DatatableFactory.useDefaultType(false).registerTable
   tableType => {
     tableType.mergeSettings({
       table: {
-        class: `table table-hover tweetsList__table`,
+        class: `table tweetsList__table`,
       },
       pager: {
         classes: {
@@ -366,14 +380,24 @@ export default {
       debouncedSearch: null,
       debouncedAfterFiltering: null,
       perPage: 200,
-      resultsStart: 0,
 
       taskView: null,
       loading: true,
-      page: 0,
+      page: 1,
     }
   },
   computed: {
+    perPageInt() {
+      return parseInt(this.perPage)
+    },
+    tweetsList() {
+      if (this.taskView)
+      {
+        return (Array((this.taskView.from || 1)-1)).concat(this.taskView.data).concat((Array(this.taskView.total - (this.taskView.to || 0))))
+      }
+
+      return this.filteredTweets
+    },
     totalTweets() {
       return this.task.likes_count
     },
@@ -429,14 +453,6 @@ export default {
 
       return tweets
     },
-    paginatedFilteredTweets () {
-      if ( this.taskView )
-      {
-        return this.taskView.data
-      }
-
-      return this.filteredTweets.slice(this.resultsStart, this.resultsStart + this.perPage)
-    },
     resultsCount() {
       if ( this.taskView )
       {
@@ -444,40 +460,6 @@ export default {
       }
 
       return this.filteredTweets.length
-    },
-    canNavigatePrev () {
-      if ( this.taskView )
-      {
-        return this.taskView.current_page > 1
-      }
-
-      const prevStart = this.resultsStart - this.perPage
-
-      return prevStart >= 0
-    },
-    canNavigateNext () {
-      if ( this.taskView )
-      {
-        return this.taskView.current_page < this.taskView.last_page
-      }
-
-      const nextStart = this.resultsStart + this.perPage
-
-      return nextStart < this.resultsCount
-    },
-    shouldShowNavigation() {
-      if ( this.taskView )
-      {
-        return this.taskView.last_page !== 1
-      }
-
-      return this.resultsCount  > this.paginatedFilteredTweets.length
-    },
-    currentPage () {
-      return this.taskView ? (this.taskView.current_page-1) : Math.ceil(this.resultsStart / this.perPage)
-    },
-    totalPages () {
-      return this.taskView ? this.taskView.last_page : Math.ceil(this.resultsCount / this.perPage)
     },
     tweetsWithoutMedia() {
       return this.taskView ? this.taskView.tweets_text_only : this.tweets.filter(x => x.media.length === 0).length
@@ -495,7 +477,7 @@ export default {
   mounted () {
     this.debouncedAfterFiltering = debounce(t => {
       return this.afterFiltering()
-    }, 300)
+    }, 100)
     this.buildSearch()
 
     if (this.isLocal) {
@@ -535,6 +517,10 @@ export default {
 
         this.debouncedAfterFiltering()
     },
+    page(...args) {
+      this.loading = true
+      this.search()
+    },
     searchOnlyInMonth (newValue) {
       if (! newValue)
       {
@@ -558,14 +544,14 @@ export default {
         this.filterTweetsByTweet(latestTweet)
       })
     },
-    fetchTweetsFromView(page = 1, callback = null) {
+    fetchTweetsFromView(callback = null) {
       this.loading = true
 
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
         params: {
           year: this.selected.year,
           month: this.selected.month !== null ? (this.selected.month + 1) : null,
-          page,
+          page: this.page,
           perPage: this.perPage,
           searchOptions: Object.keys(this.searchOptions).filter(x => this.searchOptions[x]),
           searchKeywords: this.searchKeywords,
@@ -700,36 +686,6 @@ export default {
         }
       }
     },
-    navigatePrev () {
-      if (! this.canNavigatePrev)
-        return ;
-
-      if ( this.taskView )
-      {
-        this.fetchTweetsFromView(this.taskView.current_page - 1)
-        return ;
-      }
-
-      this.showLoading()
-      this.resultsStart = this.resultsStart - this.perPage
-      this.$nextTick(this.hideLoading)
-      this.debouncedAfterFiltering()
-    },
-    navigateNext () {
-      if (! this.canNavigateNext)
-        return ;
-
-      if ( this.taskView )
-      {
-        this.fetchTweetsFromView(this.taskView.current_page + 1)
-        return ;
-      }
-
-      this.showLoading()
-      this.resultsStart = this.resultsStart + this.perPage
-      this.$nextTick(this.hideLoading)
-      this.debouncedAfterFiltering()
-    },
     buildSearch () {
       this.debouncedSearch = debounce(t => {
         return this.search()
@@ -741,7 +697,7 @@ export default {
     },
     search () {
       if (this.taskView) {
-        return this.$nextTick(x => this.fetchTweetsFromView(1, this.debouncedAfterFiltering))
+        return this.$nextTick(x => this.fetchTweetsFromView(this.debouncedAfterFiltering))
       }
 
       const searchKeywords = this.searchKeywords
@@ -751,9 +707,6 @@ export default {
         this.debouncedAfterFiltering()
         return
       }
-
-
-      this.resultsStart = 0
 
       this.searchFilter = (tweets) => {
         tweets = this.jsSearch(tweets, searchKeywords)
@@ -777,7 +730,6 @@ export default {
 
       if (this.getYearAndMonthTweetsLength(year, month) === 0) { return }
 
-      this.resultsStart = 0
 
       if (! this.taskView)
       {

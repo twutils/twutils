@@ -283,7 +283,7 @@ const usersListDatatable = DatatableFactory.useDefaultType(false).registerTableT
   tableType => {
     tableType.mergeSettings({
       table: {
-        class: `table table-hover table-striped usersList__table`,
+        class: `table table-striped usersList__table`,
       },
       pager: {
         classes: {

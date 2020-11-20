@@ -869,10 +869,20 @@ $taskExport-text: darken(theme-color('success'), 10%);
     cursor: pointer;
   }
 }
+
+.tweetsList__table {
+  thead {
+    display: none;
+  }
+
+  tbody > tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
 .usersList__searchInfo, .tweetsList__searchInfo {
     font-size: 0.7rem;
     background: #eee;
-    padding: 1rem;
+    padding: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;

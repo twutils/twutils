@@ -121,7 +121,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertZippedExists('1', [$tweet->id_str.'_1.jpeg', $tweet->id_str.'_2.jpeg']);
 
-        $this->deleteJson("api/tasks/1");
+        $this->deleteJson('api/tasks/1');
 
         $this->fireJobsAndBindTwitter([], $lastJobIndex);
 

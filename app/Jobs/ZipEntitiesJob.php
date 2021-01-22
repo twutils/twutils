@@ -63,17 +63,14 @@ class ZipEntitiesJob implements ShouldQueue
 
         $paths->map(function ($path) {
             if (Storage::disk('local')->exists($this->export->id.'/'.$path)) {
-
                 return;
             }
 
             if (MediaFile::getCacheStorageDisk()->exists($path)) {
-
                 Storage::disk('local')->put($this->export->id.'/'.$path, MediaFile::getCacheStorageDisk()->readStream($path));
 
                 return;
             }
-
 
             try {
                 Storage::disk('local')->put($this->export->id.'/'.$path, MediaFile::getStorageDisk()->readStream($path));
@@ -82,7 +79,7 @@ class ZipEntitiesJob implements ShouldQueue
             }
         });
 
-        $fileName = $this->export->id .'.zip';
+        $fileName = $this->export->id.'.zip';
 
         $fileAbsolutePath = Storage::disk('local')->path($this->export->id).'/'.$fileName;
 
@@ -112,8 +109,7 @@ class ZipEntitiesJob implements ShouldQueue
         $this->export->progress = $this->export->fresh()->progress_end;
 
         // Check export wasn't removed while processing..
-        if ($this->export->fresh())
-        {
+        if ($this->export->fresh()) {
             $this->export->save();
         }
     }

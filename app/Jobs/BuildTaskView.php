@@ -29,32 +29,30 @@ class BuildTaskView implements ShouldQueue
 
     public function handle()
     {
-        $taskView = new TaskView ([
+        $taskView = new TaskView([
             'task_id' => $this->task->id,
             'tweets_text_only' => 0,
         ]);
 
-        if (! in_array($this->task->type, Task::TWEETS_LISTS_TYPES) )
-        {
-            return ;
+        if (! in_array($this->task->type, Task::TWEETS_LISTS_TYPES)) {
+            return;
         }
 
         $months = [];
 
-        $this->task->tweets()->chunk(100, function ($tweets) use (& $taskView, & $months) {
+        $this->task->tweets()->chunk(100, function ($tweets) use (&$taskView, &$months) {
             foreach ($tweets as $tweet) {
                 $taskView->count += 1;
 
-                $monthPath = $tweet->tweet_created_at->year . '.' . $tweet->tweet_created_at->month;
+                $monthPath = $tweet->tweet_created_at->year.'.'.$tweet->tweet_created_at->month;
 
                 Arr::set(
                     $months,
                     $monthPath,
-                    Arr::get($months, $monthPath)+1
+                    Arr::get($months, $monthPath) + 1
                 );
 
-                if ($tweet->media->isEmpty())
-                {
+                if ($tweet->media->isEmpty()) {
                     $taskView->tweets_text_only += 1;
                     continue;
                 }

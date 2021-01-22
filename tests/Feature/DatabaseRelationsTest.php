@@ -198,7 +198,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
         $tweepsIds = (Tweep::all()->pluck('id_str')->implode(','));
         $hookExecuted = false;
-        app()->bind('BeforeFollowingInsertHook', function () use ($tweets , $followingResponse, &$hookExecuted) {
+        app()->bind('BeforeFollowingInsertHook', function () use ($tweets, $followingResponse, &$hookExecuted) {
             $this->bindTwitterConnector($tweets);
 
             $lastJobIndex = count($this->dispatchedJobs);
@@ -268,7 +268,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $this->bindTwitterConnector($followerResponse);
 
         $tweepsIds = (Tweep::all()->pluck('id')->implode(','));
-        app()->bind('BeforeFollowersInsertHook', function () use ($tweets , $followerResponse) {
+        app()->bind('BeforeFollowersInsertHook', function () use ($tweets, $followerResponse) {
             $this->bindTwitterConnector($tweets);
 
             $lastJobIndex = count($this->dispatchedJobs);

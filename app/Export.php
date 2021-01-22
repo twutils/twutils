@@ -94,17 +94,15 @@ class Export extends Model
                 empty($dirtyKeys) ||
                 in_array('progress', $dirtyKeys) ||
                 in_array('progress_end', $dirtyKeys)
-            )
-            {
-                return ;
+            ) {
+                return;
             }
 
             dispatch(new ProcessExportJob($export));
         });
 
         static::deleted(function (self $export) {
-            if ( static::getStorageDisk()->exists($export->id))
-            {
+            if (static::getStorageDisk()->exists($export->id)) {
                 static::getStorageDisk()->delete($export->id);
             }
         });
@@ -119,15 +117,14 @@ class Export extends Model
     {
         $adapter = static::getStorageDisk()->getDriver()->getAdapter();
 
-        if ($adapter instanceof AwsS3Adapter)
-        {
+        if ($adapter instanceof AwsS3Adapter) {
             return redirect()
                     ->away(
                         static::getStorageDisk()->temporaryUrl(
                             $this->id,
                             now()->addMinutes(1),
                             [
-                                'ResponseContentDisposition' => 'attachment; filename=' . $this->filename,
+                                'ResponseContentDisposition' => 'attachment; filename='.$this->filename,
                             ]
                         )
                     );

@@ -19,15 +19,14 @@ class TweetsManager
         });
 
         $foundTweets = Tweet::whereIn('id_str', $tweets->pluck('id_str'))->get();
-        $foundTweetsIds = $foundTweets->pluck('id_str');
 
-        $notFound = $tweets->pluck('id_str')->diff($foundTweetsIds);
+        $notFoundTweets = $tweets->pluck('id_str')->diff($foundTweets->pluck('id_str'));
 
         $foundTweets->map(function (Tweet $tweet) use ($tweets) {
             return static::updateTweetIfNeeded($tweet, $tweets->where('id_str', $tweet->id_str)->first());
         });
 
-        $notFound->map(function ($tweetIdStr) use ($tweets) {
+        $notFoundTweets->map(function ($tweetIdStr) use ($tweets) {
             return static::createTweet($tweets->where('id_str', $tweetIdStr)->first());
         });
     }

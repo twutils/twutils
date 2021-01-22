@@ -31,8 +31,9 @@ class ProcessMediaJob implements ShouldQueue
         }
 
         $this->media->mediaFiles->map(function (MediaFile $mediaFile) {
-            if ($mediaFile->status !== MediaFile::STATUS_INITIAL)
-                return ;
+            if ($mediaFile->status !== MediaFile::STATUS_INITIAL) {
+                return;
+            }
 
             $mediaFile->status = MediaFile::STATUS_STARTED;
             $mediaFile->save();

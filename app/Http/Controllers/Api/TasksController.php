@@ -50,17 +50,15 @@ class TasksController extends Controller
     {
         $this->authorize('view', $task);
         $this->validate($request, [
-            'search' => ['nullable', 'string']
+            'search' => ['nullable', 'string'],
         ]);
 
-        if ( in_array($task->type, Task::TWEETS_LISTS_TYPES ) )
-        {
-            return $this->getTweetsListView($request,$task);
+        if (in_array($task->type, Task::TWEETS_LISTS_TYPES)) {
+            return $this->getTweetsListView($request, $task);
         }
 
-        if ( in_array($task->type, Task::USERS_LISTS_TYPES ) )
-        {
-            return $this->getUsersListView($request,$task);
+        if (in_array($task->type, Task::USERS_LISTS_TYPES)) {
+            return $this->getUsersListView($request, $task);
         }
 
         return [];
@@ -146,7 +144,7 @@ class TasksController extends Controller
                 ->get();
     }
 
-    protected function getUsersListView(Request $request,Task $task)
+    protected function getUsersListView(Request $request, Task $task)
     {
         $this->validate($request, [
             'orderFields'       => [
@@ -178,7 +176,7 @@ class TasksController extends Controller
             ],
             'orderDirections.*' => [
                 'string',
-                Rule::in(['asc', 'desc',]),
+                Rule::in(['asc', 'desc']),
             ],
         ]);
 
@@ -198,62 +196,58 @@ class TasksController extends Controller
 
         $totalCount = $query->count();
 
-        if ($request->search)
-        {
+        if ($request->search) {
             $query = $query->whereHas('tweep', function (Builder $query) use ($request) {
                 return $query->where(function (Builder $query) use ($request) {
                     foreach (['screen_name', 'name', 'description'] as $field) {
-                        $query = $query->OrwhereRaw('lower(' . $field . ') like ?', ['%' . mb_strtolower($request->search) . '%']);
+                        $query = $query->OrwhereRaw('lower('.$field.') like ?', ['%'.mb_strtolower($request->search).'%']);
                     }
+
                     return $query;
                 });
             });
-
         }
 
-        $query = $query->join('tweeps', 'tweeps.id_str', '=', $relatedTableName . '.tweep_id_str');
+        $query = $query->join('tweeps', 'tweeps.id_str', '=', $relatedTableName.'.tweep_id_str');
 
         foreach (($request->orderFields ?? []) as $key => $field) {
-            $orderColumn = 'tweeps.' . $field;
+            $orderColumn = 'tweeps.'.$field;
 
-            if ($field === 'following_id')
-            {
-                $orderColumn = $relatedTableName . '.id';
+            if ($field === 'following_id') {
+                $orderColumn = $relatedTableName.'.id';
             }
 
-            if ( in_array($field , ['followed_by', 'followed_by_me']))
-            {
-                $orderColumn = $relatedTableName . '.' . $field;
+            if (in_array($field, ['followed_by', 'followed_by_me'])) {
+                $orderColumn = $relatedTableName.'.'.$field;
             }
 
             $query = $query->orderBy($orderColumn, $request->orderDirections[$key]);
         }
 
-        return array_merge($query->paginate($request->perPage ?? 200)->toArray() , ['totalCount' => $totalCount]);
+        return array_merge($query->paginate($request->perPage ?? 200)->toArray(), ['totalCount' => $totalCount]);
     }
 
-    protected function getTweetsListView(Request $request,Task $task)
+    protected function getTweetsListView(Request $request, Task $task)
     {
         $this->validate($request, [
             'month' => ['sometimes', 'integer', 'min:1', 'max:12'],
-            'year'  => ['sometimes', 'integer', 'min:2006', 'max:' . now()->year],
+            'year'  => ['sometimes', 'integer', 'min:2006', 'max:'.now()->year],
             'searchOptions' => ['sometimes', 'array'],
-            'searchOptions.*' => [ Rule::in(['withPhotos', 'withGifs', 'withVideos', 'withTextOnly'])],
+            'searchOptions.*' => [Rule::in(['withPhotos', 'withGifs', 'withVideos', 'withTextOnly'])],
             'searchKeywords' => ['nullable', 'string'],
             'searchOnlyInMonth' => ['sometimes', 'boolean'],
         ]);
 
         $query = $task->tweets();
 
-        $selectedMonth  = $request->month;
-        $selectedYear   = $request->year;
+        $selectedMonth = $request->month;
+        $selectedYear = $request->year;
 
         if (
             $request->searchOnlyInMonth &&
             (is_null($selectedMonth) || is_null($selectedYear)) &&
             ($lastTweetData = $query->max('tweet_created_at'))
-        )
-        {
+        ) {
             $lastTweetData = Carbon::parse($lastTweetData);
 
             $selectedMonth = $lastTweetData->startOfMonth()->format('m');
@@ -263,18 +257,16 @@ class TasksController extends Controller
         if (
             (empty($request->searchKeywords) || $request->searchOnlyInMonth) &&
             ! (is_null($selectedMonth) || is_null($selectedYear))
-        )
-        {
-            $startOfMonth = Carbon::parse($selectedYear . '-' . $selectedMonth);
-            
+        ) {
+            $startOfMonth = Carbon::parse($selectedYear.'-'.$selectedMonth);
+
             $query = $query->where('tweets.tweet_created_at', '>=', $startOfMonth)
                            ->where('tweets.tweet_created_at', '<', (clone $startOfMonth)->endOfMonth());
         }
 
         $query = $query->where(function ($query) use ($request) {
             foreach (($request->searchOptions ?? []) as $searchOption) {
-                if ($searchOption === 'withTextOnly')
-                {
+                if ($searchOption === 'withTextOnly') {
                     $query = $query->OrwhereDoesntHave('media');
                     continue;
                 }
@@ -293,11 +285,10 @@ class TasksController extends Controller
             }
         });
 
-        if ($request->searchKeywords)
-        {
+        if ($request->searchKeywords) {
             $query = $query->where(function ($query) use ($request) {
                 foreach (explode(' ', $request->searchKeywords) as $keyword) {
-                    $query = $query->where('text', 'like', '%' . $keyword . '%');
+                    $query = $query->where('text', 'like', '%'.$keyword.'%');
                 }
             });
         }

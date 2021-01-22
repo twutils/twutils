@@ -2,12 +2,6 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
-use App\Media;
-use App\Tweet;
-use App\Export;
-use App\TwUtils\AssetsManager;
-use App\Jobs\StartExportMediaJob;
 use App\Jobs\FetchEntitiesLikesJob;
 
 class FetchEntitiesLikesOperation extends FetchLikesOperation

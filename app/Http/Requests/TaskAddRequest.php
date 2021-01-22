@@ -4,8 +4,8 @@ namespace App\Http\Requests;
 
 use App\Task;
 use App\TwUtils\UserManager;
-use App\Exceptions\TaskAddException;
 use App\TwUtils\TasksManager;
+use App\Exceptions\TaskAddException;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 

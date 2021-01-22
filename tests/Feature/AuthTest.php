@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\FetchUserInfoJob;
 use App\User;
 use App\SocialUser;
+use App\Jobs\FetchUserInfoJob;
 use Tests\IntegrationTestCase;
 
 class AuthTest extends IntegrationTestCase
@@ -50,14 +50,14 @@ class AuthTest extends IntegrationTestCase
             [
                 'type' => FetchUserInfoJob::class,
                 'twitterData' => ['description' => 'Old Bio'] + ((array) $this->getStub('user_info_response.json')),
-            ]
+            ],
         ]);
 
         // The "Old Bio" is saved
         $this->assertEquals('Old Bio', auth()->user()->socialUsers[0]->fresh()->description);
 
         // Set user's profile last update to: before 14 minutes
-        tap ( auth()->user()->socialUsers[0], function (SocialUser $socialUser) {
+        tap(auth()->user()->socialUsers[0], function (SocialUser $socialUser) {
             $socialUser->updated_at = now()->subMinutes(14);
             $socialUser->save();
         });
@@ -71,7 +71,7 @@ class AuthTest extends IntegrationTestCase
 
         // Then...
         // Set user's profile last update to: before 16 minutes
-        tap ( auth()->user()->socialUsers[0], function (SocialUser $socialUser) {
+        tap(auth()->user()->socialUsers[0], function (SocialUser $socialUser) {
             $socialUser->updated_at = now()->subMinutes(16);
             $socialUser->save();
         });
@@ -87,7 +87,7 @@ class AuthTest extends IntegrationTestCase
             [
                 'type' => FetchUserInfoJob::class,
                 'twitterData' => ((array) $this->getStub('user_info_response.json')),
-            ]
+            ],
         ], $lastJobIndex);
 
         $this->assertEquals('204 No Content', auth()->user()->socialUsers[0]->fresh()->description);

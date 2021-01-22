@@ -1116,10 +1116,9 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->get('task/1/export/1');
         $response->assertStatus(200);
 
-
         $response->assertHeader(
             'content-disposition',
-            "inline; filename=any0-" . $this->exportTaskShortName . "-1990-11-27_1200am.zip",
+            'inline; filename=any0-'.$this->exportTaskShortName.'-1990-11-27_1200am.zip',
         );
 
         $response = $this->get('task/1/export/2');
@@ -1127,7 +1126,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $response->assertHeader(
             'content-disposition',
-            "inline; filename=any0-" . $this->exportTaskShortName . "-1990-11-27_1200am.xlsx",
+            'inline; filename=any0-'.$this->exportTaskShortName.'-1990-11-27_1200am.xlsx',
         );
 
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
@@ -1190,7 +1189,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $response->assertHeader(
             'content-disposition',
-            "inline; filename=any0-" . $this->exportTaskShortName . "-1990-11-27_1200am.zip",
+            'inline; filename=any0-'.$this->exportTaskShortName.'-1990-11-27_1200am.zip',
         );
 
         $fileAsString = $response->streamedContent();
@@ -1224,6 +1223,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $decTweets = collect($this->generateUniqueTweets(10))
             ->map(function ($tweet) {
                 $tweet->created_at = Carbon::parse('2019-12');
+
                 return $tweet;
             })
             ->toArray();
@@ -1231,6 +1231,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $janTweets = collect($this->generateUniqueTweets(10))
             ->map(function ($tweet) {
                 $tweet->created_at = Carbon::parse('2020-01');
+
                 return $tweet;
             })
             ->toArray();
@@ -1238,6 +1239,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $febTweets = collect($this->generateUniqueTweets(20, $tweetWithOnePhoto))
             ->map(function ($tweet) {
                 $tweet->created_at = Carbon::parse('2020-02');
+
                 return $tweet;
             })
             ->toArray();
@@ -1245,6 +1247,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $marTweets = collect($this->generateUniqueTweets(30, $tweetWithTwoPhotos))
             ->map(function ($tweet) {
                 $tweet->created_at = Carbon::parse('2020-03');
+
                 return $tweet;
             })
             ->toArray();
@@ -1252,6 +1255,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $aprTweets = collect($this->generateUniqueTweets(40, $tweetWithVideo))
             ->map(function ($tweet) {
                 $tweet->created_at = Carbon::parse('2020-04');
+
                 return $tweet;
             })
             ->toArray();
@@ -1259,6 +1263,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $mayTweets = collect($this->generateUniqueTweets(50, $tweetWithGif))
             ->map(function ($tweet) {
                 $tweet->created_at = Carbon::parse('2020-05');
+
                 return $tweet;
             })
             ->toArray();
@@ -1282,23 +1287,23 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response->assertStatus(200);
 
         $response->assertJson([
-          'count'               => 160,
-          'tweets_text_only'    => 20,
-          'tweets_with_photos'  => 50,
-          'tweets_with_videos'  => 40,
-          'tweets_with_gifs'    => 50,
-          'months' => [
-            2019 => [
-                12 => 10,
+            'count'               => 160,
+            'tweets_text_only'    => 20,
+            'tweets_with_photos'  => 50,
+            'tweets_with_videos'  => 40,
+            'tweets_with_gifs'    => 50,
+            'months' => [
+                2019 => [
+                    12 => 10,
+                ],
+                2020 => [
+                    1 => 10,
+                    2 => 20,
+                    3 => 30,
+                    4 => 40,
+                    5 => 50,
+                ],
             ],
-            2020 => [
-              1 => 10,
-              2 => 20,
-              3 => 30,
-              4 => 40,
-              5 => 50,
-            ],
-          ]
         ]);
     }
 
@@ -1318,6 +1323,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $aprTweets = collect($this->generateUniqueTweets(5, $tweetWithVideo))
             ->map(function ($tweet) {
                 $tweet->created_at = Carbon::parse('2020-04');
+
                 return $tweet;
             })
             ->toArray();
@@ -1341,16 +1347,16 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response->assertStatus(200);
 
         $response->assertJson([
-          'count'               => 5,
-          'tweets_text_only'    => 0,
-          'tweets_with_photos'  => 0,
-          'tweets_with_videos'  => 5,
-          'tweets_with_gifs'    => 0,
-          'months' => [
-            2020 => [
-              4 => 5,
+            'count'               => 5,
+            'tweets_text_only'    => 0,
+            'tweets_with_photos'  => 0,
+            'tweets_with_videos'  => 5,
+            'tweets_with_gifs'    => 0,
+            'months' => [
+                2020 => [
+                    4 => 5,
+                ],
             ],
-          ]
         ]);
     }
 }

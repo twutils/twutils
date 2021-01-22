@@ -58,8 +58,7 @@ class MediaFile extends Model
         });
 
         static::deleting(function (self $mediaFile) {
-            if ($mediaFile->getStorageDisk()->exists($mediaFile->mediaPath))
-            {
+            if ($mediaFile->getStorageDisk()->exists($mediaFile->mediaPath)) {
                 $mediaFile->getStorageDisk()->delete($mediaFile->mediaPath);
             }
         });

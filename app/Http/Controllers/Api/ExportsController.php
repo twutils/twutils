@@ -7,7 +7,6 @@ use App\Export;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
 class ExportsController extends Controller
 {
@@ -30,19 +29,18 @@ class ExportsController extends Controller
         $this->validate($request, [
             'type' => [
                 'required',
-                Rule::in(Export::AVAILABLE_TYPES)
+                Rule::in(Export::AVAILABLE_TYPES),
             ],
         ]);
 
         $this->authorize('add', [Export::class, $task, $exportType]);
 
-        $lastFoundExport = $task->exports()->where('type' ,$exportType)->get()->last();
+        $lastFoundExport = $task->exports()->where('type', $exportType)->get()->last();
 
         if (
             $lastFoundExport &&
-            in_array( $lastFoundExport->status , [ Export::STATUS_INITIAL] )
-        )
-        {
+            in_array($lastFoundExport->status, [Export::STATUS_INITIAL])
+        ) {
             $lastFoundExport->status = Export::STATUS_STARTED;
             $lastFoundExport->save();
 

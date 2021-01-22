@@ -2,13 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Task;
 use App\Media;
 use App\Tweet;
 use App\Export;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\AssetsManager;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -49,8 +47,9 @@ class StartExportMediaJob implements ShouldQueue
 
         $tweetsWithMedia->map(function ($tweet) {
             $tweet->media->map(function (Media $media) {
-                if ($media->status !== Media::STATUS_INITIAL)
-                    return ;
+                if ($media->status !== Media::STATUS_INITIAL) {
+                    return;
+                }
 
                 $media->status = Media::STATUS_STARTED;
                 $media->save();

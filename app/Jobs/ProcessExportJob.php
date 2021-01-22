@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;
 use App\Exports\TweetsListExport;
-use App\Jobs\StartExportMediaJob;
 use App\Exports\UsersListTaskExport;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -73,8 +72,7 @@ class ProcessExportJob implements ShouldQueue
 
     protected function handleException(Exception $e)
     {
-        if ($this->export->status !== Export::STATUS_BROKEN)
-        {
+        if ($this->export->status !== Export::STATUS_BROKEN) {
             $this->export->status = Export::STATUS_BROKEN;
             $this->export->exception = Str::limit($e->__toString(), 10000);
             $this->export->save();
@@ -108,7 +106,7 @@ class ProcessExportJob implements ShouldQueue
                 $this->success();
             }
 
-            return ;
+            return;
         }
 
         $tweets = collect([]);
@@ -162,7 +160,7 @@ class ProcessExportJob implements ShouldQueue
                     }
 
                     if (in_array($mediaFile->status, [MediaFile::STATUS_SUCCESS])) {
-                        $this->export->progress +=1;
+                        $this->export->progress += 1;
                     }
                 });
             });

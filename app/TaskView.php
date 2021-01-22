@@ -2,11 +2,7 @@
 
 namespace App;
 
-use App\Jobs\ProcessExportJob;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use Illuminate\Filesystem\FilesystemAdapter;
 
 class TaskView extends Model
 {

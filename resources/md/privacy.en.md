@@ -80,7 +80,7 @@ When you delete the account, all the content and activities that you did on TwUt
 When the account is deleted, it will also:
 
 - Delete the main user account, email and activity information
-- Delete all permissions to your twitter acount
+- Delete all permissions to your twitter account
 - Delete all tasks associated with the account
 
 When you delete your account from TwUtils, TwUtils will also delete the tweets, users information that retrieved via tasks created from your account.

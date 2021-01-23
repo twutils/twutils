@@ -86,6 +86,7 @@ class TestDataTest extends IntegrationTestCase
         return [
             'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
             'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -112,6 +113,7 @@ class TestDataTest extends IntegrationTestCase
         return [
             'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
             'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -151,6 +153,7 @@ class TestDataTest extends IntegrationTestCase
         return [
             'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
             'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -178,6 +181,7 @@ class TestDataTest extends IntegrationTestCase
         return [
             'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
             'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
             'CreateTaskResponse' => $response,
         ];
     }

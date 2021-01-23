@@ -101,14 +101,14 @@ describe(`Tasks Rendering and Content`, () => {
 
     createVue()
     vm.$router.push(`/task/${TestData.Tasks.FetchFollowing.TaskResponse.id}`)
-    setTimeout(() => {
+    moxios.wait(() => {
       const vmTextContent = vm.text()
       TestData.Tasks.FetchFollowing.TaskViewResponse.data.forEach((following) => {
         expect(vmTextContent).to.contain(following.tweep.screen_name)
         expect(vmTextContent).to.contain(following.tweep.description)
       })
       done()
-    }, 100)
+    })
   })
 
   it(`shows fetch followers task`, (done) => {
@@ -135,13 +135,13 @@ describe(`Tasks Rendering and Content`, () => {
     createVue()
     vm.$router.push(`/task/${TestData.Tasks.FetchFollowers.TaskResponse.id}`)
 
-    setTimeout(() => {
+    moxios.wait(() => {
       const vmTextContent = vm.text()
       TestData.Tasks.FetchFollowers.TaskViewResponse.data.forEach((following) => {
         expect(vmTextContent).to.contain(following.tweep.screen_name)
         expect(vmTextContent).to.contain(following.tweep.description)
       })
       done()
-    }, 100)
+    })
   })
 })

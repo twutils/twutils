@@ -567,7 +567,6 @@ export default {
     },
     afterFiltering() {
       this.loading = false
-      console.log(this.$refs[`users-list-datatable`])
       this.$refs[`users-list-datatable`].$el.querySelectorAll(`.user__avatar`).forEach(x => x.isRemote = false)
       $(this.$refs[`users-list-datatable`]).find(`.user__avatar`).attr(`src`, this.userPlaceholder)
       this.$nextTick(x => {

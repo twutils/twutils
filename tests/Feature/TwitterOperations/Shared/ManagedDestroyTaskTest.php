@@ -57,7 +57,7 @@ abstract class ManagedDestroyTaskTest extends IntegrationTestCase
 
         $response = $this->getJson('api/tasks/')
                     ->assertSuccessful()
-                    ->decodeResponseJson();
+                    ->json();
 
         $this->assertEquals('4/4', $response[0]['removedCount']);
         $this->assertEquals('4/4', $response[2]['removedCount']);

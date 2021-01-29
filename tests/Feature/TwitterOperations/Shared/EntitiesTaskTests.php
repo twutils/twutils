@@ -79,15 +79,15 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $response = $this->getJson(route('tasks.getTaskData', ['task' => Task::all()->last()->id]));
 
-        $this->assertEquals('success', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['status']);
+        $this->assertEquals('success', $response->json()['data'][0]['media'][0]['media_files'][0]['status']);
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.jpeg');
-        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
-        $this->assertEquals($tweet->id_str.'_2.jpeg', $response->decodeResponseJson()['data'][0]['media'][1]['media_files'][0]['mediaPath']);
+        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->json()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
+        $this->assertEquals($tweet->id_str.'_2.jpeg', $response->json()['data'][0]['media'][1]['media_files'][0]['mediaPath']);
     }
 
     public function test_basic_save_two_photos_database_relations()
@@ -155,7 +155,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
-        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
+        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->json()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
     }
 
     public function test_basic_save_video()
@@ -179,8 +179,8 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertLikesBelongsToTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
-        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
-        $this->assertEquals($tweet->id_str.'_2.mp4', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][1]['mediaPath']);
+        $this->assertEquals($tweet->id_str.'_1.jpeg', $response->json()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
+        $this->assertEquals($tweet->id_str.'_2.mp4', $response->json()['data'][0]['media'][0]['media_files'][1]['mediaPath']);
 
         $response = $this->get('task/1/export/1');
         $response->assertStatus(200);
@@ -218,7 +218,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedMissing('1', $tweet->id_str.'_1.zip');
-        $this->assertEquals('broken', $response->decodeResponseJson()['data'][0]['media'][0]['media_files'][0]['status']);
+        $this->assertEquals('broken', $response->json()['data'][0]['media'][0]['media_files'][0]['status']);
     }
 
     public function test_mixed_types_of_tweets()
@@ -277,7 +277,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $response = $this->getJson(route('tasks.getTaskData', ['task' => Task::all()->last()->id]));
 
         $likeEntitiesPaths = '';
-        collect($response->decodeResponseJson()['data'])
+        collect($response->json()['data'])
         ->map(
             function ($tweet) use (&$likeEntitiesPaths) {
                 foreach ($tweet['media'] as $media) {

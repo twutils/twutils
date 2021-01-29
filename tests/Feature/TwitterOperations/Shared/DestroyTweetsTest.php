@@ -223,7 +223,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $response = $this->getJson($this->tweetsSourceApiEndpoint);
         $response->assertStatus(200);
 
-        $taskId = (int) $response->decodeResponseJson()['data']['task_id'];
+        $taskId = (int) $response->json()['data']['task_id'];
 
         $taskId = $taskId + 1;  // wrong task id!
 
@@ -487,7 +487,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $this->bindTwitterConnector([]);
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId, 'settings' => ['start_date' => now()->format('H:i:s')]]);
         $response->assertStatus(422);
-        $this->assertStringContainsString('Start Date', implode($response->decodeResponseJson()['errors']));
+        $this->assertStringContainsString('Start Date', implode($response->json()['errors']));
         $this->assertFalse(isset($response->json()['end_date']));
 
         $this->fireJobsAndBindTwitter();
@@ -513,7 +513,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $this->bindTwitterConnector([]);
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId, 'settings' => ['end_date' => now()->format('H:i:s')]]);
         $response->assertStatus(422);
-        $this->assertStringContainsString('End Date', implode($response->decodeResponseJson()['errors']));
+        $this->assertStringContainsString('End Date', implode($response->json()['errors']));
         $this->assertFalse(isset($response->json()['start_date']));
 
         $this->fireJobsAndBindTwitter();
@@ -539,7 +539,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $this->bindTwitterConnector([]);
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId, 'settings' => ['start_date' => now()->format('Y-m-d'), 'end_date' => now()->format('H:i:s')]]);
         $response->assertStatus(422);
-        $this->assertStringContainsString('End Date', implode($response->decodeResponseJson()['errors']));
+        $this->assertStringContainsString('End Date', implode($response->json()['errors']));
         $this->assertFalse(isset($response->json()['start_date']));
 
         $this->fireJobsAndBindTwitter();
@@ -565,7 +565,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $this->bindTwitterConnector([]);
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId, 'settings' => ['end_date' => now()->format('Y-m-d'), 'start_date' => now()->format('H:i:s')]]);
         $response->assertStatus(422);
-        $this->assertStringContainsString('Start Date', implode($response->decodeResponseJson()['errors']));
+        $this->assertStringContainsString('Start Date', implode($response->json()['errors']));
         $this->assertFalse(isset($response->json()['end_date']));
 
         $this->fireJobsAndBindTwitter();
@@ -591,8 +591,8 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $this->bindTwitterConnector([]);
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId, 'settings' => ['end_date' => now()->format('Y-D-M'), 'start_date' => now()->format('H:i:s')]]);
         $response->assertStatus(422);
-        $this->assertStringContainsString('Start Date', implode($response->decodeResponseJson()['errors']));
-        $this->assertStringContainsString('End Date', implode($response->decodeResponseJson()['errors']));
+        $this->assertStringContainsString('Start Date', implode($response->json()['errors']));
+        $this->assertStringContainsString('End Date', implode($response->json()['errors']));
         $this->fireJobsAndBindTwitter();
 
         $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
@@ -641,7 +641,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         }
 
         $response = $this->getJson($this->tweetsSourceListEndpoint);
-        $taskId = $response->decodeResponseJson()[0]['id'];
+        $taskId = $response->json()[0]['id'];
 
         $indexLastDispatched = count($this->dispatchedJobs);
 

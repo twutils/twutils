@@ -43,7 +43,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->getJson($this->apiEndpoint);
         $response->assertStatus(200);
 
-        $taskId = $response->decodeResponseJson()['data']['task_id'];
+        $taskId = $response->json()['data']['task_id'];
 
         $this->fireJobsAndBindTwitter();
 
@@ -137,7 +137,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->getJson($this->apiEndpoint);
         $response->assertStatus(200);
 
-        $firstTaskId = $response->decodeResponseJson()['data']['task_id'];
+        $firstTaskId = $response->json()['data']['task_id'];
 
         $this->fireJobsAndBindTwitter();
         $lastJobIndex = count($this->dispatchedJobs);
@@ -161,7 +161,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->getJson($this->apiEndpoint);
         $response->assertStatus(200);
 
-        $secondTaskId = $response->decodeResponseJson()['data']['task_id'];
+        $secondTaskId = $response->json()['data']['task_id'];
         $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
         $lastJobIndex = count($this->dispatchedJobs);
@@ -211,7 +211,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->bindTwitterConnector($tweeps);
         $response = $this->getJson('/api/following');
         $response->assertStatus(200);
-        $firstTaskId = $response->decodeResponseJson()['data']['task_id'];
+        $firstTaskId = $response->json()['data']['task_id'];
 
         $this->fireJobsAndBindTwitter();
         $lastJobIndex = count($this->dispatchedJobs);
@@ -233,7 +233,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->getJson($this->apiEndpoint);
         $response->assertStatus(200);
 
-        $secondTaskId = $response->decodeResponseJson()['data']['task_id'];
+        $secondTaskId = $response->json()['data']['task_id'];
         $this->fireJobsAndBindTwitter([], $lastJobIndex);
 
         $lastJobIndex = count($this->dispatchedJobs);
@@ -277,7 +277,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->getJson($this->apiEndpoint);
         $response->assertStatus(200);
 
-        $taskId = $response->decodeResponseJson()['data']['task_id'];
+        $taskId = $response->json()['data']['task_id'];
 
         $this->fireJobsAndBindTwitter();
 

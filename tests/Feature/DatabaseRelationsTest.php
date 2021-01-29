@@ -160,8 +160,8 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $this->assertEquals(4, Task::all()->count());
         $this->assertEquals('completed', Task::find(1)->status);
         $this->assertEquals(8, Tweep::all()->count());
-        $this->assertNotNull($this->getJson('/api/tasks/2/data')->decodeResponseJson()['data'][0]['tweep']);
-        $this->assertNotNull($this->getJson('/api/tasks/3/data')->decodeResponseJson()['data'][0]['tweep']);
+        $this->assertNotNull($this->getJson('/api/tasks/2/data')->json()['data'][0]['tweep']);
+        $this->assertNotNull($this->getJson('/api/tasks/3/data')->json()['data'][0]['tweep']);
     }
 
     public function test_two_workers_share_same_tweep_whose_data_will_be_updated_during_following_task()
@@ -229,7 +229,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $secondLikesTaskTweepsIds = Task::find(3)->likes->pluck('tweep_id')->sort()->implode(',');
         $secondLikesTaskTweepsIdStrs = Task::find(3)->likes->map->tweep->map->id_str->unique()->sort()->implode(',');
 
-        $followingsTaskResponse = $this->getJson('/api/tasks/2/data')->decodeResponseJson();
+        $followingsTaskResponse = $this->getJson('/api/tasks/2/data')->json();
 
         $this->assertEquals(8, Tweep::all()->count());
         $this->assertEquals(8, Task::find(2)->followings->count());
@@ -295,7 +295,7 @@ class DatabaseRelationsTest extends IntegrationTestCase
         $secondLikesTaskTweepsIds = Task::find(3)->likes->pluck('tweep.id')->sort()->implode(',');
         $secondLikesTaskTweepsIdStrs = Task::find(3)->likes->map->tweep->map->id_str->unique()->sort()->implode(',');
 
-        $followersTaskResponse = $this->getJson('/api/tasks/2/data')->decodeResponseJson();
+        $followersTaskResponse = $this->getJson('/api/tasks/2/data')->json();
 
         $this->assertEquals(8, Tweep::all()->count());
         $this->assertEquals(8, Task::find(2)->followers->count());

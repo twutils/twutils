@@ -61,7 +61,7 @@ class TestDataTest extends IntegrationTestCase
 
     protected function tasksList()
     {
-        return $this->getJson('api/tasks')->decodeResponseJson();
+        return $this->getJson('api/tasks')->json();
     }
 
     protected function fetchLikes()
@@ -69,7 +69,7 @@ class TestDataTest extends IntegrationTestCase
         $lastFiredJobIndex = count($this->dispatchedJobs);
         $response = $this->getJson('/api/likes');
         $response->assertStatus(200);
-        $response = $response->decodeResponseJson();
+        $response = $response->json();
 
         $tweets = $this->generateUniqueTweets(10);
 
@@ -84,9 +84,9 @@ class TestDataTest extends IntegrationTestCase
         );
 
         return [
-            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
-            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->json(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->json(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->json(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -96,7 +96,7 @@ class TestDataTest extends IntegrationTestCase
         $lastFiredJobIndex = count($this->dispatchedJobs);
         $response = $this->getJson('/api/userTweets');
         $response->assertStatus(200);
-        $response = $response->decodeResponseJson();
+        $response = $response->json();
 
         $tweets = $this->generateUniqueTweets(10);
 
@@ -111,9 +111,9 @@ class TestDataTest extends IntegrationTestCase
         );
 
         return [
-            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
-            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->json(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->json(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->json(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -122,7 +122,7 @@ class TestDataTest extends IntegrationTestCase
     {
         $response = $this->getJson('/api/following');
         $response->assertStatus(200);
-        $response = $response->decodeResponseJson();
+        $response = $response->json();
 
         config(['twutils.twitter_requests_counts.fetch_following_lookups' => 2]);
 
@@ -151,9 +151,9 @@ class TestDataTest extends IntegrationTestCase
         );
 
         return [
-            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
-            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->json(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->json(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->json(),
             'CreateTaskResponse' => $response,
         ];
     }
@@ -163,7 +163,7 @@ class TestDataTest extends IntegrationTestCase
         $lastFiredJobIndex = count($this->dispatchedJobs);
         $response = $this->getJson('/api/followers');
         $response->assertStatus(200);
-        $response = $response->decodeResponseJson();
+        $response = $response->json();
 
         $fetchFollowingResponse = $this->fetchFollowingResponse(10, 0);
         $fetchFollowingResponse->users[5]->id_str = 123;
@@ -179,9 +179,9 @@ class TestDataTest extends IntegrationTestCase
         );
 
         return [
-            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->decodeResponseJson(),
-            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->decodeResponseJson(),
-            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->decodeResponseJson(),
+            'TaskResponse'       => $this->getJson('/api/tasks/'.$response['data']['task_id'])->json(),
+            'TaskDataResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/data')->json(),
+            'TaskViewResponse'   => $this->getJson('/api/tasks/'.$response['data']['task_id'].'/view')->json(),
             'CreateTaskResponse' => $response,
         ];
     }

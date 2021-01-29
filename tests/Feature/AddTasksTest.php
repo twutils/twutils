@@ -59,8 +59,8 @@ class AddTasksTest extends IntegrationTestCase
         $response = $this->postJson('/api/likes/'.$task->id);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals(__('messages.task_add_unauthorized_access'), $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals(__('messages.task_add_unauthorized_access'), $response->json('errors')[0]);
     }
 
     public function test_refuse_undefined_operation_task()
@@ -72,8 +72,8 @@ class AddTasksTest extends IntegrationTestCase
         $response = $this->postJson('/api/UndefinedOperation');
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals(__('messages.task_add_bad_request'), $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals(__('messages.task_add_bad_request'), $response->json('errors')[0]);
     }
 
     public function test_refuse_maximum_limit_of_task_type()
@@ -92,8 +92,8 @@ class AddTasksTest extends IntegrationTestCase
         $response = $this->postJson('/api/likes');
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals(__('messages.task_add_max_number'), $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals(__('messages.task_add_max_number'), $response->json('errors')[0]);
     }
 
     public function test_refuse_task_requires_extra_privileges()
@@ -105,8 +105,8 @@ class AddTasksTest extends IntegrationTestCase
         $response = $this->postJson('/api/ManagedDestroyLikes');
         $response->assertStatus(Response::HTTP_UPGRADE_REQUIRED);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals(__('messages.task_add_no_privilege'), $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals(__('messages.task_add_no_privilege'), $response->json('errors')[0]);
     }
 
     public function test_refuse_invalid_dates_for_managed_destroy_likes_task()
@@ -124,8 +124,8 @@ class AddTasksTest extends IntegrationTestCase
         ]]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->json('errors')[0]);
     }
 
     public function test_refuse_invalid_dates_for_managed_destroy_tweets_task()
@@ -143,8 +143,8 @@ class AddTasksTest extends IntegrationTestCase
         ]]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->json('errors')[0]);
     }
 
     public function test_refuse_invalid_dates_for_likes_task()
@@ -162,8 +162,8 @@ class AddTasksTest extends IntegrationTestCase
         ]]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->json('errors')[0]);
     }
 
     public function test_refuse_invalid_dates_for_destroy_likes_task()
@@ -186,8 +186,8 @@ class AddTasksTest extends IntegrationTestCase
         ]]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals('The End Date is not a valid date.', $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals('The End Date is not a valid date.', $response->json('errors')[0]);
     }
 
     public function test_refuse_invalid_targeted_task_for_destroy_likes_task()
@@ -210,8 +210,8 @@ class AddTasksTest extends IntegrationTestCase
         ]]);
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals(__('messages.task_add_target_not_found'), $response->decodeResponseJson('errors')[0]);
+        $this->assertNotEmpty($response->json('errors'));
+        $this->assertEquals(__('messages.task_add_target_not_found'), $response->json('errors')[0]);
     }
 
     public function test_refuse_has_previous_queued_task()
@@ -226,8 +226,8 @@ class AddTasksTest extends IntegrationTestCase
         $response = $this->postJson('/api/likes');
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertEmpty($response->decodeResponseJson('errors'));
-        $this->assertEquals(1, $response->decodeResponseJson('data')['task_id']);
+        $this->assertEmpty($response->json('errors'));
+        $this->assertEquals(1, $response->json('data')['task_id']);
     }
 
     public function test_refuse_invalid_managed_by_task_id()
@@ -241,7 +241,7 @@ class AddTasksTest extends IntegrationTestCase
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $this->assertNotEmpty($response->decodeResponseJson('errors'));
+        $this->assertNotEmpty($response->json('errors'));
     }
 
     public function test_add_likes_task()

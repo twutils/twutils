@@ -2,8 +2,8 @@
 
 namespace App\TwUtils;
 
-use App\Media;
-use App\Tweet;
+use App\Models\Media;
+use App\Models\Tweet;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use App\TwUtils\Tweets\Media\GifDownloader;

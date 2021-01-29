@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\SocialUser;
+use App\Models\User;
+use App\Models\SocialUser;
 use App\Jobs\FetchUserInfoJob;
 use Tests\IntegrationTestCase;
 
@@ -142,7 +142,7 @@ class AuthTest extends IntegrationTestCase
 
     public function test_login_redirect_authintacted_user()
     {
-        $appUser = factory(User::class)->create();
+        $appUser = User::factory()->create();
         $this->actingAs($appUser);
 
         $response = $this->get(route('login'));

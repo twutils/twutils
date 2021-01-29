@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Task;
-use App\User;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaskPolicy
@@ -13,8 +13,8 @@ class TaskPolicy
     /**
      * Determine whether the user can view the task.
      *
-     * @param \App\User $user
-     * @param \App\Task $task
+     * @param \App\Models\User $user
+     * @param \App\Models\Task $task
      *
      * @return mixed
      */
@@ -26,7 +26,7 @@ class TaskPolicy
     /**
      * Determine whether the user can create tasks.
      *
-     * @param \App\User $user
+     * @param \App\Models\User $user
      *
      * @return mixed
      */
@@ -45,8 +45,8 @@ class TaskPolicy
     /**
      * Determine whether the user can update the task.
      *
-     * @param \App\User $user
-     * @param \App\Task $task
+     * @param \App\Models\User $user
+     * @param \App\Models\Task $task
      *
      * @return mixed
      */
@@ -58,8 +58,8 @@ class TaskPolicy
     /**
      * Determine whether the user can delete the task.
      *
-     * @param \App\User $user
-     * @param \App\Task $task
+     * @param \App\Models\User $user
+     * @param \App\Models\Task $task
      *
      * @return mixed
      */

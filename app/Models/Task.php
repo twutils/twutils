@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Jobs\BuildTaskView;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use App\Jobs\CleaningAllTweetsAndTweeps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
@@ -20,6 +21,8 @@ use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
 
 class Task extends Model
 {
+    use HasFactory;
+
     protected $guarded = ['id'];
     protected $appends = ['baseName', 'removedCount', 'componentName'];
     protected $hidden = ['exception'];

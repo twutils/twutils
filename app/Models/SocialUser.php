@@ -1,12 +1,15 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\TwUtils\UserManager;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SocialUser extends Model
 {
+    use HasFactory;
+
     protected $guarded = ['id'];
     protected $casts = [
         'scope'            => 'array',

@@ -2,7 +2,7 @@
 
 namespace App\TwUtils;
 
-use App\Tweep;
+use App\Models\Tweep;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;

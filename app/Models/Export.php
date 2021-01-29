@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Jobs\ProcessExportJob;
 use Illuminate\Database\Eloquent\Model;

@@ -2,10 +2,10 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
-use App\Tweet;
-use App\Export;
-use App\TaskTweet;
+use App\Models\Task;
+use App\Models\Tweet;
+use App\Models\Export;
+use App\Models\TaskTweet;
 use Carbon\Carbon;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;

@@ -2,8 +2,8 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
-use App\SocialUser;
+use App\Models\Task;
+use App\Models\SocialUser;
 use App\Jobs\CompleteTaskJob;
 use App\Jobs\CompleteManagedDestroyLikesJob;
 use App\TwUtils\Tasks\Factory as TaskFactory;

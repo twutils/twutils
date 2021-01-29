@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Export;
-use App\MediaFile;
+use App\Models\Export;
+use App\Models\MediaFile;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;

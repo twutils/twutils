@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Tweet;
+use App\Models\Tweet;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;

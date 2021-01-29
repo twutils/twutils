@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Task;
-use App\Follower;
+use App\Models\Task;
+use App\Models\Follower;
 use App\Jobs\CleanFollowersJob;
 use App\Jobs\FetchFollowersJob;
 use Tests\Feature\TwitterOperations\Shared\UsersListTest;

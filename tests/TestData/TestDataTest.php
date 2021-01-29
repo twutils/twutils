@@ -2,7 +2,7 @@
 
 namespace Tests\TestData;
 
-use App\SocialUser;
+use App\Models\SocialUser;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\UserManager;
 use Tests\IntegrationTestCase;

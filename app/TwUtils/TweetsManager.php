@@ -2,7 +2,7 @@
 
 namespace App\TwUtils;
 
-use App\Tweet;
+use App\Models\Tweet;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\SocialUser;
+use App\Models\SocialUser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

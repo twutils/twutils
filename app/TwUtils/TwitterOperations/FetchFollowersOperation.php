@@ -2,8 +2,8 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
-use App\Follower;
+use App\Models\Task;
+use App\Models\Follower;
 use App\Jobs\CompleteTaskJob;
 use App\TwUtils\TweepsManager;
 use App\Jobs\CleanFollowersJob;

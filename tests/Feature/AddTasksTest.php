@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Task;
+use App\Models\Task;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,7 +49,7 @@ class AddTasksTest extends IntegrationTestCase
 
         $this->logInSocialUser('api');
 
-        $task = factory(Task::class)->create([
+        $task = Task::factory()->create([
             'socialuser_id' => auth()->user()->socialUsers[0]->id, // owner
         ]);
 
@@ -84,7 +84,7 @@ class AddTasksTest extends IntegrationTestCase
 
         $this->logInSocialUser('api');
 
-        $tasks = factory(Task::class, 10)->create([
+        $tasks = Task::factory(10)->create([
             'type' => FetchLikesOperation::class,
             'socialuser_id' => auth()->user()->socialUsers[0]->id, // owner
         ]);
@@ -172,7 +172,7 @@ class AddTasksTest extends IntegrationTestCase
 
         $this->logInSocialUserForDestroyLikes();
 
-        factory(Task::class)->create([
+        Task::factory()->create([
             'type' => FetchLikesOperation::class,
             'socialuser_id' => auth()->user()->socialUsers[0]->id,
         ]);
@@ -196,7 +196,7 @@ class AddTasksTest extends IntegrationTestCase
 
         $this->logInSocialUserForDestroyLikes();
 
-        factory(Task::class)->create([
+        Task::factory()->create([
             'type' => FetchLikesOperation::class,
             'socialuser_id' => auth()->user()->socialUsers[0]->id,
         ]);

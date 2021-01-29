@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Tweep;
+use App\Models\Tweep;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\AssetsManager;
 use Illuminate\Queue\SerializesModels;

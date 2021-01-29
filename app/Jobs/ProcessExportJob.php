@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Task;
+use App\Models\Task;
 use Exception;
-use App\Export;
-use App\MediaFile;
+use App\Models\Export;
+use App\Models\MediaFile;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\ExportsManager;

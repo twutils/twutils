@@ -2,9 +2,9 @@
 
 namespace App\TwUtils\Tasks;
 
-use App\Task;
-use App\User;
-use App\SocialUser;
+use App\Models\Task;
+use App\Models\User;
+use App\Models\SocialUser;
 use App\TwUtils\UserManager;
 
 class Factory

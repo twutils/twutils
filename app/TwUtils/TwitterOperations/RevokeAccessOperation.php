@@ -2,7 +2,7 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
+use App\Models\Task;
 
 class RevokeAccessOperation extends TwitterOperation
 {

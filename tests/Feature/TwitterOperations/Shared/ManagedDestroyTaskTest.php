@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\TwitterOperations\Shared;
 
-use App\Task;
-use App\Tweet;
+use App\Models\Task;
+use App\Models\Tweet;
 use Tests\TwitterClientMock;
 use Tests\IntegrationTestCase;
 

@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use Mockery;
-use App\User;
+use App\Models\User;
 use Socialite;
-use App\SocialUser;
+use App\Models\SocialUser;
 use Illuminate\Support\Str;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Auth;
@@ -249,7 +249,7 @@ class TwitterLoginTest extends IntegrationTestCase
 
     public function test_twitter_dont_duplicate_social_users_same_service()
     {
-        $socialUser = factory(SocialUser::class)->create(['token' => '12345111', 'social_user_id' => '123']);
+        $socialUser = SocialUser::factory()->create(['token' => '12345111', 'social_user_id' => '123']);
         $response = $this->getTwitterResponse();
 
         // '1234' the same token in the mock
@@ -294,11 +294,11 @@ class TwitterLoginTest extends IntegrationTestCase
 
     public function test_twitter_multiple_logins_do_nothing()
     {
-        $appUser = factory(User::class)->create();
+        $appUser = User::factory()->create();
 
         $this->actingAs($appUser);
 
-        $socialUser = factory(SocialUser::class)->create(['user_id' => $appUser->id, 'token' => 1234, 'social_user_id' => 123]);
+        $socialUser = SocialUser::factory()->create(['user_id' => $appUser->id, 'token' => 1234, 'social_user_id' => 123]);
 
         $this->getTwitterResponse();
         $this->getTwitterResponse();

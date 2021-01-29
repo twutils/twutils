@@ -1,14 +1,17 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use App\Models\SocialUser;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    use HasFactory;
     use Notifiable;
     use HasSlug;
 
@@ -51,7 +54,7 @@ class User extends Authenticatable
 
     public function socialUsers()
     {
-        return $this->hasMany(\App\SocialUser::class);
+        return $this->hasMany(SocialUser::class);
     }
 
     public static function getColumns()

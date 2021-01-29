@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Task;
+use App\Models\Task;
 use App\TwUtils\UserManager;
 use App\TwUtils\TasksManager;
 use App\Exceptions\TaskAddException;

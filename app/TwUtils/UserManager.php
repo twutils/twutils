@@ -2,8 +2,9 @@
 
 namespace App\TwUtils;
 
-use App\User;
-use App\SocialUser;
+use App\Models\User;
+use App\Models\Export;
+use App\Models\SocialUser;
 use Illuminate\Support\Str;
 use App\Jobs\FetchUserInfoJob;
 use Laravel\Socialite\AbstractUser;
@@ -53,7 +54,7 @@ class UserManager
             'langStore'  => __('messages'),
             'routes'     => ['twitter.rw.login' => route('twitter.rw.login')],
             'user'       => auth()->user() ? auth()->user()->load('socialUsers') : null,
-            'exports'    => array_combine(\App\Export::AVAILABLE_TYPES, \App\Export::AVAILABLE_TYPES),
+            'exports'    => array_combine(Export::AVAILABLE_TYPES, Export::AVAILABLE_TYPES),
         ];
     }
 

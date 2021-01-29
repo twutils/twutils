@@ -2,7 +2,7 @@
 
 namespace App\TwUtils\Tasks\Validators;
 
-use App\Task;
+use App\Models\Task;
 use App\Exceptions\TaskAddException;
 use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;

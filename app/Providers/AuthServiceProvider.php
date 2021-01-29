@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Task;
+use App\Models\SocialUser;
+use App\Policies\TaskPolicy;
+use App\Policies\SocialUserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -12,8 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        \App\Task::class       => \App\Policies\TaskPolicy::class,
-        \App\SocialUser::class => \App\Policies\SocialUserPolicy::class,
+        Task::class       => TaskPolicy::class,
+        SocialUser::class => SocialUserPolicy::class,
     ];
 
     /**

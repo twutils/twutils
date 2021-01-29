@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Task;
-use App\User;
-use App\Export;
+use App\Models\Task;
+use App\Models\User;
+use App\Models\Export;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ExportPolicy

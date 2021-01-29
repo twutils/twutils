@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Task;
-use App\SocialUser;
+use App\Models\Task;
+use App\Models\SocialUser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

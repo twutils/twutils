@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\TwitterOperations;
 
-use App\Task;
-use App\Tweep;
-use App\Following;
+use App\Models\Task;
+use App\Models\Tweep;
+use App\Models\Following;
 use App\Jobs\FetchFollowingJob;
 use App\Jobs\CleanFollowingsJob;
 use App\Jobs\FetchFollowingLookupsJob;

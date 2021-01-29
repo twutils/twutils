@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Issue;
+use App\Models\Issue;
 use ParsedownExtra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;

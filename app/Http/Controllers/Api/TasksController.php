@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Task;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;

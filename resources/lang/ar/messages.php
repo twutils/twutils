@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Export;
+
 return [
     'brand_desc' => 'تويتلز مجموعة من الخدمات المُساعِدة لإدارة حسابك في تويتر.',
 
@@ -186,13 +188,13 @@ return [
     'removing'                    => 'جاري الحذف',
 
     'exports'   => [
-        \App\Export::TYPE_EXCEL         => 'إكسل',
-        \App\Export::TYPE_HTML          => 'HTML',
-        \App\Export::TYPE_HTMLENTITIES  => 'HTML مع الوسائط',
+        Export::TYPE_EXCEL         => 'إكسل',
+        Export::TYPE_HTML          => 'HTML',
+        Export::TYPE_HTMLENTITIES  => 'HTML مع الوسائط',
     ],
     'exports_desc'   => [
-        \App\Export::TYPE_EXCEL         => 'ملف إكسل',
-        \App\Export::TYPE_HTML          => 'ملف مضغوط HTML',
-        \App\Export::TYPE_HTMLENTITIES  => 'ملف مضغوط HTML مع الوسائط',
+        Export::TYPE_EXCEL         => 'ملف إكسل',
+        Export::TYPE_HTML          => 'ملف مضغوط HTML',
+        Export::TYPE_HTMLENTITIES  => 'ملف مضغوط HTML مع الوسائط',
     ],
 ];

@@ -2,7 +2,7 @@
 
 namespace App\TwUtils;
 
-use App\SocialUser;
+use App\Models\SocialUser;
 
 interface ITwitterConnector
 {

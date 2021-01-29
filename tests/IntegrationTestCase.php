@@ -3,9 +3,9 @@
 namespace Tests;
 
 use Mockery;
-use App\Task;
-use App\User;
-use App\SocialUser;
+use App\Models\Task;
+use App\Models\User;
+use App\Models\SocialUser;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\ITwitterConnector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -171,11 +171,11 @@ class IntegrationTestCase extends TestCase
 
     protected function logInSocialUser($driver = null, $userOverride = [])
     {
-        $appUser = factory(User::class)->create($userOverride);
+        $appUser = User::factory()->create($userOverride);
 
         $this->actingAs($appUser, $driver);
 
-        factory(SocialUser::class)->create(['user_id' => $appUser->id]);
+        SocialUser::factory()->create(['user_id' => $appUser->id]);
     }
 
     protected function logInSocialUserForDestroyTweets()

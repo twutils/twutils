@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\SocialUser;
+use App\Models\User;
+use App\Models\SocialUser;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SocialUserPolicy
@@ -13,8 +13,8 @@ class SocialUserPolicy
     /**
      * Determine whether the user can view the social user.
      *
-     * @param \App\User       $user
-     * @param \App\SocialUser $socialUser
+     * @param \App\Models\User       $user
+     * @param \App\Models\SocialUser $socialUser
      *
      * @return mixed
      */
@@ -26,7 +26,7 @@ class SocialUserPolicy
     /**
      * Determine whether the user can create social users.
      *
-     * @param \App\User $user
+     * @param \App\Models\User $user
      *
      * @return mixed
      */
@@ -38,8 +38,8 @@ class SocialUserPolicy
     /**
      * Determine whether the user can update the social user.
      *
-     * @param \App\User       $user
-     * @param \App\SocialUser $socialUser
+     * @param \App\Models\User       $user
+     * @param \App\Models\SocialUser $socialUser
      *
      * @return mixed
      */
@@ -51,8 +51,8 @@ class SocialUserPolicy
     /**
      * Determine whether the user can delete the social user.
      *
-     * @param \App\User       $user
-     * @param \App\SocialUser $socialUser
+     * @param \App\Models\User       $user
+     * @param \App\Models\SocialUser $socialUser
      *
      * @return mixed
      */
@@ -64,8 +64,8 @@ class SocialUserPolicy
     /**
      * Determine whether the user can restore the social user.
      *
-     * @param \App\User       $user
-     * @param \App\SocialUser $socialUser
+     * @param \App\Models\User       $user
+     * @param \App\Models\SocialUser $socialUser
      *
      * @return mixed
      */
@@ -77,8 +77,8 @@ class SocialUserPolicy
     /**
      * Determine whether the user can permanently delete the social user.
      *
-     * @param \App\User       $user
-     * @param \App\SocialUser $socialUser
+     * @param \App\Models\User       $user
+     * @param \App\Models\SocialUser $socialUser
      *
      * @return mixed
      */

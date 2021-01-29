@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Media;
-use App\Tweet;
-use App\Export;
+use App\Models\Media;
+use App\Models\Tweet;
+use App\Models\Export;
 use Illuminate\Bus\Queueable;
 use App\TwUtils\AssetsManager;
 use Illuminate\Queue\SerializesModels;

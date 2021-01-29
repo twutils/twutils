@@ -4,9 +4,9 @@ namespace Tests\Feature\TwitterOperations\Shared;
 
 use DB;
 use Storage;
-use App\Task;
-use App\Tweep;
-use App\Tweet;
+use App\Models\Task;
+use App\Models\Tweep;
+use App\Models\Tweet;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
@@ -1075,7 +1075,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $response = $this->getJson($this->apiEndpoint);
         $response->assertStatus(422);
 
-        $this->assertCount(3, \App\Task::all());
+        $this->assertCount(3, Task::all());
     }
 
     public function test_no_duplicate_tweeps()

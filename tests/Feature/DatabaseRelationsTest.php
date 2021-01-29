@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Task;
-use App\Tweep;
-use App\Tweet;
-use App\Follower;
-use App\Following;
+use App\Models\Task;
+use App\Models\Tweep;
+use App\Models\Tweet;
+use App\Models\Follower;
+use App\Models\Following;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\DB;

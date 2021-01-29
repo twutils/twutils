@@ -2,8 +2,8 @@
 
 namespace App\TwUtils\Tweets\Media;
 
-use App\Media;
-use App\MediaFile;
+use App\Models\Media;
+use App\Models\MediaFile;
 
 abstract class Downloader
 {

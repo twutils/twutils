@@ -3,11 +3,11 @@
 namespace Tests\Feature\TwitterOperations\Shared;
 
 use Config;
-use App\Task;
-use App\Media;
-use App\Tweet;
-use App\Export;
-use App\MediaFile;
+use App\Models\Task;
+use App\Models\Media;
+use App\Models\Tweet;
+use App\Models\Export;
+use App\Models\MediaFile;
 use Tests\TwitterClientMock;
 use Illuminate\Support\Carbon;
 use Tests\IntegrationTestCase;
@@ -455,7 +455,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
     protected function assertZippedExists($taskId, $files)
     {
-        $exportId = \App\Task::find($taskId)->exports->where('type', Export::TYPE_HTMLENTITIES)->first()->id;
+        $exportId = Task::find($taskId)->exports->where('type', Export::TYPE_HTMLENTITIES)->first()->id;
 
         $zippedFilesList = $this->getZippedFiles($exportId);
 

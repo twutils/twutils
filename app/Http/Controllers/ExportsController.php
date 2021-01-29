@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Task;
-use App\Export;
+use App\Models\Task;
+use App\Models\Export;
 use Illuminate\Http\Request;
 
 class ExportsController extends Controller

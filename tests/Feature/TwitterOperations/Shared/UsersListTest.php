@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\TwitterOperations\Shared;
 
-use App\Tweep;
+use App\Models\Tweep;
 use Illuminate\Support\Str;
 use Tests\IntegrationTestCase;
 use Illuminate\Support\Facades\Bus;

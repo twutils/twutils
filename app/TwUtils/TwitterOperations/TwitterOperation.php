@@ -2,9 +2,9 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Task;
+use App\Models\Task;
 use Exception;
-use App\SocialUser;
+use App\Models\SocialUser;
 use Illuminate\Support\Str;
 use App\TwUtils\JobsManager;
 use App\Jobs\CompleteTaskJob;

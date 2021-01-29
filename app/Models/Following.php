@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Follower extends Model
+class Following extends Model
 {
     public $timestamps = false;
     protected $casts = ['followed_by' => 'boolean'];

@@ -2,9 +2,9 @@
 
 namespace App\Exports;
 
-use App\Task;
-use App\Follower;
-use App\Following;
+use App\Models\Task;
+use App\Models\Follower;
+use App\Models\Following;
 use Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;

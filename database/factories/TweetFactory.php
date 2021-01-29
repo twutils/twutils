@@ -1,16 +1,35 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Tweet::class, function (Faker $faker) {
-    return [
-        'id_str'           => $faker->randomNumber(),
-        'text'             => $faker->sentence,
-        'lang'             => 'en',
-        'tweet_created_at' => now(),
-        'tweep_id_str'     => 1, // TODO: write and use Tweep factory
+use App\Models\Tweet;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-        'retweet_count'   => $faker->randomNumber(),
-        'is_quote_status' => $faker->boolean,
-    ];
-});
+class TweetFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Tweet::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'id_str'           => $this->faker->randomNumber(),
+            'text'             => $this->faker->sentence,
+            'lang'             => 'en',
+            'tweet_created_at' => now(),
+            'tweep_id_str'     => 1, // TODO: write and use Tweep factory
+
+            'retweet_count'   => $this->faker->randomNumber(),
+            'is_quote_status' => $this->faker->boolean,
+        ];
+    }
+}

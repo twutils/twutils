@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Task;
-use App\User;
-use App\Tweep;
-use App\Tweet;
-use App\Following;
+use App\Models\Task;
+use App\Models\User;
+use App\Models\Tweep;
+use App\Models\Tweet;
+use App\Models\Following;
 use Carbon\Carbon;
-use App\SocialUser;
+use App\Models\SocialUser;
 use App\Jobs\DeleteMeJob;
 use App\Jobs\FetchLikesJob;
 use Tests\IntegrationTestCase;

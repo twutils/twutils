@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Task;
-use App\Media;
-use App\Tweet;
-use App\TaskView;
+use App\Models\Task;
+use App\Models\Media;
+use App\Models\Tweet;
+use App\Models\TaskView;
 use Illuminate\Support\Arr;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;

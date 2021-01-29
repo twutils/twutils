@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Follower;
+use App\Models\Follower;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

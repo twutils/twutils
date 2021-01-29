@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SocialUser;
+use App\Models\SocialUser;
 use App\Jobs\DeleteMeJob;
 use App\TwUtils\UserManager;
 use Illuminate\Http\Request;

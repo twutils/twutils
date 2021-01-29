@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Task;
-use App\Export;
+use App\Models\Task;
+use App\Models\Export;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;

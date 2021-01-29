@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Export;
+
 return [
     'brand_desc' => 'Twitter Utilities (TwUtils) is a set of utilities for managing your twitter account.',
 
@@ -186,13 +188,13 @@ return [
     'removing'                    => 'Removing',
 
     'exports'   => [
-        \App\Export::TYPE_EXCEL         => 'Excel',
-        \App\Export::TYPE_HTML          => 'HTML',
-        \App\Export::TYPE_HTMLENTITIES  => 'HTML & Media',
+        Export::TYPE_EXCEL         => 'Excel',
+        Export::TYPE_HTML          => 'HTML',
+        Export::TYPE_HTMLENTITIES  => 'HTML & Media',
     ],
     'exports_desc'   => [
-        \App\Export::TYPE_EXCEL         => 'Excel File',
-        \App\Export::TYPE_HTML          => 'Zipped HTML',
-        \App\Export::TYPE_HTMLENTITIES  => 'Zipped HTML with Media',
+        Export::TYPE_EXCEL         => 'Excel File',
+        Export::TYPE_HTML          => 'Zipped HTML',
+        Export::TYPE_HTMLENTITIES  => 'Zipped HTML with Media',
     ],
 ];

@@ -3,20 +3,18 @@
 namespace App\Jobs;
 
 use App\Models\Tweep;
-use Illuminate\Bus\Queueable;
+
 use App\TwUtils\AssetsManager;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class SaveTweepAvatarJob implements ShouldQueue
+class SaveTweepAvatarJob extends Job
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+
     protected $tweepIdStr;
     protected $task;
 

@@ -7,26 +7,24 @@ use Exception;
 use App\Models\Export;
 use App\Models\MediaFile;
 use Illuminate\Support\Str;
-use Illuminate\Bus\Queueable;
+
 use App\TwUtils\ExportsManager;
 use App\Exports\TweetsListExport;
 use App\Exports\UsersListTaskExport;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ProcessExportJob implements ShouldQueue
+class ProcessExportJob extends Job
 {
     protected $export;
     protected $mediaFilesIsCompleted;
 
     public $deleteWhenMissingModels = true;
 
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+
 
     public function __construct(Export $export)
     {

@@ -3,19 +3,17 @@
 namespace App\Jobs;
 
 use App\Models\Tweet;
-use Illuminate\Bus\Queueable;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class CleaningAllTweetsAndTweeps implements ShouldQueue
+class CleaningAllTweetsAndTweeps extends Job
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+
 
     public function __construct()
     {

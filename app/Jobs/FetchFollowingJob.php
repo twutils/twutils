@@ -2,19 +2,17 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;
 
-class FetchFollowingJob implements ShouldQueue
+class FetchFollowingJob extends Job
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+
 
     private $parameters;
     private $socialUser;

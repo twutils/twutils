@@ -3,18 +3,16 @@
 namespace App\Jobs;
 
 use App\Models\Following;
-use Illuminate\Bus\Queueable;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class CleanFollowingsJob implements ShouldQueue
+class CleanFollowingsJob extends Job
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+
 
     private $task;
 

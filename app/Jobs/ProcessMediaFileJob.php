@@ -3,19 +3,20 @@
 namespace App\Jobs;
 
 use App\Models\MediaFile;
-use Illuminate\Bus\Queueable;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ProcessMediaFileJob implements ShouldQueue
+class ProcessMediaFileJob extends Job
 {
     protected $mediaFile;
 
     public $deleteWhenMissingModels = true;
 
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
 
     public function __construct(MediaFile $mediaFile)
     {

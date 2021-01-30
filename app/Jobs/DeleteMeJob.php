@@ -2,20 +2,18 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class DeleteMeJob implements ShouldQueue
+class DeleteMeJob extends Job
 {
     private $user;
 
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+
 
     public function __construct($user)
     {

@@ -7,18 +7,16 @@ use App\Models\Media;
 use App\Models\Tweet;
 use App\Models\TaskView;
 use Illuminate\Support\Arr;
-use Illuminate\Bus\Queueable;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\TwUtils\Base\Job;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class BuildTaskView implements ShouldQueue
+class BuildTaskView extends Job
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+
 
     protected Task $task;
 

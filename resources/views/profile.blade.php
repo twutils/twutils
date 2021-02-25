@@ -16,8 +16,8 @@
           <ul class="list-group mb-3 ltr">
             <li class="list-group-item  d-flex justify-content-between lh-condensed">
               <div>
-                <h6 class="my-0"><i>@</i>{{$user->socialUsers[0]->nickname}}</h6>
-                <small class="text-secondary">id: {{$user->socialUsers[0]->social_user_id}}</small>
+                <h6 class="my-0"><i>@</i>{{$user->socialUser->nickname}}</h6>
+                <small class="text-secondary">id: {{$user->socialUser->social_user_id}}</small>
               </div>
             </li>
           </ul>

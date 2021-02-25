@@ -17,7 +17,7 @@ class AppController extends Controller
 
     public function index()
     {
-        UserManager::refreshProfile(auth()->user()->load('socialUsers')->socialUsers[0]);
+        UserManager::refreshProfile(auth()->user()->load('socialUsers')->socialUser);
 
         return view('app');
     }

@@ -52,6 +52,11 @@ class User extends Authenticatable
         });
     }
 
+    public function socialUser()
+    {
+        return $this->hasOne(SocialUser::class)->orderBy('updated_at', 'desc');
+    }
+
     public function socialUsers()
     {
         return $this->hasMany(SocialUser::class)->orderBy('updated_at', 'desc');
@@ -71,7 +76,7 @@ class User extends Authenticatable
 
     public function getAvatarAttribute()
     {
-        $socialUser = $this->socialUsers[0] ?? null;
+        $socialUser = $this->socialUser ?? null;
         if (! is_null($socialUser)) {
             return $socialUser->avatar;
         }

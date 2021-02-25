@@ -50,7 +50,7 @@ class AddTasksTest extends IntegrationTestCase
         $this->logInSocialUser('api');
 
         $task = Task::factory()->create([
-            'socialuser_id' => auth()->user()->socialUsers[0]->id, // owner
+            'socialuser_id' => auth()->user()->socialUser->id, // owner
         ]);
 
         $this->logInSocialUser('api');
@@ -86,7 +86,7 @@ class AddTasksTest extends IntegrationTestCase
 
         $tasks = Task::factory(10)->create([
             'type' => FetchLikesOperation::class,
-            'socialuser_id' => auth()->user()->socialUsers[0]->id, // owner
+            'socialuser_id' => auth()->user()->socialUser->id, // owner
         ]);
 
         $response = $this->postJson('/api/likes');
@@ -174,7 +174,7 @@ class AddTasksTest extends IntegrationTestCase
 
         Task::factory()->create([
             'type' => FetchLikesOperation::class,
-            'socialuser_id' => auth()->user()->socialUsers[0]->id,
+            'socialuser_id' => auth()->user()->socialUser->id,
         ]);
 
         $response = $this->postJson('/api/destroyLikes/1', ['settings' => [
@@ -198,7 +198,7 @@ class AddTasksTest extends IntegrationTestCase
 
         Task::factory()->create([
             'type' => FetchLikesOperation::class,
-            'socialuser_id' => auth()->user()->socialUsers[0]->id,
+            'socialuser_id' => auth()->user()->socialUser->id,
         ]);
 
         $response = $this->postJson('/api/destroyLikes/5', ['settings' => [

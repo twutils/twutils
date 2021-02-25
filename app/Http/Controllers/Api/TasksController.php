@@ -25,9 +25,7 @@ class TasksController extends Controller
 
     public function index(Request $request)
     {
-        $tasks = Task::whereIn('socialuser_id', $request->user()->socialUsers->pluck('id'))
-                ->orderByDesc('created_at')
-                ->get();
+        $tasks = $request->user()->tasks;
 
         return $tasks->toArray();
     }
@@ -128,7 +126,7 @@ class TasksController extends Controller
 
     public function listLikesTasks(Request $request)
     {
-        return $request->user()->socialUsers[0]
+        return $request->user()
                 ->tasks()
                 ->where('type', FetchLikesOperation::class)
                 ->where('status', 'completed')
@@ -137,7 +135,7 @@ class TasksController extends Controller
 
     public function listUserTweetsTasks(Request $request)
     {
-        return $request->user()->socialUsers[0]
+        return $request->user()
                 ->tasks()
                 ->where('type', FetchUserTweetsOperation::class)
                 ->where('status', 'completed')

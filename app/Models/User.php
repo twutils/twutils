@@ -54,7 +54,12 @@ class User extends Authenticatable
 
     public function socialUsers()
     {
-        return $this->hasMany(SocialUser::class);
+        return $this->hasMany(SocialUser::class)->orderBy('updated_at', 'desc');
+    }
+
+    public function tasks()
+    {
+        return $this->hasManyThrough(Task::class, SocialUser::class, 'id', 'socialuser_id', 'id', 'id');
     }
 
     public static function getColumns()

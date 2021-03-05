@@ -209,7 +209,6 @@ class UserManager
             }
         }
 
-        $map['nickname'] = $map['nickname'];
         $map['avatar'] = AssetsManager::storeAvatar($map['avatar'], $map['social_user_id']);
 
         return $map;

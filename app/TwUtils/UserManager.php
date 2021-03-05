@@ -17,14 +17,6 @@ class UserManager
     {
         $socialUser = static::createOrFindSocialUser($user, $scopes);
 
-        $alreadyDifferentScope = ! is_null($socialUser->scope) && $socialUser->scope !== $scopes;
-
-        if ($alreadyDifferentScope) {
-            $userId = $socialUser->user_id;
-            $socialUser = static::createSocialUser($user);
-            $socialUser->user_id = $userId;
-        }
-
         $socialUser->fill(['scope' => $scopes] + static::mapAbstractUserToSocialUser($user));
 
         $appUser = static::createOrFindAppUser($socialUser);
@@ -144,6 +136,13 @@ class UserManager
 
         if (is_null($socialUser)) {
             return static::createSocialUser($user);
+        }
+
+        $alreadyDifferentScope = ! is_null($socialUser->scope) && $socialUser->scope !== $scopes;
+
+        if ($alreadyDifferentScope) {
+            $socialUser = static::createSocialUser($user);
+            $socialUser->user_id = $socialUser->user_id;
         }
 
         return $socialUser;

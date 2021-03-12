@@ -34,7 +34,7 @@ class AuthTest extends IntegrationTestCase
         $this->logInSocialUser('web');
         $this->withoutJobs();
 
-        $this->assertNotEquals('204 No Content', auth()->user()->socialUsers[0]->description);
+        $this->assertNotEquals('204 No Content', auth()->user()->socialUser->description);
 
         // User visits dashboard page with outdated profile
         $response = $this->get('/app');
@@ -54,10 +54,10 @@ class AuthTest extends IntegrationTestCase
         ]);
 
         // The "Old Bio" is saved
-        $this->assertEquals('Old Bio', auth()->user()->socialUsers[0]->fresh()->description);
+        $this->assertEquals('Old Bio', auth()->user()->socialUser->fresh()->description);
 
         // Set user's profile last update to: before 14 minutes
-        tap(auth()->user()->socialUsers[0], function (SocialUser $socialUser) {
+        tap(auth()->user()->fresh()->socialUser, function (SocialUser $socialUser) {
             $socialUser->updated_at = now()->subMinutes(14);
             $socialUser->save();
         });
@@ -68,10 +68,9 @@ class AuthTest extends IntegrationTestCase
 
         // No job should be queued to update the profile
         $this->assertCountDispatchedJobs(1, FetchUserInfoJob::class);
-
         // Then...
         // Set user's profile last update to: before 16 minutes
-        tap(auth()->user()->socialUsers[0], function (SocialUser $socialUser) {
+        tap(auth()->user()->socialUser, function (SocialUser $socialUser) {
             $socialUser->updated_at = now()->subMinutes(16);
             $socialUser->save();
         });
@@ -90,7 +89,7 @@ class AuthTest extends IntegrationTestCase
             ],
         ], $lastJobIndex);
 
-        $this->assertEquals('204 No Content', auth()->user()->socialUsers[0]->fresh()->description);
+        $this->assertEquals('204 No Content', auth()->user()->socialUser->fresh()->description);
     }
 
     public function test_login_page_exists()

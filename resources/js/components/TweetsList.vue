@@ -139,8 +139,8 @@
                 </label>
               </div>
               <div class="searchOption__wrapper">
-                <input v-model="searchOptions.withPhotos" type="checkbox" class="form-check-input">
-                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withPhotos = !searchOptions.withPhotos ">
+                <input v-model="searchOptions.photo" type="checkbox" class="form-check-input">
+                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.photo = !searchOptions.photo ">
                   <template v-if="locale === 'ar'">
                     تغريدات تحتوي على صور
                   </template>
@@ -153,8 +153,8 @@
                 </label>
               </div>
               <div class="searchOption__wrapper">
-                <input v-model="searchOptions.withGifs" type="checkbox" class="form-check-input">
-                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withGifs = !searchOptions.withGifs ">
+                <input v-model="searchOptions.animated_gif" type="checkbox" class="form-check-input">
+                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.animated_gif = !searchOptions.animated_gif ">
                   <template v-if="locale === 'ar'">
                     تغريدات تحتوي على صور متحركة
                   </template>
@@ -167,8 +167,8 @@
                 </label>
               </div>
               <div class="searchOption__wrapper">
-                <input v-model="searchOptions.withVideos" type="checkbox" class="form-check-input">
-                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.withVideos = !searchOptions.withVideos ">
+                <input v-model="searchOptions.video" type="checkbox" class="form-check-input">
+                <label :class="`form-check-label ${isRtl ? 'rtl' :''}`" @click="searchOptions.video = !searchOptions.video ">
                   <template v-if="locale === 'ar'">
                     تغريدات تحتوي على فيديوهات
                   </template>
@@ -371,9 +371,9 @@ export default {
       searchOnlyInMonth: false,
       searchOptions: {
         withTextOnly: false,
-        withPhotos: false,
-        withGifs: false,
-        withVideos: false,
+        photo: false,
+        animated_gif: false,
+        video: false,
       },
 
       jsSearch: searchTweets,
@@ -413,19 +413,19 @@ export default {
         filters.push(filterFunc)
       }
 
-      if (this.searchOptions.withPhotos) {
+      if (this.searchOptions.photo) {
         const filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === `photo`)
         filterFunc.isOrOperatorFilter = true
         filters.push(filterFunc)
       }
 
-      if (this.searchOptions.withGifs) {
+      if (this.searchOptions.animated_gif) {
         const filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === `animated_gif`)
         filterFunc.isOrOperatorFilter = true
         filters.push(filterFunc)
       }
 
-      if (this.searchOptions.withVideos) {
+      if (this.searchOptions.video) {
         const filterFunc = tweets => tweets.filter(x => x.media[0] && x.media[0].type === `video`)
         filterFunc.isOrOperatorFilter = true
         filters.push(filterFunc)

@@ -231,7 +231,7 @@ class TasksController extends Controller
             'month' => ['sometimes', 'integer', 'min:1', 'max:12'],
             'year'  => ['sometimes', 'integer', 'min:2006', 'max:'.now()->year],
             'searchOptions' => ['sometimes', 'array'],
-            'searchOptions.*' => [Rule::in(['withPhotos', 'withGifs', 'withVideos', 'withTextOnly'])],
+            'searchOptions.*' => [Rule::in(['photo', 'animated_gif', 'video', 'withTextOnly'])],
             'searchKeywords' => ['nullable', 'string'],
             'searchOnlyInMonth' => ['sometimes', 'boolean'],
         ]);
@@ -270,9 +270,9 @@ class TasksController extends Controller
                 }
 
                 $lookupTypes = [
-                    'withPhotos' => 'photo',
-                    'withGifs' => 'animated_gif',
-                    'withVideos' => 'video',
+                    'photo' => 'photo',
+                    'animated_gif' => 'animated_gif',
+                    'video' => 'video',
                 ];
 
                 $lookup = $lookupTypes[$searchOption];

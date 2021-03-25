@@ -13,7 +13,6 @@
         "adrienrn/php-mimetyper": "^0.2.1",
         "beyondcode/laravel-dump-server": "^1.2",
         "doctrine/dbal": "^2.10",
-        "erusev/parsedown-extra": "^0.8.0",
         "fakerphp/faker": "^1.13",
         "fideloper/proxy": "^4.4.1",
         "fruitcake/laravel-cors": "^2.0.3",

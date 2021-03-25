@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SocialUser;
 use App\Jobs\DeleteMeJob;
+use App\Models\SocialUser;
 use App\TwUtils\UserManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

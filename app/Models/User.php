@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\SocialUser;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Notifications\Notifiable;
@@ -80,8 +79,6 @@ class User extends Authenticatable
         if (! is_null($socialUser)) {
             return $socialUser->avatar;
         }
-
-        return null;
     }
 
     public function getSlugOptions(): SlugOptions

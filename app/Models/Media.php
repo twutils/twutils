@@ -19,12 +19,17 @@ class Media extends Model
     ];
 
     public const TYPE_PHOTO = 'photo';
+
     public const TYPE_VIDEO = 'video';
+
     public const TYPE_ANIMATED_GIF = 'animated_gif';
 
     public const STATUS_INITIAL = 'initial';
+
     public const STATUS_STARTED = 'started';
+
     public const STATUS_SUCCESS = 'success';
+
     public const STATUS_BROKEN = 'broken';
 
     protected static function boot()

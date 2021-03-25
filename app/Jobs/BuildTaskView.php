@@ -6,18 +6,11 @@ use App\Models\Task;
 use App\Models\Media;
 use App\Models\Tweet;
 use App\Models\TaskView;
-use Illuminate\Support\Arr;
-
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\TwUtils\Base\Job;
-use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Arr;
 
 class BuildTaskView extends Job
 {
-
-
     protected Task $task;
 
     public function __construct(Task $task)
@@ -28,7 +21,7 @@ class BuildTaskView extends Job
     public function handle()
     {
         $taskView = new TaskView([
-            'task_id' => $this->task->id,
+            'task_id'          => $this->task->id,
             'tweets_text_only' => 0,
         ]);
 

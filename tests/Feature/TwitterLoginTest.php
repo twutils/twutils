@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use Mockery;
-use App\Models\User;
 use Socialite;
+use App\Models\User;
 use App\Models\SocialUser;
 use Illuminate\Support\Str;
 use Tests\IntegrationTestCase;

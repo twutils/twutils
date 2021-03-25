@@ -8,7 +8,9 @@ use App\TwUtils\AssetsManager;
 class FetchUserInfoOperation extends TwitterOperation
 {
     protected $endpoint = 'users/show';
+
     protected $scope = 'read';
+
     protected $httpMethod = 'get';
 
     protected function shouldBuildNextJob()

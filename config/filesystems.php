@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
@@ -43,7 +42,6 @@ return [
     */
 
     'disks' => [
-
         'localTweetsMedia' => [
             'driver' => 'local',
             'root'   => storage_path('localTweetsMedia'),
@@ -101,7 +99,6 @@ return [
             'url'        => env('AWS_URL'),
             'endpoint'   => env('AWS_ENDPOINT'),
         ],
-
     ],
 
     /*
@@ -118,5 +115,4 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
-
 ];

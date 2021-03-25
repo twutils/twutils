@@ -11,12 +11,12 @@ class TaskView extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'task_id' => 'int',
-        'count' => 'int',
-        'tweets_text_only' => 'int',
+        'task_id'            => 'int',
+        'count'              => 'int',
+        'tweets_text_only'   => 'int',
         'tweets_with_photos' => 'int',
         'tweets_with_videos' => 'int',
-        'tweets_with_gifs' => 'int',
+        'tweets_with_gifs'   => 'int',
 
         'months' => 'json',
     ];

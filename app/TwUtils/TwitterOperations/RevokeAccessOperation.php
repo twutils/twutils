@@ -7,7 +7,9 @@ use App\Models\Task;
 class RevokeAccessOperation extends TwitterOperation
 {
     protected $endpoint = 'oauth/invalidate_token';
+
     protected $scope = 'read';
+
     protected $httpMethod = 'post';
 
     protected function shouldBuildNextJob()

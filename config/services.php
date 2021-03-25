@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'twitter' => [
         'client_id'     => env('TWITTER_CLIENT_ID'),         // Your TWITTER Client ID
         'client_secret' => env('TWITTER_CLIENT_SECRET'), // Your TWITTER Client Secret
@@ -39,5 +38,4 @@ return [
         'key'    => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
-
 ];

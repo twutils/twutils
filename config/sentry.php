@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'dsn' => env('SENTRY_LARAVEL_DSN', env('SENTRY_DSN')),
 
     'send_default_pii' => true,
@@ -22,5 +21,4 @@ return [
         // Capture queue job information in breadcrumbs
         'queue_info' => true,
     ],
-
 ];

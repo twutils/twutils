@@ -5,13 +5,8 @@ namespace App\Jobs;
 use App\Models\Media;
 use App\Models\Tweet;
 use App\Models\Export;
-
-use App\TwUtils\AssetsManager;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\TwUtils\Base\Job;
-use Illuminate\Foundation\Bus\Dispatchable;
+use App\TwUtils\AssetsManager;
 
 class StartExportMediaJob extends Job
 {

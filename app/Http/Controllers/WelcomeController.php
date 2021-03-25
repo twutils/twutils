@@ -60,7 +60,7 @@ class WelcomeController extends Controller
         $fileContent = File::get(resource_path("md/{$path}.{$locale}.md"));
 
         $converter = new GithubFlavoredMarkdownConverter([
-            'html_input' => 'strip',
+            'html_input'         => 'strip',
             'allow_unsafe_links' => false,
         ]);
 

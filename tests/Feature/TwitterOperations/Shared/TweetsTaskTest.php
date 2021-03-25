@@ -18,8 +18,11 @@ use Illuminate\Support\Facades\Bus;
 abstract class TweetsTaskTest extends IntegrationTestCase
 {
     protected $jobName;
+
     protected $apiEndpoint;
+
     protected $twitterEndpoint;
+
     protected $exportTaskShortName;
 
     public function test_basic_test()
@@ -836,8 +839,8 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([
             [
-                'type' => $this->jobName,
-                'twitterData' => $tweet,
+                'type'           => $this->jobName,
+                'twitterData'    => $tweet,
                 'twitterHeaders' => ['x_rate_limit_remaining' => '0', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
             ],
         ]);
@@ -1292,7 +1295,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             'tweets_with_photos'  => 50,
             'tweets_with_videos'  => 40,
             'tweets_with_gifs'    => 50,
-            'months' => [
+            'months'              => [
                 2019 => [
                     12 => 10,
                 ],
@@ -1352,7 +1355,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
             'tweets_with_photos'  => 0,
             'tweets_with_videos'  => 5,
             'tweets_with_gifs'    => 0,
-            'months' => [
+            'months'              => [
                 2020 => [
                     4 => 5,
                 ],

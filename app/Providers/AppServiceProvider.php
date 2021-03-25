@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             return $this;
         });
 
-        /**
+        /*
          * Similar to pluck, with the exception that it can 'pluck' more than one column.
          * This method can be used on either Eloquent models or arrays.
          *

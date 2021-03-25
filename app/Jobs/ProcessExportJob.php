@@ -2,29 +2,23 @@
 
 namespace App\Jobs;
 
-use App\Models\Task;
 use Exception;
+use App\Models\Task;
 use App\Models\Export;
 use App\Models\MediaFile;
+use App\TwUtils\Base\Job;
 use Illuminate\Support\Str;
-
 use App\TwUtils\ExportsManager;
 use App\Exports\TweetsListExport;
 use App\Exports\UsersListTaskExport;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\TwUtils\Base\Job;
-use Illuminate\Foundation\Bus\Dispatchable;
 
 class ProcessExportJob extends Job
 {
     protected $export;
+
     protected $mediaFilesIsCompleted;
 
     public $deleteWhenMissingModels = true;
-
-
 
     public function __construct(Export $export)
     {

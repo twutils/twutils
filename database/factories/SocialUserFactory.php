@@ -36,4 +36,3 @@ class SocialUserFactory extends Factory
         ];
     }
 }
-

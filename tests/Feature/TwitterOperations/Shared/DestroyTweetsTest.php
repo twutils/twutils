@@ -308,41 +308,41 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([
             [
-                'type' => $this->jobName,
+                'type'        => $this->jobName,
                 'twitterData' => [],
             ],
             [
-                'type' => $this->jobName,
+                'type'        => $this->jobName,
                 'twitterData' => [],
             ],
             [
-                'type' => $this->jobName,
+                'type'        => $this->jobName,
                 'twitterData' => [],
             ],
             [
-                'type' => $this->jobName,
+                'type'           => $this->jobName,
                 'twitterHeaders' => ['x_rate_limit_remaining' => '1', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
+                'twitterData'    => [],
+            ],
+            [
+                'type'        => $this->jobName,
                 'twitterData' => [],
             ],
             [
-                'type' => $this->jobName,
+                'type'        => $this->jobName,
                 'twitterData' => [],
             ],
             [
-                'type' => $this->jobName,
-                'twitterData' => [],
-            ],
-            [
-                'type' => $this->jobName,
+                'type'           => $this->jobName,
                 'twitterHeaders' => ['x_rate_limit_remaining' => '1', 'x_rate_limit_reset' => now()->addSeconds(60)->format('U')],
+                'twitterData'    => [],
+            ],
+            [
+                'type'        => $this->jobName,
                 'twitterData' => [],
             ],
             [
-                'type' => $this->jobName,
-                'twitterData' => [],
-            ],
-            [
-                'type' => $this->jobName,
+                'type'        => $this->jobName,
                 'twitterData' => [],
             ],
         ], $indexLastDispatched);

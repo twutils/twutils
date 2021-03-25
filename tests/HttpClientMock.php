@@ -5,7 +5,9 @@ namespace Tests;
 class HttpClientMock
 {
     public static $lastData = null;
+
     public static $lastUrlCalled = null;
+
     public static $throwException = 0;
 
     public function get($url, ...$args)

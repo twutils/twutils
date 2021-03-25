@@ -48,7 +48,7 @@ class AuthTest extends IntegrationTestCase
         // Twitter will return the stub response '/tests/_stubs/user_info_response.json' but with "Old Bio"
         $this->fireJobsAndBindTwitter([
             [
-                'type' => FetchUserInfoJob::class,
+                'type'        => FetchUserInfoJob::class,
                 'twitterData' => ['description' => 'Old Bio'] + ((array) $this->getStub('user_info_response.json')),
             ],
         ]);
@@ -84,7 +84,7 @@ class AuthTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([
             [
-                'type' => FetchUserInfoJob::class,
+                'type'        => FetchUserInfoJob::class,
                 'twitterData' => ((array) $this->getStub('user_info_response.json')),
             ],
         ], $lastJobIndex);

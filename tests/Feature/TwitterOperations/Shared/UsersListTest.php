@@ -10,8 +10,11 @@ use Illuminate\Support\Facades\Bus;
 abstract class UsersListTest extends IntegrationTestCase
 {
     protected $jobName;
+
     protected $cleaningJobName;
+
     protected $apiEndpoint;
+
     protected $twitterEndPoint;
 
     public function setUp(): void

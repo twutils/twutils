@@ -2,19 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\SocialUser;
-
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\TwUtils\Base\Job;
-use Illuminate\Foundation\Bus\Dispatchable;
+use App\Models\SocialUser;
 use App\TwUtils\TwitterOperations\FetchUserInfoOperation;
 
 class FetchUserInfoJob extends Job
 {
-
-
     private $socialUser;
 
     /**

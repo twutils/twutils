@@ -5,8 +5,11 @@ namespace Tests;
 class TwitterClientMock
 {
     private $twitterResults;
+
     private $headers;
+
     private static $lastCallData;
+
     private static $allCallsData;
 
     public function __construct($twitterResults, $headers)

@@ -28,6 +28,7 @@ class UsersListTaskExport extends BaseExport implements FromCollection, ShouldAu
     use RegistersEventListeners;
 
     protected $task;
+
     protected static $tweepsUrls;
 
     public function __construct(Task $task)

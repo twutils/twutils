@@ -4,24 +4,17 @@ namespace App\Jobs;
 
 use App\Models\Export;
 use App\Models\MediaFile;
+use App\TwUtils\Base\Job;
 use Illuminate\Support\Str;
-
 use App\TwUtils\ExportsManager;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\TwUtils\Base\Job;
-use Illuminate\Foundation\Bus\Dispatchable;
 
 class ZipEntitiesJob extends Job
 {
     protected $export;
 
     public $deleteWhenMissingModels = true;
-
-
 
     public function __construct(Export $export)
     {

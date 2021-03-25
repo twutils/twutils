@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Following extends Model
 {
     public $timestamps = false;
+
     protected $casts = ['followed_by' => 'boolean'];
+
     //
 
     public function tweep()

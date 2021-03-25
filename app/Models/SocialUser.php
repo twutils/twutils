@@ -11,6 +11,7 @@ class SocialUser extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
     protected $casts = [
         'scope'            => 'array',
         'followers_count'  => 'integer',
@@ -18,9 +19,11 @@ class SocialUser extends Model
         'favourites_count' => 'integer',
         'statuses_count'   => 'integer',
     ];
+
     protected $appends = [
         'scopeIsActive',
     ];
+
     protected $hidden = [
         'token', 'token_secret',
     ];

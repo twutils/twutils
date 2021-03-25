@@ -13,12 +13,12 @@ class Export extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'task_id' => 'int',
-        'started_at' => 'datetime',
-        'success_at' => 'datetime',
-        'progress' => 'int',
+        'task_id'      => 'int',
+        'started_at'   => 'datetime',
+        'success_at'   => 'datetime',
+        'progress'     => 'int',
         'progress_end' => 'int',
-        'list_size' => 'int',
+        'list_size'    => 'int',
     ];
 
     protected $hidden = [
@@ -26,12 +26,17 @@ class Export extends Model
     ];
 
     public const STATUS_INITIAL = 'initial';
+
     public const STATUS_STARTED = 'started';
+
     public const STATUS_SUCCESS = 'success';
+
     public const STATUS_BROKEN = 'broken';
 
     public const TYPE_HTML = 'html';
+
     public const TYPE_EXCEL = 'excel';
+
     public const TYPE_HTMLENTITIES = 'htmlEntities';
 
     public const EXTENSIONS = [
@@ -68,7 +73,6 @@ class Export extends Model
 
             if ($export->status === static::STATUS_SUCCESS) {
                 $export->filename = implode('', [
-
                     $export->task->socialUser->nickname,
                     '-',
                     $export->task->shortName,

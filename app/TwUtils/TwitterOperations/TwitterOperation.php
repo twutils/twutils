@@ -2,8 +2,8 @@
 
 namespace App\TwUtils\TwitterOperations;
 
-use App\Models\Task;
 use Exception;
+use App\Models\Task;
 use App\Models\SocialUser;
 use Illuminate\Support\Str;
 use App\TwUtils\JobsManager;
@@ -14,15 +14,25 @@ use Abraham\TwitterOAuth\TwitterOAuthException;
 abstract class TwitterOperation
 {
     protected $shortName;
+
     protected $parameters = [];
+
     protected $data = [];
+
     protected $headers = [];
+
     protected $socialUser;
+
     protected $endpoint;
+
     protected $httpMethod;
+
     protected $task = null;
+
     protected $response;
+
     protected $scope;
+
     protected $doRequestParameters;
 
     abstract public function dispatch();

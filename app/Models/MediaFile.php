@@ -23,8 +23,11 @@ class MediaFile extends Model
     protected $appends = ['mediaPath'];
 
     public const STATUS_INITIAL = 'initial';
+
     public const STATUS_STARTED = 'started';
+
     public const STATUS_SUCCESS = 'success';
+
     public const STATUS_BROKEN = 'broken';
 
     protected static function boot()

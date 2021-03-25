@@ -8,6 +8,7 @@ use App\Models\MediaFile;
 abstract class Downloader
 {
     protected Media $media;
+
     protected MediaFile $mediaFile;
 
     final public function __construct(MediaFile $mediaFile)

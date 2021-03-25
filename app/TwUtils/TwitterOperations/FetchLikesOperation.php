@@ -2,11 +2,11 @@
 
 namespace App\TwUtils\TwitterOperations;
 
+use Carbon\Carbon;
 use App\Models\Task;
 use App\Models\Tweet;
 use App\Models\Export;
 use App\Models\TaskTweet;
-use Carbon\Carbon;
 use App\Jobs\FetchLikesJob;
 use App\TwUtils\TweepsManager;
 use App\TwUtils\TweetsManager;
@@ -16,9 +16,13 @@ use App\TwUtils\Tasks\Validators\DateValidator;
 class FetchLikesOperation extends TwitterOperation
 {
     protected $shortName = 'Likes';
+
     protected $endpoint = 'favorites/list';
+
     protected $scope = 'read';
+
     protected $httpMethod = 'get';
+
     protected $downloadTweetsWithMedia = false;
 
     protected function buildNextJob()

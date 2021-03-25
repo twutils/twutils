@@ -85,7 +85,7 @@ class AddTasksTest extends IntegrationTestCase
         $this->logInSocialUser('api');
 
         $tasks = Task::factory(10)->create([
-            'type' => FetchLikesOperation::class,
+            'type'          => FetchLikesOperation::class,
             'socialuser_id' => auth()->user()->socialUser->id, // owner
         ]);
 
@@ -173,7 +173,7 @@ class AddTasksTest extends IntegrationTestCase
         $this->logInSocialUserForDestroyLikes();
 
         Task::factory()->create([
-            'type' => FetchLikesOperation::class,
+            'type'          => FetchLikesOperation::class,
             'socialuser_id' => auth()->user()->socialUser->id,
         ]);
 
@@ -197,7 +197,7 @@ class AddTasksTest extends IntegrationTestCase
         $this->logInSocialUserForDestroyLikes();
 
         Task::factory()->create([
-            'type' => FetchLikesOperation::class,
+            'type'          => FetchLikesOperation::class,
             'socialuser_id' => auth()->user()->socialUser->id,
         ]);
 

@@ -10,6 +10,7 @@ use App\TwUtils\UserManager;
 class Factory
 {
     protected $user;
+
     protected $task;
 
     public function __construct(string $operationClassName, array $settings, Task $relatedTask = null, User $user, $managedByTaskId = null)

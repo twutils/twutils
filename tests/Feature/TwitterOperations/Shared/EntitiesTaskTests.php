@@ -22,8 +22,11 @@ use Illuminate\Support\Facades\Storage;
 abstract class EntitiesTaskTests extends IntegrationTestCase
 {
     protected $jobName;
+
     protected $apiEndpoint;
+
     protected $twitterEndpoint;
+
     protected $initalTwitterParametersKeys;
 
     public function setUp(): void

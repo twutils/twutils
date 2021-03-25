@@ -10,10 +10,15 @@ use App\TwUtils\Tasks\Validators\ManagedByTaskValidator;
 class DestroyLikesOperation extends TwitterOperation
 {
     protected $shortName = 'DestroyLikes';
+
     protected $endpoint = 'favorites/destroy';
+
     protected $scope = 'write';
+
     protected $httpMethod = 'post';
+
     protected $likesCollection = [];
+
     protected $dispatchJobName = DislikeTweetJob::class;
 
     protected function handleJobParameters($parameters)

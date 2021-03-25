@@ -20,7 +20,7 @@ class AssetsManager
     public static function storeImage($url, $name, $width = null, $height = null, $publicDirectory = 'users')
     {
         if (is_null($url)) {
-            return null;
+            return;
         }
 
         $tempPath = storage_path($name);
@@ -43,8 +43,6 @@ class AssetsManager
         if ($url) {
             return $newPath;
         }
-
-        return null;
     }
 
     public static function hasMedia(Tweet $tweet)

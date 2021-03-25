@@ -13,9 +13,9 @@ class TaskAddException extends Exception
         parent::__construct('Invalid Request');
 
         $this->response = response()->json([
-            'ok' => false,
+            'ok'     => false,
             'errors' => $errors,
-            'data' => $data,
+            'data'   => $data,
         ], $statusCode);
     }
 

@@ -7,6 +7,7 @@ use App\Jobs\FetchEntitiesLikesJob;
 class FetchEntitiesLikesOperation extends FetchLikesOperation
 {
     protected $shortName = 'EntitiesLikes';
+
     protected $downloadTweetsWithMedia = true;
 
     protected function buildNextJob()

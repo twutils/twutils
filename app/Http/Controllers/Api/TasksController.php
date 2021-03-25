@@ -228,11 +228,11 @@ class TasksController extends Controller
     protected function getTweetsListView(Request $request, Task $task)
     {
         $this->validate($request, [
-            'month' => ['sometimes', 'integer', 'min:1', 'max:12'],
-            'year'  => ['sometimes', 'integer', 'min:2006', 'max:'.now()->year],
-            'searchOptions' => ['sometimes', 'array'],
-            'searchOptions.*' => [Rule::in(['photo', 'animated_gif', 'video', 'withTextOnly'])],
-            'searchKeywords' => ['nullable', 'string'],
+            'month'             => ['sometimes', 'integer', 'min:1', 'max:12'],
+            'year'              => ['sometimes', 'integer', 'min:2006', 'max:'.now()->year],
+            'searchOptions'     => ['sometimes', 'array'],
+            'searchOptions.*'   => [Rule::in(['photo', 'animated_gif', 'video', 'withTextOnly'])],
+            'searchKeywords'    => ['nullable', 'string'],
             'searchOnlyInMonth' => ['sometimes', 'boolean'],
         ]);
 
@@ -270,9 +270,9 @@ class TasksController extends Controller
                 }
 
                 $lookupTypes = [
-                    'photo' => 'photo',
+                    'photo'        => 'photo',
                     'animated_gif' => 'animated_gif',
-                    'video' => 'video',
+                    'video'        => 'video',
                 ];
 
                 $lookup = $lookupTypes[$searchOption];

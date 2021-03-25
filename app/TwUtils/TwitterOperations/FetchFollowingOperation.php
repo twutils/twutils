@@ -12,8 +12,11 @@ use App\Jobs\FetchFollowingLookupsJob;
 class FetchFollowingOperation extends TwitterOperation
 {
     protected $shortName = 'Following';
+
     protected $endpoint = 'friends/list';
+
     protected $scope = 'read';
+
     protected $httpMethod = 'get';
 
     protected function buildNextJob()

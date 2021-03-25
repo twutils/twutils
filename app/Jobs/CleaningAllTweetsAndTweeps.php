@@ -3,18 +3,11 @@
 namespace App\Jobs;
 
 use App\Models\Tweet;
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\TwUtils\Base\Job;
-use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\DB;
 
 class CleaningAllTweetsAndTweeps extends Job
 {
-
-
     public function __construct()
     {
         $this->queue = 'cleaning';

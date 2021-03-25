@@ -11,12 +11,14 @@ class Tweet extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
     protected $dates = [
         'created_at',
         'updated_at',
         'removed',
         'tweet_created_at',
     ];
+
     protected $casts = [
         'attachments'             => 'array',
         'extended_entities'       => 'array',
@@ -25,6 +27,7 @@ class Tweet extends Model
         'quoted_status_permalink' => 'array',
         'retweeted_status'        => 'array',
     ];
+
     protected $with = ['tweep'];
 
     protected static function boot()

@@ -3,7 +3,6 @@
 use Illuminate\Support\Str;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Horizon Domain
@@ -179,7 +178,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue'      =>['default', 'media', 'avatars', 'cleaning', 'exports'],
+                'queue'      => ['default', 'media', 'avatars', 'cleaning', 'exports'],
                 'balance'    => 'auto',
                 'processes'  => 20,
                 'tries'      => 3,

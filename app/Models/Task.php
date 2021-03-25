@@ -7,8 +7,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use App\Jobs\CleaningAllTweetsAndTweeps;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
@@ -24,10 +24,15 @@ class Task extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
     protected $appends = ['baseName', 'removedCount', 'componentName'];
+
     protected $hidden = ['exception'];
+
     protected $with = ['exports'];
+
     protected $withCount = ['likes', 'followings', 'followers'];
+
     protected $casts = [
         'extra'             => 'array',
         'targeted_task_id'  => 'int',
@@ -240,7 +245,7 @@ class Task extends Model
         }
 
         if (! in_array($this->type, [DestroyLikesOperation::class, DestroyTweetsOperation::class])) {
-            return null;
+            return;
         }
 
         if ($this->type === DestroyLikesOperation::class) {

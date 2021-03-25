@@ -9,13 +9,15 @@ use App\Jobs\FetchFollowingLookupsJob;
 class FetchFollowingLookupsOperation extends TwitterOperation
 {
     protected $endpoint = 'friendships/lookup';
+
     protected $scope = 'read';
+
     protected $httpMethod = 'get';
 
     /*
-    * $parameters contains 'index' key to indicate the index
-    * to be used to slice the followings collection.
-    */
+     * $parameters contains 'index' key to indicate the index
+     * to be used to slice the followings collection.
+     */
     protected function handleJobParameters($parameters)
     {
         $followings = $this->task->followings;

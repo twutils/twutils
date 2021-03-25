@@ -3,18 +3,11 @@
 namespace App\Jobs;
 
 use App\Models\Task;
-
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\TwUtils\Base\Job;
-use Illuminate\Foundation\Bus\Dispatchable;
 
 class CompleteTaskJob extends Job
 {
     private $task;
-
-
 
     /**
      * Create a new job instance.

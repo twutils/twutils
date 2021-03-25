@@ -49,7 +49,7 @@ return [
 
     'startTask' => 'Start..',
 
-    'confirmDeleteMe' => 'Are you sure you want to delete your account? This action cannot be undone',
+    'confirmDeleteMe'     => 'Are you sure you want to delete your account? This action cannot be undone',
     'confirmRemoveExport' => 'Are you sure you want to remove this export?',
 
     'goto_home' => 'Start using it..',
@@ -138,8 +138,8 @@ return [
     'ongoing_destroy_tweets' => 'There is ongoing task already for cleaning your Tweets, please wait until it\'s completed..',
 
     'create' => 'Create',
-    'start' => 'Start',
-    'close' => 'Close',
+    'start'  => 'Start',
+    'close'  => 'Close',
 
     'name'    => 'Name',
     'email'   => 'Email',
@@ -164,7 +164,7 @@ return [
     'options'           => 'Options',
     'with_media'        => 'With Media',
 
-    'with_media_task_description' => 'Export tweets attachments as well “Html & Media” after completion',
+    'with_media_task_description'   => 'Export tweets attachments as well “Html & Media” after completion',
     'you_can_do_this_later'         => 'You can do this later',
 
     'total_users'    => 'Total Users',

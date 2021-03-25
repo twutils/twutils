@@ -69,7 +69,7 @@ For added permissions, you can revoke them via the "Revoke Access" button.
 
 In case "Read Permissions" was revoked, it will be requested again upon logging in the next time after logging out.
 
-### 2 3 Delete the entire account
+### 2.3 Delete the entire account
 
 The profile page provides the ability to delete your entire account from TwUtils.
 

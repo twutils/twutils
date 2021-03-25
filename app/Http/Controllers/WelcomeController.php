@@ -6,6 +6,7 @@ use App\Models\Issue;
 use ParsedownExtra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 class WelcomeController extends Controller
 {
@@ -59,6 +60,11 @@ class WelcomeController extends Controller
         $locale = strtolower(app()->getLocale());
         $fileContent = File::get(resource_path("md/{$path}.{$locale}.md"));
 
-        return (new ParsedownExtra())->text($fileContent);
+        $converter = new GithubFlavoredMarkdownConverter([
+            'html_input' => 'strip',
+            'allow_unsafe_links' => false,
+        ]);
+
+        return $converter->convertToHtml($fileContent);
     }
 }

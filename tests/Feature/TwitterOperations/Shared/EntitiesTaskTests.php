@@ -32,6 +32,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->enableExportsQueue();
     }
 
     public function test_basic_test()

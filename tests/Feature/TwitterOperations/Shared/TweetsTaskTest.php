@@ -1013,6 +1013,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
     public function test_clean_likes_job_remove_duplicate_str_id_multiple_str_ids()
     {
+        $this->enableExportsQueue();
         $this->withoutJobs();
         $this->logInSocialUser('api');
 
@@ -1102,6 +1103,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
     public function test_basic_export_tweets_excel()
     {
+        $this->enableExportsQueue();
         \Carbon\Carbon::setTestNow('1990-11-27');
 
         $this->withoutJobs();
@@ -1172,6 +1174,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
     public function test_basic_export_tweets_html()
     {
+        $this->enableExportsQueue();
         \Carbon\Carbon::setTestNow('1990-11-27');
 
         $this->withoutJobs();

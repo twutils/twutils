@@ -226,7 +226,18 @@ class IntegrationTestCase extends TestCase
                 $data[$jobDataHolderIndex]['called'] = true;
             }
 
-            if ((! is_null($jobDataHolder)) && get_class($queuedJob) == $jobDataHolder['type'] && isset($jobDataHolder['skip']) && $jobDataHolder['skip']) {
+            if (
+                (
+                    (! is_null($jobDataHolder)) &&
+                    get_class($queuedJob) == $jobDataHolder['type'] &&
+                    isset($jobDataHolder['skip']) && $jobDataHolder['skip']
+                )
+                ||
+                (
+                   ($queuedJob->queue === 'exports') &&
+                   config('queue.ignore_exports', true)
+                )
+            ) {
                 continue;
             }
 
@@ -240,6 +251,11 @@ class IntegrationTestCase extends TestCase
                 $jobDataHolder['after']($queuedJob);
             }
         }
+    }
+
+    protected function enableExportsQueue()
+    {
+        config()->set('queue.ignore_exports', false);
     }
 
     protected function fetchFollowingLookupsResponse($data = [])

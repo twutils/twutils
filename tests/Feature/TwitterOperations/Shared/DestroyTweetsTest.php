@@ -636,9 +636,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $response = $this->getJson($this->tweetsSourceApiEndpoint);
         $response->assertStatus(200);
 
-        for ($i = 0; $i < count($this->dispatchedJobs); $i++) {
-            $this->dispatchedJobs[$i]->handle();
-        }
+        $this->fireJobsAndBindTwitter();
 
         $response = $this->getJson($this->tweetsSourceListEndpoint);
         $taskId = $response->json()[0]['id'];

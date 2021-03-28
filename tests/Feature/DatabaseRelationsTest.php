@@ -27,11 +27,11 @@ class DatabaseRelationsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([]);
 
-        DB::connection()->enableQueryLog();
-        $response = $this->getJson('/api/tasks/likes');
-        $queries = DB::getQueryLog();
+        DB::enableQueryLog();
 
-        $this->assertLessThanOrEqual(3, count($queries));
+        $this->getJson('/api/tasks/likes');
+
+        $this->assertLessThanOrEqual(3, count(DB::getQueryLog()));
     }
 
     public function test_basic_task_to_likes_relation()

@@ -6,6 +6,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
+use App\TwUtils\RawTweetsManager;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,6 +36,21 @@ class TasksController extends Controller
         $addTask = new TaskFactory($request->taskFullType, $request->settings, $request->relatedTask, auth()->user());
 
         return response(['ok'=> true, 'errors' => [], 'data' => ['task_id' => $addTask->getTask()->id]], Response::HTTP_OK);
+    }
+
+    // Create Upload
+
+    // Create Task
+    public function uploadTask(Request $request, RawTweetsManager $rawTweetsManager)
+    {
+        $this->validate($request, [
+            'purpose'   => ['required', Rule::in(['remove_tweets', 'remove_likes'])],
+            'file'      => ['required', 'file', 'mimes:js,zip', 'mimetypes:text/javascript'], // TODO: ',application/zip'
+        ]);
+
+        $uplaod = $rawTweetsManager->create($request->file('file'), auth()->user());
+
+        return $uplaod;
     }
 
     public function show(Request $request, Task $task)

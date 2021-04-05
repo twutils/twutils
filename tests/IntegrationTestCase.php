@@ -342,6 +342,11 @@ class IntegrationTestCase extends TestCase
 
     protected function getStub($stub)
     {
-        return json_decode(file_get_contents(__DIR__.'/_stubs/'.$stub));
+        return json_decode($this->getRawStub($stub));
+    }
+
+    protected function getRawStub($stub)
+    {
+        return file_get_contents(__DIR__.'/_stubs/'.$stub);
     }
 }

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Jobs\ProcessExportJob;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use Illuminate\Filesystem\FilesystemAdapter;
+use App\Models\Concerns\InteractsWithStorage;
 
 class Export extends Model
 {
+    use InteractsWithStorage;
+
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -135,15 +136,5 @@ class Export extends Model
         }
 
         return static::getStorageDisk()->response($this->id, $this->filename);
-    }
-
-    public static function getStorageDisk(): FilesystemAdapter
-    {
-        return Storage::disk(static::getStorageDiskName());
-    }
-
-    public static function getStorageDiskName(): string
-    {
-        return config('filesystems.cloud');
     }
 }

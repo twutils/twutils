@@ -18,8 +18,8 @@ class TestDataTest extends IntegrationTestCase
         $this->logInSocialUser('web');
         $response = $this->get('/');
         $response->assertStatus(200);
-        $this->assertNotNull(auth()->user());
-        $this->assertStringContainsString(json_encode(auth()->user(), JSON_HEX_APOS), $response->getContent());
+        $this->assertNotNull(auth()->user()->name);
+        $this->assertStringContainsString(auth()->user()->name, $response->getContent());
     }
 
     public function testCreateTestData()

@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         printerClass="PHPUnit\Util\TestDox\CliTestDoxPrinter"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="vendor/autoload.php" colors="true" printerClass="PHPUnit\Util\TestDox\CliTestDoxPrinter" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">app</directory>
+    </include>
+    <report>
+      <clover outputFile="coverage/phpunit/logs/clover.xml"/>
+      <html outputDirectory="coverage/phpunit/coverage" lowUpperBound="35" highLowerBound="70"/>
+    </report>
+  </coverage>
+  <testsuites>
         <testsuite name="TestData">
             <directory suffix="Test.php">./tests/TestData</directory>
         </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./app</directory>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-clover" target="coverage/phpunit_testData/logs/clover.xml"/>
-        <log type="coverage-html" target="coverage/phpunit_testData/coverage" lowUpperBound="35" highLowerBound="70" />
-        <log type="testdox-text" target="coverage/phpunit_testData/testdox/executed.txt"/>
-    </logging>
-    <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="DB_CONNECTION" value="testing"/>
-    </php>
+  </testsuites>
+  <logging>
+      <testdoxText outputFile="coverage/phpunit/testdox/executed.txt"/>
+  </logging>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="CACHE_DRIVER" value="array"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <env name="DB_CONNECTION" value="testing"/>
+    <env name="FILESYSTEM_CLOUD" value="localCloud"/>
+    <env name="FILESYSTEM_TWEETS_MEDIA" value="localTweetsMedia"/>
+    <env name="TWITTER_CLIENT_ID" value=""/>
+    <env name="TWITTER_CLIENT_SECRET" value=""/>
+    <env name="TWITTER_REDIRECT" value=""/>
+    <env name="AWS_ACCESS_KEY_ID" value=""/>
+    <env name="AWS_SECRET_ACCESS_KEY" value=""/>
+    <env name="AWS_DEFAULT_REGION" value=""/>
+    <env name="AWS_BUCKET" value=""/>
+    <env name="AWS_TWEETS_MEDIA_BUCKET" value=""/>
+    <env name="AWS_URL" value=""/>
+  </php>
 </phpunit>

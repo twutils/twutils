@@ -33,7 +33,7 @@ class ProcessUploadJob extends Job
             ->map(fn ($tweet)    => Arr::set($tweet, 'extended_entities', json_encode($tweet['extended_entities'])))
             ->map(fn ($tweet)    => Arr::set($tweet, 'upload_id', $this->upload->id))
             ->values()
-           ->toArray();
+            ->toArray();
 
         RawTweet::insert($tweets);
     }

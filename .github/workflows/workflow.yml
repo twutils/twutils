@@ -40,7 +40,7 @@ jobs:
 
     - name: Execute backend tests
       run: |
-       vendor/bin/phpunit
+       vendor/bin/paratest -p5 --no-coverage
 
     - name: Prepare Frontend Data
       run: |

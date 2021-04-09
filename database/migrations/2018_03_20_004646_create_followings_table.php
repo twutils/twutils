@@ -14,12 +14,16 @@ class CreateFollowingsTable extends Migration
     public function up()
     {
         Schema::create('followings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('task_id');
+            $table->id();
+            $table->foreignId('task_id')->constrained('tasks', 'id')->onDelete('cascade');
 
-            $table->string('tweep_id_str')->index();
+            $table->string('tweep_id_str', 20)->index();
 
             $table->boolean('followed_by')->default(false);
+        });
+
+        Schema::table('followings', function (Blueprint $table) {
+            $table->foreign('tweep_id_str')->references('id_str')->on('tweeps');
         });
     }
 

@@ -14,27 +14,36 @@ class CreateTweepsTable extends Migration
     public function up()
     {
         Schema::create('tweeps', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
 
-            $table->string('id_str')->index();
+            // 64 bit unsigned integer
+            // ... max value         = 18,446,744,073,709,551,616
+            // ... ... digits length = 20
+            // @see https://developer.twitter.com/en/docs/twitter-ids
+            $table->string('id_str', 20)->index();
 
-            $table->string('screen_name');
-            $table->string('name');
-            $table->text('avatar');
-            $table->string('background_color')->nullable();
-            $table->string('background_image')->nullable();
-            $table->string('location')->nullable();
-            $table->string('description')->nullable();
-            $table->string('url')->nullable();
-            $table->string('display_url')->nullable();
+            $table->string('screen_name', 15);
+            $table->string('name', 255);
+            $table->string('avatar', 50);
+
+            $table->string('background_color', 6)->nullable();
+            $table->string('background_image', 50)->nullable();
+            $table->string('location', 255)->nullable();
+            $table->string('description', 255)->nullable();
+            $table->string('url', 255)->nullable();
+            $table->string('display_url', 255)->nullable();
+
+
             $table->boolean('verified')->default(false);
             $table->boolean('protected')->default(false);
+
             $table->integer('followers_count')->nullable();
             $table->integer('friends_count')->nullable();
             $table->integer('favourites_count')->nullable();
             $table->integer('statuses_count')->nullable();
 
             $table->dateTime('tweep_created_at');
+
             $table->timestamps();
         });
     }

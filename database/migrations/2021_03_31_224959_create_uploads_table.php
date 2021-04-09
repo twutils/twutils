@@ -15,6 +15,7 @@ class CreateUploadsTable extends Migration
     {
         Schema::create('uploads', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
             $table->string('filename');
             $table->string('original_name');
             $table->timestamps();

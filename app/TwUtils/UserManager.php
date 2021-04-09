@@ -181,8 +181,6 @@ class UserManager
         $map = $mapCopy = [
             'token'         => 'token',
             'token_secret'  => 'tokenSecret',
-            'refresh_token' => 'refreshToken',
-            'expires_in'    => 'expiresIn',
 
             'social_user_id' => 'getId()',
             'nickname'       => 'getNickname()',

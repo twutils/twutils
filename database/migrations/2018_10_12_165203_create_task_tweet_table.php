@@ -14,14 +14,18 @@ class CreateTaskTweetTable extends Migration
     public function up()
     {
         Schema::create('task_tweet', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('task_id');
-            $table->string('tweet_id_str')->index();
+            $table->id();
+            $table->foreignId('task_id')->constrained('tasks', 'id')->onDelete('cascade');
+            $table->string('tweet_id_str', 20)->index();
             $table->boolean('favorited');
             $table->boolean('retweeted');
             $table->dateTime('removed')->nullable();
-            $table->unsignedInteger('removed_task_id')->nullable();
+            $table->foreignId('removed_task_id')->nullable()->constrained('tasks', 'id');
             $table->timestamps();
+        });
+
+        Schema::table('task_tweet', function (Blueprint $table) {
+            $table->foreign('tweet_id_str')->references('id_str')->on('tweets');
         });
     }
 

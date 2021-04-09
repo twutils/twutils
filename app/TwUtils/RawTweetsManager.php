@@ -18,6 +18,7 @@ class RawTweetsManager
 
         $upload = Upload::create([
             'filename'      => $fileName,
+            'user_id'       => $user->id,
             'original_name' => $uploadedFile->getClientOriginalName(),
         ]);
 

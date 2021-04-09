@@ -17,6 +17,7 @@ class Upload extends Model
 
     protected $casts = [
         'id'             => 'int',
+        'user_id'        => 'int',
         'filename'       => 'string',
         'original_name'  => 'string',
     ];

@@ -15,13 +15,17 @@ class CreateTaskViewsTable extends Migration
     {
         Schema::create('task_views', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('task_id');
+
+            $table->foreignId('task_id')->constrained('tasks', 'id')->onDelete('cascade');
+
             $table->unsignedInteger('count')->nullable();
             $table->unsignedInteger('tweets_text_only')->nullable();
             $table->unsignedInteger('tweets_with_photos')->nullable();
             $table->unsignedInteger('tweets_with_videos')->nullable();
             $table->unsignedInteger('tweets_with_gifs')->nullable();
+
             $table->json('months')->nullable();
+
             $table->timestamps();
         });
     }

@@ -322,7 +322,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->assertEquals(Tweet::all()->count(), 1);
         $this->assertLikesBelongsToTask();
         $this->assertZippedMissing('1', $tweet->id_str.'_1.jpeg');
-        $this->assertTrue(empty(Task::all()->last()->tweets->first()->pivot->attachments));
+        $this->assertCount(0, MediaFile::all());
     }
 
     public function test_save_likes_with_and_without_custom_date_all_has_correct_twitter_parameters()

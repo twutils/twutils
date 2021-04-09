@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Models\RawTweet;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UploadTweetFactory extends Factory
+class RawTweetFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

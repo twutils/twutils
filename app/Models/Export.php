@@ -19,7 +19,6 @@ class Export extends Model
         'success_at'   => 'datetime',
         'progress'     => 'int',
         'progress_end' => 'int',
-        'list_size'    => 'int',
     ];
 
     protected $hidden = [

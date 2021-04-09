@@ -14,14 +14,20 @@ class CreateTasksTable extends Migration
     public function up()
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('socialuser_id')->unsigned();
-            $table->string('type');
-            $table->string('status');
+            $table->id();
+
+            $table->foreignId('socialuser_id')->index()->constrained('social_users', 'id')->onDelete('cascade');
+
+            $table->string('type', 255)->index();
+            $table->string('status', 10)->index();
+
             $table->text('extra')->nullable();
             $table->text('exception')->nullable();
-            $table->integer('targeted_task_id')->unsigned()->nullable();
-            $table->integer('managed_by_task_id')->unsigned()->nullable();
+
+            $table->foreignId('targeted_task_id')->nullable()->index()->constrained('tasks', 'id')->nullOnDelete();
+
+            $table->foreignId('managed_by_task_id')->nullable()->index()->constrained('tasks', 'id')->nullOnDelete();
+
             $table->timestamps();
         });
     }

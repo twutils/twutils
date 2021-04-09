@@ -14,13 +14,13 @@ class CreateTweetsTable extends Migration
     public function up()
     {
         Schema::create('tweets', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('id_str')->index();
+            $table->id();
+            $table->string('id_str', 20)->index();
             $table->text('text');
             $table->string('lang')->nullable();
             $table->dateTime('tweet_created_at');
 
-            $table->unsignedInteger('tweep_id');
+            $table->string('tweep_id_str', 20)->index();
 
             $table->integer('retweet_count')->nullable();
 
@@ -28,7 +28,7 @@ class CreateTweetsTable extends Migration
             $table->string('mentions')->nullable();
             $table->string('hashtags')->nullable();
             $table->boolean('is_quote_status');
-            $table->string('quoted_status_id_str')->nullable();
+            $table->string('quoted_status_id_str', 20)->nullable();
             $table->text('quoted_status')->nullable();
             $table->text('quoted_status_permalink')->nullable();
 
@@ -36,7 +36,12 @@ class CreateTweetsTable extends Migration
             $table->integer('favorite_count')->nullable();
             $table->text('extended_entities')->nullable();
             $table->text('entities')->nullable();
+
             $table->timestamps();
+        });
+
+        Schema::table('tweets', function (Blueprint $table) {
+            $table->foreign('tweep_id_str')->references('id_str')->on('tweeps');
         });
     }
 

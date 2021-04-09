@@ -15,12 +15,13 @@ class CreateExportsTable extends Migration
     {
         Schema::create('exports', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('task_id');
+            $table->foreignId('task_id')->constrained('tasks', 'id')->onDelete('cascade');
+
             $table->string('type', 20); // 'html', 'excel', 'htmlEntities'
             $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
+
             $table->string('filename')->nullable();
             $table->unsignedInteger('size')->nullable();
-            $table->unsignedInteger('list_size')->nullable();
 
             $table->dateTime('started_at')->nullable();
             $table->dateTime('broken_at')->nullable();
@@ -32,10 +33,6 @@ class CreateExportsTable extends Migration
             $table->text('exception')->nullable();
 
             $table->timestamps();
-
-            $table->foreign('task_id')
-            ->references('id')->on('tasks')
-            ->onDelete('cascade');
         });
     }
 

@@ -10,7 +10,7 @@ use Illuminate\Http\UploadedFile;
 
 class RawTweetsManager
 {
-    public function create(UploadedFile $uploadedFile, User $user) : Upload
+    public function create(UploadedFile $uploadedFile, User $user): Upload
     {
         $fileName = Str::uuid().'.js';
 

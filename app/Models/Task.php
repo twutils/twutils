@@ -105,7 +105,7 @@ class Task extends Model
                 array_key_exists('status', $task->getDirty())
             ) {
                 $task->exports->map(function (Export $export) {
-                    $export->status = 'started';
+                    $export->status = Export::STATUS_STARTED;
                     $export->save();
                 });
 

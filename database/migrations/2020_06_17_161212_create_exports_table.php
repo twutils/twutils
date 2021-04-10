@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Export;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -17,8 +18,18 @@ class CreateExportsTable extends Migration
             $table->id();
             $table->foreignId('task_id')->constrained('tasks', 'id')->onDelete('cascade');
 
-            $table->string('type', 20); // 'html', 'excel', 'htmlEntities'
-            $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
+            $table->enum('type', [
+                Export::TYPE_HTML,
+                Export::TYPE_EXCEL,
+                Export::TYPE_HTMLENTITIES,
+            ]);
+
+            $table->enum('status', [
+                Export::STATUS_INITIAL, 
+                Export::STATUS_STARTED,
+                Export::STATUS_SUCCESS,
+                Export::STATUS_BROKEN,
+            ]);
 
             $table->string('filename')->nullable();
             $table->unsignedInteger('size')->nullable();

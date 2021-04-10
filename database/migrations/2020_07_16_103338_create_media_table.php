@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Media;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -21,7 +22,12 @@ class CreateMediaTable extends Migration
             $table->text('raw')->nullable();
             $table->string('type');
 
-            $table->string('status', 10); // 'initial', 'started', 'success', 'broken'
+            $table->enum('status', [
+                Media::STATUS_INITIAL, 
+                Media::STATUS_STARTED,
+                Media::STATUS_SUCCESS,
+                Media::STATUS_BROKEN,
+            ]);
 
             $table->dateTime('started_at')->nullable();
             $table->dateTime('broken_at')->nullable();

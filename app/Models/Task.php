@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Jobs\BuildTaskView;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Jobs\Actions\TaskCreated;
 use Illuminate\Database\Eloquent\Model;
 use App\Jobs\CleaningAllTweetsAndTweeps;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
@@ -69,35 +70,9 @@ class Task extends Model
     {
         parent::boot();
 
-        static::created(function (self $task) {
-            $operationInstance = (new $task->type());
-
-            $operationInstance
-                ->setSocialUser($task->socialUser)
-                ->setTask($task)
-                ->setData($task->extra)
-                ->dispatch();
-
-            $operationInstance->initJob();
-
-            Export::create([
-                'task_id' => $task->id,
-                'type'    => Export::TYPE_HTML,
-            ]);
-            Export::create([
-                'task_id' => $task->id,
-                'type'    => Export::TYPE_EXCEL,
-            ]);
-
-            if (! in_array($task->type, static::TWEETS_LISTS_WITH_ENTITIES_TYPES)) {
-                return;
-            }
-
-            Export::create([
-                'task_id' => $task->id,
-                'type'    => Export::TYPE_HTMLENTITIES,
-            ]);
-        });
+        static::created(
+            fn (self $task) => (new TaskCreated($task))->handle()
+        );
 
         static::updated(function (self $task) {
             if (

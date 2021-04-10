@@ -7,7 +7,10 @@ use App\Models\Task;
 use App\Models\User;
 use App\Models\SocialUser;
 use App\Jobs\FetchLikesJob;
+use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
 use App\TwUtils\ITwitterConnector;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IntegrationTestCase extends TestCase
@@ -31,6 +34,37 @@ class IntegrationTestCase extends TestCase
         if (config('database.connections.'.config('database.default').'.driver') == 'sqlite') {
             \DB::connection()->getPdo()->exec('pragma foreign_keys=1');
         }
+    }
+
+    public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
+    {
+        $response = parent::call($method, $uri, $parameters, $cookies, $files, $server, $content);
+
+        if ($response->getStatusCode() >= Response::HTTP_INTERNAL_SERVER_ERROR) {
+            $exceptionMessage = substr($response->baseResponse->__toString(), 0, 700);
+
+            if (
+                $response->baseResponse instanceof JsonResponse &&
+                ($data = $response->baseResponse->getData(true)) &&
+                isset($data['trace'])
+            ) {
+                $exceptionMessage .= "\n\n".$this->getExceptionMessageFromJsonTrace($data['trace']);
+            }
+
+            throw new \Exception($exceptionMessage);
+        }
+
+        return $response;
+    }
+
+    protected function getExceptionMessageFromJsonTrace($trace) : string
+    {
+        return collect($trace)
+            ->filter(fn ($trace) => ! empty($trace['file']))
+            ->filter(fn ($trace) => ! empty($trace['line']))
+            ->filter(fn ($trace) => ! Str::contains($trace['file'], base_path('vendor')))
+            ->map(fn ($trace)    => $trace['file'].':'.$trace['line'])
+            ->implode("\n");
     }
 
     protected function assertTaskCount($count, $status = null)

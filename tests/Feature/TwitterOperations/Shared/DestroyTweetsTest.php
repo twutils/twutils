@@ -27,6 +27,8 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId]);
         $response->assertStatus(200);
 
+        $this->fireJobsAndBindTwitter();
+
         $this->assertCountDispatchedJobs(1, $this->jobName);
     }
 
@@ -250,11 +252,13 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId]);
         $response->assertStatus(200);
 
-        $this->assertCountDispatchedJobs(1, $this->jobName);
+        $this->fireJobsAndBindTwitter([], $indexLastDispatched);
 
-        for ($i = $indexLastDispatched; $i < count($this->dispatchedJobs); $i++) {
-            $this->dispatchedJobs[$i]->handle();
-        }
+        $indexLastDispatched = count($this->dispatchedJobs);
+
+        $this->assertCountDispatchedJobs(2, $this->jobName);
+
+        $this->fireJobsAndBindTwitter([], $indexLastDispatched);
 
         $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->twitterEndpoint);
 
@@ -278,8 +282,6 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId]);
         $response->assertStatus(200);
 
-        $this->assertCountDispatchedJobs(1, $this->jobName);
-
         Task::first()->delete();
         Tweet::where('task_id', $taskId)->delete();
 
@@ -287,6 +289,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->assertCountDispatchedJobs(5, $this->jobName);
         $this->assertTaskCount(1);
+        $this->assertSame('completed', Task::find(2)->status);
     }
 
     public function test_destroy_many_tweets()
@@ -303,8 +306,6 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId]);
         $response->assertStatus(200);
-
-        $this->assertCountDispatchedJobs(1, $this->jobName);
 
         $this->fireJobsAndBindTwitter([
             [

@@ -110,7 +110,9 @@ class DestroyLikesOperation extends TwitterOperation
     public function dispatch()
     {
         $parameters = $this->buildParameters();
-
+        if (! $this->task->targetedTask) {
+            return $this->breakTask($this->task, [], new \Exception("Target task doesn't exist"));
+        }
         try {
             $relatedTaskLikes = $this->task->targetedTask->likes;
 

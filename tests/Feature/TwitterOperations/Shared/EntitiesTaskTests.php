@@ -43,6 +43,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         $this->logInSocialUser('api');
         $response = $this->getJson($this->apiEndpoint);
         $response->assertStatus(200);
+
         Bus::assertDispatched($this->jobName);
     }
 

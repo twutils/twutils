@@ -797,8 +797,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertTrue(empty($this->dispatchedJobs[1]) || get_class($this->dispatchedJobs[1]) !== $this->jobName);
-
         $this->assertCountDispatchedJobs(1, $this->jobName);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());
@@ -818,8 +816,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         ->assertStatus(200);
 
         $this->fireJobsAndBindTwitter([]);
-
-        $this->assertTrue(empty($this->dispatchedJobs[1]) || get_class($this->dispatchedJobs[1]) !== $this->jobName);
 
         $this->assertCountDispatchedJobs(1, $this->jobName);
         $this->assertTaskCount(1, 'completed');

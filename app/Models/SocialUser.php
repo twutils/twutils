@@ -37,7 +37,7 @@ class SocialUser extends Model
                 $task->delete();
             });
 
-            UserManager::revokeAccessToken($socialUser);
+            app(UserManager::class)->revokeAccessToken($socialUser);
         });
     }
 

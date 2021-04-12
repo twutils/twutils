@@ -1,3 +1,7 @@
+@php
+use \App\TwUtils\UserManager;
+@endphp
+
 @extends('layout.app')
 
 @section('content')
@@ -108,7 +112,7 @@
                     </tr>
                 @endforeach
                 @foreach (['read','write'] as $scope)
-                    @if(\App\TwUtils\UserManager::resolveUser(auth()->user(), $scope) === null)
+                    @if(app(UserManager::class)->resolveUser(auth()->user(), $scope) === null)
                     <tr>
                       <td>
                         XXXXX

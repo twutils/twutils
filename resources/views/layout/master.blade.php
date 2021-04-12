@@ -1,3 +1,6 @@
+@php
+use \App\TwUtils\UserManager;
+@endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
@@ -27,7 +30,7 @@
     
     <script type="text/javascript">
         @php
-            $clientData = \App\TwUtils\UserManager::getClientData();
+            $clientData = app(UserManager::class)->getClientData();
         @endphp
         window.TwUtils = @json($clientData, JSON_HEX_APOS)
     </script>

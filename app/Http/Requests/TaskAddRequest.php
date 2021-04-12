@@ -49,7 +49,7 @@ class TaskAddRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $scope = (new $this->taskFullType)->getScope();
 
-                    $socialUser = UserManager::resolveUser($this->user(), $scope);
+                    $socialUser = app(UserManager::class)->resolveUser($this->user(), $scope);
 
                     if ($socialUser == null) {
                         throw new TaskAddException([__('messages.task_add_no_privilege')], Response::HTTP_UPGRADE_REQUIRED);

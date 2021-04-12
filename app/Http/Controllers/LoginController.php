@@ -13,8 +13,9 @@ class LoginController extends Controller
 
     protected $redirectTo = '/app';
 
-    public function __construct()
-    {
+    public function __construct(
+        protected UserManager $userManager
+    ) {
         $this->middleware('guest')->only('showLoginForm');
     }
 
@@ -38,12 +39,12 @@ class LoginController extends Controller
 
         $user = Socialite::driver('twitter')->user();
 
-        UserManager::loginSocialUser($user);
+        $this->userManager->loginSocialUser($user);
 
-        $socialUser = UserManager::findSocialUser($user, ['read', 'write']);
+        $socialUser = $this->userManager->findSocialUser($user, ['read', 'write']);
 
         if (! is_null($socialUser) && $socialUser->token !== '') {
-            UserManager::loginUser($socialUser->user);
+            $this->userManager->loginUser($socialUser->user);
 
             return redirect()->route('twitter.rw.login');
         }
@@ -70,7 +71,7 @@ class LoginController extends Controller
 
         $user = Socialite::driver('twitter')->user();
 
-        UserManager::loginSocialUser($user, ['read', 'write']);
+        $this->userManager->loginSocialUser($user, ['read', 'write']);
 
         return redirect()->route('app');
     }

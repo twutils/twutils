@@ -55,7 +55,7 @@ class TestDataTest extends IntegrationTestCase
                 'FetchFollowers'  => $fetchFollowers,
                 'FetchUserTweets' => $fetchUserTweets,
             ],
-            'clientData' => UserManager::getClientData(),
+            'clientData' => app(UserManager::class)->getClientData(),
         ];
     }
 

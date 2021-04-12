@@ -33,7 +33,7 @@ class Factory
 
     public function resolveUser($taskScope): SocialUser
     {
-        return UserManager::resolveUser($this->user, $taskScope);
+        return app(UserManager::class)->resolveUser($this->user, $taskScope);
     }
 
     public function getTask(): Task

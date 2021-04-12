@@ -27,7 +27,7 @@ class AppController extends Controller
     {
         $this->authorize('update', $socialUser);
 
-        UserManager::revokeAccessToken($socialUser);
+        $this->userManager->revokeAccessToken($socialUser);
 
         return redirect()->back();
     }

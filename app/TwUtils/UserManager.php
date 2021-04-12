@@ -13,13 +13,13 @@ use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 
 class UserManager
 {
-    public static function loginSocialUser(AbstractUser $user, array $scopes = ['read'])
+    public function loginSocialUser(AbstractUser $user, array $scopes = ['read'])
     {
-        $socialUser = static::createOrFindSocialUser($user, $scopes);
+        $socialUser = $this->createOrFindSocialUser($user, $scopes);
 
-        $socialUser->fill(['scope' => $scopes] + static::mapAbstractUserToSocialUser($user));
+        $socialUser->fill(['scope' => $scopes] + $this->mapAbstractUserToSocialUser($user));
 
-        $appUser = static::createOrFindAppUser($socialUser);
+        $appUser = $this->createOrFindAppUser($socialUser);
 
         if (is_null($socialUser->email) && auth()->check() && $authUserEmail = auth()->user()->email) {
             $socialUser->email = $authUserEmail;
@@ -31,10 +31,10 @@ class UserManager
         $socialUser->user_id = $appUser->id;
         $socialUser->save();
 
-        static::loginUser($appUser);
+        $this->loginUser($appUser);
     }
 
-    public static function getClientData()
+    public function getClientData()
     {
         return [
             'baseUrl'    => url('/').'/',
@@ -50,7 +50,7 @@ class UserManager
         ];
     }
 
-    public static function loginUser(User $user)
+    public function loginUser(User $user)
     {
         Auth::loginUsingId($user->id);
         session()->put('lastlogin_at', $user->lastlogin_at);
@@ -58,7 +58,7 @@ class UserManager
         $user->save();
     }
 
-    public static function createOrFindAppUser(SocialUser $socialUser)
+    public function createOrFindAppUser(SocialUser $socialUser)
     {
         $socialUserId = $socialUser->social_user_id;
 
@@ -76,7 +76,7 @@ class UserManager
         }
 
         if (! $appUser) {
-            $appUser = static::createAppUserFromSocialUser($socialUser);
+            $appUser = $this->createAppUserFromSocialUser($socialUser);
         }
 
         return $appUser;
@@ -84,34 +84,34 @@ class UserManager
 
     public function refreshProfile(SocialUser $socialUser)
     {
-        if (static::shouldUpdateProfile($socialUser)) {
-            static::updateProfile($socialUser);
+        if ($this->shouldUpdateProfile($socialUser)) {
+            $this->updateProfile($socialUser);
         }
     }
 
-    public static function shouldUpdateProfile(SocialUser $socialUser)
+    public function shouldUpdateProfile(SocialUser $socialUser)
     {
         return $socialUser->updated_at->diffInSeconds($socialUser->created_at) == 0 || $socialUser->updated_at->diffInMinutes() > 15;
     }
 
-    public static function updateProfile(SocialUser $socialUser)
+    public function updateProfile(SocialUser $socialUser)
     {
         dispatch(new FetchUserInfoJob($socialUser));
     }
 
-    public static function revokeAccessToken(SocialUser $socialUser)
+    public function revokeAccessToken(SocialUser $socialUser)
     {
         $fetchUserInfoOperation = new RevokeAccessOperation();
 
         $fetchUserInfoOperation->setSocialUser($socialUser)->dispatch();
     }
 
-    public static function resolveUser(User $appUser, string $scope)
+    public function resolveUser(User $appUser, string $scope)
     {
         return $appUser->socialUsers()->where('scope', 'like', "%{$scope}%")->first();
     }
 
-    public static function createAppUserFromSocialUser(SocialUser $socialUser): User
+    public function createAppUserFromSocialUser(SocialUser $socialUser): User
     {
         $appUser = new User();
         $appUser->name = $socialUser->name;
@@ -130,25 +130,25 @@ class UserManager
         return $appUser;
     }
 
-    public static function createOrFindSocialUser(AbstractUser $user, array $scopes): SocialUser
+    public function createOrFindSocialUser(AbstractUser $user, array $scopes): SocialUser
     {
-        $socialUser = static::findSocialUser($user, $scopes);
+        $socialUser = $this->findSocialUser($user, $scopes);
 
         if (is_null($socialUser)) {
-            return static::createSocialUser($user);
+            return $this->createSocialUser($user);
         }
 
         $alreadyDifferentScope = ! is_null($socialUser->scope) && $socialUser->scope !== $scopes;
 
         if ($alreadyDifferentScope) {
-            $socialUser = static::createSocialUser($user);
+            $socialUser = $this->createSocialUser($user);
             $socialUser->user_id = $socialUser->user_id;
         }
 
         return $socialUser;
     }
 
-    public static function findSocialUser(AbstractUser $user, array $scopes)
+    public function findSocialUser(AbstractUser $user, array $scopes)
     {
         $socialUsers = SocialUser::where('social_user_id', $user->getId())->get();
 
@@ -169,14 +169,14 @@ class UserManager
         ->first();
     }
 
-    public static function createSocialUser(AbstractUser $user): SocialUser
+    public function createSocialUser(AbstractUser $user): SocialUser
     {
         $socialUser = new SocialUser();
 
-        return $socialUser->fill(static::mapAbstractUserToSocialUser($user));
+        return $socialUser->fill($this->mapAbstractUserToSocialUser($user));
     }
 
-    public static function mapAbstractUserToSocialUser(AbstractUser $user): array
+    public function mapAbstractUserToSocialUser(AbstractUser $user): array
     {
         $map = $mapCopy = [
             'token'         => 'token',

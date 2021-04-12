@@ -10,14 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AppController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        protected UserManager $userManager
+    ) {
         $this->middleware('auth')->except(['switchLang']);
     }
 
     public function index()
     {
-        UserManager::refreshProfile(auth()->user()->socialUser->fresh());
+        $this->userManager->refreshProfile(auth()->user()->socialUser->fresh());
 
         return view('app');
     }

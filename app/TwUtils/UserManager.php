@@ -82,7 +82,7 @@ class UserManager
         return $appUser;
     }
 
-    public static function refreshProfile(SocialUser $socialUser)
+    public function refreshProfile(SocialUser $socialUser)
     {
         if (static::shouldUpdateProfile($socialUser)) {
             static::updateProfile($socialUser);

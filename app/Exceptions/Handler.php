@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Throwable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -66,7 +67,16 @@ class Handler extends ExceptionHandler
             return $exception->toResponse();
         }
 
-        return parent::render($request, $exception);
+        $response = parent::render($request, $exception);
+
+        if (
+            config('app.debug', false) &&
+            $response->getStatusCode() >= Response::HTTP_INTERNAL_SERVER_ERROR
+        ) {
+            dd($exception);
+        }
+
+        return $response;
     }
 
     protected function setSentryVersion()

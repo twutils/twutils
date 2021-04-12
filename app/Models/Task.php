@@ -71,6 +71,7 @@ class Task extends Model
         parent::boot();
 
         static::created(
+            // TODO: Dispatch it as a real job
             fn (self $task) => (new TaskCreated($task))->handle()
         );
 

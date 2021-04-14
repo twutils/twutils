@@ -55,13 +55,13 @@ class FetchUserInfoOperation extends TwitterOperation
         $socialUserAvatar = $response['profile_image_url_https'] ?? null;
 
         try {
-            $socialUser->background_image = AssetsManager::storeImage($socialUser->background_image.'/1500x500', $socialUser->social_user_id.'_bg.png', 600);
+            $socialUser->background_image = app(AssetsManager::class)->storeImage($socialUser->background_image.'/1500x500', $socialUser->social_user_id.'_bg.png', 600);
         } catch (\Exception $e) {
         }
 
         try {
             if (! is_null($socialUserAvatar)) {
-                $socialUser->avatar = AssetsManager::storeAvatar($socialUserAvatar, $socialUser->social_user_id);
+                $socialUser->avatar = app(AssetsManager::class)->storeAvatar($socialUserAvatar, $socialUser->social_user_id);
             }
         } catch (\Exception $e) {
         }

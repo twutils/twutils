@@ -13,6 +13,8 @@ class SaveTweepAvatarJob extends Job
 
     protected $task;
 
+    protected AssetsManager $assetsManager;
+
     /**
      * Create a new job instance.
      *
@@ -22,6 +24,8 @@ class SaveTweepAvatarJob extends Job
     {
         $this->queue = 'avatars';
         $this->tweepIdStr = $tweepIdStr;
+
+        $this->assetsManager = app(AssetsManager::class);
     }
 
     /**
@@ -41,6 +45,6 @@ class SaveTweepAvatarJob extends Job
 
         $base64Body = base64_encode((string) $response->getBody());
 
-        AssetsManager::storeImage($base64Body, $tweep->id_str.'.png', 80, 80, 'avatars');
+        $this->assetsManager->storeImage($base64Body, $tweep->id_str.'.png', 80, 80, 'avatars');
     }
 }

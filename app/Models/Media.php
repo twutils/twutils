@@ -76,7 +76,7 @@ class Media extends Model
     {
         $counter = 1;
 
-        collect(AssetsManager::getMediaDownloaders($this))
+        collect(app(AssetsManager::class)->getMediaDownloaders($this))
         ->map(function ($downloader) use (&$counter) {
             // TODO: Optimize loading "this->tweet"
             MediaFile::create(['downloader' => $downloader, 'media_id' => $this->id, 'name' => $this->tweet->id_str]);

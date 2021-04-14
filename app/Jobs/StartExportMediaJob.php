@@ -14,16 +14,19 @@ class StartExportMediaJob extends Job
 
     public $deleteWhenMissingModels = true;
 
+    protected AssetsManager $assetsManager;
+
     public function __construct(Export $export)
     {
         $this->queue = 'exports';
         $this->export = $export;
+        $this->assetsManager = app(AssetsManager::class);
     }
 
     public function handle()
     {
         $tweetsWithMedia = $this->export->task->fresh()->tweets
-            ->filter(fn (Tweet $tweet) => AssetsManager::hasMedia($tweet))
+            ->filter(fn (Tweet $tweet) => $this->assetsManager->hasMedia($tweet))
             ->values();
 
         $mediaFiles = $this->export->task->fresh()

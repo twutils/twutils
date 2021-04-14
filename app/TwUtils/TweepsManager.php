@@ -9,10 +9,10 @@ use Illuminate\Support\Collection;
 
 class TweepsManager
 {
-    public static function insertOrUpdateMultipleTweeps(Collection $tweeps)
+    public function insertOrUpdateMultipleTweeps(Collection $tweeps)
     {
         $tweeps = $tweeps->unique('id_str')->map(function ($user) {
-            return static::mapResponseUserToTweep((array) $user);
+            return $this->mapResponseUserToTweep((array) $user);
         });
 
         $foundTweeps = Tweep::whereIn('id_str', $tweeps->pluck('id_str'))->get();
@@ -21,30 +21,30 @@ class TweepsManager
         $notFound = $tweeps->pluck('id_str')->diff($foundTweepsIds);
 
         $foundTweeps->map(function (Tweep $tweep) use ($tweeps) {
-            return static::updateTweepIfNeeded($tweep, $tweeps->where('id_str', $tweep->id_str)->first());
+            return $this->updateTweepIfNeeded($tweep, $tweeps->where('id_str', $tweep->id_str)->first());
         });
 
         $notFound->map(function ($tweepIdStr) use ($tweeps) {
-            return static::createTweep($tweeps->where('id_str', $tweepIdStr)->first());
+            return $this->createTweep($tweeps->where('id_str', $tweepIdStr)->first());
         });
     }
 
-    public static function createOrFindFromFollowing(array $user)
+    public function createOrFindFromFollowing(array $user)
     {
         $tweep = Tweep::where('id_str', $user['id_str'])->first();
 
-        $mappedTweet = static::mapResponseUserToTweep($user);
+        $mappedTweet = $this->mapResponseUserToTweep($user);
 
         if (is_null($tweep)) {
-            $tweep = static::createTweep($mappedTweet);
+            $tweep = $this->createTweep($mappedTweet);
         } else {
-            $tweep = static::updateTweepIfNeeded($tweep, $mappedTweet);
+            $tweep = $this->updateTweepIfNeeded($tweep, $mappedTweet);
         }
 
         return $tweep;
     }
 
-    public static function updateTweepIfNeeded($tweep, $mappedTweep)
+    public function updateTweepIfNeeded($tweep, $mappedTweep)
     {
         $needUpdate = false;
 
@@ -63,12 +63,12 @@ class TweepsManager
         return $tweep;
     }
 
-    public static function createTweep(array $tweep)
+    public function createTweep(array $tweep)
     {
         return Tweep::create($tweep);
     }
 
-    public static function mapResponseUserToTweep(array $user): array
+    public function mapResponseUserToTweep(array $user): array
     {
         $displayUrl = null;
         if (! empty($user['entities']->url) && ! empty($user['entities']->url->urls)) {

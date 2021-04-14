@@ -68,7 +68,7 @@ abstract class TwitterOperation
         } catch (Exception $e) {
             try {
                 $this->headers = $twitterClient->getLastXHeaders();
-                $this->data['nextJobDelay'] = JobsManager::getNextJobDelayFromHeaders($this->headers);
+                $this->data['nextJobDelay'] = app(JobsManager::class)->getNextJobDelayFromHeaders($this->headers);
             } catch (Exception $e) {
             }
 
@@ -76,7 +76,7 @@ abstract class TwitterOperation
         }
 
         $this->headers = $twitterClient->getLastXHeaders();
-        $this->data['nextJobDelay'] = JobsManager::getNextJobDelayFromHeaders($this->headers);
+        $this->data['nextJobDelay'] = app(JobsManager::class)->getNextJobDelayFromHeaders($this->headers);
 
         $this->handleResponse();
     }
@@ -128,7 +128,7 @@ abstract class TwitterOperation
         $dispatchedJob = $this->dispatch();
 
         if ($dispatchedJob && $this->headers) {
-            $dispatchedJob->delay(JobsManager::getNextJobDelayFromHeaders($this->headers));
+            $dispatchedJob->delay(app(JobsManager::class)->getNextJobDelayFromHeaders($this->headers));
         }
     }
 

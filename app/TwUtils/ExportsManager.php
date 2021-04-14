@@ -12,9 +12,9 @@ use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 
 class ExportsManager
 {
-    public static function createHtmlZip(Export $export): string
+    public function createHtmlZip(Export $export): string
     {
-        $zipFile = static::makeTaskZipObject($export);
+        $zipFile = $this->makeTaskZipObject($export);
 
         $fileAbsolutePath = Storage::disk('local')->path($export->id);
 
@@ -31,7 +31,7 @@ class ExportsManager
         return $fileAbsolutePath;
     }
 
-    public static function makeTaskZipObject(Export $export): ZipFile
+    public function makeTaskZipObject(Export $export): ZipFile
     {
         $task = $export->task;
 

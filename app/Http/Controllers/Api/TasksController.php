@@ -19,8 +19,9 @@ use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 
 class TasksController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        protected RawTweetsManager $rawTweetsManager
+    ) {
         $this->middleware('auth');
     }
 
@@ -41,14 +42,14 @@ class TasksController extends Controller
     // Create Upload
 
     // Create Task
-    public function uploadTask(Request $request, RawTweetsManager $rawTweetsManager)
+    public function uploadTask(Request $request)
     {
         $this->validate($request, [
             'purpose'   => ['required', Rule::in(['remove_tweets', 'remove_likes'])],
             'file'      => ['required', 'file', 'mimes:js,zip', 'mimetypes:text/javascript'], // TODO: ',application/zip'
         ]);
 
-        $uplaod = $rawTweetsManager->create($request->file('file'), auth()->user());
+        $uplaod = $this->rawTweetsManager->create($request->file('file'), auth()->user());
 
         return $uplaod;
     }

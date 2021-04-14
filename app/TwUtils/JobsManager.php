@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 class JobsManager
 {
-    public static function getNextJobDelayFromHeaders(array $headers)
+    public function getNextJobDelayFromHeaders(array $headers)
     {
         if (! isset($headers['x_rate_limit_remaining'])) {
             return;

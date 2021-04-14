@@ -107,11 +107,11 @@ class FetchLikesOperation extends TwitterOperation
 
         $tweeps->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
         ->each(function ($tweepsGroup) {
-            TweepsManager::insertOrUpdateMultipleTweeps($tweepsGroup);
+            app(TweepsManager::class)->insertOrUpdateMultipleTweeps($tweepsGroup);
         });
 
         foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
-            TweetsManager::insertOrUpdateMultipleTweets($likesGroup);
+            app(TweetsManager::class)->insertOrUpdateMultipleTweets($likesGroup);
         }
 
         if (! $this->shouldContinueProcessing()) {

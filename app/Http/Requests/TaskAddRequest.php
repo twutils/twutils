@@ -17,7 +17,7 @@ class TaskAddRequest extends FormRequest
 
         $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
 
-        $taskFullType = TasksManager::findOperationTypeByShortName($targetedTask);
+        $taskFullType = app(TasksManager::class)->findOperationTypeByShortName($targetedTask);
 
         $this->merge([
             'targetedTask'      => $targetedTask,

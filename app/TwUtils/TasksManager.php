@@ -28,7 +28,7 @@ class TasksManager
         DestroyTweetsOperation::class,
     ];
 
-    public static function findOperationTypeByShortName($shortName)
+    public function findOperationTypeByShortName($shortName)
     {
         return collect(static::AVAILABLE_OPERATIONS)->first(function ($operationClassName) use ($shortName) {
             return $shortName === (new $operationClassName)->getShortName();

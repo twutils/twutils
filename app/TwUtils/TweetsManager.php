@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class TweetsManager
 {
-    public static function insertOrUpdateMultipleTweets(Collection $tweets)
+    public function insertOrUpdateMultipleTweets(Collection $tweets)
     {
         $tweets = $tweets->unique('id_str')->map(function ($tweet) {
             $tweet = (array) json_decode(json_encode($tweet), true);
@@ -31,7 +31,7 @@ class TweetsManager
         });
     }
 
-    public static function updateTweetIfNeeded($tweet, $mappedTweet)
+    public function updateTweetIfNeeded($tweet, $mappedTweet)
     {
         $needUpdate = false;
 
@@ -50,12 +50,12 @@ class TweetsManager
         return $tweet;
     }
 
-    public static function createTweet(array $tweet)
+    public function createTweet(array $tweet)
     {
         return Tweet::create($tweet);
     }
 
-    public static function mapResponseToTweet(array $tweet): array
+    public function mapResponseToTweet(array $tweet): array
     {
         return [
             'id_str'                  => $tweet['id_str'],

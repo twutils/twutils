@@ -71,7 +71,7 @@ class FetchFollowersOperation extends FetchFollowingOperation
             function ($user) use (&$followers, $task) {
                 $user = (array) $user;
 
-                $tweep = TweepsManager::createOrFindFromFollowing($user);
+                $tweep = app(TweepsManager::class)->createOrFindFromFollowing($user);
 
                 array_push(
                     $followers,

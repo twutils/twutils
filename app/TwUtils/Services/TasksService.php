@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils;
+namespace App\TwUtils\Services;
 
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
@@ -13,7 +13,7 @@ use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
 
-class TasksManager
+class TasksService
 {
     public const AVAILABLE_OPERATIONS = [
         FetchLikesOperation::class,

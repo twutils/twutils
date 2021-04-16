@@ -6,9 +6,9 @@ use App\Models\Export;
 use App\Models\MediaFile;
 use App\TwUtils\Base\Job;
 use Illuminate\Support\Str;
-use App\TwUtils\ExportsManager;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\TwUtils\Services\ExportsService;
 
 class ZipEntitiesJob extends Job
 {
@@ -16,13 +16,13 @@ class ZipEntitiesJob extends Job
 
     public $deleteWhenMissingModels = true;
 
-    protected ExportsManager $exportsManager;
+    protected ExportsService $exportsManager;
 
     public function __construct(Export $export)
     {
         $this->queue = 'exports';
         $this->export = $export;
-        $this->exportsManager = app(ExportsManager::class);
+        $this->exportsManager = app(ExportsService::class);
     }
 
     public function handle()

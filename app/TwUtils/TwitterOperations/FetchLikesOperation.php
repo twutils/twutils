@@ -8,9 +8,9 @@ use App\Models\Tweet;
 use App\Models\Export;
 use App\Models\TaskTweet;
 use App\Jobs\FetchLikesJob;
-use App\TwUtils\TweepsManager;
-use App\TwUtils\TweetsManager;
 use App\Jobs\StartExportMediaJob;
+use App\TwUtils\Services\TweepsService;
+use App\TwUtils\Services\TweetsService;
 use App\TwUtils\Tasks\Validators\DateValidator;
 
 class FetchLikesOperation extends TwitterOperation
@@ -107,11 +107,11 @@ class FetchLikesOperation extends TwitterOperation
 
         $tweeps->chunk(config('twutils.database_groups_chunk_counts.tweep_db_where_in_limit'))
         ->each(function ($tweepsGroup) {
-            app(TweepsManager::class)->insertOrUpdateMultipleTweeps($tweepsGroup);
+            app(TweepsService::class)->insertOrUpdateMultipleTweeps($tweepsGroup);
         });
 
         foreach (collect($responseCollection)->chunk(config('twutils.database_groups_chunk_counts.fetch_likes')) as $i => $likesGroup) {
-            app(TweetsManager::class)->insertOrUpdateMultipleTweets($likesGroup);
+            app(TweetsService::class)->insertOrUpdateMultipleTweets($likesGroup);
         }
 
         if (! $this->shouldContinueProcessing()) {

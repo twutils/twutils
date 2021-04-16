@@ -6,16 +6,16 @@ use App\Models\Upload;
 use App\Models\RawTweet;
 use App\TwUtils\Base\Job;
 use Illuminate\Support\Arr;
-use App\TwUtils\RawTweetsManager;
+use App\TwUtils\Services\RawTweetsService;
 
 class ProcessUploadJob extends Job
 {
-    protected RawTweetsManager $rawTweetsManager;
+    protected RawTweetsService $rawTweetsManager;
 
     public function __construct(
         protected Upload $upload
     ) {
-        $this->rawTweetsManager = app(RawTweetsManager::class);
+        $this->rawTweetsManager = app(RawTweetsService::class);
     }
 
     public function handle()

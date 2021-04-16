@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils;
+namespace App\TwUtils\Services;
 
 use PhpZip\ZipFile;
 use App\Models\Task;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 
-class ExportsManager
+class ExportsService
 {
     public function createHtmlZip(Export $export): string
     {

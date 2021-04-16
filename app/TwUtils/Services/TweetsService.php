@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils;
+namespace App\TwUtils\Services;
 
 use Carbon\Carbon;
 use App\Models\Tweet;
@@ -8,14 +8,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
-class TweetsManager
+class TweetsService
 {
     public function insertOrUpdateMultipleTweets(Collection $tweets)
     {
         $tweets = $tweets->unique('id_str')->map(function ($tweet) {
             $tweet = (array) json_decode(json_encode($tweet), true);
 
-            return static::mapResponseToTweet($tweet);
+            return $this->mapResponseToTweet($tweet);
         });
 
         $foundTweets = Tweet::whereIn('id_str', $tweets->pluck('id_str'))->get();
@@ -23,11 +23,11 @@ class TweetsManager
         $notFoundTweets = $tweets->pluck('id_str')->diff($foundTweets->pluck('id_str'));
 
         $foundTweets->map(function (Tweet $tweet) use ($tweets) {
-            return static::updateTweetIfNeeded($tweet, $tweets->where('id_str', $tweet->id_str)->first());
+            return $this->updateTweetIfNeeded($tweet, $tweets->where('id_str', $tweet->id_str)->first());
         });
 
         $notFoundTweets->map(function ($tweetIdStr) use ($tweets) {
-            return static::createTweet($tweets->where('id_str', $tweetIdStr)->first());
+            return $this->createTweet($tweets->where('id_str', $tweetIdStr)->first());
         });
     }
 

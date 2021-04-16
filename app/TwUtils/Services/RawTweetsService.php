@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils;
+namespace App\TwUtils\Services;
 
 use Carbon\Carbon;
 use App\Models\User;
@@ -8,7 +8,7 @@ use App\Models\Upload;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 
-class RawTweetsManager
+class RawTweetsService
 {
     public function create(UploadedFile $uploadedFile, User $user): Upload
     {

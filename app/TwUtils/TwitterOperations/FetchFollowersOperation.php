@@ -5,9 +5,9 @@ namespace App\TwUtils\TwitterOperations;
 use App\Models\Task;
 use App\Models\Follower;
 use App\Jobs\CompleteTaskJob;
-use App\TwUtils\TweepsManager;
 use App\Jobs\CleanFollowersJob;
 use App\Jobs\FetchFollowersJob;
+use App\TwUtils\Services\TweepsService;
 
 class FetchFollowersOperation extends FetchFollowingOperation
 {
@@ -71,7 +71,7 @@ class FetchFollowersOperation extends FetchFollowingOperation
             function ($user) use (&$followers, $task) {
                 $user = (array) $user;
 
-                $tweep = app(TweepsManager::class)->createOrFindFromFollowing($user);
+                $tweep = app(TweepsService::class)->createOrFindFromFollowing($user);
 
                 array_push(
                     $followers,

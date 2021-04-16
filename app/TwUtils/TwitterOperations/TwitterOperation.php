@@ -6,8 +6,8 @@ use Exception;
 use App\Models\Task;
 use App\Models\SocialUser;
 use Illuminate\Support\Str;
-use App\TwUtils\JobsManager;
 use App\Jobs\CompleteTaskJob;
+use App\TwUtils\Services\JobsService;
 use Illuminate\Support\Facades\Cache;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 
@@ -68,7 +68,7 @@ abstract class TwitterOperation
         } catch (Exception $e) {
             try {
                 $this->headers = $twitterClient->getLastXHeaders();
-                $this->data['nextJobDelay'] = app(JobsManager::class)->getNextJobDelayFromHeaders($this->headers);
+                $this->data['nextJobDelay'] = app(JobsService::class)->getNextJobDelayFromHeaders($this->headers);
             } catch (Exception $e) {
             }
 
@@ -76,7 +76,7 @@ abstract class TwitterOperation
         }
 
         $this->headers = $twitterClient->getLastXHeaders();
-        $this->data['nextJobDelay'] = app(JobsManager::class)->getNextJobDelayFromHeaders($this->headers);
+        $this->data['nextJobDelay'] = app(JobsService::class)->getNextJobDelayFromHeaders($this->headers);
 
         $this->handleResponse();
     }
@@ -128,7 +128,7 @@ abstract class TwitterOperation
         $dispatchedJob = $this->dispatch();
 
         if ($dispatchedJob && $this->headers) {
-            $dispatchedJob->delay(app(JobsManager::class)->getNextJobDelayFromHeaders($this->headers));
+            $dispatchedJob->delay(app(JobsService::class)->getNextJobDelayFromHeaders($this->headers));
         }
     }
 

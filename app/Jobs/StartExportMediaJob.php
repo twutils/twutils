@@ -6,7 +6,7 @@ use App\Models\Media;
 use App\Models\Tweet;
 use App\Models\Export;
 use App\TwUtils\Base\Job;
-use App\TwUtils\AssetsManager;
+use App\TwUtils\Services\AssetsService;
 
 class StartExportMediaJob extends Job
 {
@@ -14,13 +14,13 @@ class StartExportMediaJob extends Job
 
     public $deleteWhenMissingModels = true;
 
-    protected AssetsManager $assetsManager;
+    protected AssetsService $assetsManager;
 
     public function __construct(Export $export)
     {
         $this->queue = 'exports';
         $this->export = $export;
-        $this->assetsManager = app(AssetsManager::class);
+        $this->assetsManager = app(AssetsService::class);
     }
 
     public function handle()

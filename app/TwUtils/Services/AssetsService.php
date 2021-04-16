@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwUtils;
+namespace App\TwUtils\Services;
 
 use App\Models\Media;
 use App\Models\Tweet;
@@ -10,7 +10,7 @@ use App\TwUtils\Tweets\Media\GifDownloader;
 use App\TwUtils\Tweets\Media\ImageDownloader;
 use App\TwUtils\Tweets\Media\VideoDownloader;
 
-class AssetsManager
+class AssetsService
 {
     public static function storeAvatar($url, $socialUserId)
     {

@@ -9,12 +9,13 @@ use Illuminate\Support\Str;
 use App\Jobs\FetchUserInfoJob;
 use Laravel\Socialite\AbstractUser;
 use Illuminate\Support\Facades\Auth;
+use App\TwUtils\Services\AssetsService;
 use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 
 class UserManager
 {
     public function __construct(
-        protected AssetsManager $assetsManager
+        protected AssetsService $assetsManager
     ) {
     }
 

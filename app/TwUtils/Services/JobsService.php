@@ -1,10 +1,10 @@
 <?php
 
-namespace App\TwUtils;
+namespace App\TwUtils\Services;
 
 use Carbon\Carbon;
 
-class JobsManager
+class JobsService
 {
     public function getNextJobDelayFromHeaders(array $headers)
     {

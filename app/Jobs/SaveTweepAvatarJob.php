@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Tweep;
 use App\TwUtils\Base\Job;
-use App\TwUtils\AssetsManager;
+use App\TwUtils\Services\AssetsService;
 use GuzzleHttp\Exception\ClientException;
 
 class SaveTweepAvatarJob extends Job
@@ -13,7 +13,7 @@ class SaveTweepAvatarJob extends Job
 
     protected $task;
 
-    protected AssetsManager $assetsManager;
+    protected AssetsService $assetsManager;
 
     /**
      * Create a new job instance.
@@ -25,7 +25,7 @@ class SaveTweepAvatarJob extends Job
         $this->queue = 'avatars';
         $this->tweepIdStr = $tweepIdStr;
 
-        $this->assetsManager = app(AssetsManager::class);
+        $this->assetsManager = app(AssetsService::class);
     }
 
     /**

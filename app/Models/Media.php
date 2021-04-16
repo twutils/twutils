@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Jobs\ProcessMediaJob;
-use App\TwUtils\AssetsManager;
+use App\TwUtils\Services\AssetsService;
 use Illuminate\Database\Eloquent\Model;
 
 class Media extends Model
@@ -76,7 +76,7 @@ class Media extends Model
     {
         $counter = 1;
 
-        collect(app(AssetsManager::class)->getMediaDownloaders($this))
+        collect(app(AssetsService::class)->getMediaDownloaders($this))
         ->map(function ($downloader) use (&$counter) {
             // TODO: Optimize loading "this->tweet"
             MediaFile::create(['downloader' => $downloader, 'media_id' => $this->id, 'name' => $this->tweet->id_str]);

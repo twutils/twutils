@@ -1,13 +1,13 @@
 <?php
 
-namespace App\TwUtils;
+namespace App\TwUtils\Services;
 
 use Carbon\Carbon;
 use App\Models\Tweep;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
-class TweepsManager
+class TweepsService
 {
     public function insertOrUpdateMultipleTweeps(Collection $tweeps)
     {

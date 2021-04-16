@@ -6,10 +6,10 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
-use App\TwUtils\RawTweetsManager;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
 use Illuminate\Database\Eloquent\Builder;
+use App\TwUtils\Services\RawTweetsService;
 use App\TwUtils\Tasks\Factory as TaskFactory;
 use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
@@ -20,7 +20,7 @@ use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 class TasksController extends Controller
 {
     public function __construct(
-        protected RawTweetsManager $rawTweetsManager
+        protected RawTweetsService $rawTweetsManager
     ) {
         $this->middleware('auth');
     }

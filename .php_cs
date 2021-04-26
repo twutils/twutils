@@ -37,7 +37,6 @@ return (new MattAllan\LaravelCodeStyle\Config())
         ],
         'cast_spaces' => ['space' => 'single'],
         'no_whitespace_in_blank_line' => true,	
-        'array_indentation' => true,
         'binary_operator_spaces' => ['align_double_arrow' => true],
         'no_trailing_comma_in_singleline_array' => true,
         'no_whitespace_before_comma_in_array' => true,

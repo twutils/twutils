@@ -70,7 +70,7 @@ class Handler extends ExceptionHandler
         $response = parent::render($request, $exception);
 
         if (
-            config('app.debug', false) &&
+            app()->runningUnitTests() &&
             $response->getStatusCode() >= Response::HTTP_INTERNAL_SERVER_ERROR
         ) {
             dd($exception);

@@ -102,7 +102,14 @@ class UserManager
 
     public function updateProfile(SocialUser $socialUser)
     {
-        dispatch(new FetchUserInfoJob($socialUser));
+        if (
+            ! app()->runningUnitTests() &&
+            $socialUser->newlyCreated()
+        ) {
+            return FetchUserInfoJob::dispatchSync($socialUser);
+        }
+
+        FetchUserInfoJob::dispatch($socialUser);
     }
 
     public function revokeAccessToken(SocialUser $socialUser)

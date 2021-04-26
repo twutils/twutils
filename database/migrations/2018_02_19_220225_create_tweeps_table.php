@@ -24,10 +24,10 @@ class CreateTweepsTable extends Migration
 
             $table->string('screen_name', 15);
             $table->string('name', 255);
-            $table->string('avatar', 50);
+            $table->string('avatar', 255);
 
             $table->string('background_color', 6)->nullable();
-            $table->string('background_image', 50)->nullable();
+            $table->string('background_image', 255)->nullable();
             $table->string('location', 255)->nullable();
             $table->string('description', 255)->nullable();
             $table->string('url', 255)->nullable();

@@ -21,3 +21,4 @@ public/*
 !public/robots.txt
 !public/.htaccess
 specs/testData.json
+/_ide_helper*.php

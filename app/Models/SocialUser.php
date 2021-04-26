@@ -66,4 +66,9 @@ class SocialUser extends Model
     {
         return $this->hasMany(Task::class, 'socialuser_id', 'id');
     }
+
+    public function newlyCreated() : bool
+    {
+        return $this->created_at->eq($this->updated_at);
+    }
 }

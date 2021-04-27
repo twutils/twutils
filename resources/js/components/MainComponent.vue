@@ -44,7 +44,7 @@ export default {
     EventBus.listen(`on-transition`, () => {
       this.transitionName = `flip`
     })
-    if (! [null, ''].includes(window.TwUtils.returnUrl)) {
+    if (![null, ``,].includes(window.TwUtils.returnUrl)) {
       this.$router.push({ path: window.TwUtils.returnUrl, })
     }
   },

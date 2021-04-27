@@ -21,7 +21,7 @@ const apiToken = document.head.querySelector(`meta[name="api-token"]`)
 
 window.axios.defaults.headers.common[`X-CSRF-TOKEN`] = token && token.content
 
-window.axios.defaults.headers.common[`Authorization`] = `Bearer ` + (apiToken && apiToken.content)
+window.axios.defaults.headers.common.Authorization = `Bearer ` + (apiToken && apiToken.content)
 
 if (window.TwUtils && window.TwUtils.locale != `en`) {
   window.moment.locale(window.TwUtils.locale)

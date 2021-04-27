@@ -387,18 +387,17 @@ export default {
     }
   },
   computed: {
-    perPageInt() {
+    perPageInt () {
       return parseInt(this.perPage)
     },
-    tweetsList() {
-      if (this.taskView)
-      {
-        return (Array((this.taskView.from || 1)-1)).concat(this.taskView.data).concat((Array(this.taskView.total - (this.taskView.to || 0))))
+    tweetsList () {
+      if (this.taskView) {
+        return (Array((this.taskView.from || 1) - 1)).concat(this.taskView.data).concat((Array(this.taskView.total - (this.taskView.to || 0))))
       }
 
       return this.filteredTweets
     },
-    totalTweets() {
+    totalTweets () {
       return this.task.likes_count
     },
     filteredTweets () {
@@ -453,25 +452,24 @@ export default {
 
       return tweets
     },
-    resultsCount() {
-      if ( this.taskView )
-      {
+    resultsCount () {
+      if (this.taskView) {
         return this.taskView.total
       }
 
       return this.filteredTweets.length
     },
-    tweetsWithoutMedia() {
+    tweetsWithoutMedia () {
       return this.taskView ? this.taskView.tweets_text_only : this.tweets.filter(x => x.media.length === 0).length
     },
-    tweetsWithPhotos() {
-      return this.taskView ? this.taskView.tweets_with_photos : this.tweets.filter(x => x.media[0] && x.media[0].type === 'photo').length
+    tweetsWithPhotos () {
+      return this.taskView ? this.taskView.tweets_with_photos : this.tweets.filter(x => x.media[0] && x.media[0].type === `photo`).length
     },
-    tweetsWithGif() {
-      return this.taskView ? this.taskView.tweets_with_gifs : this.tweets.filter(x => x.media[0] && x.media[0].type === 'animated_gif').length
+    tweetsWithGif () {
+      return this.taskView ? this.taskView.tweets_with_gifs : this.tweets.filter(x => x.media[0] && x.media[0].type === `animated_gif`).length
     },
-    tweetsWithVideos() {
-      return this.taskView ? this.taskView.tweets_with_videos : this.tweets.filter(x => x.media[0] && x.media[0].type === 'video').length
+    tweetsWithVideos () {
+      return this.taskView ? this.taskView.tweets_with_videos : this.tweets.filter(x => x.media[0] && x.media[0].type === `video`).length
     },
   },
   mounted () {
@@ -484,7 +482,7 @@ export default {
       this.tweets = this.task.likes
       this.autoSelectLatestTweet()
       this.$nextTick(x => this.loading = false)
-    } else if (this.task.status === 'completed') {
+    } else if (this.task.status === `completed`) {
       this.fetchTweetsFromView()
     } else {
       this.fetchTweetsList()
@@ -498,8 +496,7 @@ export default {
     searchOptions: {
       deep: true,
       handler (newValue) {
-        if (this.taskView)
-        {
+        if (this.taskView) {
           return this.$nextTick(this.debouncedSearch)
         }
 
@@ -510,20 +507,18 @@ export default {
       this.$nextTick(this.debouncedSearch)
     },
     perPage (...args) {
-        if (this.taskView)
-        {
-          return this.$nextTick(this.debouncedSearch)
-        }
+      if (this.taskView) {
+        return this.$nextTick(this.debouncedSearch)
+      }
 
-        this.debouncedAfterFiltering()
+      this.debouncedAfterFiltering()
     },
-    page(...args) {
+    page (...args) {
       this.loading = true
       this.search()
     },
     searchOnlyInMonth (newValue) {
-      if (! newValue)
-      {
+      if (!newValue) {
         this.selected = {
           year: null,
           month: null,
@@ -544,7 +539,7 @@ export default {
         this.filterTweetsByTweet(latestTweet)
       })
     },
-    fetchTweetsFromView(callback = null) {
+    fetchTweetsFromView (callback = null) {
       this.loading = true
 
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
@@ -556,43 +551,42 @@ export default {
           searchOptions: Object.keys(this.searchOptions).filter(x => this.searchOptions[x]),
           searchKeywords: this.searchKeywords,
           searchOnlyInMonth: this.searchOnlyInMonth ? 1 : 0,
-        }
+        },
       })
-      .then(resp => {
-        this.$nextTick(x => this.loading = false)
+        .then(resp => {
+          this.$nextTick(x => this.loading = false)
 
-        let months = {}
+          const months = {}
 
-        Object.keys(resp.data.months).map(year => {
-          months[year] = {}
+          Object.keys(resp.data.months).map(year => {
+            months[year] = {}
 
-          Object.keys(resp.data.months[year]).map(month => {
-            months[year][parseInt(month)-1] = resp.data.months[year][month]
+            Object.keys(resp.data.months[year]).map(month => {
+              months[year][parseInt(month) - 1] = resp.data.months[year][month]
+            })
           })
-        })
 
-        this.taskView = {
-          ...resp.data,
-          months,
-        }
-
-        this.tweets = resp.data.data
-        this.tweetsCopy = this.tweets.map(tweet => {
-          return {
-            ...tweet,
-            tweet_created_at: new Date(tweet.tweet_created_at),
+          this.taskView = {
+            ...resp.data,
+            months,
           }
+
+          this.tweets = resp.data.data
+          this.tweetsCopy = this.tweets.map(tweet => {
+            return {
+              ...tweet,
+              tweet_created_at: new Date(tweet.tweet_created_at),
+            }
+          })
+
+          this.buildHistory()
+
+          if (callback) {
+            return callback()
+          }
+
+          this.$nextTick(this.afterFiltering)
         })
-
-        this.buildHistory()
-
-        if (callback)
-        {
-          return callback()
-        }
-
-        this.$nextTick(this.afterFiltering)
-      })
     },
     fetchTweetsList (page = 1) {
       this.loading = true
@@ -620,14 +614,12 @@ export default {
           if (currentPage !== lastPage) {
             this.fetchTweetsList(currentPage + 1)
           }
-
         })
     },
     buildHistory () {
       this.historyYears = []
 
-      if (this.taskView)
-      {
+      if (this.taskView) {
         this.buildHistoryFromTaskView()
       } else {
         this.buildHistoryFromTweets()
@@ -640,30 +632,30 @@ export default {
 
         this.tooltip()
 
-        $(this.$el).find('[name=searchOnlyInMonth]').change((ev) => {
-          this.searchOnlyInMonth = ev.target.value === 'true'
+        $(this.$el).find(`[name=searchOnlyInMonth]`).change((ev) => {
+          this.searchOnlyInMonth = ev.target.value === `true`
         })
       })
     },
-    buildHistoryFromTaskView() {
-        let tweetsYearsOnly = Object.keys(this.taskView.months).sort().reverse()
+    buildHistoryFromTaskView () {
+      const tweetsYearsOnly = Object.keys(this.taskView.months).sort().reverse()
 
-        for (var i = min(tweetsYearsOnly); i <= max(tweetsYearsOnly); i++) {
-          if (!this.historyYears.includes(parseInt(i))) {
-            this.historyYears.push(parseInt(i))
-          }
+      for (let i = min(tweetsYearsOnly); i <= max(tweetsYearsOnly); i++) {
+        if (!this.historyYears.includes(parseInt(i))) {
+          this.historyYears.push(parseInt(i))
         }
+      }
 
-        this.maximumMonthlyTweets = max(
-          this.historyYears.map(year => {
-            return Object.keys(this.taskView.months[year] || {})
+      this.maximumMonthlyTweets = max(
+        this.historyYears.map(year => {
+          return Object.keys(this.taskView.months[year] || {})
             .map(month => {
               return this.taskView.months[year][month]
             })
-          }).reduce((a,b) => a.concat(b), [])
-        )
+        }).reduce((a, b) => a.concat(b), [])
+      )
     },
-    buildHistoryFromTweets() {
+    buildHistoryFromTweets () {
       this.tweetsCopy = this.tweets.map(tweet => {
         return {
           ...tweet,
@@ -680,7 +672,7 @@ export default {
         this.tweetsByYearsAndMonths[year] = groupBy(tweetsByYears[year], (tweet) => tweet.tweet_created_at.getMonth())
       })
 
-      for (var i = min(tweetsYearsOnly); i <= max(tweetsYearsOnly); i++) {
+      for (let i = min(tweetsYearsOnly); i <= max(tweetsYearsOnly); i++) {
         if (!this.historyYears.includes(parseInt(i))) {
           this.historyYears.push(parseInt(i))
         }
@@ -716,13 +708,9 @@ export default {
     },
     selectYearAndMonth (year, month) {
       this.filterTweetsByYearAndMonth(year, month)
-
-
     },
     filterTweetsByYearAndMonth (year, month) {
-
-      if (this.searchOnlyInMonth)
-      {
+      if (this.searchOnlyInMonth) {
         this.$nextTick(this.debouncedSearch)
       }
 
@@ -730,9 +718,7 @@ export default {
 
       if (this.getYearAndMonthTweetsLength(year, month) === 0) { return }
 
-
-      if (! this.taskView)
-      {
+      if (!this.taskView) {
         this.searchKeywords = ``
       }
 
@@ -741,7 +727,7 @@ export default {
       monthEnd.setMonth(month + 1)
       this.yearAndMonthFilter = (tweets) => {
         return tweets.filter(tweet => {
-          return tweet[`tweet_created_at`] >= monthStart && tweet[`tweet_created_at`] <= monthEnd
+          return tweet.tweet_created_at >= monthStart && tweet.tweet_created_at <= monthEnd
         })
       }
       this.selected = { year, month, }
@@ -761,13 +747,12 @@ export default {
       })
     },
     getYearTweetsLength (year) {
-      if (this.taskView)
-      {
+      if (this.taskView) {
         return Object.keys(this.taskView.months[year] || {})
           .map(month => {
             return this.taskView.months[year][month]
           })
-          .reduce((a, b) => a + b, 0);
+          .reduce((a, b) => a + b, 0)
       }
       return this.months
         .map((month, monthIndex) => {
@@ -777,8 +762,7 @@ export default {
         .reduce((a, b) => a + b)
     },
     getYearAndMonthTweetsLength (year, month) {
-      if (this.taskView)
-      {
+      if (this.taskView) {
         return get(this.taskView, `months.${[year, month, ].join(`.`)}`, 0)
       }
 

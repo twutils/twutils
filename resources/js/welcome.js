@@ -10,7 +10,7 @@ require(`@/bootstrap`)
 Vue.use(PortalVue)
 
 $(window).scroll(() => {
-  var offset = $(window).scrollTop()
+  const offset = $(window).scrollTop()
   $(`body`).toggleClass(`offset-navbar`, offset > 50)
 })
 

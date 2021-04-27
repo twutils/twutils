@@ -380,16 +380,15 @@ export default {
     searchKeywords (...args) {
       this.$nextTick(this.debouncedSearch)
     },
-    page() {
+    page () {
       this.search()
     },
-    perPage() {
+    perPage () {
       this.loading = true
       this.$nextTick(this.debouncedSearch)
     },
-    selectedSorts() {
-      if (this.taskView)
-      {
+    selectedSorts () {
+      if (this.taskView) {
         this.debouncedSearch()
       }
     },
@@ -401,7 +400,6 @@ export default {
     this.debouncedAfterFiltering = debounce(t => {
       return this.afterFiltering()
     }, 300)
-
 
     if (this.task.baseName === `fetchfollowers`) {
       this.initFollowers()
@@ -425,7 +423,7 @@ export default {
         return
       }
 
-      if (this.task.status === 'completed') {
+      if (this.task.status === `completed`) {
         return this.fetchUsersFromView()
       }
       this.fetchUsers(1)
@@ -437,12 +435,12 @@ export default {
         return
       }
 
-      if (this.task.status === 'completed') {
+      if (this.task.status === `completed`) {
         return this.fetchUsersFromView()
       }
       this.fetchUsers(1)
     },
-    fetchUsersFromView() {
+    fetchUsersFromView () {
       this.loading = true
 
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/${this.task.id}/view`, {
@@ -452,8 +450,8 @@ export default {
           search: this.searchKeywords,
           orderFields: this.orderFields,
           orderDirections: this.orderDirections,
-        }
-        })
+        },
+      })
         .then(resp => {
           const currentPage = resp.data.current_page
           const lastPage = resp.data.last_page
@@ -525,11 +523,10 @@ export default {
         })
     },
     sort (el, event) {
-      if (el.sortState === 1)
-      {
+      if (el.sortState === 1) {
         el.sortState = -1
       } else {
-        el.sortState += 1;
+        el.sortState += 1
       }
 
       this.$delete(this.selectedSorts, el.sortField)
@@ -554,18 +551,17 @@ export default {
       this.$nextTick(this.debouncedAfterFiltering)
     },
     search () {
-      if (this.taskView)
-      {
+      if (this.taskView) {
         this.fetchUsersFromView()
 
-        return ;
+        return
       }
       const searchFields = [`screen_name`, `name`, `description`,]
       this.searchFilter = users => searchArrayByFields(users, this.searchKeywords, searchFields)
 
       this.$nextTick(this.debouncedAfterFiltering)
     },
-    afterFiltering() {
+    afterFiltering () {
       this.loading = false
       this.$refs[`users-list-datatable`].$el.querySelectorAll(`.user__avatar`).forEach(x => x.isRemote = false)
       $(this.$refs[`users-list-datatable`]).find(`.user__avatar`).attr(`src`, this.userPlaceholder)
@@ -590,9 +586,8 @@ export default {
     },
   },
   computed: {
-    totalUsers() {
-      if (this.taskView)
-      {
+    totalUsers () {
+      if (this.taskView) {
         return this.taskView.totalCount
       }
       return this.users.length
@@ -604,9 +599,8 @@ export default {
       return Object.values(this.selectedSorts)
     },
     filteredUsers () {
-      if (this.taskView)
-      {
-        return (Array((this.taskView.from || 1)-1)).concat(this.users).concat((Array(this.taskView.total - (this.taskView.to || 0))))
+      if (this.taskView) {
+        return (Array((this.taskView.from || 1) - 1)).concat(this.users).concat((Array(this.taskView.total - (this.taskView.to || 0))))
       }
 
       let users = this.users

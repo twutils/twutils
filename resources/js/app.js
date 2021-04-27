@@ -21,13 +21,6 @@ window.__ = require(`@/langManager`).default
 window.Humanize = require(`humanize-plus`)
 window.Vue.mixin(require(`@/mixin`).default)
 
-require(`imports-loader?define=>false!datatables.net`)(window, window.$)
-require(`imports-loader?define=>false!datatables.net-bs4`)(window, window.$)
-require(`imports-loader?define=>false!datatables.net-select`)(window, window.$)
-require(`imports-loader?define=>false!datatables.net-select-bs4`)(window, window.$)
-require(`imports-loader?define=>false!datatables.net-responsive`)(window, window.$)
-require(`imports-loader?define=>false!datatables.net-responsive-bs4`)(window, window.$)
-
 if (window.TwUtils && window.TwUtils.locale != `en`) {
   window.$.extend(window.$.fn.dataTable.defaults, {
     language: require(`@/dataTables.arabic.lang.json`),

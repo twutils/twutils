@@ -15,13 +15,13 @@ function escapeURL (text) {
 }
 
 function unescapeHtml (text) {
-  var div = document.createElement(`div`)
+  const div = document.createElement(`div`)
   div.innerHTML = text
   return div.firstChild.nodeValue
 }
 
 const searchFunc = function (tweet, searchRegex) {
-  var searchMatch = false
+  let searchMatch = false
   if (unescapeHtml(tweet.text).match(searchRegex)) {
     searchMatch = true
   } else if (tweet.tweep.name && (tweet.tweep.screen_name.match(searchRegex) || (`@` + tweet.tweep.screen_name).match(searchRegex) || tweet.tweep.name.match(searchRegex))) {
@@ -42,7 +42,7 @@ const searchFunc = function (tweet, searchRegex) {
 
 const searchFields = function (obj, search, fields) {
   const searchRegex = new RegExp(escapeRegexCharacters(search), `im`)
-  var searchMatch = false
+  let searchMatch = false
 
   fields.map(field => {
     if (searchMatch) { return }
@@ -61,7 +61,7 @@ const searchArrayByFields = function (array, search, fields) {
 
 const searchTweets = (tweets, search) => {
   const searchRegex = new RegExp(escapeRegexCharacters(search), `im`)
-  var filteredResults = tweets.filter(tweet => searchFunc(tweet, searchRegex))
+  const filteredResults = tweets.filter(tweet => searchFunc(tweet, searchRegex))
 
   return filteredResults
 }

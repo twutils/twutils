@@ -94,36 +94,35 @@ export default {
     buildTweet (tweet) {
       return {
         ...tweet,
-        tweep: tweet.user ? {
-          avatar: tweet.user.profile_image_url_https,
-          screen_name: tweet.user.screen_name,
-          name: tweet.user.name,
-          id_str: tweet.user.id_str,
-        } : {},
+        tweep: tweet.user
+          ? {
+              avatar: tweet.user.profile_image_url_https,
+              screen_name: tweet.user.screen_name,
+              name: tweet.user.name,
+              id_str: tweet.user.id_str,
+            }
+          : {},
         tweet_created_at: tweet.created_at,
         text: tweet.full_text,
         pivot: this.tweet.pivot,
-        media: get(tweet, 'extended_entities.media'),
+        media: get(tweet, `extended_entities.media`),
       }
     },
-    sanitizeTweet(tweet) {
+    sanitizeTweet (tweet) {
       let tweetText = tweet.text || tweet.full_text
 
-      if (tweet.quoted_status_permalink)
-      {
+      if (tweet.quoted_status_permalink) {
         tweetText = tweetText.replaceAll(tweet.quoted_status_permalink.url, tweet.quoted_status_permalink.expanded)
       }
 
-      if (get(tweet, 'extended_entities.media'))
-      {
-        get(tweet, 'extended_entities.media').map(media => {
+      if (get(tweet, `extended_entities.media`)) {
+        get(tweet, `extended_entities.media`).map(media => {
           tweetText = tweetText.replaceAll(media.url, media.media_url_https)
         })
       }
 
-      if (get(tweet, 'entities.urls'))
-      {
-        get(tweet, 'entities.urls').map(url => {
+      if (get(tweet, `entities.urls`)) {
+        get(tweet, `entities.urls`).map(url => {
           tweetText = tweetText.replaceAll(url.url, url.expanded_url)
         })
       }
@@ -155,7 +154,7 @@ export default {
         pivot: {
           favorited: this.refinedTweet.quoted_status.favorited,
           retweeted: this.refinedTweet.quoted_status.retweeted,
-        }
+        },
       }
     },
   },

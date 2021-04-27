@@ -33,7 +33,7 @@ export default {
       $(this.$el).tooltip({ animation: true, })
     },
     updateFromNow () {
-      var newFromNow = window.moment(this.value).fromNow(this.dropFixes)
+      const newFromNow = window.moment(this.value).fromNow(this.dropFixes)
       if (newFromNow !== this.fromNow) {
         this.fromNow = newFromNow
       }
@@ -45,7 +45,7 @@ export default {
     if (this.hasPopover || this.hasTooltip) {
       attrs[`data-placement`] = `bottom`
       attrs[`data-container`] = `body`
-      attrs[`title`] = this.title
+      attrs.title = this.title
       attrs[`data-trigger`] = `hover`
     }
 

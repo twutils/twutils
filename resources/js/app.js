@@ -21,12 +21,6 @@ window.__ = require(`@/langManager`).default
 window.Humanize = require(`humanize-plus`)
 window.Vue.mixin(require(`@/mixin`).default)
 
-if (window.TwUtils && window.TwUtils.locale != `en`) {
-  window.$.extend(window.$.fn.dataTable.defaults, {
-    language: require(`@/dataTables.arabic.lang.json`),
-  })
-}
-
 Vue.component(`main-component`, require(`@/components/MainComponent.vue`).default)
 Vue.component(`task`, require(`@/components/Task.vue`).default)
 Vue.component(`account-removal`, require(`@/components/AccountRemoval.vue`).default)

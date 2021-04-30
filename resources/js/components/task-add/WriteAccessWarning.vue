@@ -7,13 +7,20 @@
   left: 0;
   right: 0;
   padding: 80px;
+  font-size: 1.3rem;
+
+  .exploringMode__link {
+    font-size: 1rem;
+    border-bottom: 1px solid black;
+    padding: 0.5rem;
+  }
 }
 </style>
 <template>
 <div class="writeAccessWarning">
-  <div v-if="locale==='en'" class="alert-warning alert">
+  <div v-if="locale==='en'" class="alert-warning alert text-dark">
     <p>
-      In order to remove your tweets, we need to have what Twitter calls "Write Access" to your account.
+      Before you get to the delete options page, In order to remove your tweets, we need to have what Twitter calls "Write Access" to your account.
     </p>
     <p>
       <a :href="routes['twitter.rw.login']" class="btn btn-secondary">Click here</a> to give us this access.
@@ -32,6 +39,11 @@
       <a href="https://twitter.com/settings/applications" target="_blank" rel="noopener">صفحة الإعدادات الخاصة بك على تويتر</a>.
     </small>
   </div>
+  <div :class="`text-${isRtl?'left':'right'}`">
+    <a class="exploringMode__link" href="javascript:void(0);" @click="$emit('activateExploringMode')">
+      {{__('exploringـmode')}}
+    </a>
+  </div>
 </div>
 </template>
 
@@ -49,7 +61,6 @@ export default {
   mounted () {
   },
   methods: {
-
   },
 }
 </script>

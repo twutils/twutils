@@ -15,9 +15,9 @@
     </div>
   </div>
   <div :class="`row`" style="position: relative;">
-    <write-access-warning v-if="!userHavePrivilige(taskDefinition.scope)" class=""></write-access-warning>
-    <add-destroy-tweets-list-options :class="`${!userHavePrivilige(taskDefinition.scope) ? 'taskAdd__disabled':''}`" v-if="!isLoading" v-model.sync="options"></add-destroy-tweets-list-options>
-    <div v-if="!isLoading" :class="`container ${!userHavePrivilige(taskDefinition.scope) ? 'taskAdd__disabled':''}`">
+    <write-access-warning v-if="showWriteAccessWarning && ! exploringMode" @activateExploringMode="exploringMode = true"></write-access-warning>
+    <add-destroy-tweets-list-options :class="`${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`" v-if="!isLoading" v-model.sync="options"></add-destroy-tweets-list-options>
+    <div v-if="!isLoading" :class="`container ${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`">
       <div class="row">
         <div class="col-12 text-center">
           <button @click="confirm" class="m-auto btn-soft-red btn">
@@ -70,6 +70,8 @@ import writeAccessWarning from './WriteAccessWarning'
 
 const data = {
   isLoading: false,
+  showWriteAccessWarning: false,
+  exploringMode: false,
   options: {
     retweets: false,
     tweets: false,
@@ -102,12 +104,18 @@ export default {
     return { ...clonedData, }
   },
   mounted () {
+    this.showWriteAccessWarning = ! this.userHavePrivilige(this.taskDefinition.scope)
   },
   methods: {
     confirm () {
       $(`#confirmDestroy`).modal(`show`)
     },
     confirmed () {
+      if ( this.exploringMode )
+      {
+        return alert('Action prevented.. You said you are just exploring :D')
+      }
+
       this.isLoading = true
       this.showLoading()
       this.closeConfirm()

@@ -8,7 +8,7 @@
   :loadingDestroyTweetsLang="__('loading_destroy_likes')"
   >
     <template slot="header">
-        <strong>{{__('destroy_likes')}}</strong> {{__('destroy_likes_desc')}}
+        <h2>{{__('destroy_likes')}}</h2>
     </template>
     <template slot="confirmBody">
       <p v-if="locale === 'en'">

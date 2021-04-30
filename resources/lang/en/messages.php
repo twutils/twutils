@@ -79,9 +79,9 @@ return [
     'user_tweets'                => 'Backup My Tweets',
     'user_tweets_desc'           => 'Fetch a copy of your current tweets.',
     'destroy_likes'              => 'Remove My Likes',
-    'destroy_likes_desc'         => 'Remove your twitter likes.',
+    'destroy_likes_desc'         => '',
     'destroy_tweets'             => 'Remove My Tweets',
-    'destroy_tweets_desc'        => 'Remove your Tweets.',
+    'destroy_tweets_desc'        => '',
 
     'removedLikes'  => 'Removed Likes',
     'removedTweets' => 'Removed Tweets',
@@ -179,6 +179,9 @@ return [
     'search_in_users_list'  => 'Search in Handler + Name + Bio',
 
     'filter_by_media' => 'Filter by Media Type',
+
+    'destroy_tweets_options'     => 'Removing Options',
+    'exploringـmode'             => 'I\'m only exploring and I will not really use it',
 
     'selected_tweets_source'      => 'Selected Tweets Source',
     'selected_tweets_source_desc' => 'In order to delete the tweets, we need to copy it\'s current state from your account before. To do so, the system created a new copying/backup task, so it can be used later as the source of deletion.',

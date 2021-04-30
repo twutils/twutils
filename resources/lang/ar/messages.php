@@ -79,9 +79,9 @@ return [
     'user_tweets'                => 'نسخ التغريدات',
     'user_tweets_desc'           => 'اجلُب نسخة من تغريداتك الحالية.',
     'destroy_likes'              => 'حذف المفضلة',
-    'destroy_likes_desc'         => 'قُم بحذف قائمة المفضلة بالكامل',
+    'destroy_likes_desc'         => '',
     'destroy_tweets'             => 'حذف التغريدات',
-    'destroy_tweets_desc'        => 'قم بحذف تغريداتك.',
+    'destroy_tweets_desc'        => '',
 
     'removedLikes'  => 'التغريدات المفضّلة المحذوفة',
     'removedTweets' => 'التغريدات المحذوفة',
@@ -179,6 +179,9 @@ return [
     'search_in_users_list'  => 'البحث في اسم المستخدم + الاسم + التعريف',
 
     'filter_by_media' => 'تصفية عبر نوع الوسائط',
+
+    'destroy_tweets_options'     => 'خيارات الحذف',
+    'exploringـmode'             => 'أنا أتصفّح فقط وأريد الاطلاع على الخيارات',
 
     'selected_tweets_source'      => 'مصدر التغريدات المُختار',
     'selected_tweets_source_desc' => 'لحذف التغريدات نحتاج نسخ حالتها الحالية من حسابك أولاً. للقيام بذلك، قام النظام بإنشاء مهمة نسخ لها. ليقوم بعد ذلك باستخدام هذه المهمة كمصدر للحذف.',

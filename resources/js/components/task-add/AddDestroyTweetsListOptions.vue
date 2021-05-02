@@ -2,14 +2,20 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <h5>
-        <span>{{__('destroy_tweets_options')}}:</span>
-      </h5>
-      <ul class="list-group destroyTweets__optionsList" style="width: 600px;">
-        <li class="list-group-item destroyTweets__optionsListItem">
-          <div class="destroyTweets__optionsListItem--bullet">•</div>
-          <h4>Dates Range</h4>
-          <ul class="list-group destroyTweets__optionsList" style="width: 400px;">
+      <ul class="list-group destroyTweets__optionsList">
+        <li class="list-group-item destroyTweets__optionsListItem d-flex justify-content-between align-items-center">
+          <div class="w-100">
+            <h4 class="border-bottom border-dark d-inline-block mb-5">{{__('destroy_tweets_options.dates_range')}}</h4>
+            <p>
+              {{__('destroy_tweets_options.dates_range_desc')}}
+            </p>
+            <p>
+              <b>
+                {{__('destroy_tweets_options.dates_range_note')}}
+              </b>
+            </p>
+          </div>
+          <ul class="list-group destroyTweets__optionsList" style="min-width: 320px;">
             <li class="list-group-item destroyTweets__optionsListItem">
               <h6 class="mb-4 destroyTweets__optionsListItem--header">
                 <span v-if="locale==='en'">

@@ -323,7 +323,7 @@ export default {
       users: [],
 
       page: 1,
-      perPage: `100`,
+      perPage: `50`,
       columns: [
         {
           label: (isRtl ? `الصورة الرمزية` : `Avatar`),

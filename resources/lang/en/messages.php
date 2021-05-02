@@ -180,8 +180,13 @@ return [
 
     'filter_by_media' => 'Filter by Media Type',
 
-    'destroy_tweets_options'     => 'Removing Options',
     'exploringـmode'             => 'I\'m only exploring and I will not really use it',
+
+    'destroy_tweets_options' => [
+        'dates_range'       => 'Dates Range',
+        'dates_range_desc'  => 'Using this option you can specify the dates range for the tweets to be deleted.',
+        'dates_range_note'  => 'Leaving this empty will remove everything from the beginning until the end.',
+    ],
 
     'selected_tweets_source'      => 'Selected Tweets Source',
     'selected_tweets_source_desc' => 'In order to delete the tweets, we need to copy it\'s current state from your account before. To do so, the system created a new copying/backup task, so it can be used later as the source of deletion.',

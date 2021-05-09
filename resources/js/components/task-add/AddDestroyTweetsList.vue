@@ -17,7 +17,7 @@
   <div :class="`row`" style="position: relative;">
     <write-access-warning v-if="showWriteAccessWarning && ! exploringMode" @activateExploringMode="exploringMode = true"></write-access-warning>
     <add-destroy-tweets-list-options :class="`${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`" v-if="!isLoading" v-model.sync="options"></add-destroy-tweets-list-options>
-    <div v-if="!isLoading" :class="`container mb-b ${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`">
+    <div v-if="!isLoading" :class="`container mb-5 ${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`">
       <div class="row">
         <div :class="`col-12 text-${isRtl ? 'left':'right'}`">
           <button @click="confirm" class="m-auto btn-soft-red btn shadow">

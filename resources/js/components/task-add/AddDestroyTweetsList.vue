@@ -113,16 +113,15 @@ export default {
     return { ...clonedData, }
   },
   mounted () {
-    this.showWriteAccessWarning = ! this.userHavePrivilige(this.taskDefinition.scope)
+    this.showWriteAccessWarning = !this.userHavePrivilige(this.taskDefinition.scope)
   },
   methods: {
     confirm () {
       $(`#confirmDestroy`).modal(`show`)
     },
     confirmed () {
-      if ( this.exploringMode )
-      {
-        return alert('Action prevented.. You said you are just exploring :D')
+      if (this.exploringMode) {
+        return alert(`Action prevented.. You said you are just exploring :D`)
       }
 
       this.isLoading = true

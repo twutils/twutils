@@ -212,7 +212,7 @@ export default {
       end_date: { ...dateOptions, },
       uploads: [],
       loading: false,
-      tweetsSource: 'twitter', // 'twitter', 'file'
+      tweetsSource: `twitter`, // 'twitter', 'file'
     }
   },
   watch: {
@@ -239,23 +239,21 @@ export default {
     this.fetchUploads()
   },
   methods: {
-    choseSource(source) {
-      if (source === this.constants.file)
-      {
-        
-        return ;
+    choseSource (source) {
+      if (source === this.constants.file) {
+        return
       }
 
       this.tweetsSource = source
     },
-    fetchUploads() {
+    fetchUploads () {
       this.loading = true
 
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/uploads`)
-      .then(({data}) => {
-        this.loading = false
-        this.uploads = data
-      })
+        .then(({ data, }) => {
+          this.loading = false
+          this.uploads = data
+        })
     },
     dateOptionsToString (dateOptions, propName = `startDate`) {
       const defaultMonth = `01` // propName === 'startDate' ? '01' : '12'

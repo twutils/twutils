@@ -16,13 +16,13 @@ class ZipEntitiesJob extends Job
 
     public $deleteWhenMissingModels = true;
 
-    protected ExportsService $exportsManager;
+    protected ExportsService $exportsService;
 
     public function __construct(Export $export)
     {
         $this->queue = 'exports';
         $this->export = $export;
-        $this->exportsManager = app(ExportsService::class);
+        $this->exportsService = app(ExportsService::class);
     }
 
     public function handle()
@@ -77,7 +77,7 @@ class ZipEntitiesJob extends Job
 
         $fileAbsolutePath = Storage::disk('local')->path($this->export->id).'/'.$fileName;
 
-        $zipFile = $this->exportsManager->makeTaskZipObject($this->export);
+        $zipFile = $this->exportsService->makeTaskZipObject($this->export);
 
         // Include media in the zip file, and save it
         foreach (collect(Storage::disk('local')->allFiles($this->export->id))

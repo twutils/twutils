@@ -6,27 +6,10 @@
   :taskDefinition="taskDefinition"
   :taskEndpoint="`ManagedDestroyTweets`"
   :loadingDestroyTweetsLang="__('loading_destroy_tweets')"
-  >
-    <template slot="header">
-        <h2>{{__('destroy_tweets')}}</h2>
-    </template>
-    <template slot="confirmBody">
-      <p v-if="locale === 'en'">
-        By Confirming, you will remove the tweets from your twitter account. This action can't be undone.
-      </p>
-      <p v-if="locale === 'ar'">
-        بالموافقة، سوف تقوم بحذف التغريدات من حسابك في تويتر. هذا الإجراء غير قابل للتراجع.
-      </p>
-    </template>
-    <template slot="confirmButton">
-      <span v-if="locale === 'en'">
-        Remove My Tweets
-      </span>
-      <span v-if="locale === 'ar'">
-        حذف تغريداتي
-      </span>
-    </template>
-  </add-destroy-tweets-list>
+  :header="__('destroy_tweets')"
+  :confirmationText="__('destroy_tweets_confirmation')"
+  :confirmationButton="__('destroy_likes_confirmation_button')"
+  />
 </template>
 
 <script>

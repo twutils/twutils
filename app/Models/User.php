@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(SocialUser::class)->orderBy('updated_at', 'desc');
     }
 
+    public function uploads()
+    {
+        return $this->hasMany(Upload::class)->orderBy('created_at', 'desc');
+    }
+
     public function tasks()
     {
         return $this->hasManyThrough(Task::class, SocialUser::class, 'id', 'socialuser_id', 'id', 'id');

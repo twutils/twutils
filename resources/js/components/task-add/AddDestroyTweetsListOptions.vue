@@ -106,6 +106,44 @@
             </li>
           </ul>
         </li>
+        <li class="list-group-item destroyTweets__optionsListItem d-flex justify-content-between align-items-center">
+          <div class="w-100">
+            <h4 class="border-bottom border-dark d-inline-block mb-5">{{__('destroy_tweets_options.tweets_source')}}</h4>
+            <div class="d-flex justify-content-around">
+              <div
+                @click="choseSource(constants.twitter)"
+                :class="`tweetsSourceOption ${tweetsSource === constants.twitter ? 'active':''}`"
+              >
+                <h5>My Account</h5>
+                <p>
+                  Using this option, TwUtils will read your tweets from Twitter
+                  API, but it will be limited to the last ~3200 tweet.
+                </p>
+                <div class="alert alert-warning">
+                  Looks like you have
+                  ({{user.social_user.statuses_count}})
+                  tweet,
+                  Using this option will limit the tweets to the last ~3200.
+                </div>
+              </div>
+              <div
+                @click="choseSource(constants.file)"
+                :class="`tweetsSourceOption ${tweetsSource === constants.file ? 'active':''}`"
+              >
+                <h5>Archive File</h5>
+                <div>
+                  <p>
+                    More accurate removal. Upload an archive file.
+                  </p>
+                  <img v-if="loading" :src="loadingGifSrc" class="m-auto loadingGif" width="20px" height="20px">
+                  <span v-if="uploads.length > 0">
+                    {{uploads[0]}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
         <li class="d-none list-group-item destroyTweets__optionsListItem">
           <h6 class="mb-4 destroyTweets__optionsListItem--header">
             <div class="destroyTweets__optionsListItem--bullet">•</div>
@@ -163,12 +201,18 @@ export default {
     value: {
       type: Object,
     },
+    taskDefinition: {
+      type: Object,
+    },
   },
   data () {
     return {
       options: { ...options, },
       start_date: { ...dateOptions, },
       end_date: { ...dateOptions, },
+      uploads: [],
+      loading: false,
+      tweetsSource: 'twitter', // 'twitter', 'file'
     }
   },
   watch: {
@@ -192,8 +236,27 @@ export default {
     },
   },
   mounted () {
+    this.fetchUploads()
   },
   methods: {
+    choseSource(source) {
+      if (source === this.constants.file)
+      {
+        
+        return ;
+      }
+
+      this.tweetsSource = source
+    },
+    fetchUploads() {
+      this.loading = true
+
+      axios.get(`${window.TwUtils.apiBaseUrl}tasks/uploads`)
+      .then(({data}) => {
+        this.loading = false
+        this.uploads = data
+      })
+    },
     dateOptionsToString (dateOptions, propName = `startDate`) {
       const defaultMonth = `01` // propName === 'startDate' ? '01' : '12'
       const defaultDay = `01` // propName === 'startDate' ? '01' : '31'

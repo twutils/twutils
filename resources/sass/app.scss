@@ -1073,3 +1073,15 @@ $twitter-limitation-info-icon-size: 20px;
     height: 30px;
   }
 }
+
+.tweetsSourceOption {
+  flex: 1;
+  padding: 1rem;
+  margin: 1rem;
+  box-shadow: 1px 1px 3px #aaa;
+  cursor: pointer;
+
+  &.active {
+    box-shadow: 0px 0px 5px #111;
+  }
+}

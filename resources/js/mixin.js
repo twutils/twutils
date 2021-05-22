@@ -23,6 +23,10 @@ export default {
       isLocal,
       loadingGifSrc: `${isLocal ? `assets/` : window.TwUtils.baseUrl}images/loading.gif`,
       grayBase64Image: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNc+B8AAkcBolySrScAAAAASUVORK5CYII=`,
+      constants: {
+        twitter: 'twitter',
+        file: 'file',
+      }
     }
   },
   methods: {

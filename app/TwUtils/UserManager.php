@@ -15,7 +15,7 @@ use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 class UserManager
 {
     public function __construct(
-        protected AssetsService $assetsManager
+        protected AssetsService $assetsService
     ) {
     }
 
@@ -219,7 +219,7 @@ class UserManager
             }
         }
 
-        $map['avatar'] = $this->assetsManager->storeAvatar($map['avatar'], $map['social_user_id']);
+        $map['avatar'] = $this->assetsService->storeAvatar($map['avatar'], $map['social_user_id']);
 
         return $map;
     }

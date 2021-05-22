@@ -4,9 +4,7 @@
 <div class="container">
   <div class="row">
     <div class="col-12 mb-3">
-      <span style="border-bottom: 1px solid #eee; padding: 0.5rem;">
-        <slot name="header" />
-      </span>
+      <h5>{{header}}</h5>
     </div>
   </div>
   <div v-if="isLoading" class="row">
@@ -16,7 +14,7 @@
   </div>
   <div :class="`row`" style="position: relative;">
     <write-access-warning v-if="showWriteAccessWarning && ! exploringMode" @activateExploringMode="exploringMode = true"></write-access-warning>
-    <add-destroy-tweets-list-options :class="`${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`" v-if="!isLoading" v-model.sync="options"></add-destroy-tweets-list-options>
+    <add-destroy-tweets-list-options :taskDefinition="taskDefinition" :class="`${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`" v-if="!isLoading" v-model.sync="options"></add-destroy-tweets-list-options>
     <div v-if="!isLoading" :class="`container mb-5 ${!userHavePrivilige(taskDefinition.scope) && ! exploringMode ? 'taskAdd__disabled':''}`">
       <div class="row">
         <div :class="`col-12 text-${isRtl ? 'left':'right'}`">
@@ -46,14 +44,16 @@
             </button>
           </div>
           <div :class="`modal-body ${isRtl ? 'rtl': 'ltr'}`">
-            <slot name="confirmBody" />
+            <p>
+              {{ confirmationText }}
+            </p>
           </div>
           <div :class="`modal-footer ${isRtl ? 'rtl': 'ltr'}`">
             <button type="button" class="btn btn-soft-gray" data-dismiss="modal">
               <span>{{__('close')}}</span>
             </button>
             <button data-action="startButton" @click="confirmed" type="button" class="btn btn-primary">
-              <slot name="confirmButton" />
+              {{ confirmationButton }}
             </button>
           </div>
         </div>
@@ -97,6 +97,15 @@ export default {
       type: Object,
     },
     taskEndpoint: {
+      type: String,
+    },
+    header: {
+      type: String,
+    },
+    confirmationText: {
+      type: String,
+    },
+    confirmationButton: {
       type: String,
     },
   },

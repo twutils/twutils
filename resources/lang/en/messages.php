@@ -186,7 +186,15 @@ return [
         'dates_range'       => 'Dates Range',
         'dates_range_desc'  => 'Using this option you can specify the dates range for the tweets to be deleted.',
         'dates_range_note'  => 'Leaving this empty will remove everything from the beginning until the end.',
+
+        'tweets_source'         => 'Tweets Source',
     ],
+
+    'destroy_tweets_confirmation'   => 'By Confirming, you will remove the tweets from your twitter account. This action can\'t be undone.',
+    'destroy_likes_confirmation'    => 'By Confirming, you will remove the likes from your twitter account (according to the range/scope defined). This action can\'t be undone.',
+
+    'destroy_tweets_confirmation_button' => 'Remove My Tweets',
+    'destroy_likes_confirmation_button'  => 'Remove My Likes',
 
     'selected_tweets_source'      => 'Selected Tweets Source',
     'selected_tweets_source_desc' => 'In order to delete the tweets, we need to copy it\'s current state from your account before. To do so, the system created a new copying/backup task, so it can be used later as the source of deletion.',

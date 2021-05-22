@@ -6,27 +6,10 @@
   :taskDefinition="taskDefinition"
   :taskEndpoint="`ManagedDestroyLikes`"
   :loadingDestroyTweetsLang="__('loading_destroy_likes')"
-  >
-    <template slot="header">
-        <h2>{{__('destroy_likes')}}</h2>
-    </template>
-    <template slot="confirmBody">
-      <p v-if="locale === 'en'">
-        By Confirming, you will remove the likes from your twitter account (according to the range/scope defined). This action can't be undone.
-      </p>
-      <p v-if="locale === 'ar'">
-        بالموافقة، سوف تقوم بحذف المفضّلة من حسابك في تويتر بحسب النطاق المحدد. هذا الإجراء غير قابل للتراجع.
-      </p>
-    </template>
-    <template slot="confirmButton">
-      <span v-if="locale === 'en'">
-        Remove My Likes
-      </span>
-      <span v-if="locale === 'ar'">
-        حذف مفضّلتي
-      </span>
-    </template>
-  </add-destroy-tweets-list>
+  :header="__('destroy_likes')"
+  :confirmationText="__('destroy_likes_confirmation')"
+  :confirmationButton="__('destroy_tweets_confirmation_button')"
+  />
 </template>
 
 <script>

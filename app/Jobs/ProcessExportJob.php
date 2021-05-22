@@ -20,13 +20,13 @@ class ProcessExportJob extends Job
 
     public $deleteWhenMissingModels = true;
 
-    protected ExportsService $exportsManager;
+    protected ExportsService $exportsService;
 
     public function __construct(Export $export)
     {
         $this->queue = 'exports';
         $this->export = $export;
-        $this->exportsManager = app(ExportsService::class);
+        $this->exportsService = app(ExportsService::class);
     }
 
     public function handle()
@@ -82,7 +82,7 @@ class ProcessExportJob extends Job
 
     protected function createHtmlExport()
     {
-        $this->exportsManager->createHtmlZip($this->export);
+        $this->exportsService->createHtmlZip($this->export);
 
         $this->success();
     }

@@ -96,11 +96,11 @@ export default {
         ...tweet,
         tweep: tweet.user
           ? {
-              avatar: tweet.user.profile_image_url_https,
-              screen_name: tweet.user.screen_name,
-              name: tweet.user.name,
-              id_str: tweet.user.id_str,
-            }
+            avatar: tweet.user.profile_image_url_https,
+            screen_name: tweet.user.screen_name,
+            name: tweet.user.name,
+            id_str: tweet.user.id_str,
+          }
           : {},
         tweet_created_at: tweet.created_at,
         text: tweet.full_text,

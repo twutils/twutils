@@ -63,6 +63,7 @@ module.exports = {
         "functions": "never"
     }],
     'quotes': [2, "backtick", "avoid-escape"],
+    "indent": ["error", 2],
   },
   globals: {
     '$': true,

@@ -26,26 +26,7 @@
                 </span>
               </h6>
               <div>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <select v-model="start_date.year" class="">
-                      <option value="" v-if="locale==='en'">Year</option>
-                      <option value="" v-if="locale==='ar'">سنة</option>
-                      <option v-for="year in startDateYearOptions" v-text="year" :value="year"></option>
-                    </select>
-                    <select v-model="start_date.month" :disabled="start_date.year === ''" class="">
-                      <option value="" v-if="locale==='en'">Month</option>
-                      <option value="" v-if="locale==='ar'">شهر</option>
-                      <option v-for="month in startDateMonthsOptions" v-text="month" :value="month"></option>
-                    </select>
-                    <select v-model="start_date.day" :disabled="start_date.month === ''" class="">
-                      <option value="" v-if="locale==='en'">Day</option>
-                      <option value="" v-if="locale==='ar'">يوم</option>
-                      <option v-for="day in startDateDaysOptions" v-text="day" :value="day"></option>
-                    </select>
-                  </div>
+                  <date-input :date.sync="start_date" :endDate.sync="end_date" />
                   <small class="d-block form-text text-muted">
                     <span v-if="locale==='en'">
                       Leave empty for starting from the beginning
@@ -70,26 +51,7 @@
                 </span>
               </h6>
               <div>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <select v-model="end_date.year" class="">
-                      <option value="" v-if="locale==='en'">Year</option>
-                      <option value="" v-if="locale==='ar'">سنة</option>
-                      <option v-for="year in endDateYearOptions" v-text="year" :value="year"></option>
-                    </select>
-                    <select v-model="end_date.month" :disabled="end_date.year === ''" class="">
-                      <option value="" v-if="locale==='en'">Month</option>
-                      <option value="" v-if="locale==='ar'">شهر</option>
-                      <option v-for="month in endDateMonthsOptions" v-text="month" :value="month"></option>
-                    </select>
-                    <select v-model="end_date.day" :disabled="end_date.month === ''" class="">
-                      <option value="" v-if="locale==='en'">Day</option>
-                      <option value="" v-if="locale==='ar'">يوم</option>
-                      <option v-for="day in endDateDaysOptions" v-text="day" :value="day"></option>
-                    </select>
-                  </div>
+                  <date-input :date.sync="end_date" :startDate.sync="start_date"/>
                   <small class="d-block form-text text-muted">
                     <span v-if="locale==='en'">
                       Leave empty for removing until the latest
@@ -162,6 +124,7 @@
 </template>
 <script>
 import AccordionCard from '@/components/AccordionCard'
+import DateInput from '@/components/common/DateInput'
 
 const options = {
   retweets: false,
@@ -196,6 +159,7 @@ const dateOptions = {
 export default {
   components: {
     AccordionCard,
+    DateInput,
   },
   props: {
     value: {
@@ -296,50 +260,7 @@ export default {
     },
   },
   computed: {
-    startDateYearOptions () {
-      if (this.end_date.year === ``) {
-        this.end_date.month = ``
-        this.end_date.day = ``
-        return years
-      }
-      return years.filter(year => year <= this.end_date.year)
-    },
-    startDateMonthsOptions () {
-      if (this.end_date.month === ``) {
-        this.end_date.day = ``
-        return months
-      }
-      return months.filter(month => parseInt(month) <= parseInt(this.end_date.month) || !(parseInt(this.start_date.year) >= parseInt(this.end_date.year)))
-    },
-    startDateDaysOptions () {
-      if (this.end_date.day === ``) { return days }
 
-      if (this.start_date.year === this.end_date.year && this.start_date.month === this.end_date.month) { return days.filter(day => parseInt(day) <= parseInt(this.end_date.day)) }
-
-      return days
-    },
-    endDateYearOptions () {
-      if (this.start_date.year === ``) {
-        this.end_date.month = ``
-        this.end_date.day = ``
-        return years
-      }
-      return years.filter(year => year >= this.start_date.year)
-    },
-    endDateMonthsOptions () {
-      if (this.start_date.month === ``) {
-        this.start_date.day = ``
-        return months
-      }
-      return months.filter(month => parseInt(month) >= parseInt(this.start_date.month) || !(parseInt(this.start_date.year) >= parseInt(this.end_date.year)))
-    },
-    endDateDaysOptions () {
-      if (this.start_date.day === ``) { return days }
-
-      if (this.start_date.year === this.end_date.year && this.start_date.month === this.end_date.month) { return days.filter(day => parseInt(day) >= parseInt(this.start_date.day)) }
-
-      return days
-    },
   },
 }
 </script>

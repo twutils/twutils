@@ -90,6 +90,10 @@
               </div>
               <div
                 @click="choseSource(constants.file)"
+                 data-toggle="modal"
+                 data-target="#uploads"
+                 aria-haspopup="true"
+                 aria-expanded="false"
                 :class="`tweetsSourceOption ${tweetsSource === constants.file ? 'active':''}`"
               >
                 <h5>Archive File</h5>
@@ -120,6 +124,40 @@
       </ul>
     </div>
   </div>
+  <portal to="modal">
+    <div class="modal fade" tabindex="-1" role="dialog" id="uploads">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
+              <h5 :class="`modal-title`">
+                <span v-if="locale === 'en'">
+                  Archive Files
+                </span>
+                <span v-if="locale === 'ar'">
+                  ملفات الأرشيف
+                </span>
+              </h5>
+              <button type="button" :class="`close m-0 p-1 ${isRtl ? 'mr-auto':'ml-auto'}`" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div :class="`modal-body ${isRtl ? 'ltr': 'ltr'}`">
+              <ul v-if="uploads.length > 0" class="list-group">
+                <li class="list-group-item" v-for="upload in uploads">{{upload}}</li>
+              </ul>
+              <div>
+                Upload Your Archive :D
+              </div>
+            </div>
+            <div :class="`modal-footer ${isRtl ? 'rtl': 'ltr'}`">
+              <button type="button" class="btn btn-soft-gray" data-dismiss="modal">
+                <span>{{__('close')}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+    </div>
+  </portal>
 </div>
 </template>
 <script>
@@ -132,22 +170,6 @@ const options = {
   replies: false,
   start_date: null,
   end_date: null,
-}
-
-const years = []
-const months = []
-const days = []
-
-for (var i = 2006; i <= (new Date()).getFullYear(); i++) {
-  years.push(`${i}`)
-}
-
-for (var i = 1; i <= 12; i++) {
-  months.push(`${i}`.padStart(2, `0`))
-}
-
-for (var i = 1; i <= 31; i++) {
-  days.push(`${i}`.padStart(2, `0`))
 }
 
 const dateOptions = {
@@ -205,10 +227,16 @@ export default {
   methods: {
     choseSource (source) {
       if (source === this.constants.file) {
-        return
+        return this.openUploadsModal()
       }
 
+      this.setTweetsSource(source)
+    },
+    setTweetsSource(source) {
       this.tweetsSource = source
+    },
+    openUploadsModal() {
+      alert('hi')
     },
     fetchUploads () {
       this.loading = true
@@ -219,6 +247,7 @@ export default {
           this.uploads = data
         })
     },
+
     dateOptionsToString (dateOptions, propName = `startDate`) {
       const defaultMonth = `01` // propName === 'startDate' ? '01' : '12'
       const defaultDay = `01` // propName === 'startDate' ? '01' : '31'

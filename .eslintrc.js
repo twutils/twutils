@@ -64,6 +64,7 @@ module.exports = {
     }],
     'quotes': [2, "backtick", "avoid-escape"],
     "indent": ["error", 2],
+    'brace-style': [2, 'allman'],
   },
   globals: {
     '$': true,

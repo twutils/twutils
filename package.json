@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "animate.css": "^3.7.2",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "bootstrap": "^4.5.0",
         "dubai-font": "^1.1.1",
         "ekko-lightbox": "^5.3.0",

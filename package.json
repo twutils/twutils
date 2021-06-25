@@ -25,6 +25,8 @@
         "bootstrap": "^4.5.0",
         "dubai-font": "^1.1.1",
         "ekko-lightbox": "^5.3.0",
+        "filepond": "^4.27.1",
+        "filepond-plugin-file-validate-type": "^1.2.6",
         "filesize": "^6.1.0",
         "font-awesome": "^4.7.0",
         "humanize-plus": "^1.8.2",
@@ -43,6 +45,7 @@
         "typeface-lato": "0.0.54",
         "typeface-roboto-mono": "^0.0.54",
         "vue": "^2.6.11",
+        "vue-filepond": "^6.0.3",
         "vue-paginate": "^3.5.1",
         "vue-router": "^3.2.0",
         "vuejs-datatable": "^1.7.0"

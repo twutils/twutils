@@ -46,7 +46,7 @@ class TasksController extends Controller
     {
         $this->validate($request, [
             'purpose'   => ['required', Rule::in(['remove_tweets', 'remove_likes'])],
-            'file'      => ['required', 'file', 'mimes:js', 'mimetypes:text/javascript'], // TODO: ',application/zip'
+            'file'      => ['required', 'file', 'mimetypes:text/*'], // TODO: ',application/zip'
         ]);
 
         $uplaod = $this->rawTweetsService->create($request->file('file'), auth()->user());

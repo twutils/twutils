@@ -1,8 +1,15 @@
+<style>
+#uploads .filepond--root {
+  min-height: 70vh;
+  max-height: 70vh;
+  background: #f1f0ef;
+}
+</style>
 <template>
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <ul class="list-group destroyTweets__optionsList">
+      <ul @dragover="fileDragged" class="list-group destroyTweets__optionsList">
         <li class="list-group-item destroyTweets__optionsListItem d-flex justify-content-between align-items-center">
           <div class="w-100">
             <h4 class="border-bottom border-dark d-inline-block mb-5">{{__('destroy_tweets_options.dates_range')}}</h4>
@@ -125,7 +132,7 @@
     </div>
   </div>
   <portal to="modal">
-    <div class="modal fade" tabindex="-1" role="dialog" id="uploads">
+    <div ref="uploadsModal" class="modal fade" tabindex="-1" role="dialog" id="uploads">
         <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content">
             <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
@@ -147,6 +154,15 @@
               </ul>
               <div>
                 Upload Your Archive :D
+    <file-pond
+        name="file"
+        ref="filepond"
+        label-idle="Drop files here..."
+        :labelFileProcessingError="uploadError"
+        allow-multiple="false"
+        accepted-file-types="text/javascript"
+        :server="server"
+        v-bind:files="files"/>
               </div>
             </div>
             <div :class="`modal-footer ${isRtl ? 'rtl': 'ltr'}`">
@@ -161,6 +177,11 @@
 </div>
 </template>
 <script>
+import vueFilePond from 'vue-filepond';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js';
+
+const FilePond = vueFilePond( FilePondPluginFileValidateType );
+
 import AccordionCard from '@/components/AccordionCard'
 import DateInput from '@/components/common/DateInput'
 
@@ -182,6 +203,7 @@ export default {
   components: {
     AccordionCard,
     DateInput,
+    FilePond,
   },
   props: {
     value: {
@@ -192,11 +214,31 @@ export default {
     },
   },
   data () {
+    let vm = this
+
     return {
       options: { ...options, },
       start_date: { ...dateOptions, },
       end_date: { ...dateOptions, },
       uploads: [],
+      uploadError: 'Something wen\'t wrong',
+      files: [],
+      server: {
+        url: window.TwUtils.apiBaseUrl + 'tasks/upload',
+        process: {
+          method: 'POST',
+          headers: window.axios.defaults.headers.common,
+          ondata(formData) {
+
+            formData.append('purpose', 'remove_tweets')
+
+            return formData
+          },
+          onerror(response) {
+            vm.uploadError = ((JSON.parse(response)).errors.file.join(', '))
+          }
+        }
+      },
       loading: false,
       tweetsSource: `twitter`, // 'twitter', 'file'
     }
@@ -225,6 +267,9 @@ export default {
     this.fetchUploads()
   },
   methods: {
+    fileDragged() {
+      $(this.$refs.uploadsModal).modal('show')
+    },
     choseSource (source) {
       if (source === this.constants.file) {
         return this.openUploadsModal()
@@ -236,7 +281,7 @@ export default {
       this.tweetsSource = source
     },
     openUploadsModal() {
-      alert('hi')
+
     },
     fetchUploads () {
       this.loading = true

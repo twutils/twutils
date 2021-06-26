@@ -275,10 +275,10 @@ import get from 'lodash/get'
 import EventBus from '@/EventBus'
 import debounce from 'lodash/debounce'
 import orderBy from 'lodash/orderBy'
-import DatatableFactory from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
+import {VuejsDatatableFactory} from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
 import { searchArrayByFields } from '@/search'
 
-const usersListDatatable = DatatableFactory.useDefaultType(false).registerTableType(
+const usersListDatatable = VuejsDatatableFactory.useDefaultType(false).registerTableType(
   `users-list-datatable`,
   tableType => {
     tableType.mergeSettings({

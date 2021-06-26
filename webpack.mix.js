@@ -4,15 +4,14 @@ let mix = require('laravel-mix');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 let webpackConfig = {
-  resolve: {
-    alias: {
-      '@': require('path').resolve(__dirname, 'resources/js')
-    }
-  },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ]
 }
+
+mix.alias({
+  '@': require('path').resolve(__dirname, 'resources/js')
+})
 
 if(process.env.NODE_ENV !== 'test')
   mix.extract()
@@ -35,15 +34,20 @@ if (isBuildMode || process.env.NODE_ENV === 'test')
 }
 
 mix.js('resources/js/app.js', 'public/js')
+   .vue()
    .sass('resources/sass/app.scss', `public/${isBuildMode ? 'build_':''}css`)
 
 mix.js('resources/js/welcome.js', 'public/js')
+   .vue()
    .sass('resources/sass/welcome.scss', `public/${isBuildMode ? 'build_':''}css`)
 
 mix.sourceMaps(true, 'inline-source-map')
 
-mix.copy('resources/images','public/images')
-mix.copy('resources/favicon','public')
+if(process.env.NODE_ENV !== 'test')
+{
+  mix.copy('resources/images','public/images')
+  mix.copy('resources/favicon','public')  
+}
 
 if(process.env.NODE_ENV === 'production')
   mix.version()

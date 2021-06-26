@@ -3,7 +3,7 @@ import router from '@/router'
 import rtlChars from '@/rtlChars'
 import startCase from 'lodash/startCase'
 
-const twitterText = require(`twitter-text`)
+const twitterText = require(`twitter-text`).default
 const isLocal = window.TwUtils.isLocal != null && window.TwUtils.isLocal
 
 export default {

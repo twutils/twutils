@@ -302,7 +302,7 @@
 
 <script>
 import Vue from 'vue'
-import DatatableFactory from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
+import {VuejsDatatableFactory} from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
 
 import debounce from 'lodash/debounce'
 import get from 'lodash/get'
@@ -317,7 +317,7 @@ import twitterLimitationsInfo from '@/components/TwitterLimitationsInfo'
 
 const months = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`, ]
 
-const tweetsListDatatable = DatatableFactory.useDefaultType(false).registerTableType(
+const tweetsListDatatable = VuejsDatatableFactory.useDefaultType(false).registerTableType(
   `tweets-list-datatable`,
   tableType => {
     tableType.mergeSettings({

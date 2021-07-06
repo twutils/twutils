@@ -1,7 +1,12 @@
-const webpack = require('webpack');
+const isTest = process.env.NODE_ENV === 'test'
+const isDevelopemnt = process.env.NODE_ENV === 'development'
+const isProduction = process.env.NODE_ENV === 'production'
 
-let mix = require('laravel-mix');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const isBuildMode = process.env.BUILDTYPE === 'DOWNLOABLE_ASSETS'
+const usesBrowserSync = ! process.argv.includes('-no-bs')
+
+const webpack = require('webpack');
+const mix = require('laravel-mix');
 
 let webpackConfig = {
   plugins: [
@@ -13,17 +18,19 @@ mix.alias({
   '@': require('path').resolve(__dirname, 'resources/js')
 })
 
-if(process.env.NODE_ENV !== 'test')
+if(! isTest )
+{
   mix.extract()
+}
 
-if (process.env.NODE_ENV === 'development')
-  webpackConfig.plugins.push(new BundleAnalyzerPlugin())
+if (isDevelopemnt)
+{
+  webpackConfig.plugins.push(new (require('webpack-bundle-analyzer').BundleAnalyzerPlugin)())
+}
 
 mix.webpackConfig(webpackConfig)
 
-let isBuildMode = process.env.BUILDTYPE === 'DOWNLOABLE_ASSETS'
-
-if (isBuildMode || process.env.NODE_ENV === 'test')
+if (isBuildMode || isTest)
 {
   if (isBuildMode)
   {
@@ -43,19 +50,23 @@ mix.js('resources/js/welcome.js', 'public/js')
 
 mix.sourceMaps(true, 'inline-source-map')
 
-if(process.env.NODE_ENV !== 'test')
+if(! isTest )
 {
   mix.copy('resources/images','public/images')
   mix.copy('resources/favicon','public')  
 }
 
-if(process.env.NODE_ENV === 'production')
+if(isProduction)
+{
   mix.version()
+}
 
-if(process.env.NODE_ENV === 'test')
+if(isTest)
+{
   mix.disableNotifications()
+}
 
-if(process.env.NODE_ENV != 'test' && ! process.argv.includes('-no-bs'))
+if(! isTest && usesBrowserSync)
 {
   mix.browserSync({
       ghostMode: false,

@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "start": "npm run dev",
-        "unit": "cross-env BABEL_ENV=test  NODE_ENV=test karma start specs/setup/karma.conf.js",
+        "unit": "cross-env BABEL_ENV=test NODE_ENV=test karma start specs/setup/karma.conf.js",
         "test": "npm run unit -- --single-run",
         "test:watch": "npm run unit",
         "lint": "eslint --ext .js,.vue resources/js specs",

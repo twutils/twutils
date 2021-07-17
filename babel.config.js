@@ -14,7 +14,7 @@ module.exports = {
   "env": {
     "test": {
       "presets": ["@babel/preset-env"],
-      "plugins": ["istanbul", "dynamic-import-node"]
+      "plugins": ["dynamic-import-node"]
     }
   }
 }

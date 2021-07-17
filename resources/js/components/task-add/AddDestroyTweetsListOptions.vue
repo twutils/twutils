@@ -178,7 +178,7 @@
 </template>
 <script>
 import vueFilePond from 'vue-filepond';
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type';
 
 const FilePond = vueFilePond( FilePondPluginFileValidateType );
 

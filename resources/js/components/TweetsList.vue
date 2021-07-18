@@ -302,8 +302,6 @@
 
 <script>
 import Vue from 'vue'
-import {VuejsDatatableFactory} from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
-
 import debounce from 'lodash/debounce'
 import get from 'lodash/get'
 import sortBy from 'lodash/sortBy'
@@ -314,6 +312,8 @@ import min from 'lodash/min'
 import searchTweets from '../search'
 import tweetsListItem from './TweetsListItem'
 import twitterLimitationsInfo from '@/components/TwitterLimitationsInfo'
+
+const VuejsDatatableFactory = require('vuejs-datatable/dist/vuejs-datatable.js').VuejsDatatableFactory
 
 const months = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`, ]
 
@@ -326,8 +326,7 @@ const tweetsListDatatable = VuejsDatatableFactory.useDefaultType(false).register
       },
       pager: {
         classes: {
-          li: `page-item`,
-          a: `page-link`,
+          li: `page-item page-link`,
           pager: `pagination text-center m-0 px-3 w-100`,
           selected: `active`,
         },

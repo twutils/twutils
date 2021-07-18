@@ -151,7 +151,7 @@
                       v-if="row.background_image"
                       @error="imageOnError"
                       :src="userPlaceholder"
-                      :data-src="`${row.background_image}`"
+                      :data-src="`${row.background_image}/mobile`"
                       class="lazy user__backgroundImage"
                     >
                     <div class="user__avatarContainer">
@@ -259,7 +259,7 @@
           <portal-target name="users-list-pager" />
           <portal to="users-list-pager">
             <users-list-datatable-pager
-              v-model="page"
+              v-model.sync="page"
               type="long"
               :per-page="perPageInt"
             ></users-list-datatable-pager>
@@ -275,7 +275,7 @@ import get from 'lodash/get'
 import EventBus from '@/EventBus'
 import debounce from 'lodash/debounce'
 import orderBy from 'lodash/orderBy'
-import {VuejsDatatableFactory} from 'vuejs-datatable/dist/vuejs-datatable.esm.js'
+import {VuejsDatatableFactory} from 'vuejs-datatable'
 import { searchArrayByFields } from '@/search'
 
 const usersListDatatable = VuejsDatatableFactory.useDefaultType(false).registerTableType(
@@ -287,8 +287,7 @@ const usersListDatatable = VuejsDatatableFactory.useDefaultType(false).registerT
       },
       pager: {
         classes: {
-          li: `page-item`,
-          a: `page-link`,
+          li: `page-item page-link`,
           pager: `pagination text-center m-0 px-3 w-100`,
           selected: `active`,
         },

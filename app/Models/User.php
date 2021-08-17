@@ -68,7 +68,7 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        return $this->hasManyThrough(Task::class, SocialUser::class, 'id', 'socialuser_id', 'id', 'id');
+        return $this->hasManyThrough(Task::class, SocialUser::class, 'user_id', 'socialuser_id', 'id', 'id');
     }
 
     public static function getColumns()

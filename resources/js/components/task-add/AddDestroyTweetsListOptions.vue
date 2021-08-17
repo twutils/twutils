@@ -9,13 +9,23 @@
   .filepond--credits {
     top: calc(50% - 4.75em / 2);
   }
+
+    .dragging .filepond--root, .dragging .filepond--wrapper {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      min-height: 100% !important;
+      opacity: 0.9;
+  }
 }
 </style>
 <template>
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <ul @dragover="fileDragged" class="list-group destroyTweets__optionsList">
+      <ul class="list-group destroyTweets__optionsList">
         <li class="list-group-item destroyTweets__optionsListItem d-flex justify-content-between align-items-center">
           <div class="w-100">
             <h4 class="border-bottom border-dark d-inline-block mb-5">{{__('destroy_tweets_options.dates_range')}}</h4>
@@ -161,7 +171,7 @@
               </button>
             </div>
             <div
-              :class="`modal-body ${isRtl ? 'ltr': 'ltr'}`"
+              :class="`modal-body ${isRtl ? 'ltr': 'ltr'} ${fileDragged ? `dragging`: ``}`"
             >
             <h4 v-if="uploads.length > 0">
               Chose previously uploaded file:
@@ -209,6 +219,7 @@
 </div>
 </template>
 <script>
+import debounce from 'lodash/debounce'
 import vueFilePond from 'vue-filepond';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type';
 
@@ -255,6 +266,7 @@ export default {
       end_date: { ...dateOptions, },
       uploads: [],
       uploadError: 'Something wen\'t wrong',
+      fileDragged: false,
       files: [],
       server: {
         url: window.TwUtils.apiBaseUrl + 'tasks/upload',
@@ -277,6 +289,22 @@ export default {
     }
   },
   watch: {
+    fileDragged: {
+      deep: true,
+      handler(newValue) {
+        if (! newValue)
+        {
+          return ;
+        }
+
+        let modalElement = $(this.$refs.uploadsModal)
+
+        if (!  (modalElement.data('bs.modal') || {})._isShown)
+        {
+          modalElement.modal('show')
+        }
+      }
+    },
     options: {
       deep: true,
       handler (newValue) {
@@ -298,11 +326,26 @@ export default {
   },
   mounted () {
     this.fetchUploads()
+
+    let debouncedDragoverHandler = debounce(t => {
+      if (this.fileDragged)
+        return ;
+
+      this.fileDragged = true
+    }, 10)
+
+    let debouncedDragleaveHandler = debounce(t => {
+      this.fileDragged = false
+    }, 100)
+
+    $('body').on('dragover', debouncedDragoverHandler)
+    $('body').on('dragleave', debouncedDragleaveHandler)
+  },
+  destroyed() {
+    $('body').off('dragleave')
+    $('body').off('dragover')
   },
   methods: {
-    fileDragged() {
-      $(this.$refs.uploadsModal).modal('show')
-    },
     choseSource (source) {
       if (source === this.constants.file) {
         return this.openUploadsModal()

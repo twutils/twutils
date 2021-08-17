@@ -83,6 +83,11 @@ return [
     'destroy_tweets'             => 'حذف التغريدات',
     'destroy_tweets_desc'        => '',
 
+    'drop_hint' => [
+        'destroyTweets' => 'ادرج ملف tweets.js الموجود في أرشيف تويتر الخاص بك.',
+        'destroyLikes'  => 'ادرج ملف likes.js الموجود في أرشيف تويتر الخاص بك.',
+    ],
+
     'removedLikes'  => 'التغريدات المفضّلة المحذوفة',
     'removedTweets' => 'التغريدات المحذوفة',
 

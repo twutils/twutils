@@ -259,7 +259,8 @@
           <portal-target name="users-list-pager" />
           <portal to="users-list-pager">
             <users-list-datatable-pager
-              v-model.sync="page"
+              v-model="page"
+              @vue-datatable::set-page="page = $event"
               type="long"
               :per-page="perPageInt"
             ></users-list-datatable-pager>
@@ -287,8 +288,8 @@ const usersListDatatable = VuejsDatatableFactory.useDefaultType(false).registerT
       },
       pager: {
         classes: {
-          li: `page-item page-link`,
-          pager: `pagination text-center m-0 px-3 w-100`,
+          li: `page-item`,
+          pager: `twutils_pagination pagination text-center m-0 px-3 w-100`,
           selected: `active`,
         },
       },

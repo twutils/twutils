@@ -289,7 +289,7 @@
             <portal-target name="tweets-list-pager" />
             <portal to="tweets-list-pager">
               <tweets-list-datatable-pager
-                v-model="page"
+                @vue-datatable::set-page="page = $event"
                 type="long"
                 :per-page="perPageInt"
               ></tweets-list-datatable-pager>
@@ -325,8 +325,8 @@ const tweetsListDatatable = VuejsDatatableFactory.useDefaultType(false).register
       },
       pager: {
         classes: {
-          li: `page-item page-link`,
-          pager: `pagination text-center m-0 px-3 w-100`,
+          li: `page-item`,
+          pager: `twutils_pagination pagination text-center m-0 px-3 w-100`,
           selected: `active`,
         },
       },
@@ -474,6 +474,7 @@ export default {
     this.debouncedAfterFiltering = debounce(t => {
       return this.afterFiltering()
     }, 100)
+
     this.buildSearch()
 
     if (this.isLocal) {
@@ -530,6 +531,9 @@ export default {
     },
   },
   methods: {
+    resetPage() {
+      this.page = 1
+    },
     autoSelectLatestTweet () {
       this.$nextTick(x => {
         const latestTweet = this.tweetsCopy.length == 0 ? null : this.tweetsCopy.reduce((a, b) => a.tweet_created_at > b.tweet_created_at ? a : b)
@@ -583,7 +587,7 @@ export default {
             return callback()
           }
 
-          this.$nextTick(this.afterFiltering)
+          this.$nextTick(this.debouncedAfterFiltering)
         })
     },
     fetchTweetsList (page = 1) {
@@ -705,6 +709,7 @@ export default {
       this.debouncedAfterFiltering()
     },
     selectYearAndMonth (year, month) {
+      this.resetPage()
       this.filterTweetsByYearAndMonth(year, month)
     },
     filterTweetsByYearAndMonth (year, month) {

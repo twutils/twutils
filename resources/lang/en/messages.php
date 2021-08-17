@@ -83,6 +83,11 @@ return [
     'destroy_tweets'             => 'Remove My Tweets',
     'destroy_tweets_desc'        => '',
 
+    'drop_hint' => [
+        'destroyTweets' => 'Drop tweets.js file located in your twitter archive file.',
+        'destroyLikes'  => 'Drop likes.js file located in your twitter archive file.',
+    ],
+
     'removedLikes'  => 'Removed Likes',
     'removedTweets' => 'Removed Tweets',
 

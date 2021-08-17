@@ -1,8 +1,14 @@
-<style>
-#uploads .filepond--root {
-  min-height: 70vh;
-  max-height: 70vh;
-  background: #f1f0ef;
+<style lang="scss">
+#uploads {
+  .filepond--root {
+    min-height: 250px;
+    background: #f1f0ef;
+  }
+
+  .filepond--drop-label,
+  .filepond--credits {
+    top: calc(50% - 4.75em / 2);
+  }
 }
 </style>
 <template>
@@ -117,7 +123,7 @@
             </div>
           </div>
         </li>
-        <li class="d-none list-group-item destroyTweets__optionsListItem">
+        <li class="list-group-item destroyTweets__optionsListItem d-none">
           <h6 class="mb-4 destroyTweets__optionsListItem--header">
             <div class="destroyTweets__optionsListItem--bullet">•</div>
             <span v-if="locale==='en'">
@@ -132,7 +138,13 @@
     </div>
   </div>
   <portal to="modal">
-    <div ref="uploadsModal" class="modal fade" tabindex="-1" role="dialog" id="uploads">
+    <div
+      ref="uploadsModal"
+      class="modal fade"
+      tabindex="-1"
+      role="dialog"
+      id="uploads"
+    >
         <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content">
             <div :class="`modal-header ${isRtl ? 'rtl': 'ltr'}`">
@@ -148,22 +160,42 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div :class="`modal-body ${isRtl ? 'ltr': 'ltr'}`">
-              <ul v-if="uploads.length > 0" class="list-group">
-                <li class="list-group-item" v-for="upload in uploads">{{upload}}</li>
-              </ul>
-              <div>
-                Upload Your Archive :D
-    <file-pond
-        name="file"
-        ref="filepond"
-        label-idle="Drop files here..."
-        :labelFileProcessingError="uploadError"
-        allow-multiple="false"
-        accepted-file-types="text/javascript"
-        :server="server"
-        v-bind:files="files"/>
-              </div>
+            <div
+              :class="`modal-body ${isRtl ? 'ltr': 'ltr'}`"
+            >
+            <h4 v-if="uploads.length > 0">
+              Chose previously uploaded file:
+            </h4>
+            <table v-if="uploads.length > 0" class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Filename</th>
+                  <th>Uploaded At</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="upload in uploads">
+                  <td class="text-muted text-left dir-ltr">
+                      #{{upload.id}}
+                  </td>
+                  <td><code class="filename" :title="upload.filename">{{upload.original_name}}</code></td>
+                  <td>{{moment(upload.created_at).format(`hh:mm A YYYY-MMM-DD`)}}</td>
+                </tr>                
+              </tbody>
+            </table>
+            <h4>
+              Upload your archive file:
+            </h4>
+              <file-pond
+                  name="file"
+                  ref="filepond"
+                  :label-idle="__(`drop_hint.${taskDefinition.type}`)"
+                  :labelFileProcessingError="uploadError"
+                  allow-multiple="false"
+                  accepted-file-types="text/javascript"
+                  :server="server"
+                  v-bind:files="files"/>
             </div>
             <div :class="`modal-footer ${isRtl ? 'rtl': 'ltr'}`">
               <button type="button" class="btn btn-soft-gray" data-dismiss="modal">
@@ -217,6 +249,7 @@ export default {
     let vm = this
 
     return {
+      log: console.log,
       options: { ...options, },
       start_date: { ...dateOptions, },
       end_date: { ...dateOptions, },

@@ -67,6 +67,7 @@ return [
     'backup' => 'Backup',
     'remove' => 'Remove',
     'cancel' => 'Cancel',
+    'select' => 'Select',
 
     'download_likes'      => 'Download Likes',
     'download_likes_desc' => 'Download an excel sheet version of your twitter likes',

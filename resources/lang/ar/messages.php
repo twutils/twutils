@@ -67,6 +67,7 @@ return [
     'backup' => 'نسخ',
     'remove' => 'حذف',
     'cancel' => 'إلغاء',
+    'select' => 'اختيار',
 
     'download_likes'      => 'تحميل المفضلة',
     'download_likes_desc' => 'قم بتحميل نسخة ملف إكسل تحتوي على قائمة المفضلة الخاصة بك',

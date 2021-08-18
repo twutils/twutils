@@ -3,7 +3,7 @@
 </style>
 <template>
   <div :class="`${isRtl?'rtl':'ltr'} alert alert-warning`">
-    <div class="text-small">
+    <div class="small">
       {{__('accountToBeRemoved')}} {{ accountRemovalDate }}.
       <a :href="`${TwUtils.baseUrl}/cancelDeleteMe`" class="text-muted ml-5">
         {{__('cancel')}}

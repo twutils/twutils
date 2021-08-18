@@ -126,7 +126,22 @@
                   </p>
                   <img v-if="loading" :src="loadingGifSrc" class="m-auto loadingGif" width="20px" height="20px">
                   <span v-if="uploads.length > 0">
-                    {{uploads[0]}}
+                  <div
+                    style="box-shadow: 0px 0px 9px 2px #cfcfcf;"
+                    class="p-1 mx-2"
+                  >
+                    <span class="badge">{{chosenUpload.original_name}}</span>
+                    <label class="ml-2 small">
+                      Uploaded:
+                    </label>
+                    <from-now
+                      class="text-muted"
+                      :value="chosenUpload.created_at"
+                      :title="moment(chosenUpload.created_at).format('YYYY-MMM-DD hh:mm A')"
+                      data-placement="bottom"
+                      :has-tooltip="true"
+                    />
+                  </div>
                   </span>
                 </div>
               </div>
@@ -176,24 +191,40 @@
             <h4 v-if="uploads.length > 0">
               Chose previously uploaded file:
             </h4>
-            <table v-if="uploads.length > 0" class="table">
-              <thead class="thead-dark">
-                <tr>
-                  <th>#</th>
-                  <th>Filename</th>
-                  <th>Uploaded At</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="upload in uploads">
-                  <td class="text-muted text-left dir-ltr">
-                      #{{upload.id}}
-                  </td>
-                  <td><code class="filename" :title="upload.filename">{{upload.original_name}}</code></td>
-                  <td>{{moment(upload.created_at).format(`hh:mm A YYYY-MMM-DD`)}}</td>
-                </tr>                
-              </tbody>
-            </table>
+            <div v-if="chosenUpload !== null" class="uploads-wrapper" style="max-height: 270px; overflow: auto;">
+              <table class="table table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>#</th>
+                    <th>Filename</th>
+                    <th>Uploaded At</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="upload in uploads">
+                    <td class="text-muted text-left dir-ltr">
+                        #{{upload.id}}
+                    </td>
+                    <td><code class="filename" :title="upload.filename">{{upload.original_name}}</code></td>
+                    <td class="small">
+                      <from-now
+                        class="text-muted"
+                        :value="upload.created_at"
+                        :title="moment(upload.created_at).format('YYYY-MMM-DD hh:mm A')"
+                        data-placement="bottom"
+                        :has-tooltip="true"
+                      />
+                    </td>
+                    <td>
+                      <button @click="chosenUpload = upload" type="button" class="btn btn-primary">
+                        {{__('select')}}
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <h4>
               Upload your archive file:
             </h4>
@@ -227,6 +258,7 @@ const FilePond = vueFilePond( FilePondPluginFileValidateType );
 
 import AccordionCard from '@/components/AccordionCard'
 import DateInput from '@/components/common/DateInput'
+import FromNow from '@/components/FromNow'
 
 const options = {
   retweets: false,
@@ -247,6 +279,7 @@ export default {
     AccordionCard,
     DateInput,
     FilePond,
+    FromNow,
   },
   props: {
     value: {
@@ -260,12 +293,12 @@ export default {
     let vm = this
 
     return {
-      log: console.log,
       options: { ...options, },
       start_date: { ...dateOptions, },
       end_date: { ...dateOptions, },
       uploads: [],
       uploadError: 'Something wen\'t wrong',
+      chosenUpload: null,
       fileDragged: false,
       files: [],
       server: {
@@ -340,6 +373,8 @@ export default {
 
     $('body').on('dragover', debouncedDragoverHandler)
     $('body').on('dragleave', debouncedDragleaveHandler)
+
+    setTimeout(x => window.scrollTo(0,0), 500)
   },
   destroyed() {
     $('body').off('dragleave')
@@ -366,6 +401,8 @@ export default {
         .then(({ data, }) => {
           this.loading = false
           this.uploads = data
+
+          this.chosenUpload = data.length > 0 ? data[0] : null
         })
     },
 

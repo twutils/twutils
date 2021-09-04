@@ -64,10 +64,11 @@ return [
     'details'             => 'تفاصيل',
     'no_tasks'            => 'ليست هناك مهام، بعد ..',
 
-    'backup' => 'نسخ',
-    'remove' => 'حذف',
-    'cancel' => 'إلغاء',
-    'select' => 'اختيار',
+    'backup'    => 'نسخ',
+    'remove'    => 'حذف',
+    'cancel'    => 'إلغاء',
+    'select'    => 'اختيار',
+    'selected'  => 'مُحدَّد',
 
     'download_likes'      => 'تحميل المفضلة',
     'download_likes_desc' => 'قم بتحميل نسخة ملف إكسل تحتوي على قائمة المفضلة الخاصة بك',
@@ -85,8 +86,8 @@ return [
     'destroy_tweets_desc'        => '',
 
     'drop_hint' => [
-        'destroyTweets' => 'ادرج ملف tweets.js الموجود في أرشيف تويتر الخاص بك.',
-        'destroyLikes'  => 'ادرج ملف likes.js الموجود في أرشيف تويتر الخاص بك.',
+        'destroyTweets' => 'ادرج ملف tweet.js الموجود في أرشيف تويتر الخاص بك.',
+        'destroyLikes'  => 'ادرج ملف like.js الموجود في أرشيف تويتر الخاص بك.',
     ],
 
     'removedLikes'  => 'التغريدات المفضّلة المحذوفة',

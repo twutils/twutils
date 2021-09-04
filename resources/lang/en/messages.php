@@ -64,10 +64,11 @@ return [
     'details'             => 'Details',
     'no_tasks'            => 'No tasks yet..',
 
-    'backup' => 'Backup',
-    'remove' => 'Remove',
-    'cancel' => 'Cancel',
-    'select' => 'Select',
+    'backup'    => 'Backup',
+    'remove'    => 'Remove',
+    'cancel'    => 'Cancel',
+    'select'    => 'Select',
+    'selected'  => 'Selected',
 
     'download_likes'      => 'Download Likes',
     'download_likes_desc' => 'Download an excel sheet version of your twitter likes',
@@ -85,8 +86,8 @@ return [
     'destroy_tweets_desc'        => '',
 
     'drop_hint' => [
-        'destroyTweets' => 'Drop tweets.js file located in your twitter archive file.',
-        'destroyLikes'  => 'Drop likes.js file located in your twitter archive file.',
+        'destroyTweets' => 'Drop tweet.js file located in your twitter archive file.',
+        'destroyLikes'  => 'Drop like.js file located in your twitter archive file.',
     ],
 
     'removedLikes'  => 'Removed Likes',

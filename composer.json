@@ -43,6 +43,7 @@
         "nunomaduro/collision": "^5.0",
         "nunomaduro/larastan": "^0.6.13",
         "phpunit/phpunit": "^9.3",
+        "spatie/laravel-ray": "^1.25",
         "symfony/thanks": "^1.0"
     },
     "repositories": [

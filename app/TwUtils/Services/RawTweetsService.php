@@ -10,7 +10,7 @@ use Illuminate\Http\UploadedFile;
 
 class RawTweetsService
 {
-    public function create(UploadedFile $uploadedFile, User $user): Upload
+    public function create(UploadedFile $uploadedFile, User $user, string $purpose): Upload
     {
         $fileName = Str::uuid().'.js';
 
@@ -20,6 +20,8 @@ class RawTweetsService
             'filename'      => $fileName,
             'user_id'       => $user->id,
             'original_name' => $uploadedFile->getClientOriginalName(),
+            'size'          => $uploadedFile->getSize(),
+            'purpose'       => $purpose,
         ]);
 
         return $upload;
@@ -28,12 +30,12 @@ class RawTweetsService
     public function mapResponseToTweet(array $tweet): array
     {
         return [
-            'id_str'                  => $tweet['id_str'],
+            'id_str'                  => $tweet['id_str'] ?? $tweet['tweetId'],
             'extended_entities'       => $tweet['extended_entities'] ?? [],
-            'text'                    => $tweet['full_text'],
+            'text'                    => $tweet['full_text'] ?? $tweet['fullText'],
             'retweet_count'           => $tweet['retweet_count'] ?? null,
             'favorite_count'          => $tweet['favorite_count'] ?? null,
-            'tweet_created_at'        => Carbon::createFromTimeString($tweet['created_at']),
+            'tweet_created_at'        => isset($tweet['created_at']) ? Carbon::createFromTimeString($tweet['created_at']) : null,
         ];
     }
 }

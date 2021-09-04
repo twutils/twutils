@@ -18,6 +18,8 @@ class CreateUploadsTable extends Migration
             $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
             $table->string('filename');
             $table->string('original_name');
+            $table->integer('size');
+            $table->string('purpose');
             $table->timestamps();
         });
     }

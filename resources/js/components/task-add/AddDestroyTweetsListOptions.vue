@@ -10,14 +10,8 @@
     top: calc(50% - 4.75em / 2);
   }
 
-    .dragging .filepond--root, .dragging .filepond--wrapper {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      min-height: 100% !important;
-      opacity: 0.9;
+  .filepond--list-scroller, .filepond--list {
+      display: none;
   }
 }
 </style>
@@ -124,9 +118,8 @@
                   <p>
                     More accurate removal. Upload an archive file.
                   </p>
-                  <img v-if="loading" :src="loadingGifSrc" class="m-auto loadingGif" width="20px" height="20px">
-                  <span v-if="uploads.length > 0">
                   <div
+                    v-if="chosenUpload"
                     style="box-shadow: 0px 0px 9px 2px #cfcfcf;"
                     class="p-1 mx-2"
                   >
@@ -135,14 +128,13 @@
                       Uploaded:
                     </label>
                     <from-now
-                      class="text-muted"
+                      class="text-muted small"
                       :value="chosenUpload.created_at"
                       :title="moment(chosenUpload.created_at).format('YYYY-MMM-DD hh:mm A')"
                       data-placement="bottom"
                       :has-tooltip="true"
                     />
                   </div>
-                  </span>
                 </div>
               </div>
             </div>
@@ -186,27 +178,35 @@
               </button>
             </div>
             <div
-              :class="`modal-body ${isRtl ? 'ltr': 'ltr'} ${fileDragged ? `dragging`: ``}`"
+              style="min-height: 350px;"
+              :class="`modal-body ${isRtl ? 'ltr': 'ltr'}`"
             >
             <h4 v-if="uploads.length > 0">
               Chose previously uploaded file:
+              <img v-if="loading" :src="loadingGifSrc" class="m-auto loadingGif" width="20px" height="20px">
             </h4>
-            <div v-if="chosenUpload !== null" class="uploads-wrapper" style="max-height: 270px; overflow: auto;">
+            <div v-if="uploads.length > 0" class="uploads-wrapper" style="max-height: 270px; overflow: auto;">
               <table class="table table-hover">
                 <thead class="thead-dark">
                   <tr>
                     <th>#</th>
                     <th>Filename</th>
+                    <th>Size (MB)</th>
+                    <th>First Tweet</th>
+                    <th>Latest Tweet</th>
                     <th>Uploaded At</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="upload in uploads">
+                  <tr :key="upload.id" v-for="upload in uploads">
                     <td class="text-muted text-left dir-ltr">
                         #{{upload.id}}
                     </td>
                     <td><code class="filename" :title="upload.filename">{{upload.original_name}}</code></td>
+                    <td><code class="size" :title="upload.size">{{upload.size}}</code></td>
+                    <td><code v-if="upload.raw_tweets_first" class="raw_tweets_first" :title="upload.raw_tweets_first.text">{{moment(upload.raw_tweets_first.tweet_created_at).format('YYYY-MMM-DD')}}</code></td>
+                    <td><code v-if="upload.raw_tweets_last" class="raw_tweets_last" :title="upload.raw_tweets_last.text">{{moment(upload.raw_tweets_last.tweet_created_at).format('YYYY-MMM-DD')}}</code></td>
                     <td class="small">
                       <from-now
                         class="text-muted"
@@ -217,8 +217,27 @@
                       />
                     </td>
                     <td>
-                      <button @click="chosenUpload = upload" type="button" class="btn btn-primary">
-                        {{__('select')}}
+                      <button
+                        @click="chosenUpload = upload"
+                        type="button"
+                        :class="`btn ${chosenUpload && chosenUpload.id === upload.id ? 'btn-success btn-disabled' : 'btn-primary'}`"
+                      >
+                        <span
+                          v-if="! chosenUpload || chosenUpload.id !== upload.id"
+                        >
+                          {{__('select')}}
+                        </span>
+                        <span
+                          v-if="chosenUpload && chosenUpload.id === upload.id"
+                        >
+                          {{__('selected')}}
+                        </span>
+                      </button>
+                      <button @click="deleteUpload(upload)" class="btn btn-outline-danger btn-sm">
+                        <span class="oi" data-glyph="trash"></span>
+                        <span class="sr-only">
+                          {{__('remove')}}
+                        </span>
                       </button>
                     </td>
                   </tr>
@@ -274,6 +293,8 @@ const dateOptions = {
   day: ``,
 }
 
+let intervalId = null;
+
 export default {
   components: {
     AccordionCard,
@@ -299,6 +320,7 @@ export default {
       uploads: [],
       uploadError: 'Something wen\'t wrong',
       chosenUpload: null,
+      lastUpload: null,
       fileDragged: false,
       files: [],
       server: {
@@ -308,34 +330,29 @@ export default {
           headers: window.axios.defaults.headers.common,
           ondata(formData) {
 
-            formData.append('purpose', 'remove_tweets')
+            formData.append('purpose', vm.taskDefinition.type)
 
             return formData
           },
           onerror(response) {
             vm.uploadError = ((JSON.parse(response)).errors.file.join(', '))
-          }
+          },
+          onload(response) {
+            vm.$nextTick(vm.fetchUploads)
+          },
         }
       },
       loading: false,
-      tweetsSource: `twitter`, // 'twitter', 'file'
+      tweetsSource: 'twitter', // 'twitter', 'file'
     }
   },
   watch: {
-    fileDragged: {
-      deep: true,
-      handler(newValue) {
-        if (! newValue)
-        {
-          return ;
-        }
+    fileDragged(newValue) {
+      let modalElement = $(this.$refs.uploadsModal)
 
-        let modalElement = $(this.$refs.uploadsModal)
-
-        if (!  (modalElement.data('bs.modal') || {})._isShown)
-        {
-          modalElement.modal('show')
-        }
+      if (!  (modalElement.data('bs.modal') || {})._isShown)
+      {
+        modalElement.modal('show')
       }
     },
     options: {
@@ -358,29 +375,27 @@ export default {
     },
   },
   mounted () {
-    this.fetchUploads()
+    this.fetchUploads(true)
 
-    let debouncedDragoverHandler = debounce(t => {
-      if (this.fileDragged)
-        return ;
-
-      this.fileDragged = true
-    }, 10)
-
-    let debouncedDragleaveHandler = debounce(t => {
-      this.fileDragged = false
-    }, 100)
-
-    $('body').on('dragover', debouncedDragoverHandler)
-    $('body').on('dragleave', debouncedDragleaveHandler)
+    $('body').on('dragover', x => this.fileDragged = true)
 
     setTimeout(x => window.scrollTo(0,0), 500)
+
+    intervalId = setInterval(this.fetchUploads, 5000)
   },
   destroyed() {
-    $('body').off('dragleave')
     $('body').off('dragover')
+
+    clearInterval(intervalId)
   },
   methods: {
+    deleteUpload(upload) {
+      // TODO: confirmation
+      axios.delete(`${window.TwUtils.apiBaseUrl}tasks/uploads/${upload.id}`)
+        .then((response) => {
+          this.fetchUploads()
+        })
+    },
     choseSource (source) {
       if (source === this.constants.file) {
         return this.openUploadsModal()
@@ -394,15 +409,28 @@ export default {
     openUploadsModal() {
 
     },
-    fetchUploads () {
+    fetchUploads (autoSelect) {
+      if (this.loading)
+      {
+        return ;
+      }
+
       this.loading = true
+      if ( ! autoSelect)
+      {
+        this.chosenUpload = null
+      }
 
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/uploads`)
         .then(({ data, }) => {
-          this.loading = false
           this.uploads = data
 
-          this.chosenUpload = data.length > 0 ? data[0] : null
+          if (autoSelect && data.length > 0)
+          {
+            this.chosenUpload = data[0]
+          }
+
+          this.$nextTick(x => this.loading = false)
         })
     },
 

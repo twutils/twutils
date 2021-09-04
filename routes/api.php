@@ -23,6 +23,8 @@ Route::middleware('auth:api', 'throttle:100,1')->group(function () {
     Route::get('tasks', 'Api\TasksController@index')->name('tasks');
     Route::post('tasks/upload', 'Api\TasksController@uploadTask')->name('uploadTask');
     Route::get('tasks/uploads', 'Api\TasksController@uploads')->name('uploads');
+    Route::delete('tasks/uploads/{upload}', 'Api\TasksController@deleteUpload')->name('deleteUpload');
+
     Route::get('tasks/likes', 'Api\TasksController@listLikesTasks')->name('tasks.listLikesTasks');
     Route::get('tasks/userTweets', 'Api\TasksController@listUserTweetsTasks')->name('tasks.listUserTweetsTasks');
     Route::get('tasks/{task}', 'Api\TasksController@show')->name('tasks.show');

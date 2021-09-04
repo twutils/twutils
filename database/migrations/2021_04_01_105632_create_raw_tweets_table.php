@@ -19,7 +19,7 @@ class CreateRawTweetsTable extends Migration
             $table->string('id_str', 20)->index();
             $table->text('text');
 
-            $table->dateTime('tweet_created_at');
+            $table->dateTime('tweet_created_at')->nullable();
 
             $table->integer('retweet_count')->nullable();
             $table->integer('favorite_count')->nullable();

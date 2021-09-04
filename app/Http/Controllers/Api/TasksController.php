@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Task;
+use App\Models\Upload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
@@ -44,19 +45,31 @@ class TasksController extends Controller
     // Create Task
     public function uploadTask(Request $request)
     {
-        $this->validate($request, [
-            'purpose'   => ['required', Rule::in(['remove_tweets', 'remove_likes'])],
-            'file'      => ['required', 'file', 'mimetypes:text/*'], // TODO: ',application/zip'
-        ]);
+        $this->validate(
+            $request->merge(['purpose' => ucfirst($request->purpose)]),
+            [
+                'purpose'   => ['required', Rule::in(['DestroyTweets', 'DestroyLikes'])],
+                'file'      => ['required', 'file', 'mimetypes:text/*'], // TODO: ',application/zip'
+            ]
+        );
 
-        $uplaod = $this->rawTweetsService->create($request->file('file'), auth()->user());
+        $uplaod = $this->rawTweetsService->create($request->file('file'), auth()->user(), $request->purpose);
 
         return $uplaod;
     }
 
     public function uploads(Request $request)
     {
-        return auth()->user()->uploads;
+        return auth()->user()->uploads->load(['rawTweetsFirst', 'rawTweetsLast'])->loadCount('rawTweets');
+    }
+
+    public function deleteUpload(Request $request, Upload $upload)
+    {
+        $this->authorize('delete', $upload);
+
+        $upload->delete();
+
+        return [];
     }
 
     public function show(Request $request, Task $task)

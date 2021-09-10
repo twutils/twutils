@@ -40,7 +40,7 @@ jobs:
 
     - name: Execute backend tests
       run: |
-       vendor/bin/paratest -p5 --no-coverage
+       composer test
 
     - name: Prepare Frontend Data
       run: |

@@ -80,6 +80,9 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
+        "test": [
+            "vendor/bin/paratest -p5 --no-coverage"
+        ],
         "testData": [
             "phpunit --no-coverage --configuration testData.phpunit.xml"
         ]

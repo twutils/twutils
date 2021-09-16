@@ -2,14 +2,12 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Sheet;
+use App\TwUtils\Base\Export;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Events\AfterSheet;
-use Maatwebsite\Excel\Events\BeforeSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\BeforeWriting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -19,7 +17,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 
-class TweetsListExport extends BaseExport implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithColumnFormatting
+class TweetsListExport extends Export implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithColumnFormatting
 {
     use Exportable;
     use RegistersEventListeners;
@@ -30,37 +28,19 @@ class TweetsListExport extends BaseExport implements FromCollection, ShouldAutoS
     {
         $this->tweets = $tweets;
 
-        Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
-            $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
-        });
-    }
-
-    public static function beforeWriting(BeforeWriting $event)
-    {
-    }
-
-    public static function beforeSheet(BeforeSheet $event)
-    {
+        $this->registerMacros();
     }
 
     public static function afterSheet(AfterSheet $event)
     {
         // Definitions:
-        $highestRow = $event->sheet->getHighestRow();
-
         $headerBorderStyle = [
             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
             'color'       => ['rgb' => '8A8F8A'],
         ];
 
-        // Set Alignment for all columns except 'F' (Text Column)
-        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K'] as $column) {
-            $event->sheet->styleCells("{$column}1:{$column}${highestRow}", [
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_LEFT,
-                ],
-            ]);
-        }
+        // Left Alignment for all columns except 'G' (Text Column)
+        static::leftAlignColumns($event, ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K']);
 
         // 'K' Column: Permalink as a Hyperlink
         foreach ($event->sheet->getColumnIterator('K', 'K') as $row) {

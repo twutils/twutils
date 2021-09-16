@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Sentry;
 use Throwable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
@@ -45,7 +46,7 @@ class Handler extends ExceptionHandler
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
             $this->setSentryVersion();
 
-            app('sentry')->captureException($exception);
+            Sentry::captureException($exception);
         }
 
         parent::report($exception);
@@ -63,14 +64,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if (is_a($exception, TaskAddException::class)) {
+        if ($exception instanceof TaskAddException) {
+            /* @var TaskAddException $exception */
             return $exception->toResponse();
         }
 
         $response = parent::render($request, $exception);
 
         if (
-            app()->runningUnitTests() &&
+            ! app()->isProduction() &&
             $response->getStatusCode() >= Response::HTTP_INTERNAL_SERVER_ERROR
         ) {
             dd($exception);

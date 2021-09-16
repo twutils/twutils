@@ -1,5 +1,4 @@
-/webpack/build/
-/webpack/config/
+/coverage/
 /public/
 /*.js
 /specs/coverage/

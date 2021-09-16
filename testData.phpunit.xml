@@ -10,12 +10,12 @@
     </report>
   </coverage>
   <testsuites>
-        <testsuite name="TestData">
-            <directory suffix="Test.php">./tests/TestData</directory>
-        </testsuite>
+    <testsuite name="TestData">
+      <directory suffix="Test.php">./tests/TestData</directory>
+    </testsuite>
   </testsuites>
   <logging>
-      <testdoxText outputFile="coverage/phpunit/testdox/executed.txt"/>
+    <testdoxText outputFile="coverage/phpunit/testdox/executed.txt"/>
   </logging>
   <php>
     <env name="APP_ENV" value="testing"/>

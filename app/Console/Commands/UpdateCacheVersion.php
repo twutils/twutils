@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Sentry;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
@@ -42,6 +43,8 @@ class UpdateCacheVersion extends Command
         try {
             $this->updateCacheVersion();
         } catch (\Exception $e) {
+            Sentry::captureException($e);
+
             if (app('env') !== 'production') {
                 throw $e;
             }

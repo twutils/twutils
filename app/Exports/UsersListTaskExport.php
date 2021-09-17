@@ -38,52 +38,23 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
 
     public static function afterSheet(AfterSheet $event)
     {
-        // Definitions:
-        $headerBorderStyle = [
-            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-            'color'       => ['rgb' => '8A8F8A'],
-        ];
-
         // Left Alignment for all columns except 'H' (Bio Column)
         static::leftAlignColumns($event, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N', 'O']);
 
-        // 'O' Column: Permalink as a Hyperlink
-        foreach ($event->sheet->getColumnIterator('O', 'O') as $row) {
-            foreach ($row->getCellIterator() as $cell) {
-                if ($cell->getRow() === 1) {
-                    continue;
-                }
-                $cell->setHyperlink(new Hyperlink($cell->getValue(), $cell->getValue()));
-            }
-        }
+        // 'O' Column: Permalink as a Hyperlink, skip first row
+        static::heyperlinkColumn($event, 'O', 1);
 
-        // 'I' Column: Tweep Url as a Hyperlink
-        foreach ($event->sheet->getColumnIterator('I', 'I') as $row) {
-            foreach ($row->getCellIterator() as $cell) {
-                if ($cell->getRow() === 1 || empty($cell->getValue())) {
-                    continue;
-                }
-
-                $cell->setHyperlink(new Hyperlink(static::$tweepsUrls[$cell->getValue()], $cell->getValue()));
-            }
-        }
+        // 'I' Column: Tweep Url as a Hyperlink, but retrieve the real url instead of 'display_url'
+        static::heyperlinkColumn($event, 'I', 1, fn ($cellValue) => static::$tweepsUrls[$cellValue]);
 
         // '1' Row: Header Styles
         $event->sheet->styleCells(
             'A1:O1',
             [
                 'borders' => [
-                    'allBorders' => $headerBorderStyle,
+                    'allBorders' => static::headerBorderStyle(),
                 ],
-                'fill' => [
-                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => [
-                        'rgb' => 'BEC0BE',
-                    ],
-                    'endColor' => [
-                        'rgb' => 'BEC0BE',
-                    ],
-                ],
+                'fill' => static::headerFillStyle(),
             ]
         );
 
@@ -92,21 +63,10 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
             'A2:A'.$event->sheet->getHighestRow(),
             [
                 'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                        'color'       => ['rgb' => 'A8A8A8'],
-                    ],
-                    'top' => $headerBorderStyle,
+                    'allBorders' => static::highlightedBordersStyle(),
+                    'top'        => static::headerBorderStyle(),
                 ],
-                'fill' => [
-                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => [
-                        'rgb' => 'DCDCDC',
-                    ],
-                    'endColor' => [
-                        'rgb' => 'DCDCDC',
-                    ],
-                ],
+                'fill' => static::highlightedFillStyle(),
             ]
         );
     }
@@ -147,8 +107,6 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
             'E' => NumberFormat::FORMAT_NUMBER,
             'F' => NumberFormat::FORMAT_NUMBER,
             'G' => NumberFormat::FORMAT_NUMBER,
-
-            '',
         ];
     }
 
@@ -167,7 +125,7 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
 
     protected function followings()
     {
-        return $this->task->followings->reverse()->values()->map(
+        return $this->task->load(['followings.tweep'])->followings->reverse()->values()->map(
             function (Following $followoingPivot, $key) {
                 $tweep = $followoingPivot->tweep;
 
@@ -200,7 +158,7 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
 
     protected function followers()
     {
-        return $this->task->followers->reverse()->values()->map(
+        return $this->task->load(['followers.tweep'])->followers->reverse()->values()->map(
             function (Follower $followerPivot, $key) {
                 $tweep = $followerPivot->tweep;
 

@@ -33,38 +33,20 @@ class TweetsListExport extends Export implements FromCollection, ShouldAutoSize,
 
     public static function afterSheet(AfterSheet $event)
     {
-        // Definitions:
-        $headerBorderStyle = [
-            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-            'color'       => ['rgb' => '8A8F8A'],
-        ];
-
         // Left Alignment for all columns except 'G' (Text Column)
         static::leftAlignColumns($event, ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K']);
 
         // 'K' Column: Permalink as a Hyperlink
-        foreach ($event->sheet->getColumnIterator('K', 'K') as $row) {
-            foreach ($row->getCellIterator() as $cell) {
-                $cell->setHyperlink(new Hyperlink($cell->getValue(), $cell->getValue()));
-            }
-        }
+        static::heyperlinkColumn($event, 'K');
 
         // '1' Row: Header Styles
         $event->sheet->styleCells(
             'A1:K1',
             [
                 'borders' => [
-                    'allBorders' => $headerBorderStyle,
+                    'allBorders' => static::headerBorderStyle(),
                 ],
-                'fill' => [
-                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => [
-                        'rgb' => 'BEC0BE',
-                    ],
-                    'endColor' => [
-                        'rgb' => 'BEC0BE',
-                    ],
-                ],
+                'fill' => static::headerFillStyle(),
             ]
         );
 
@@ -73,21 +55,10 @@ class TweetsListExport extends Export implements FromCollection, ShouldAutoSize,
             'A2:A'.$event->sheet->getHighestRow(),
             [
                 'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                        'color'       => ['rgb' => 'A8A8A8'],
-                    ],
-                    'top' => $headerBorderStyle,
+                    'allBorders' => static::highlightedBordersStyle(),
+                    'top'        => static::headerBorderStyle(),
                 ],
-                'fill' => [
-                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => [
-                        'rgb' => 'DCDCDC',
-                    ],
-                    'endColor' => [
-                        'rgb' => 'DCDCDC',
-                    ],
-                ],
+                'fill' => static::highlightedFillStyle(),
             ]
         );
     }

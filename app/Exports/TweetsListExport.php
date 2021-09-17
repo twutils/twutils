@@ -51,16 +51,7 @@ class TweetsListExport extends Export implements FromCollection, ShouldAutoSize,
         );
 
         // 'A' Column: Styles
-        $event->sheet->styleCells(
-            'A2:A'.$event->sheet->getHighestRow(),
-            [
-                'borders' => [
-                    'allBorders' => static::highlightedBordersStyle(),
-                    'top'        => static::headerBorderStyle(),
-                ],
-                'fill' => static::highlightedFillStyle(),
-            ]
-        );
+        static::highlightColumn($event, 'A');
     }
 
     public function headings(): array

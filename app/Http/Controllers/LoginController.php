@@ -78,7 +78,7 @@ class LoginController extends Controller
 
     protected function setupTwitterConfigForReadWrite()
     {
-        if (app('env') == 'production') {
+        if (app()->isProduction()) {
             config()->set('services.twitter.redirect', env('TWITTER_REDIRECT_READ_WRITE'));
         } else {
             config()->set('services.twitter.redirect', sprintf(env('TWITTER_REDIRECT_READ_WRITE'), env('APP_PORT')));

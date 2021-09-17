@@ -59,16 +59,7 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
         );
 
         // 'A' Column: Styles
-        $event->sheet->styleCells(
-            'A2:A'.$event->sheet->getHighestRow(),
-            [
-                'borders' => [
-                    'allBorders' => static::highlightedBordersStyle(),
-                    'top'        => static::headerBorderStyle(),
-                ],
-                'fill' => static::highlightedFillStyle(),
-            ]
-        );
+        static::highlightColumn($event, 'A');
     }
 
     public function headings(): array

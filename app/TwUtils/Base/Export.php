@@ -37,6 +37,20 @@ class Export
         }
     }
 
+    protected static function highlightColumn(Event $event, string $column): void
+    {
+        $event->sheet->styleCells(
+            "{$column}2:{$column}".$event->sheet->getHighestRow(),
+            [
+                'borders' => [
+                    'allBorders' => static::highlightedBordersStyle(),
+                    'top'        => static::headerBorderStyle(),
+                ],
+                'fill' => static::highlightedFillStyle(),
+            ]
+        );
+    }
+
     protected static function headerBorderStyle(): array
     {
         return [

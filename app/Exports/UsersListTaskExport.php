@@ -39,13 +39,13 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
     public static function afterSheet(AfterSheet $event)
     {
         // Left Alignment for all columns except 'H' (Bio Column)
-        static::leftAlignColumns($event, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N', 'O']);
+        static::leftAlignColumns($event->sheet, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N', 'O']);
 
         // 'O' Column: Permalink as a Hyperlink, skip first row
-        static::heyperlinkColumn($event, 'O', 1);
+        static::heyperlinkColumn($event->sheet, 'O', 1);
 
         // 'I' Column: Tweep Url as a Hyperlink, but retrieve the real url instead of 'display_url'
-        static::heyperlinkColumn($event, 'I', 1, fn ($cellValue) => static::$tweepsUrls[$cellValue]);
+        static::heyperlinkColumn($event->sheet, 'I', 1, fn ($cellValue) => static::$tweepsUrls[$cellValue]);
 
         // '1' Row: Header Styles
         $event->sheet->styleCells(
@@ -59,7 +59,7 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
         );
 
         // 'A' Column: Styles
-        static::highlightColumn($event, 'A');
+        static::highlightColumn($event->sheet, 'A');
     }
 
     public function headings(): array

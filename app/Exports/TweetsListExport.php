@@ -34,10 +34,10 @@ class TweetsListExport extends Export implements FromCollection, ShouldAutoSize,
     public static function afterSheet(AfterSheet $event)
     {
         // Left Alignment for all columns except 'G' (Text Column)
-        static::leftAlignColumns($event, ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K']);
+        static::leftAlignColumns($event->sheet, ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K']);
 
         // 'K' Column: Permalink as a Hyperlink
-        static::heyperlinkColumn($event, 'K');
+        static::heyperlinkColumn($event->sheet, 'K');
 
         // '1' Row: Header Styles
         $event->sheet->styleCells(
@@ -51,7 +51,7 @@ class TweetsListExport extends Export implements FromCollection, ShouldAutoSize,
         );
 
         // 'A' Column: Styles
-        static::highlightColumn($event, 'A');
+        static::highlightColumn($event->sheet, 'A');
     }
 
     public function headings(): array

@@ -5,18 +5,17 @@ namespace App\TwUtils\Base;
 use Closure;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Sheet;
-use Maatwebsite\Excel\Events\Event;
 use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class Export
 {
-    protected static function leftAlignColumns(Event $event, array $columns = []): void
+    protected static function leftAlignColumns(Sheet $sheet, array $columns = []): void
     {
-        $highestRow = (int) $event->sheet->getHighestRow();
+        $highestRow = (int) $sheet->getHighestRow();
 
         foreach ($columns as $column) {
-            $event->sheet->styleCells("{$column}1:{$column}${highestRow}", [
+            $sheet->styleCells("{$column}1:{$column}${highestRow}", [
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_LEFT,
                 ],
@@ -24,9 +23,9 @@ class Export
         }
     }
 
-    protected static function heyperlinkColumn(Event $event, string $column, ?int $skipRow = null, ?Closure $urlCallback = null): void
+    protected static function heyperlinkColumn(Sheet $sheet, string $column, ?int $skipRow = null, ?Closure $urlCallback = null): void
     {
-        foreach ($event->sheet->getColumnIterator($column, $column) as $row) {
+        foreach ($sheet->getColumnIterator($column, $column) as $row) {
             foreach ($row->getCellIterator() as $cell) {
                 if ($cell->getRow() === $skipRow || empty($cell->getValue())) {
                     continue;
@@ -37,10 +36,10 @@ class Export
         }
     }
 
-    protected static function highlightColumn(Event $event, string $column): void
+    protected static function highlightColumn(Sheet $sheet, string $column): void
     {
-        $event->sheet->styleCells(
-            "{$column}2:{$column}".$event->sheet->getHighestRow(),
+        $sheet->styleCells(
+            "{$column}2:{$column}".$sheet->getHighestRow(),
             [
                 'borders' => [
                     'allBorders' => static::highlightedBordersStyle(),

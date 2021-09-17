@@ -47,16 +47,8 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
         // 'I' Column: Tweep Url as a Hyperlink, but retrieve the real url instead of 'display_url'
         static::heyperlinkColumn($event->sheet, 'I', 1, fn ($cellValue) => static::$tweepsUrls[$cellValue]);
 
-        // '1' Row: Header Styles
-        $event->sheet->styleCells(
-            'A1:O1',
-            [
-                'borders' => [
-                    'allBorders' => static::headerBorderStyle(),
-                ],
-                'fill' => static::headerFillStyle(),
-            ]
-        );
+        // Header row Styles
+        static::highlightHeader($event->sheet);
 
         // 'A' Column: Styles
         static::highlightColumn($event->sheet, 'A');

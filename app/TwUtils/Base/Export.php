@@ -36,6 +36,23 @@ class Export
         }
     }
 
+    protected static function highlightHeader(Sheet $sheet, string $untilColumn = null): void
+    {
+        if (is_null($untilColumn)) {
+            $untilColumn = $sheet->getDelegate()->getHighestColumn();
+        }
+
+        $sheet->styleCells(
+            "A1:{$untilColumn}1",
+            [
+                'borders' => [
+                    'allBorders' => static::headerBorderStyle(),
+                ],
+                'fill' => static::headerFillStyle(),
+            ]
+        );
+    }
+
     protected static function highlightColumn(Sheet $sheet, string $column): void
     {
         $sheet->styleCells(

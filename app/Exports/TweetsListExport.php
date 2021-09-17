@@ -39,16 +39,8 @@ class TweetsListExport extends Export implements FromCollection, ShouldAutoSize,
         // 'K' Column: Permalink as a Hyperlink
         static::heyperlinkColumn($event->sheet, 'K');
 
-        // '1' Row: Header Styles
-        $event->sheet->styleCells(
-            'A1:K1',
-            [
-                'borders' => [
-                    'allBorders' => static::headerBorderStyle(),
-                ],
-                'fill' => static::headerFillStyle(),
-            ]
-        );
+        // Header row Styles
+        static::highlightHeader($event->sheet);
 
         // 'A' Column: Styles
         static::highlightColumn($event->sheet, 'A');

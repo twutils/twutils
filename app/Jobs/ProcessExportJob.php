@@ -130,7 +130,8 @@ class ProcessExportJob extends Job
         if (
             (new TweetsListExport($tweets))->store(
                 $this->export->id,
-                config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX
+                config('filesystems.cloud'),
+                \Maatwebsite\Excel\Excel::XLSX,
             )
         ) {
             $this->success();

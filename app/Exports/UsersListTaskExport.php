@@ -25,6 +25,54 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
     use Exportable;
     use RegistersEventListeners;
 
+    public const COLUMN_ORDER = 'A';
+
+    public const COLUMN_USERNAME = 'B';
+
+    public const COLUMN_NAME = 'C';
+
+    public const COLUMN_USER_FOLLOWING = 'D';
+
+    public const COLUMN_USER_FOLLOWERS = 'E';
+
+    public const COLUMN_USER_TWEETS = 'F';
+
+    public const COLUMN_USER_LIKES = 'G';
+
+    public const COLUMN_BIO = 'H';
+
+    public const COLUMN_USER_URL = 'I';
+
+    public const COLUMN_USER_LOCATION = 'J';
+
+    public const COLUMN_USER_IS_VERIFIED = 'K';
+
+    public const COLUMN_RELATION_COLUMN = 'L';
+
+    public const COLUMN_USER_JOINED_TWITTER_AT = 'M';
+
+    public const COLUMN_ID = 'N';
+
+    public const COLUMN_PERMALINK = 'O';
+
+    public const ALL_COLUMNS = [
+        self::COLUMN_ORDER,
+        self::COLUMN_USERNAME,
+        self::COLUMN_NAME,
+        self::COLUMN_USER_FOLLOWING,
+        self::COLUMN_USER_FOLLOWERS,
+        self::COLUMN_USER_TWEETS,
+        self::COLUMN_USER_LIKES,
+        self::COLUMN_BIO,
+        self::COLUMN_USER_URL,
+        self::COLUMN_USER_LOCATION,
+        self::COLUMN_USER_IS_VERIFIED,
+        self::COLUMN_RELATION_COLUMN,
+        self::COLUMN_USER_JOINED_TWITTER_AT,
+        self::COLUMN_ID,
+        self::COLUMN_PERMALINK,
+    ];
+
     protected $task;
 
     protected static $tweepsUrls;
@@ -39,45 +87,51 @@ class UsersListTaskExport extends Export implements FromCollection, ShouldAutoSi
     public static function afterSheet(AfterSheet $event)
     {
         // Left Alignment for all columns except 'H' (Bio Column)
-        static::leftAlignColumns($event->sheet, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N', 'O']);
+        static::leftAlignColumns(
+            $event->sheet,
+            array_filter(static::ALL_COLUMNS, fn (string $column) => $column !== static::COLUMN_BIO),
+        );
 
         // 'O' Column: Permalink as a Hyperlink, skip first row
-        static::heyperlinkColumn($event->sheet, 'O', 1);
+        static::heyperlinkColumn($event->sheet, static::COLUMN_PERMALINK, 1);
 
         // 'I' Column: Tweep Url as a Hyperlink, but retrieve the real url instead of 'display_url'
-        static::heyperlinkColumn($event->sheet, 'I', 1, fn ($cellValue) => static::$tweepsUrls[$cellValue]);
+        static::heyperlinkColumn($event->sheet, static::COLUMN_USER_URL, 1, fn ($cellValue) => static::$tweepsUrls[$cellValue]);
 
-        // Header row Styles
+        // Highlight first row
         static::highlightHeader($event->sheet);
 
-        // 'A' Column: Styles
-        static::highlightColumn($event->sheet, 'A');
+        // Highlight first column
+        static::highlightColumn($event->sheet, static::COLUMN_ORDER);
+    }
+
+    protected function getRelationColumn(): string
+    {
+        return $this->task->type === FetchFollowingOperation::class ? 'follows_you' : 'followed_by_me';
     }
 
     public function headings(): array
     {
-        $relationColumn = $this->task->type === FetchFollowingOperation::class ? 'follows_you' : 'followed_by_me';
-
         return [
-            'order',                  // A
-            'username',               // B
-            'name',                   // C
+            'order',                    // A
+            'username',                 // B
+            'name',                     // C
 
-            'user_following',         // D
-            'user_followers',         // E
-            'user_tweets',            // F
-            'user_likes',             // G
+            'user_following',           // D
+            'user_followers',           // E
+            'user_tweets',              // F
+            'user_likes',               // G
 
-            'bio',                    // H
-            'user_url',               // I
-            'user_location',          // J
-            'user_is_verified',       // K
+            'bio',                      // H
+            'user_url',                 // I
+            'user_location',            // J
+            'user_is_verified',         // K
 
-            $relationColumn,          // L
+            $this->getRelationColumn(), // L
 
-            'user_joined_twitter_at', // M
-            'id',                     // N
-            'permalink',              // O
+            'user_joined_twitter_at',   // M
+            'id',                       // N
+            'permalink',                // O
         ];
     }
 

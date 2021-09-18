@@ -8,9 +8,13 @@ use App\Models\Export;
 use App\Models\MediaFile;
 use App\TwUtils\Base\Job;
 use Illuminate\Support\Str;
+use App\Exports\FollowersExport;
+use App\Exports\FollowingsExport;
 use App\Exports\TweetsListExport;
-use App\Exports\UsersListTaskExport;
 use App\TwUtils\Services\ExportsService;
+use App\TwUtils\Base\Export as ExcelExport;
+use App\TwUtils\TwitterOperations\FetchFollowersOperation;
+use App\TwUtils\TwitterOperations\FetchFollowingOperation;
 
 class ProcessExportJob extends Job
 {
@@ -91,17 +95,22 @@ class ProcessExportJob extends Job
     {
         $task = $this->export->task;
 
-        if (in_array($task->type, Task::USERS_LISTS_TYPES)) {
-            if (
-                (new UsersListTaskExport($task))->store(
-                    $this->export->id,
-                    config('filesystems.cloud'), \Maatwebsite\Excel\Excel::XLSX
-                )
-            ) {
-                $this->success();
-            }
+        /** var ExcelExport */
+        $exporter = match ($task->type) {
+            FetchFollowingOperation::class => new FollowingsExport($task),
+            FetchFollowersOperation::class => new FollowersExport($task),
+            default                        => null,
+        };
 
-            return;
+        if (
+            $exporter &&
+            $exporter->store(
+                $this->export->id,
+                config('filesystems.cloud'),
+                \Maatwebsite\Excel\Excel::XLSX,
+            )
+        ) {
+            return $this->success();
         }
 
         $tweets = collect([]);

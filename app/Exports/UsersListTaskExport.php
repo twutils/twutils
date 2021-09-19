@@ -69,7 +69,7 @@ abstract class UsersListTaskExport extends Export implements FromCollection, Sho
         self::COLUMN_PERMALINK,
     ];
 
-    protected $task;
+    protected Task $task;
 
     protected static $tweepsUrls;
 

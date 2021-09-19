@@ -8,10 +8,14 @@ use Illuminate\Support\Str;
 use App\Jobs\Actions\TaskCreated;
 use Illuminate\Database\Eloquent\Model;
 use App\Jobs\CleaningAllTweetsAndTweeps;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
 use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;
 use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
@@ -48,6 +52,16 @@ class Task extends Model
 
     public const TWEETS_LISTS_WITH_ENTITIES_TYPES = [
         FetchEntitiesLikesOperation::class,
+        FetchEntitiesUserTweetsOperation::class,
+    ];
+
+    public const TWEETS_LISTS_LIKES_TYPES = [
+        FetchLikesOperation::class,
+        FetchEntitiesLikesOperation::class,
+    ];
+
+    public const TWEETS_LISTS_USERTWEETS_TYPES = [
+        FetchUserTweetsOperation::class,
         FetchEntitiesUserTweetsOperation::class,
     ];
 
@@ -134,12 +148,12 @@ class Task extends Model
         return $tweeps;
     }
 
-    public function likes()
+    public function likes(): BelongsToMany
     {
         return $this->tweets();
     }
 
-    public function tweets()
+    public function tweets(): BelongsToMany
     {
         return $this->belongsToMany(Tweet::class, 'task_tweet', 'task_id', 'tweet_id_str', 'id', 'id_str', 'tweets')
             ->using(TaskTweet::class)
@@ -147,42 +161,42 @@ class Task extends Model
             ->with('media.mediaFiles');
     }
 
-    public function socialUser()
+    public function socialUser(): BelongsTo
     {
         return $this->belongsTo(SocialUser::class, 'socialuser_id', 'id');
     }
 
-    public function exports()
+    public function exports(): HasMany
     {
         return $this->hasMany(Export::class, 'task_id', 'id');
     }
 
-    public function view()
+    public function view(): HasOne
     {
         return $this->hasOne(TaskView::class, 'task_id', 'id');
     }
 
-    public function followings()
+    public function followings(): HasMany
     {
         return $this->hasMany(Following::class, 'task_id', 'id');
     }
 
-    public function followers()
+    public function followers(): HasMany
     {
         return $this->hasMany(Follower::class, 'task_id', 'id');
     }
 
-    public function managedBy()
+    public function managedBy(): BelongsTo
     {
         return $this->belongsTo(self::class, 'managed_by_task_id', 'id');
     }
 
-    public function targetedTask()
+    public function targetedTask(): BelongsTo
     {
         return $this->belongsTo(self::class, 'targeted_task_id', 'id');
     }
 
-    public function managedTasks()
+    public function managedTasks(): HasMany
     {
         return $this->hasMany(self::class, 'managed_by_task_id', 'id');
     }

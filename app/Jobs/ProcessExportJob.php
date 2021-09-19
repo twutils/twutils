@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Exception;
-use App\Models\Task;
 use App\Models\Export;
 use App\Models\MediaFile;
 use App\TwUtils\Base\Job;
@@ -113,30 +112,8 @@ class ProcessExportJob extends Job
             return $this->success();
         }
 
-        $tweets = collect([]);
-
-        if (in_array($task->type, Task::TWEETS_LISTS_TYPES)) {
-            $tweets = $task->likes;
-        }
-
-        if (in_array($task->type, Task::TWEETS_MANAGED_DESTROY_TYPES)) {
-            $task = Task::where('managed_by_task_id', $task->id)
-                        ->where($task->type, Task::TWEETS_DESTROY_TWEETS_TYPES)
-                        ->first();
-        }
-
         if (
-            in_array($task->type, Task::TWEETS_DESTROY_TWEETS_TYPES) &&
-            ($targetedTask = $task->targetedTask)
-        ) {
-            $tweets = $targetedTask
-                ->tweets()
-                ->wherePivot('removed', '!=', null)
-                ->get();
-        }
-
-        if (
-            (new TweetsListExport($tweets))->store(
+            (new TweetsListExport($task))->store(
                 $this->export->id,
                 config('filesystems.cloud'),
                 \Maatwebsite\Excel\Excel::XLSX,

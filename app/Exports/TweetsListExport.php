@@ -2,9 +2,11 @@
 
 namespace App\Exports;
 
+use App\Models\Task;
 use App\TwUtils\Base\Export;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Events\AfterSheet;
+use Illuminate\Database\Eloquent\Builder;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -16,17 +18,25 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use App\TwUtils\TwitterOperations\DestroyLikesOperation;
+use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
 
 class TweetsListExport extends Export implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithColumnFormatting
 {
     use Exportable;
     use RegistersEventListeners;
 
-    protected $tweets;
+    protected Task $task;
 
-    public function __construct(Collection $tweets)
+    public function __construct(Task $task)
     {
-        $this->tweets = $tweets;
+        $this->task = $task;
+
+        if (in_array($this->task->type, Task::TWEETS_MANAGED_DESTROY_TYPES)) {
+            $this->task = Task::where('managed_by_task_id', $task->id)
+                ->whereIn('type', Task::TWEETS_DESTROY_TWEETS_TYPES)
+                ->sole();
+        }
 
         $this->registerMacros();
     }
@@ -75,28 +85,67 @@ class TweetsListExport extends Export implements FromCollection, ShouldAutoSize,
 
     public function collection()
     {
-        $tweets = $this->tweets->map(
-            function ($like) {
-                return [
-                    'tweet_date'  => Date::dateTimeToExcel($like->tweet_created_at),
-                    'tweet_time'  => Date::dateTimeToExcel($like->tweet_created_at),
-                    'username'    => $this->formatText($like->retweeted_status ? $like->retweeted_status['user']['screen_name'] : $like->tweep->screen_name),
-                    'to'          => $this->formatText($like->in_reply_to_screen_name),
+        /** var Builder */
+        $tweetsQuery = $this->getTweetsQuery();
 
-                    'retweets'    => $like->retweet_count,
-                    'favorites'   => $like->favorite_count,
+        return $tweetsQuery->get()->map(
+            fn ($tweet) => [
+                    'tweet_date'  => Date::dateTimeToExcel($tweet->tweet_created_at),
+                    'tweet_time'  => Date::dateTimeToExcel($tweet->tweet_created_at),
+                    'username'    => $this->formatText(
+                        $tweet->retweeted_status ? $tweet->retweeted_status['user']['screen_name'] : $tweet->tweep->screen_name
+                    ),
+                    'to'          => $this->formatText($tweet->in_reply_to_screen_name),
 
-                    'text'        => $this->formatText($like->text),
+                    'retweets'    => $tweet->retweet_count,
+                    'favorites'   => $tweet->favorite_count,
 
-                    'mentions'    => $this->formatText($like->mentions),
-                    'hashtags'    => $this->formatText($like->hashtags),
-                    'id'          => $like->id_str.' ',
+                    'text'        => $this->formatText($tweet->text),
 
-                    'permalink'   => 'https://twitter.com/'.$like->tweep->screen_name.'/status/'.$like->id_str,
-                ];
-            }
+                    'mentions'    => $this->formatText($tweet->mentions),
+                    'hashtags'    => $this->formatText($tweet->hashtags),
+                    'id'          => $tweet->id_str.' ',
+
+                    'permalink'   => 'https://twitter.com/'.$tweet->tweep->screen_name.'/status/'.$tweet->id_str,
+                ]
         );
+    }
 
-        return $tweets;
+    protected function getTweetsQuery(): Builder
+    {
+        return $this->getTweetsQueryFromTask($this->task);
+    }
+
+    protected function getTweetsQueryFromTask(Task $task): Builder
+    {
+        // First, recursively point to the targeted task
+        if (
+            in_array($task->type, Task::TWEETS_DESTROY_TWEETS_TYPES) &&
+            ($targetedTask = $task->targetedTask)
+        ) {
+            return $this->getTweetsQueryFromTask($targetedTask);
+        }
+
+        if (in_array($task->type, Task::TWEETS_LISTS_LIKES_TYPES)) {
+            return $task->likes()->getQuery();
+        }
+
+        if (in_array($task->type, Task::TWEETS_LISTS_USERTWEETS_TYPES)) {
+            return $task->tweets()->getQuery();
+        }
+
+        if ($task->type === DestroyLikesOperation::class) {
+            return $task
+                ->likes()
+                ->wherePivot('removed', '!=', null)
+                ->getQuery();
+        }
+
+        if ($task->type === DestroyTweetsOperation::class) {
+            return $task
+                ->tweets()
+                ->wherePivot('removed', '!=', null)
+                ->getQuery();
+        }
     }
 }

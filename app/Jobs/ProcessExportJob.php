@@ -120,10 +120,9 @@ class ProcessExportJob extends Job
         }
 
         if (in_array($task->type, Task::TWEETS_MANAGED_DESTROY_TYPES)) {
-            $task = Task::where('managed_by_task_id', $task->id)->get()
-                ->first(function (Task $task) {
-                    return in_array($task->type, Task::TWEETS_DESTROY_TWEETS_TYPES);
-                });
+            $task = Task::where('managed_by_task_id', $task->id)
+                        ->where($task->type, Task::TWEETS_DESTROY_TWEETS_TYPES)
+                        ->first();
         }
 
         if (

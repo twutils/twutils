@@ -7,13 +7,20 @@ use App\Models\Export;
 use App\Models\MediaFile;
 use App\TwUtils\Base\Job;
 use Illuminate\Support\Str;
+use App\Exports\LikesExport;
+use App\Exports\TweetsExport;
 use App\Exports\FollowersExport;
 use App\Exports\FollowingsExport;
-use App\Exports\TweetsListExport;
 use App\TwUtils\Services\ExportsService;
 use App\TwUtils\Base\Export as ExcelExport;
+use App\TwUtils\TwitterOperations\FetchLikesOperation;
+use App\TwUtils\TwitterOperations\DestroyLikesOperation;
+use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
 use App\TwUtils\TwitterOperations\FetchFollowingOperation;
+use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
+use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
+use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
 
 class ProcessExportJob extends Job
 {
@@ -98,22 +105,19 @@ class ProcessExportJob extends Job
         $exporter = match ($task->type) {
             FetchFollowingOperation::class => new FollowingsExport($task),
             FetchFollowersOperation::class => new FollowersExport($task),
-            default                        => null,
+
+            DestroyTweetsOperation::class,
+            FetchUserTweetsOperation::class,
+            FetchEntitiesUserTweetsOperation::class, => new TweetsExport($task),
+
+            DestroyLikesOperation::class,
+            FetchLikesOperation::class,
+            FetchEntitiesLikesOperation::class => new LikesExport($task),
         };
 
         if (
             $exporter &&
             $exporter->store(
-                $this->export->id,
-                config('filesystems.cloud'),
-                \Maatwebsite\Excel\Excel::XLSX,
-            )
-        ) {
-            return $this->success();
-        }
-
-        if (
-            (new TweetsListExport($task))->store(
                 $this->export->id,
                 config('filesystems.cloud'),
                 \Maatwebsite\Excel\Excel::XLSX,
@@ -131,8 +135,9 @@ class ProcessExportJob extends Job
 
         $this->export->task
             ->fresh()
-            ->likes
-            ->load('media.mediaFiles')
+            ->getTweetsQuery()
+            ->with('media.mediaFiles')
+            ->get()
             ->pluck('media.*.mediaFiles.*')
             ->map(function ($mediaFilesCollection) {
                 return collect($mediaFilesCollection)->map(function (MediaFile $mediaFile) {

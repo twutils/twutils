@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Jobs\Actions\TaskCreated;
 use Illuminate\Database\Eloquent\Model;
 use App\Jobs\CleaningAllTweetsAndTweeps;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -117,6 +118,31 @@ class Task extends Model
         static::deleted(function (self $task) {
             dispatch(new CleaningAllTweetsAndTweeps);
         });
+    }
+
+    public function getTweetsQuery(): Builder
+    {
+        if (in_array($this->type, self::TWEETS_LISTS_LIKES_TYPES)) {
+            return $this->likes()->getQuery();
+        }
+
+        if (in_array($this->type, self::TWEETS_LISTS_USERTWEETS_TYPES)) {
+            return $this->tweets()->getQuery();
+        }
+
+        if ($this->type === DestroyLikesOperation::class) {
+            return $this
+                ->likes()
+                ->wherePivot('removed', '!=', null)
+                ->getQuery();
+        }
+
+        if ($this->type === DestroyTweetsOperation::class) {
+            return $this
+                ->tweets()
+                ->wherePivot('removed', '!=', null)
+                ->getQuery();
+        }
     }
 
     public function getTaskTweeps()

@@ -6,25 +6,21 @@ use App\Models\Task;
 use App\Models\Export;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 
 class ExportsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    public function delete(Request $request, Export $export)
+    public function delete(Request $request, Export $export): JsonResponse
     {
         $this->authorize('delete', $export);
 
         $export->delete();
 
-        return $export;
+        return response()->json($export);
     }
 
-    public function add(Request $request, Task $task, $exportType)
+    public function add(Request $request, Task $task, $exportType): JsonResponse
     {
         $this->validate($request, [
             'type' => [
@@ -44,7 +40,7 @@ class ExportsController extends Controller
             $lastFoundExport->status = Export::STATUS_STARTED;
             $lastFoundExport->save();
 
-            return $lastFoundExport;
+            return response()->json($lastFoundExport);
         }
 
         $export = Export::create([
@@ -54,5 +50,7 @@ class ExportsController extends Controller
 
         $export->status = Export::STATUS_STARTED;
         $export->save();
+
+        return response()->json($export);
     }
 }

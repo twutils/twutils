@@ -195,15 +195,17 @@
                 <td
                   v-if="!(userExport && confirmRemoveMode === userExport.id)"
                 >
-                  <button
-                    @click="download(userExport)"
+                  <a
                     v-if="userExport"
-                    :disabled="! (userExport && canDownload(userExport))"
-                    type="button"
-                    :class="`btn btn-outline-${userExport && canDownload(userExport) ? 'primary':'disabled disabled'}`"
+                    target="_blank"
+                    :href="`${TwUtils.baseUrl}task/${userExport.task_id}/export/${userExport.id}`"
+                    :disabled="! canDownload(userExport)"
+                    :download="canDownload(userExport) ? '' : false"
+                    :target="canDownload(userExport) ? '_blank' : false"
+                    :class="`btn btn-outline-${canDownload(userExport) ? 'primary':'disabled disabled'}`"
                   >
                     <i class="fa fa-download" aria-hidden="true"></i>
-                  </button>
+                  </a>
                 </td>
                 <td
                   :colspan="userExport && confirmRemoveMode === userExport.id ? 2 : 1"

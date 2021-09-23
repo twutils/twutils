@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\TwUtils\Exports\Shared;
 
 use App\Models\Task;
 use App\TwUtils\Base\Export;

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Exports;
+namespace App\TwUtils\Exports;
 
 use App\Models\Follower;
+use App\TwUtils\Exports\Shared\UsersListTaskExport;
 
 class FollowersExport extends UsersListTaskExport
 {

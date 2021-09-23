@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\TwUtils\Exports\Shared;
 
 use App\Models\Task;
 use App\TwUtils\Base\Export;
@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 
-class TweetsListExport extends Export implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithColumnFormatting
+abstract class TweetsListExport extends Export implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithColumnFormatting
 {
     use Exportable;
     use RegistersEventListeners;

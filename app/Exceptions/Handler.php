@@ -48,8 +48,6 @@ class Handler extends ExceptionHandler
 
             Sentry::captureException($exception);
         }
-
-        parent::report($exception);
     }
 
     /**

@@ -10,18 +10,34 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - run: git status
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v1
+    - uses: shivammathur/setup-php@v2
       with:
-          php-version: 8.0
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
-          coverage: none
+        php-version: 8.0
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+        tools: composer
+        coverage: none
+
+    - name: Get cache directories
+      id: cache-dir
+      run: |
+        echo "::set-output name=composer-dir::$(composer config cache-files-dir)"
+
+    - name: Cache composer dependencies
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.cache-dir.outputs.composer-dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
 
     - name: Install composer Dependencies
       run: |
-       composer install --prefer-dist --no-interaction --no-suggest
+       composer install --prefer-dist --optimize-autoloader --no-progress --no-interaction --no-scripts
 
     - name: Prepare Laravel Application
       run: |
@@ -29,12 +45,16 @@ jobs:
         php artisan key:generate
 
 
-    - name: Download NodeJs
-      uses: actions/setup-node@v1
+    - name: NodeJs && npm install
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        check-latest: true
+        cache: 'npm'
+    - run: npm install
 
-    - name: npm install, then build for production
+    - name: npm run prod && npm run build
       run: |
-        npm install
         npm run prod
         npm run build
 

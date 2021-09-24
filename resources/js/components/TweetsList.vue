@@ -51,6 +51,7 @@
   left: 2px;
   bottom: 0;
   background: #85d3fc;
+  min-height: 1px;
 }
 .monthTweetsBarLabel {
   position: absolute;
@@ -289,7 +290,7 @@
             <portal-target name="tweets-list-pager" />
             <portal to="tweets-list-pager">
               <tweets-list-datatable-pager
-                @vue-datatable::set-page="page = $event"
+                @vue-datatable::set-page="setPage($event)"
                 type="long"
                 :per-page="perPageInt"
               ></tweets-list-datatable-pager>
@@ -512,9 +513,8 @@ export default {
 
       this.debouncedAfterFiltering()
     },
-    page (...args) {
-      this.loading = true
-      this.search()
+    page(newValue) {
+      this.$refs['tweets-list-datatable'].page = newValue
     },
     searchOnlyInMonth (newValue) {
       if (!newValue) {
@@ -531,8 +531,11 @@ export default {
     },
   },
   methods: {
-    resetPage() {
-      this.page = 1
+    setPage(page = 1) {
+      this.loading = true
+      this.page = page
+
+      this.$nextTick(this.search)
     },
     autoSelectLatestTweet () {
       this.$nextTick(x => {
@@ -709,7 +712,7 @@ export default {
       this.debouncedAfterFiltering()
     },
     selectYearAndMonth (year, month) {
-      this.resetPage()
+      this.page = 1
       this.filterTweetsByYearAndMonth(year, month)
     },
     filterTweetsByYearAndMonth (year, month) {

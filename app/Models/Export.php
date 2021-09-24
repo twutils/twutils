@@ -6,6 +6,7 @@ use App\Jobs\ProcessExportJob;
 use Illuminate\Database\Eloquent\Model;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use App\Models\Concerns\InteractsWithStorage;
+use League\Flysystem\Adapter\AbstractAdapter;
 
 class Export extends Model
 {
@@ -59,11 +60,8 @@ class Export extends Model
             $export->status = static::STATUS_INITIAL;
         });
 
-        static::created(function (self $export) {
-        });
-
         static::updating(function (self $export) {
-            if (! array_key_exists('status', $export->getDirty())) {
+            if (! $export->isDirty(['status'])) {
                 return;
             }
 
@@ -92,12 +90,9 @@ class Export extends Model
         });
 
         static::saved(function (self $export) {
-            $dirtyKeys = array_keys($export->getDirty());
-
             if (
-                empty($dirtyKeys) ||
-                in_array('progress', $dirtyKeys) ||
-                in_array('progress_end', $dirtyKeys)
+                ! $export->isDirty() ||
+                $export->isDirty(['progress', 'progress_end'])
             ) {
                 return;
             }
@@ -119,6 +114,7 @@ class Export extends Model
 
     public function toResponse()
     {
+        /** @var AbstractAdapter */
         $adapter = static::getStorageDisk()->getDriver()->getAdapter();
 
         if ($adapter instanceof AwsS3Adapter) {

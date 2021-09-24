@@ -271,7 +271,7 @@ class TasksController extends Controller
             'searchOnlyInMonth' => ['sometimes', 'boolean'],
         ]);
 
-        $query = $task->tweets();
+        $query = $task->getTweetsQuery();
 
         $selectedMonth = $request->month;
         $selectedYear = $request->year;

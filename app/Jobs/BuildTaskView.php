@@ -31,7 +31,7 @@ class BuildTaskView extends Job
 
         $months = [];
 
-        $this->task->tweets()->chunk(100, function ($tweets) use (&$taskView, &$months) {
+        $this->task->getTweetsQuery()->chunk(100, function ($tweets) use (&$taskView, &$months) {
             foreach ($tweets as $tweet) {
                 $taskView->count += 1;
 

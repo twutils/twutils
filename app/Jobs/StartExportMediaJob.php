@@ -25,12 +25,12 @@ class StartExportMediaJob extends Job
 
     public function handle()
     {
-        $tweetsWithMedia = $this->export->task->fresh()->tweets
+        $tweetsWithMedia = $this->export->task->fresh()->getTweetsQuery()->get()
             ->filter(fn (Tweet $tweet) => $this->assetsService->hasMedia($tweet))
             ->values();
 
         $mediaFiles = $this->export->task->fresh()
-            ->tweets()
+            ->getTweetsQuery()
             ->with('media.mediaFiles')
             ->get()
             ->pluck('media.*.mediaFiles.*')

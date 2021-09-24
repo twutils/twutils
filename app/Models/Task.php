@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use RuntimeException;
 use App\Jobs\BuildTaskView;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -120,29 +121,34 @@ class Task extends Model
         });
     }
 
-    public function getTweetsQuery(): Builder
+    public function getTweetsRelation(): BelongsToMany
     {
         if (in_array($this->type, self::TWEETS_LISTS_LIKES_TYPES)) {
-            return $this->likes()->getQuery();
+            return $this->likes();
         }
 
         if (in_array($this->type, self::TWEETS_LISTS_USERTWEETS_TYPES)) {
-            return $this->tweets()->getQuery();
+            return $this->tweets();
         }
 
         if ($this->type === DestroyLikesOperation::class) {
             return $this
                 ->likes()
-                ->wherePivot('removed', '!=', null)
-                ->getQuery();
+                ->wherePivot('removed', '!=', null);
         }
 
         if ($this->type === DestroyTweetsOperation::class) {
             return $this
                 ->tweets()
-                ->wherePivot('removed', '!=', null)
-                ->getQuery();
+                ->wherePivot('removed', '!=', null);
         }
+
+        throw new RuntimeException('Unreachable code');
+    }
+
+    public function getTweetsQuery(): Builder
+    {
+        return $this->getTweetsRelation()->getQuery();
     }
 
     public function getTaskTweeps()
@@ -150,7 +156,8 @@ class Task extends Model
         $tweeps = collect([]);
 
         if (in_array($this->type, self::TWEETS_LISTS_TYPES)) {
-            $tweeps = $this->likes
+            $tweeps = $this->getTweetsQuery()
+                        ->get()
                         ->pluck('tweep')
                         ->unique('id');
         }

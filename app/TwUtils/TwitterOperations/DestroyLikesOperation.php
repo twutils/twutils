@@ -71,7 +71,7 @@ class DestroyLikesOperation extends TwitterOperation
         $targetedTask = $this->task->targetedTask;
 
         if ($targetedTask) {
-            $targetedTask->tweets()->updateExistingPivot($likeInstance->id_str, ['removed' => now()->format('Y-m-d H:i:s'), 'removed_task_id' => $this->task->id]);
+            $targetedTask->getTweetsRelation()->updateExistingPivot($likeInstance->id_str, ['removed' => now()->format('Y-m-d H:i:s'), 'removed_task_id' => $this->task->id]);
         }
     }
 

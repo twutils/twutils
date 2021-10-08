@@ -10,7 +10,7 @@ Twitter Utilities (TwUtils) is an open source platform offers set of utilities f
 
 TwUtils uses two different Twitter applications, One for Read-Only operations, One for Read-Write operations.
 
-Read-Only operations includes: User Data, Backup Tweets/Likes/Followings/Followers.
+Read-Only operations includes: User Basic Info Data, Backup Tweets/Likes/Followings/Followers.
 
 Read-Write operations includes: Delete Tweets, Delete Likes.
 
@@ -33,7 +33,7 @@ Consumer API Keys will be used in the `.env` file, explanation [below](#4-updati
 
 ### 2. Laravel-Ready Environment
 
-This application is built on top of Laravel Framework v7, It assumes `composer` is installed and `php` has the needed extensions. For details please refer to [Laravel 7 Installation documentation](https://laravel.com/docs/7.x#installation).
+This application is built on top of Laravel Framework v8, It assumes `composer` is installed and `php` has the needed extensions. For details please refer to [Laravel 8 Installation documentation](https://laravel.com/docs/8.x#installation).
 
 
 ## Local Development: Setup
@@ -60,7 +60,7 @@ php artisan key:generate
 php artisan storage:link
 ```
 
-### 3. Update Environment Variables (Database)
+### 3. Updating Environment Variables (Database)
 
 Update the following environment variables in your `.env` file to match your database.
 
@@ -78,7 +78,6 @@ DB_PASSWORD=
 
 Here you will set the **Consumer API Keys** you created when you created the twitter application.
 
-
 For Read-Only Application, Set the following keys in your `.env` file:
 
 ```
@@ -90,6 +89,7 @@ TWITTER_CLIENT_SECRET="XXXX"
 ```
 
 For Read-Write Application, Set the following keys in your `.env` file:
+
 ```
 TWITTER_READ_WRITE_CLIENT_ID="XXXX"
 TWITTER_READ_WRITE_CLIENT_SECRET="XXXX"
@@ -114,10 +114,7 @@ TWITTER_REDIRECT_READ_WRITE="http://localhost:%s/login/twitter/rw/callback"
 php artisan serve
 ```
 
-Visit:
-http://localhost:8000/
-
-
+Visit: http://localhost:8000/
 
 ## Security
 

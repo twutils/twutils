@@ -5,14 +5,19 @@ const isProduction = process.env.NODE_ENV === 'production'
 const isBuildMode = process.env.BUILDTYPE === 'DOWNLOABLE_ASSETS'
 const usesBrowserSync = ! process.argv.includes('-no-bs')
 
-const webpack = require('webpack');
 const mix = require('laravel-mix');
+require('laravel-mix-bundle-analyzer');
 
-let webpackConfig = {
-  plugins: [
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-  ]
-}
+mix.webpackConfig(webpack => {
+    return {
+        plugins: [
+            new webpack.IgnorePlugin({
+            resourceRegExp: /^\.\/locale$/,
+            contextRegExp: /moment$/,
+          })
+        ]
+    };
+});
 
 mix.alias({
   '@': require('path').resolve(__dirname, 'resources/js')
@@ -25,10 +30,8 @@ if(! isTest )
 
 if (isDevelopemnt)
 {
-  webpackConfig.plugins.push(new (require('webpack-bundle-analyzer').BundleAnalyzerPlugin)())
+  mix.bundleAnalyzer();
 }
-
-mix.webpackConfig(webpackConfig)
 
 if (isBuildMode || isTest)
 {

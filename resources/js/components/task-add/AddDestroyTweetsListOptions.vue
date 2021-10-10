@@ -91,7 +91,7 @@
             <div class="d-flex justify-content-around">
               <div
                 @click="choseSource(constants.twitter)"
-                :class="`tweetsSourceOption ${tweetsSource === constants.twitter ? 'active':''}`"
+                :class="`tweetsSourceOption ${options.tweetsSource === constants.twitter ? 'active':''}`"
               >
                 <h5>My Account</h5>
                 <p>
@@ -111,7 +111,7 @@
                  data-target="#uploads"
                  aria-haspopup="true"
                  aria-expanded="false"
-                :class="`tweetsSourceOption ${tweetsSource === constants.file ? 'active':''}`"
+                :class="`tweetsSourceOption ${options.tweetsSource === constants.file ? 'active':''}`"
               >
                 <h5>Archive File</h5>
                 <div>
@@ -119,18 +119,18 @@
                     More accurate removal. Upload an archive file.
                   </p>
                   <div
-                    v-if="chosenUpload"
+                    v-if="options.chosenUpload"
                     style="box-shadow: 0px 0px 9px 2px #cfcfcf;"
                     class="p-1 mx-2"
                   >
-                    <span class="badge">{{chosenUpload.original_name}}</span>
+                    <span class="badge">{{options.chosenUpload.original_name}}</span>
                     <label class="ml-2 small">
                       Uploaded:
                     </label>
                     <from-now
                       class="text-muted small"
-                      :value="chosenUpload.created_at"
-                      :title="moment(chosenUpload.created_at).format('YYYY-MMM-DD hh:mm A')"
+                      :value="options.chosenUpload.created_at"
+                      :title="moment(options.chosenUpload.created_at).format('YYYY-MMM-DD hh:mm A')"
                       data-placement="bottom"
                       :has-tooltip="true"
                     />
@@ -218,17 +218,17 @@
                     </td>
                     <td>
                       <button
-                        @click="chosenUpload = upload"
+                        @click="choseUpload(upload)"
                         type="button"
-                        :class="`btn ${chosenUpload && chosenUpload.id === upload.id ? 'btn-success btn-disabled' : 'btn-primary'}`"
+                        :class="`btn ${options.chosenUpload && options.chosenUpload.id === upload.id ? 'btn-success btn-disabled' : 'btn-primary'}`"
                       >
                         <span
-                          v-if="! chosenUpload || chosenUpload.id !== upload.id"
+                          v-if="! options.chosenUpload || options.chosenUpload.id !== upload.id"
                         >
                           {{__('select')}}
                         </span>
                         <span
-                          v-if="chosenUpload && chosenUpload.id === upload.id"
+                          v-if="options.chosenUpload && options.chosenUpload.id === upload.id"
                         >
                           {{__('selected')}}
                         </span>
@@ -279,12 +279,14 @@ import AccordionCard from '@/components/AccordionCard'
 import DateInput from '@/components/common/DateInput'
 import FromNow from '@/components/FromNow'
 
-const options = {
+export const options = {
   retweets: false,
   tweets: false,
   replies: false,
   start_date: null,
   end_date: null,
+  tweetsSource: 'twitter', // 'twitter', 'file'
+  chosenUpload: null,
 }
 
 const dateOptions = {
@@ -319,7 +321,6 @@ export default {
       end_date: { ...dateOptions, },
       uploads: [],
       uploadError: 'Something wen\'t wrong',
-      chosenUpload: null,
       lastUpload: null,
       fileDragged: false,
       files: [],
@@ -343,7 +344,6 @@ export default {
         }
       },
       loading: false,
-      tweetsSource: 'twitter', // 'twitter', 'file'
     }
   },
   watch: {
@@ -358,7 +358,13 @@ export default {
     options: {
       deep: true,
       handler (newValue) {
-        this.$emit(`input`, this.options)
+        this.$emit(
+          `input`,
+          {
+            ...this.options,
+            chosenUpload: this.options.chosenUpload ? this.options.chosenUpload.id : null,
+          }
+        )
       },
     },
     start_date: {
@@ -375,7 +381,7 @@ export default {
     },
   },
   mounted () {
-    this.fetchUploads(true)
+    this.fetchUploads()
 
     $('body').on('dragover', x => this.fileDragged = true)
 
@@ -396,39 +402,36 @@ export default {
           this.fetchUploads()
         })
     },
+    choseUpload(upload) {
+      this.setTweetsSource(this.constants.file)
+      this.options.chosenUpload = upload
+    },
     choseSource (source) {
       if (source === this.constants.file) {
         return this.openUploadsModal()
       }
 
+      this.options.chosenUpload = null
+
       this.setTweetsSource(source)
     },
     setTweetsSource(source) {
-      this.tweetsSource = source
+      this.options.tweetsSource = source
     },
     openUploadsModal() {
 
     },
-    fetchUploads (autoSelect) {
+    fetchUploads () {
       if (this.loading)
       {
         return ;
       }
 
       this.loading = true
-      if ( ! autoSelect)
-      {
-        this.chosenUpload = null
-      }
 
       axios.get(`${window.TwUtils.apiBaseUrl}tasks/uploads`)
         .then(({ data, }) => {
           this.uploads = data
-
-          if (autoSelect && data.length > 0)
-          {
-            this.chosenUpload = data[0]
-          }
 
           this.$nextTick(x => this.loading = false)
         })

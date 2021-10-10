@@ -65,20 +65,14 @@
 
 <script>
 import tasksList from '../TasksList'
-import addDestroyTweetsListOptions from './AddDestroyTweetsListOptions'
+import addDestroyTweetsListOptions, {options} from './AddDestroyTweetsListOptions'
 import writeAccessWarning from './WriteAccessWarning'
 
 const data = {
   isLoading: false,
   showWriteAccessWarning: false,
   exploringMode: false,
-  options: {
-    retweets: false,
-    tweets: false,
-    replies: false,
-    start_date: null,
-    end_date: null,
-  },
+  options: {...options},
 }
 
 const clonedData = JSON.parse(JSON.stringify(data, true))

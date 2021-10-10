@@ -24,7 +24,10 @@ class CreateTweepsTable extends Migration
 
             $table->string('screen_name', 15);
             $table->string('name', 255);
-            $table->string('avatar', 255);
+
+            // .. Found a URL avatar that exceeds 270 characters
+            // so let's set it for now to the -almost- max URL length
+            $table->string('avatar', 2000);
 
             $table->string('background_color', 6)->nullable();
             $table->string('background_image', 255)->nullable();

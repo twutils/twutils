@@ -12,7 +12,6 @@ use App\Http\Requests\TaskAddRequest;
 use App\TwUtils\Services\TasksService;
 use Illuminate\Database\Eloquent\Builder;
 use App\TwUtils\Services\RawTweetsService;
-use App\TwUtils\Tasks\Factory as TaskFactory;
 use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
 use App\TwUtils\TwitterOperations\FetchFollowersOperation;
@@ -37,14 +36,17 @@ class TasksController extends Controller
 
     public function create(TaskAddRequest $request)
     {
-        $addTask = new TaskFactory($request->taskFullType, $request->settings, $request->relatedTask, auth()->user());
+        $task = $this->tasksService
+            ->create(
+                $request->taskFullType,
+                $request->settings,
+                $request->relatedTask,
+                auth()->user(),
+            );
 
-        return response(['ok'=> true, 'errors' => [], 'data' => ['task_id' => $addTask->getTask()->id]], Response::HTTP_OK);
+        return response(['ok'=> true, 'errors' => [], 'data' => ['task_id' => $task->id]], Response::HTTP_OK);
     }
 
-    // Create Upload
-
-    // Create Task
     public function uploadTask(Request $request)
     {
         $this->validate(

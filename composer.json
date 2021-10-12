@@ -83,6 +83,9 @@
         ],
         "testData": [
             "phpunit --no-coverage --configuration testData.phpunit.xml"
+        ],
+        "lint:fix": [
+            "./vendor/bin/php-cs-fixer fix"
         ]
     },
     "config": {

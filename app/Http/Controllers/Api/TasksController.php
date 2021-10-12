@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskAddRequest;
 use Illuminate\Database\Eloquent\Builder;
 use App\TwUtils\Services\RawTweetsService;
+use App\TwUtils\Services\TasksService;
 use App\TwUtils\Tasks\Factory as TaskFactory;
 use Symfony\Component\HttpFoundation\Response;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
@@ -21,7 +22,8 @@ use App\TwUtils\TwitterOperations\FetchUserTweetsOperation;
 class TasksController extends Controller
 {
     public function __construct(
-        protected RawTweetsService $rawTweetsService
+        protected RawTweetsService $rawTweetsService,
+        protected TasksService $tasksService,
     ) {
         $this->middleware('auth');
     }
@@ -49,7 +51,7 @@ class TasksController extends Controller
             $request->merge(['purpose' => ucfirst($request->purpose)]),
             [
                 'purpose'   => ['required', Rule::in(['DestroyTweets', 'DestroyLikes'])],
-                'file'      => ['required', 'file', 'mimetypes:text/*'], // TODO: ',application/zip'
+                'file'      => ['required', 'file', 'mimetypes:text/*'], // TODO: ',application/zip' ?
             ]
         );
 
@@ -60,7 +62,14 @@ class TasksController extends Controller
 
     public function uploads(Request $request)
     {
-        return auth()->user()->uploads->load(['rawTweetsFirst', 'rawTweetsLast'])->loadCount('rawTweets');
+        $this->validate(
+            $request->merge(['purpose' => ucfirst($request->purpose)]),
+            [
+                'purpose'   => ['required', Rule::in(['DestroyTweets', 'DestroyLikes'])],
+            ]
+        );
+
+        return $request->user()->uploads()->where('purpose', $request->purpose)->with(['rawTweetsFirst', 'rawTweetsLast'])->withCount('rawTweets')->get();
     }
 
     public function deleteUpload(Request $request, Upload $upload)

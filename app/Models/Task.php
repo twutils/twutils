@@ -181,6 +181,11 @@ class Task extends Model
         return $tweeps;
     }
 
+    public function getChosenUpload(): Upload
+    {
+        return Upload::findOrFail($this->extra['settings']['chosenUpload']);
+    }
+
     public function likes(): BelongsToMany
     {
         return $this->tweets();

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Task;
 use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
+use App\Models\Upload;
 use App\TwUtils\Services\TasksService;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,11 @@ class TaskAddRequest extends FormRequest
 
         $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
 
-        $taskFullType = app(TasksService::class)->findOperationTypeByShortName($targetedTask);
+        $taskFullType = app(TasksService::class)
+            ->findOperationTypeByShortName(
+                $targetedTask,
+                $this->wantsUploadsTask(),
+            );
 
         $this->merge([
             'targetedTask'      => $targetedTask,
@@ -39,13 +44,35 @@ class TaskAddRequest extends FormRequest
     public function rules()
     {
         return [
+            'settings' => [
+                'nullable',
+                'array',
+                // Validate correct tweets source settings
+                function ($attribute, $value, $fail) {
+                    // .. When it's file, Validate chosen upload is required and belongs to user
+                    if ( $this->wantsUploadsTask() )
+                    {
+                        validator()->make($value, [
+                            'chosenUpload' => [
+                                'required',
+                                'integer',
+                                \Illuminate\Validation\Rule::exists('uploads', 'id')
+                                    ->where('user_id', $this->user()->id)
+                            ]
+                        ])
+                        ->validate();
+                    } 
+                }
+            ],
             'targetedTask' => [
                 'bail',
+                // Validate task type
                 function ($attribute, $value, $fail) {
                     if (! $this->taskFullType) {
                         throw new TaskAddException([__('messages.task_add_bad_request')], Response::HTTP_BAD_REQUEST);
                     }
                 },
+                // Validate has the proper scope token
                 function ($attribute, $value, $fail) {
                     $scope = (new $this->taskFullType)->getScope();
 
@@ -53,6 +80,22 @@ class TaskAddRequest extends FormRequest
 
                     if ($socialUser == null) {
                         throw new TaskAddException([__('messages.task_add_no_privilege')], Response::HTTP_UPGRADE_REQUIRED);
+                    }
+                },
+                // Validate 'destroy using archive file' tasks
+                function ($attribute, $value, $fail) {
+                    if (! $this->wantsUploadsTask() )
+                    {
+                        return ;
+                    }
+
+                    $chosenUpload = Upload::findOrFail($this->settings['chosenUpload']);
+
+
+                    // Validate the chosen upload has the correct purpose
+                    if (! (new $this->taskFullType)->acceptsUpload($chosenUpload))
+                    {
+                        throw new TaskAddException([__('messages.task_add_upload_wrong_purpose')], Response::HTTP_UPGRADE_REQUIRED);
                     }
                 },
             ],
@@ -88,5 +131,10 @@ class TaskAddRequest extends FormRequest
                 },
             ],
         ];
+    }
+
+    protected function wantsUploadsTask(): bool
+    {
+        return ($this->settings['tweetsSource'] ?? null) === 'file';
     }
 }

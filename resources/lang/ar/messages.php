@@ -11,6 +11,8 @@ return [
     'task_add_bad_request'         => 'فشل في تحديد نوع المهمة المطلوبة',
     'task_add_unauthorized_access' => 'لا تملك صلاحية استخدام هذه المهمة',
 
+    'task_add_upload_wrong_purpose' => 'لا يمكن اختيار الملف المحدد لإنشاء هذا النوع من المهام',
+
     'socialauth_canceled' => 'تم منعنا من تلقي الإجابة من تويتر',
     'deleteMe_canceled'   => 'ممتاز! تم إلغاء طلب حذف حسابك في تويتلز',
     'deleteMe_pending'    => 'هناك طلب مسبق مُعلَّق لحذف حسابك، قم بإلغاؤه أولاً.',

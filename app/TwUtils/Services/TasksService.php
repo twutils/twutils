@@ -12,6 +12,8 @@ use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
+use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperationByUpload;
+use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperationByUpload;
 
 class TasksService
 {
@@ -28,9 +30,16 @@ class TasksService
         DestroyTweetsOperation::class,
     ];
 
-    public function findOperationTypeByShortName($shortName)
+    public const AVAILABLE_UPLOADS_OPERATIONS = [
+        ManagedDestroyLikesOperationByUpload::class,
+        ManagedDestroyTweetsOperationByUpload::class,
+    ];
+
+    public function findOperationTypeByShortName($shortName, $withUpload = false)
     {
-        return collect(static::AVAILABLE_OPERATIONS)->first(function ($operationClassName) use ($shortName) {
+        return collect(
+            $withUpload ?  static::AVAILABLE_UPLOADS_OPERATIONS : static::AVAILABLE_OPERATIONS
+        )->first(function ($operationClassName) use ($shortName) {
             return $shortName === (new $operationClassName)->getShortName();
         });
     }

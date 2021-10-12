@@ -17,6 +17,8 @@ class IntegrationTestCase extends TestCase
         RefreshDatabase::refreshDatabase as refreshDatabaseTrait;
      }
 
+    protected static int $lastJobIndex = 0;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -213,6 +215,31 @@ class IntegrationTestCase extends TestCase
         );
     }
 
+    protected function fireJobsWithoutRepeat(): void
+    {
+
+        for ($i = static::$lastJobIndex; $i < count($this->dispatchedJobs); $i++) {
+            static::$lastJobIndex++;
+
+            $queuedJob = $this->dispatchedJobs[$i];
+
+            if ($this->shouldIgnoreJob($queuedJob))
+            {
+                continue;
+            }
+
+            ray($queuedJob);
+            $queuedJob->handle();
+        }
+    }
+
+    // protected function fireJobsAndBindTwitterWithoutRepeat($data = []): void
+    // {
+    //     $lastJobIndex = count($this->dispatchedJobs);
+
+    //     $this->fireJobsAndBindTwitter($data, $lastJobIndex);
+    // }
+
     protected function fireJobsAndBindTwitter($data = [], $startIndex = 0)
     {
         foreach ($data as $key => $value) {
@@ -251,10 +278,7 @@ class IntegrationTestCase extends TestCase
                     isset($jobDataHolder['skip']) && $jobDataHolder['skip']
                 )
                 ||
-                (
-                   ($queuedJob->queue === 'exports') &&
-                   config('queue.ignore_exports', true)
-                )
+                $this->shouldIgnoreJob($queuedJob)
             ) {
                 continue;
             }
@@ -269,6 +293,11 @@ class IntegrationTestCase extends TestCase
                 $jobDataHolder['after']($queuedJob);
             }
         }
+    }
+
+    protected function shouldIgnoreJob($job): bool
+    {
+        return ($job->queue === 'exports') && config('queue.ignore_exports', true);
     }
 
     protected function enableExportsQueue()

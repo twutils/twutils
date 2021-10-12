@@ -107,8 +107,6 @@
               </div>
               <div
                 @click="choseSource(constants.file)"
-                 data-toggle="modal"
-                 data-target="#uploads"
                  aria-haspopup="true"
                  aria-expanded="false"
                 :class="`tweetsSourceOption ${options.tweetsSource === constants.file ? 'active':''}`"
@@ -405,6 +403,7 @@ export default {
     choseUpload(upload) {
       this.setTweetsSource(this.constants.file)
       this.options.chosenUpload = upload
+      this.hideUploadsModal()
     },
     choseSource (source) {
       if (source === this.constants.file) {
@@ -419,7 +418,10 @@ export default {
       this.options.tweetsSource = source
     },
     openUploadsModal() {
-
+      $('#uploads').modal('show')
+    },
+    hideUploadsModal() {
+      $('#uploads').modal('hide')
     },
     fetchUploads () {
       if (this.loading)
@@ -429,7 +431,7 @@ export default {
 
       this.loading = true
 
-      axios.get(`${window.TwUtils.apiBaseUrl}tasks/uploads`)
+      axios.get(`${window.TwUtils.apiBaseUrl}tasks/uploads/${this.taskDefinition.type}`)
         .then(({ data, }) => {
           this.uploads = data
 

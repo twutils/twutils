@@ -21,6 +21,7 @@ class RawTweet extends Model
         'retweet_count'     => 'int',
         'favorite_count'    => 'int',
         'tweet_created_at'  => 'datetime',
+        'removed'           => 'datetime',
     ];
 
     // Relations

@@ -26,6 +26,8 @@ class CreateRawTweetsTable extends Migration
 
             $table->text('extended_entities')->nullable();
 
+            $table->dateTime('removed')->nullable();
+
             $table->timestamps();
         });
     }

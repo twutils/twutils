@@ -11,6 +11,8 @@ return [
     'task_add_bad_request'         => 'Failure to determine the task type',
     'task_add_unauthorized_access' => 'You don\'t have access for using this task',
 
+    'task_add_upload_wrong_purpose' => 'Can\'t chose the selected upload for this type of task',
+
     'socialauth_canceled' => 'We are denied to get the response from twitter.',
     'deleteMe_canceled'   => 'Great! Your account deletion request has been canceled..',
     'deleteMe_pending'    => 'There is a pending request for the deletion of your account, cancel it first.',

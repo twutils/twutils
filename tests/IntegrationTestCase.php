@@ -217,14 +217,12 @@ class IntegrationTestCase extends TestCase
 
     protected function fireJobsWithoutRepeat(): void
     {
-
         for ($i = static::$lastJobIndex; $i < count($this->dispatchedJobs); $i++) {
             static::$lastJobIndex++;
 
             $queuedJob = $this->dispatchedJobs[$i];
 
-            if ($this->shouldIgnoreJob($queuedJob))
-            {
+            if ($this->shouldIgnoreJob($queuedJob)) {
                 continue;
             }
 

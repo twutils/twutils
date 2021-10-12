@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\TwitterOperations;
 
+use App\Models\Task;
 use App\Models\Upload;
 use App\Models\RawTweet;
-use App\Models\Task;
 use Tests\IntegrationTestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -61,20 +61,20 @@ class UploadTaskTest extends IntegrationTestCase
             'api/ManagedDestroyTweets',
             [
                     'settings' => [
-                        "retweets" =>       false,
-                        "tweets" =>         false,
-                        "replies" =>        false,
-                        "start_date" =>     null,
-                        "end_date" =>       null,
-                        "tweetsSource" =>  "file",
-                        "chosenUpload" =>   1
-                    ]
+                        'retweets'     => false,
+                        'tweets'       => false,
+                        'replies'      => false,
+                        'start_date'   => null,
+                        'end_date'     => null,
+                        'tweetsSource' => 'file',
+                        'chosenUpload' => 1,
+                    ],
             ]
         )
         ->dump()
         ->assertSuccessful();
 
-        dd(Task::all(),'tasks');
+        dd(Task::all(), 'tasks');
         $this->fireJobsWithoutRepeat([]);
     }
 }

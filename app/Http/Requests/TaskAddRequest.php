@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Task;
+use App\Models\Upload;
 use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
-use App\Models\Upload;
 use App\TwUtils\Services\TasksService;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,19 +50,18 @@ class TaskAddRequest extends FormRequest
                 // Validate correct tweets source settings
                 function ($attribute, $value, $fail) {
                     // .. When it's file, Validate chosen upload is required and belongs to user
-                    if ( $this->wantsUploadsTask() )
-                    {
+                    if ($this->wantsUploadsTask()) {
                         validator()->make($value, [
                             'chosenUpload' => [
                                 'required',
                                 'integer',
                                 \Illuminate\Validation\Rule::exists('uploads', 'id')
-                                    ->where('user_id', $this->user()->id)
-                            ]
+                                    ->where('user_id', $this->user()->id),
+                            ],
                         ])
                         ->validate();
-                    } 
-                }
+                    }
+                },
             ],
             'targetedTask' => [
                 'bail',
@@ -84,17 +83,14 @@ class TaskAddRequest extends FormRequest
                 },
                 // Validate 'destroy using archive file' tasks
                 function ($attribute, $value, $fail) {
-                    if (! $this->wantsUploadsTask() )
-                    {
-                        return ;
+                    if (! $this->wantsUploadsTask()) {
+                        return;
                     }
 
                     $chosenUpload = Upload::findOrFail($this->settings['chosenUpload']);
 
-
                     // Validate the chosen upload has the correct purpose
-                    if (! (new $this->taskFullType)->acceptsUpload($chosenUpload))
-                    {
+                    if (! (new $this->taskFullType)->acceptsUpload($chosenUpload)) {
                         throw new TaskAddException([__('messages.task_add_upload_wrong_purpose')], Response::HTTP_UPGRADE_REQUIRED);
                     }
                 },

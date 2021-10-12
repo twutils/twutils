@@ -38,7 +38,7 @@ class TasksService
     public function findOperationTypeByShortName($shortName, $withUpload = false)
     {
         return collect(
-            $withUpload ?  static::AVAILABLE_UPLOADS_OPERATIONS : static::AVAILABLE_OPERATIONS
+            $withUpload ? static::AVAILABLE_UPLOADS_OPERATIONS : static::AVAILABLE_OPERATIONS
         )->first(function ($operationClassName) use ($shortName) {
             return $shortName === (new $operationClassName)->getShortName();
         });

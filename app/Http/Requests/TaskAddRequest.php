@@ -7,6 +7,7 @@ use App\Models\Upload;
 use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
 use App\TwUtils\Services\TasksService;
+use AppNext\Base\Task as NextTwitterOperation;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -73,7 +74,7 @@ class TaskAddRequest extends FormRequest
                 },
                 // Validate has the proper scope token
                 function ($attribute, $value, $fail) {
-                    $scope = (new $this->taskFullType)->getScope();
+                    $scope = (new Task(['type' => $this->taskFullType]))->getTaskTypeInstance()->getScope();
 
                     $socialUser = app(UserManager::class)->resolveUser($this->user(), $scope);
 
@@ -90,7 +91,7 @@ class TaskAddRequest extends FormRequest
                     $chosenUpload = Upload::findOrFail($this->settings['chosenUpload']);
 
                     // Validate the chosen upload has the correct purpose
-                    if (! (new $this->taskFullType)->acceptsUpload($chosenUpload)) {
+                    if (! (new Task(['type' => $this->taskFullType]))->getTaskTypeInstance()->acceptsUpload($chosenUpload)) {
                         throw new TaskAddException([__('messages.task_add_upload_wrong_purpose')], Response::HTTP_UPGRADE_REQUIRED);
                     }
                 },
@@ -121,6 +122,13 @@ class TaskAddRequest extends FormRequest
                     }
                 },
                 function ($attribute, $value, $fail) {
+                    $operation = (new Task(['type' => $this->taskFullType]))->getTaskTypeInstance();
+
+                    if ($operation instanceof NextTwitterOperation)
+                    {
+                        return ;
+                    }
+
                     foreach ((new $value)->getValidators() as $validatorClassName) {
                         (new $validatorClassName)->apply($this->all(), $this->user());
                     }

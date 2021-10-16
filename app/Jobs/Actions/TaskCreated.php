@@ -5,6 +5,7 @@ namespace App\Jobs\Actions;
 use App\Models\Task;
 use App\Models\Export;
 use App\TwUtils\Base\Job;
+use AppNext\Base\Task as NextTask;
 
 class TaskCreated extends Job
 {
@@ -17,7 +18,14 @@ class TaskCreated extends Job
 
     public function handle()
     {
-        $operationInstance = (new $this->task->type());
+        $operationInstance = $this->task->getTaskTypeInstance();
+
+        if ($operationInstance instanceof NextTask)
+        {
+            $operationInstance->init();
+
+            return ;
+        }
 
         $operationInstance
             ->setSocialUser($this->task->socialUser)

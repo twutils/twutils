@@ -4,6 +4,12 @@
 
 Twitter Utilities (TwUtils) is an open source platform offers set of utilities for managing your twitter account.. Built with Laravel, VueJs.
 
+---
+
+NOTE: By the time I'm writing this (Oct 2021) this project is still under active development/refactoring.
+
+---
+
 ## Local Development: Prerequisites
 
 ### 1. Create Twitter Application

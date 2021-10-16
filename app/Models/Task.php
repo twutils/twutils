@@ -121,6 +121,11 @@ class Task extends Model
         });
     }
 
+    public function getTaskTypeInstance()
+    {
+        return new $this->type($this);
+    }
+
     public function getTweetsRelation(): BelongsToMany
     {
         if (in_array($this->type, self::TWEETS_LISTS_LIKES_TYPES)) {

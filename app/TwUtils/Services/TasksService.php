@@ -14,8 +14,8 @@ use App\TwUtils\TwitterOperations\FetchEntitiesLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation;
 use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation;
 use App\TwUtils\TwitterOperations\FetchEntitiesUserTweetsOperation;
-use App\TwUtils\TwitterOperations\ManagedDestroyLikesOperationByUpload;
-use App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperationByUpload;
+use AppNext\Tasks\DestroyLikesByUpload;
+use AppNext\Tasks\DestroyTweetsByUpload;
 use App\TwUtils\UserManager;
 
 class TasksService
@@ -34,13 +34,13 @@ class TasksService
     ];
 
     public const AVAILABLE_UPLOADS_OPERATIONS = [
-        ManagedDestroyLikesOperationByUpload::class,
-        ManagedDestroyTweetsOperationByUpload::class,
+        DestroyLikesByUpload::class,
+        DestroyTweetsByUpload::class,
     ];
 
     public function create(string $operationClassName, array $settings, Task $relatedTask = null, User $user, $managedByTaskId = null): Task
     {
-        $socialUser = app(UserManager::class)->resolveUser($user, (new $operationClassName)->getScope());
+        $socialUser = app(UserManager::class)->resolveUser($user, (new Task(['type' => $operationClassName]))->getTaskTypeInstance()->getScope());
 
         return Task::create(
             [
@@ -59,7 +59,7 @@ class TasksService
         return collect(
             $withUpload ? static::AVAILABLE_UPLOADS_OPERATIONS : static::AVAILABLE_OPERATIONS
         )->first(function ($operationClassName) use ($shortName) {
-            return $shortName === (new $operationClassName)->getShortName();
+            return $shortName === (new Task(['type' => $operationClassName]))->getTaskTypeInstance()->getShortName();
         });
     }
 }

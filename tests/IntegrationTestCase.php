@@ -226,7 +226,6 @@ class IntegrationTestCase extends TestCase
                 continue;
             }
 
-            ray($queuedJob);
             $queuedJob->handle();
         }
     }

@@ -86,10 +86,15 @@ class Task extends Model
     {
         parent::boot();
 
-        static::created(
-            // TODO: Dispatch it as a real job
-            fn (self $task) => (new TaskCreated($task))->handle()
-        );
+        static::created(function (self $task) {
+            if (Str::contains($task->type, 'Next')) {
+                dispatch(new TaskCreated($task));
+
+                return;
+            }
+
+            (new TaskCreated($task))->handle();
+        });
 
         static::updated(function (self $task) {
             if (

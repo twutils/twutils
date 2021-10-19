@@ -2,12 +2,11 @@
 
 namespace AppNext\Tasks;
 
-use AppNext\Base\Task;
+use AppNext\Tasks\Base\UploadTask;
+use AppNext\Jobs\DestroyRawTweetJob;
 
-class DestroyTweetsByUpload extends Task
+class DestroyTweetsByUpload extends UploadTask
 {
-    protected string $scope = 'write';
-
     protected string $shortName = 'ManagedDestroyTweets';
 
     protected array $acceptsUploadPurpose = [
@@ -16,11 +15,30 @@ class DestroyTweetsByUpload extends Task
 
     public function init(): void
     {
-        $this->task->getChosenUpload()->rawTweets()->update([
-            'removed' => null
+        $this->taskModel->getChosenUpload()->rawTweets()->update([
+            'removed' => null,
         ]);
 
-        // TODO
-        // dd('here');
+        $this->run();
+    }
+
+    public function run(): void
+    {
+        $tweetQuery = $this->taskModel->getChosenUpload()->rawTweets()->where('removed', '=', null);
+
+        if (! $tweetQuery->exists()) {
+            $this->taskModel->update([
+                'status' => 'completed',
+            ]);
+
+            return;
+        }
+
+        dispatch(
+            new DestroyRawTweetJob(
+                $this->taskModel,
+                $tweetQuery->first()
+            )
+        );
     }
 }

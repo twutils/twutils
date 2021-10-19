@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Utils;
 use App\TwUtils\UserManager;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
@@ -54,7 +55,7 @@ class LoginController extends Controller
 
     public function redirectToProviderWithReadWrite()
     {
-        $this->setupTwitterConfigForReadWrite();
+        Utils::setup_twitter_config_for_read_write();
 
         return Socialite::driver('twitter')->redirect();
     }
@@ -67,24 +68,12 @@ class LoginController extends Controller
             return redirect()->route(auth()->check() ? 'app' : 'welcome');
         }
 
-        $this->setupTwitterConfigForReadWrite();
+        Utils::setup_twitter_config_for_read_write();
 
         $user = Socialite::driver('twitter')->user();
 
         $this->userManager->loginSocialUser($user, ['read', 'write']);
 
         return redirect()->route('app');
-    }
-
-    protected function setupTwitterConfigForReadWrite()
-    {
-        if (app()->isProduction()) {
-            config()->set('services.twitter.redirect', env('TWITTER_REDIRECT_READ_WRITE'));
-        } else {
-            config()->set('services.twitter.redirect', sprintf(env('TWITTER_REDIRECT_READ_WRITE'), env('APP_PORT')));
-        }
-
-        config()->set('services.twitter.client_id', env('TWITTER_READ_WRITE_CLIENT_ID'));
-        config()->set('services.twitter.client_secret', env('TWITTER_READ_WRITE_CLIENT_SECRET'));
     }
 }

@@ -5,8 +5,8 @@ namespace App\TwUtils\TwitterOperations;
 use App\Models\Task;
 use App\Models\SocialUser;
 use App\Jobs\CompleteTaskJob;
-use App\Jobs\CompleteManagedDestroyLikesJob;
 use App\TwUtils\Services\TasksService;
+use App\Jobs\CompleteManagedDestroyLikesJob;
 use App\TwUtils\Tasks\Validators\DateValidator;
 
 class ManagedDestroyLikesOperation extends TwitterOperation

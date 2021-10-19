@@ -2,12 +2,10 @@
 
 namespace AppNext\Tasks;
 
-use AppNext\Base\Task;
+use AppNext\Tasks\Base\UploadTask;
 
-class DestroyLikesByUpload extends Task
+class DestroyLikesByUpload extends UploadTask
 {
-    protected string $scope = 'write';
-
     protected string $shortName = 'ManagedDestroyLikes';
 
     protected array $acceptsUploadPurpose = [
@@ -15,6 +13,10 @@ class DestroyLikesByUpload extends Task
     ];
 
     public function init(): void
+    {
+    }
+
+    public function run(): void
     {
     }
 }

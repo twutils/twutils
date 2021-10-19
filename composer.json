@@ -6,6 +6,7 @@
         "php": "^8.0",
         "abraham/twitteroauth": "^2.0.1",
         "adrienrn/php-mimetyper": "^0.2.1",
+        "atymic/twitter": "^3.1",
         "doctrine/dbal": "^2.10",
         "fakerphp/faker": "^1.13",
         "fideloper/proxy": "^4.4.1",

@@ -2,12 +2,15 @@
 
 namespace Tests\Feature\TwitterOperations;
 
+use Mockery;
 use App\Models\Task;
 use App\Models\Upload;
 use App\Models\RawTweet;
 use Tests\IntegrationTestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Atymic\Twitter\Twitter as TwitterContract;
+use Atymic\Twitter\ApiV1\Service\Twitter as TwitterV1;
 
 class UploadTaskTest extends IntegrationTestCase
 {
@@ -55,7 +58,7 @@ class UploadTaskTest extends IntegrationTestCase
         ])
         ->assertSuccessful();
 
-        $this->fireJobsWithoutRepeat([]);
+        $this->fireJobsWithoutRepeat();
 
         $this->postJson(
             'api/ManagedDestroyTweets',
@@ -71,10 +74,22 @@ class UploadTaskTest extends IntegrationTestCase
                     ],
             ]
         )
-        ->dump()
         ->assertSuccessful();
 
-        dd(Task::all(), 'tasks');
-        $this->fireJobsWithoutRepeat([]);
+        $this->mock(TwitterContract::class)
+             ->shouldReceive('usingCredentials')
+             ->andReturnSelf()
+             ->shouldReceive('forApiV1')
+             ->andReturn(
+                $this->mock(TwitterV1::class)
+                    ->shouldReceive('destroyTweet')
+                    ->andReturn(Mockery::any())
+                    ->times(5)
+                    ->getMock()
+             );
+
+        $this->fireJobsWithoutRepeat();
+
+        $this->assertEquals('completed', Task::find(1)->status);
     }
 }

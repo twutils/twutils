@@ -1,9 +1,8 @@
 <?php
 
-namespace AppNext\Base;
+namespace AppNext\Tasks\Base;
 
 use App\Models\Task as TaskModel;
-use App\Models\Upload;
 
 abstract class Task
 {
@@ -11,15 +10,14 @@ abstract class Task
 
     protected string $shortName;
 
-    protected array $acceptsUploadPurpose;
-
     final public function __construct(
-        protected TaskModel $task
-    )
-    {
+        protected TaskModel $taskModel
+    ) {
     }
 
     abstract public function init(): void;
+
+    abstract public function run(): void;
 
     final public function getScope(): string
     {
@@ -29,10 +27,5 @@ abstract class Task
     final public function getShortName(): string
     {
         return $this->shortName;
-    }
-
-    final public function acceptsUpload(Upload $upload): bool
-    {
-        return in_array($upload->purpose, $this->acceptsUploadPurpose);
     }
 }

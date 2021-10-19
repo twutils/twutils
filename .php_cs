@@ -7,6 +7,7 @@ return (new MattAllan\LaravelCodeStyle\Config())
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in(app_path())
+            ->in(base_path('app-next'))
             ->in(config_path())
             ->in(database_path('factories'))
             ->in(database_path('seeders'))

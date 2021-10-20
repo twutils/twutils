@@ -138,7 +138,6 @@ class UploadTaskTest extends IntegrationTestCase
 
         $this->fireJobsWithoutRepeat();
 
-        ray(Task::all());
         $this->assertEquals('completed', Task::find(1)->status);
     }
 }

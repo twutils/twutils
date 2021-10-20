@@ -3,8 +3,8 @@
 namespace AppNext\Tasks;
 
 use App\Models\RawTweet;
-use AppNext\Jobs\DestroyRawLikeJob;
 use AppNext\Tasks\Base\UploadTask;
+use AppNext\Jobs\DestroyRawLikeJob;
 
 class DestroyLikesByUpload extends UploadTask
 {
@@ -19,7 +19,6 @@ class DestroyLikesByUpload extends UploadTask
         $this->taskModel->getChosenUpload()->rawTweets()->update([
             'removed' => null,
         ]);
-
 
         $this->run();
     }

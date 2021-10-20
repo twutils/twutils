@@ -27,6 +27,13 @@ class IntegrationTestCase extends TestCase
         config()->set('twutils.minimum_expected_likes', 100);
     }
 
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        static::$lastJobIndex = 0;
+    }
+
     public function refreshDatabase()
     {
         $this->refreshDatabaseTrait();

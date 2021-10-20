@@ -92,4 +92,53 @@ class UploadTaskTest extends IntegrationTestCase
 
         $this->assertEquals('completed', Task::find(1)->status);
     }
+
+    public function test_user_can_upload_file_and_use_it_to_destroy_likes()
+    {
+        Storage::fake();
+
+        $this->withoutJobs();
+        $this->logInSocialUserForDestroyTweets('api');
+
+        $this->postJson('api/tasks/upload', [
+            'purpose' => 'destroyLikes',
+            'file'    => UploadedFile::fake()->createWithContent('like.js', $this->getRawStub('twitter_archive_data_like.js')),
+        ])
+        ->assertSuccessful();
+
+        $this->fireJobsWithoutRepeat();
+
+        $this->postJson(
+            'api/ManagedDestroyLikes',
+            [
+                    'settings' => [
+                        'retweets'     => false,
+                        'tweets'       => false,
+                        'replies'      => false,
+                        'start_date'   => null,
+                        'end_date'     => null,
+                        'tweetsSource' => 'file',
+                        'chosenUpload' => 1,
+                    ],
+            ]
+        )
+        ->assertSuccessful();
+
+        $this->mock(TwitterContract::class)
+             ->shouldReceive('usingCredentials')
+             ->andReturnSelf()
+             ->shouldReceive('forApiV1')
+             ->andReturn(
+                $this->mock(TwitterV1::class)
+                    ->shouldReceive('destroyFavorite')
+                    ->andReturn(Mockery::any())
+                    ->times(3)
+                    ->getMock()
+             );
+
+        $this->fireJobsWithoutRepeat();
+
+        ray(Task::all());
+        $this->assertEquals('completed', Task::find(1)->status);
+    }
 }

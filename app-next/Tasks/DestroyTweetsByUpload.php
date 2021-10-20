@@ -2,10 +2,10 @@
 
 namespace AppNext\Tasks;
 
-use AppNext\Tasks\Base\UploadTask;
+use App\Models\RawTweet;
 use AppNext\Jobs\DestroyRawTweetJob;
 
-class DestroyTweetsByUpload extends UploadTask
+class DestroyTweetsByUpload extends DestroyLikesByUpload
 {
     protected string $shortName = 'ManagedDestroyTweets';
 
@@ -13,31 +13,12 @@ class DestroyTweetsByUpload extends UploadTask
         'DestroyTweets',
     ];
 
-    public function init(): void
+    protected function destroyRawTweet(RawTweet $rawTweet)
     {
-        $this->taskModel->getChosenUpload()->rawTweets()->update([
-            'removed' => null,
-        ]);
-
-        $this->run();
-    }
-
-    public function run(): void
-    {
-        $tweetQuery = $this->taskModel->getChosenUpload()->rawTweets()->where('removed', '=', null);
-
-        if (! $tweetQuery->exists()) {
-            $this->taskModel->update([
-                'status' => 'completed',
-            ]);
-
-            return;
-        }
-
         dispatch(
             new DestroyRawTweetJob(
                 $this->taskModel,
-                $tweetQuery->first()
+                $rawTweet
             )
         );
     }

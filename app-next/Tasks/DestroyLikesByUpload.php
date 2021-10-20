@@ -2,6 +2,8 @@
 
 namespace AppNext\Tasks;
 
+use App\Models\RawTweet;
+use AppNext\Jobs\DestroyRawLikeJob;
 use AppNext\Tasks\Base\UploadTask;
 
 class DestroyLikesByUpload extends UploadTask
@@ -14,9 +16,37 @@ class DestroyLikesByUpload extends UploadTask
 
     public function init(): void
     {
+        $this->taskModel->getChosenUpload()->rawTweets()->update([
+            'removed' => null,
+        ]);
+
+
+        $this->run();
     }
 
     public function run(): void
     {
+        $tweetQuery = $this->taskModel->getChosenUpload()->rawTweets()->where('removed', '=', null);
+
+        if (! $tweetQuery->exists()) {
+            ray($this->taskModel->type);
+            $this->taskModel->update([
+                'status' => 'completed',
+            ]);
+
+            return;
+        }
+
+        $this->destroyRawTweet($tweetQuery->first());
+    }
+
+    protected function destroyRawTweet(RawTweet $rawTweet)
+    {
+        dispatch(
+            new DestroyRawLikeJob(
+                $this->taskModel,
+                $rawTweet
+            )
+        );
     }
 }

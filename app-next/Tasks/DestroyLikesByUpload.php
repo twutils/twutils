@@ -28,7 +28,6 @@ class DestroyLikesByUpload extends UploadTask
         $tweetQuery = $this->taskModel->getChosenUpload()->rawTweets()->where('removed', '=', null);
 
         if (! $tweetQuery->exists()) {
-            ray($this->taskModel->type);
             $this->taskModel->update([
                 'status' => 'completed',
             ]);

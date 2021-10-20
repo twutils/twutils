@@ -5,7 +5,6 @@ namespace App\Jobs\Actions;
 use App\Models\Task;
 use App\Models\Export;
 use App\TwUtils\Base\Job;
-use AppNext\Tasks\Base\Task;
 use AppNext\Tasks\Base\Task as NextTask;
 
 class TaskCreated extends Job

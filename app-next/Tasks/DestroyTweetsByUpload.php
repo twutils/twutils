@@ -4,8 +4,9 @@ namespace AppNext\Tasks;
 
 use App\Models\RawTweet;
 use AppNext\Jobs\DestroyRawTweetJob;
+use AppNext\Tasks\Base\DestroyByUploadTask;
 
-class DestroyTweetsByUpload extends DestroyLikesByUpload
+class DestroyTweetsByUpload extends DestroyByUploadTask
 {
     protected string $shortName = 'ManagedDestroyTweets';
 

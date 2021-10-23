@@ -3,7 +3,7 @@
 namespace App\TwUtils\TwitterOperations;
 
 use Carbon\Carbon;
-use App\Jobs\DislikeTweetJob;
+use AppNext\Tasks\Config;
 use App\TwUtils\Tasks\Validators\DateValidator;
 use App\TwUtils\Tasks\Validators\ManagedByTaskValidator;
 
@@ -18,8 +18,6 @@ class DestroyLikesOperation extends TwitterOperation
     protected $httpMethod = 'post';
 
     protected $likesCollection = [];
-
-    protected $dispatchJobName = DislikeTweetJob::class;
 
     protected function handleJobParameters($parameters)
     {
@@ -80,7 +78,7 @@ class DestroyLikesOperation extends TwitterOperation
         $nextJobDelay = $this->data['nextJobDelay'];
         $nextTweetIndex = $this->data['nextTweetIndex'];
 
-        dispatch(new $this->dispatchJobName($this->socialUser, $nextTweetIndex, $this->likesCollection, $this->task))->delay($nextJobDelay);
+        dispatch(new (Config::getJob($this::class))($this->socialUser, $nextTweetIndex, $this->likesCollection, $this->task))->delay($nextJobDelay);
     }
 
     protected function shouldBuildNextJob()
@@ -137,7 +135,7 @@ class DestroyLikesOperation extends TwitterOperation
                 return $this->setCompletedTask($this->task);
             }
 
-            return dispatch(new $this->dispatchJobName($this->socialUser, 0, $likes, $this->task));
+            return dispatch(new (Config::getJob($this::class))($this->socialUser, 0, $likes, $this->task));
         } catch (\Exception $e) {
             if (app('env') === 'testing') {
                 dd($e);

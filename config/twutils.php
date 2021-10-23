@@ -1,6 +1,57 @@
 <?php
 
+use App\Jobs\DestroyTweetJob;
+use App\Jobs\DislikeTweetJob;
+use AppNext\Tasks\DestroyLikesByUpload;
+use AppNext\Tasks\DestroyTweetsByUpload;
+use App\TwUtils\TwitterOperations\DestroyLikesOperation;
+use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
+
 return [
+    'tasks' => [
+        DestroyLikesByUpload::class => [
+            'shortname'                => 'ManagedDestroyLikes',
+            'scope'                    => 'write',
+            'source'                   => 'file',
+
+            'next'                     => true,
+            'accepts_uploads_purposes' => [
+                'DestroyLikes',
+            ],
+        ],
+
+        DestroyTweetsByUpload::class => [
+            'shortname'                => 'ManagedDestroyTweets',
+            'scope'                    => 'write',
+            'source'                   => 'file',
+
+            'next'                     => true,
+            'accepts_uploads_purposes' => [
+                'DestroyTweets',
+            ],
+        ],
+
+        DestroyLikesOperation::class => [
+            'shortname' => 'DestroyLikes',
+            'scope'     => 'write',
+            'source'    => 'twitter',
+
+            'endpoint'  => 'favorites/destroy',
+            'method'    => 'post',
+            'job'       => DislikeTweetJob::class,
+        ],
+
+        DestroyTweetsOperation::class => [
+            'shortname' => 'DestroyTweets',
+            'scope'     => 'write',
+            'source'    => 'twitter',
+
+            'endpoint'  => 'statuses/destroy',
+            'method'    => 'post',
+            'job'       => DestroyTweetJob::class,
+        ],
+    ],
+
     'twitter_requests_counts' => [
         'fetch_following_lookups' => 100,
         'fetch_likes'             => 200,

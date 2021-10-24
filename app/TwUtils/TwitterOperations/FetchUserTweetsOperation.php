@@ -6,8 +6,6 @@ use App\Jobs\FetchUserTweetsJob;
 
 class FetchUserTweetsOperation extends FetchLikesOperation
 {
-    protected $scope = 'read';
-
     protected function buildNextJob()
     {
         $nextJobDelay = $this->data['nextJobDelay'];

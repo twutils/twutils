@@ -11,8 +11,6 @@ use App\TwUtils\Services\TweepsService;
 
 class FetchFollowersOperation extends FetchFollowingOperation
 {
-    protected $scope = 'read';
-
     protected function buildNextJob()
     {
         $nextJobDelay = $this->data['nextJobDelay'];

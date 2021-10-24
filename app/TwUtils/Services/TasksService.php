@@ -4,6 +4,7 @@ namespace App\TwUtils\Services;
 
 use App\Models\Task;
 use App\Models\User;
+use AppNext\Tasks\Config;
 use App\TwUtils\UserManager;
 use AppNext\Tasks\DestroyLikesByUpload;
 use AppNext\Tasks\DestroyTweetsByUpload;
@@ -40,7 +41,7 @@ class TasksService
 
     public function create(string $operationClassName, array $settings, Task $relatedTask = null, User $user, $managedByTaskId = null): Task
     {
-        $socialUser = app(UserManager::class)->resolveUser($user, (new Task(['type' => $operationClassName]))->getTaskTypeInstance()->getScope());
+        $socialUser = app(UserManager::class)->resolveUser($user, Config::getScope($operationClassName));
 
         return Task::create(
             [

@@ -22,15 +22,9 @@ abstract class TwitterOperation
 
     protected $socialUser;
 
-    protected $endpoint;
-
-    protected $httpMethod;
-
     protected $task = null;
 
     protected $response;
-
-    protected $scope;
 
     protected $doRequestParameters;
 
@@ -152,18 +146,6 @@ abstract class TwitterOperation
         }
     }
 
-    public function socialUserHasPrivilege($socialUser)
-    {
-        $userScope = $socialUser->scope;
-
-        return collect($this->scope)
-        ->every(
-            function ($privilege) use ($userScope) {
-                return in_array($privilege, $userScope);
-            }
-        );
-    }
-
     public function setSocialUser(SocialUser $socialUser)
     {
         $this->socialUser = $socialUser;
@@ -183,11 +165,6 @@ abstract class TwitterOperation
         $this->task = $task;
 
         return $this;
-    }
-
-    public function getScope()
-    {
-        return $this->scope;
     }
 
     protected function setCompletedTask($task)

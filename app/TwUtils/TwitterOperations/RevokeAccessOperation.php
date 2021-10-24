@@ -6,8 +6,6 @@ use App\Models\Task;
 
 class RevokeAccessOperation extends TwitterOperation
 {
-    protected $scope = 'read';
-
     protected function shouldBuildNextJob()
     {
         return false;

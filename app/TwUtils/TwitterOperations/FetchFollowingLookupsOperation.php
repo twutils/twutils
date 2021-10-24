@@ -8,8 +8,6 @@ use App\Jobs\FetchFollowingLookupsJob;
 
 class FetchFollowingLookupsOperation extends TwitterOperation
 {
-    protected $scope = 'read';
-
     /*
      * $parameters contains 'index' key to indicate the index
      * to be used to slice the followings collection.

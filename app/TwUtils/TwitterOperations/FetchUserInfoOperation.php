@@ -7,8 +7,6 @@ use App\TwUtils\Services\AssetsService;
 
 class FetchUserInfoOperation extends TwitterOperation
 {
-    protected $scope = 'read';
-
     protected function shouldBuildNextJob()
     {
         return false;

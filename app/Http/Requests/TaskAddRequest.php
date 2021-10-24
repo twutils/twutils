@@ -75,7 +75,7 @@ class TaskAddRequest extends FormRequest
                 },
                 // Validate has the proper scope token
                 function ($attribute, $value, $fail) {
-                    $scope = (new Task(['type' => $this->taskFullType]))->getTaskTypeInstance()->getScope();
+                    $scope = Config::getScope($this->taskFullType);
 
                     $socialUser = app(UserManager::class)->resolveUser($this->user(), $scope);
 

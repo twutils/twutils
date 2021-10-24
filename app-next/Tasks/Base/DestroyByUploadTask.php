@@ -4,7 +4,7 @@ namespace AppNext\Tasks\Base;
 
 use App\Models\RawTweet;
 
-abstract class DestroyByUploadTask extends UploadTask
+abstract class DestroyByUploadTask extends Task
 {
     public function init(): void
     {

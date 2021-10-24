@@ -8,11 +8,7 @@ use App\Jobs\FetchFollowingLookupsJob;
 
 class FetchFollowingLookupsOperation extends TwitterOperation
 {
-    protected $endpoint = 'friendships/lookup';
-
     protected $scope = 'read';
-
-    protected $httpMethod = 'get';
 
     /*
      * $parameters contains 'index' key to indicate the index

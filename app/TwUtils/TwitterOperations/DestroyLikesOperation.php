@@ -11,11 +11,7 @@ class DestroyLikesOperation extends TwitterOperation
 {
     protected $shortName = 'DestroyLikes';
 
-    protected $endpoint = 'favorites/destroy';
-
     protected $scope = 'write';
-
-    protected $httpMethod = 'post';
 
     protected $likesCollection = [];
 

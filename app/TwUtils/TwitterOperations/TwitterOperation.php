@@ -4,6 +4,7 @@ namespace App\TwUtils\TwitterOperations;
 
 use Exception;
 use App\Models\Task;
+use AppNext\Tasks\Config;
 use App\Models\SocialUser;
 use Illuminate\Support\Str;
 use App\Jobs\CompleteTaskJob;
@@ -60,7 +61,10 @@ abstract class TwitterOperation
         $parameters = $this->getTwitterClientParameters();
 
         try {
-            $this->response = (array) $twitterClient->{$this->httpMethod}($this->endpoint, $parameters);
+            $this->response = (array) $twitterClient->{Config::getMethod($this::class)}(
+                Config::getEndpoint($this::class),
+                $parameters
+            );
 
             if (app('env') === 'testing' && app()->has('AfterHTTPRequest')) {
                 app()->make('AfterHTTPRequest');

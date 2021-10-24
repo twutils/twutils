@@ -122,11 +122,7 @@ class TaskAddRequest extends FormRequest
                     }
                 },
                 function ($attribute, $value, $fail) {
-                    if (Config::isNext($this->taskFullType)) {
-                        return;
-                    }
-
-                    foreach ((new $value)->getValidators() as $validatorClassName) {
+                    foreach (Config::getValidators($this->taskFullType) as $validatorClassName) {
                         (new $validatorClassName)->apply($this->all(), $this->user());
                     }
                 },

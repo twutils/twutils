@@ -213,11 +213,6 @@ abstract class TwitterOperation
         $task->save();
     }
 
-    public function getValidators(): array
-    {
-        return [];
-    }
-
     final public function getShortName(): string
     {
         return Config::getShortname($this::class);

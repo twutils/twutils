@@ -34,6 +34,11 @@ class Config
         return config("twutils.tasks.{$taskTypeClassName}.upload_purposes");
     }
 
+    public static function getValidators(string $taskTypeClassName): array
+    {
+        return config("twutils.tasks.{$taskTypeClassName}.validators");
+    }
+
     public static function isNext(string $taskTypeClassName): bool
     {
         return config("twutils.tasks.{$taskTypeClassName}.next") === true;

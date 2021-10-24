@@ -4,7 +4,9 @@ use App\Jobs\DestroyTweetJob;
 use App\Jobs\DislikeTweetJob;
 use AppNext\Tasks\DestroyLikesByUpload;
 use AppNext\Tasks\DestroyTweetsByUpload;
+use App\TwUtils\Tasks\Validators\DateValidator;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
+use App\TwUtils\Tasks\Validators\ManagedByTaskValidator;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
 use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
@@ -29,6 +31,8 @@ return [
             'upload_purposes'          => [
                 'DestroyLikes',
             ],
+
+            'validators'    => [],
         ],
 
         DestroyTweetsByUpload::class => [
@@ -40,6 +44,8 @@ return [
             'upload_purposes'          => [
                 'DestroyTweets',
             ],
+
+            'validators'    => [],
         ],
 
         DestroyLikesOperation::class => [
@@ -47,9 +53,13 @@ return [
             'scope'     => 'write',
             'source'    => 'twitter',
 
-            'endpoint'  => 'favorites/destroy',
-            'method'    => 'post',
-            'job'       => DislikeTweetJob::class,
+            'endpoint'      => 'favorites/destroy',
+            'method'        => 'post',
+            'job'           => DislikeTweetJob::class,
+            'validators'    => [
+                DateValidator::class,
+                ManagedByTaskValidator::class,
+            ],
         ],
 
         DestroyTweetsOperation::class => [
@@ -57,9 +67,13 @@ return [
             'scope'     => 'write',
             'source'    => 'twitter',
 
-            'endpoint'  => 'statuses/destroy',
-            'method'    => 'post',
-            'job'       => DestroyTweetJob::class,
+            'endpoint'      => 'statuses/destroy',
+            'method'        => 'post',
+            'job'           => DestroyTweetJob::class,
+            'validators'    => [
+                DateValidator::class,
+                ManagedByTaskValidator::class,
+            ],
         ],
 
         FetchLikesOperation::class => [
@@ -67,9 +81,12 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'favorites/list',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'favorites/list',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [
+                DateValidator::class,
+            ],
         ],
 
         FetchUserTweetsOperation::class => [
@@ -77,9 +94,12 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'statuses/user_timeline',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'statuses/user_timeline',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [
+                DateValidator::class,
+            ],
         ],
 
         FetchEntitiesLikesOperation::class => [
@@ -87,9 +107,12 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'favorites/list',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'favorites/list',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [
+                DateValidator::class,
+            ],
         ],
 
         FetchEntitiesUserTweetsOperation::class => [
@@ -97,9 +120,12 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'statuses/user_timeline',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'statuses/user_timeline',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [
+                DateValidator::class,
+            ],
         ],
 
         FetchFollowingOperation::class => [
@@ -107,9 +133,10 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'friends/list',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'friends/list',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [],
         ],
 
         FetchFollowersOperation::class => [
@@ -117,9 +144,10 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'followers/list',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'followers/list',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [],
         ],
 
         FetchFollowingLookupsOperation::class => [
@@ -127,9 +155,10 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'friendships/lookup',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'friendships/lookup',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [],
         ],
 
         FetchUserInfoOperation::class => [
@@ -137,9 +166,10 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'users/show',
-            'method'    => 'get',
-            'job'       => null,
+            'endpoint'      => 'users/show',
+            'method'        => 'get',
+            'job'           => null,
+            'validators'    => [],
         ],
 
         RevokeAccessOperation::class => [
@@ -147,9 +177,10 @@ return [
             'scope'     => 'read',
             'source'    => 'twitter',
 
-            'endpoint'  => 'oauth/invalidate_token',
-            'method'    => 'post',
-            'job'       => null,
+            'endpoint'      => 'oauth/invalidate_token',
+            'method'        => 'post',
+            'job'           => null,
+            'validators'    => [],
         ],
 
         ManagedDestroyLikesOperation::class => [
@@ -157,9 +188,12 @@ return [
             'scope'     => 'write',
             'source'    => 'twitter',
 
-            'endpoint'  => '...',
-            'method'    => '...',
-            'job'       => null,
+            'endpoint'      => '...',
+            'method'        => '...',
+            'job'           => null,
+            'validators'    => [
+                DateValidator::class,
+            ],
         ],
 
         ManagedDestroyTweetsOperation::class => [
@@ -167,9 +201,12 @@ return [
             'scope'     => 'write',
             'source'    => 'twitter',
 
-            'endpoint'  => '...',
-            'method'    => '...',
-            'job'       => null,
+            'endpoint'      => '...',
+            'method'        => '...',
+            'job'           => null,
+            'validators'    => [
+                DateValidator::class,
+            ],
         ],
     ],
 

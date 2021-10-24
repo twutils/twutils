@@ -4,8 +4,6 @@ namespace App\TwUtils\TwitterOperations;
 
 use Carbon\Carbon;
 use AppNext\Tasks\Config;
-use App\TwUtils\Tasks\Validators\DateValidator;
-use App\TwUtils\Tasks\Validators\ManagedByTaskValidator;
 
 class DestroyLikesOperation extends TwitterOperation
 {
@@ -133,10 +131,5 @@ class DestroyLikesOperation extends TwitterOperation
                 dd($e);
             }
         }
-    }
-
-    public function getValidators(): array
-    {
-        return [DateValidator::class, ManagedByTaskValidator::class];
     }
 }

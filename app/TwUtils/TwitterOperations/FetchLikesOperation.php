@@ -11,7 +11,6 @@ use App\Jobs\FetchLikesJob;
 use App\Jobs\StartExportMediaJob;
 use App\TwUtils\Services\TweepsService;
 use App\TwUtils\Services\TweetsService;
-use App\TwUtils\Tasks\Validators\DateValidator;
 
 class FetchLikesOperation extends TwitterOperation
 {
@@ -182,10 +181,5 @@ class FetchLikesOperation extends TwitterOperation
         $parameters = $this->buildParameters();
 
         return dispatch(new FetchLikesJob($parameters, $this->socialUser, $this->task));
-    }
-
-    public function getValidators(): array
-    {
-        return [DateValidator::class];
     }
 }

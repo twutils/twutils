@@ -315,16 +315,8 @@ class TasksController extends Controller
                     continue;
                 }
 
-                $lookupTypes = [
-                    'photo'        => 'photo',
-                    'animated_gif' => 'animated_gif',
-                    'video'        => 'video',
-                ];
-
-                $lookup = $lookupTypes[$searchOption];
-
-                $query = $query->OrWhereHas('media', function ($query) use ($lookup) {
-                    return $query->where('type', $lookup);
+                $query = $query->OrWhereHas('media', function ($query) use ($searchOption) {
+                    return $query->where('type', $searchOption);
                 });
             }
         });

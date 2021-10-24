@@ -24,7 +24,7 @@ class Config
         return config("twutils.tasks.{$taskTypeClassName}.scope");
     }
 
-    public static function getShortname(string $taskTypeClassName): string
+    public static function getShortName(string $taskTypeClassName): string
     {
         return config("twutils.tasks.{$taskTypeClassName}.shortname");
     }

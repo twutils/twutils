@@ -212,9 +212,4 @@ abstract class TwitterOperation
         $task->extra = array_merge($task->extra ?? [], $breakData);
         $task->save();
     }
-
-    final public function getShortName(): string
-    {
-        return Config::getShortname($this::class);
-    }
 }

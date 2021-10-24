@@ -60,7 +60,7 @@ class TasksService
         return collect(
             $withUpload ? static::AVAILABLE_UPLOADS_OPERATIONS : static::AVAILABLE_OPERATIONS
         )->first(function ($operationClassName) use ($shortName) {
-            return $shortName === Config::getShortname($operationClassName);
+            return $shortName === Config::getShortName($operationClassName);
         });
     }
 }

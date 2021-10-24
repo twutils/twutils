@@ -2,7 +2,6 @@
 
 namespace AppNext\Tasks\Base;
 
-use AppNext\Tasks\Config;
 use App\Models\Task as TaskModel;
 
 abstract class Task
@@ -15,9 +14,4 @@ abstract class Task
     abstract public function init(): void;
 
     abstract public function run(): void;
-
-    final public function getShortName(): string
-    {
-        return Config::getShortname($this::class);
-    }
 }

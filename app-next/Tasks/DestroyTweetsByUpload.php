@@ -8,10 +8,6 @@ use AppNext\Tasks\Base\DestroyByUploadTask;
 
 class DestroyTweetsByUpload extends DestroyByUploadTask
 {
-    protected array $acceptsUploadPurpose = [
-        'DestroyTweets',
-    ];
-
     protected function destroyRawTweet(RawTweet $rawTweet)
     {
         dispatch(

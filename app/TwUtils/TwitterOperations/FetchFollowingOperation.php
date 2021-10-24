@@ -11,8 +11,6 @@ use App\TwUtils\Services\TweepsService;
 
 class FetchFollowingOperation extends TwitterOperation
 {
-    protected $shortName = 'Following';
-
     protected $scope = 'read';
 
     protected function buildNextJob()

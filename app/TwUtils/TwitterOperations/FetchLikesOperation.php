@@ -15,8 +15,6 @@ use App\TwUtils\Tasks\Validators\DateValidator;
 
 class FetchLikesOperation extends TwitterOperation
 {
-    protected $shortName = 'Likes';
-
     protected $scope = 'read';
 
     protected $downloadTweetsWithMedia = false;

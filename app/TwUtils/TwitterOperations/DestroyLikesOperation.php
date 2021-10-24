@@ -9,8 +9,6 @@ use App\TwUtils\Tasks\Validators\ManagedByTaskValidator;
 
 class DestroyLikesOperation extends TwitterOperation
 {
-    protected $shortName = 'DestroyLikes';
-
     protected $scope = 'write';
 
     protected $likesCollection = [];

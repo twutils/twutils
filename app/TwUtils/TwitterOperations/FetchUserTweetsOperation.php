@@ -6,8 +6,6 @@ use App\Jobs\FetchUserTweetsJob;
 
 class FetchUserTweetsOperation extends FetchLikesOperation
 {
-    protected $shortName = 'UserTweets';
-
     protected $scope = 'read';
 
     protected function buildNextJob()

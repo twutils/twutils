@@ -6,8 +6,6 @@ use App\Jobs\FetchEntitiesUserTweetsJob;
 
 class FetchEntitiesUserTweetsOperation extends FetchEntitiesLikesOperation
 {
-    protected $shortName = 'EntitiesUserTweets';
-
     protected $scope = 'read';
 
     protected function buildNextJob()

@@ -2,13 +2,12 @@
 
 namespace AppNext\Tasks\Base;
 
+use AppNext\Tasks\Config;
 use App\Models\Task as TaskModel;
 
 abstract class Task
 {
     protected string $scope;
-
-    protected string $shortName;
 
     final public function __construct(
         protected TaskModel $taskModel
@@ -26,6 +25,6 @@ abstract class Task
 
     final public function getShortName(): string
     {
-        return $this->shortName;
+        return Config::getShortname($this::class);
     }
 }

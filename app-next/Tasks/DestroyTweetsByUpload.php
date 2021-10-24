@@ -8,8 +8,6 @@ use AppNext\Tasks\Base\DestroyByUploadTask;
 
 class DestroyTweetsByUpload extends DestroyByUploadTask
 {
-    protected string $shortName = 'ManagedDestroyTweets';
-
     protected array $acceptsUploadPurpose = [
         'DestroyTweets',
     ];

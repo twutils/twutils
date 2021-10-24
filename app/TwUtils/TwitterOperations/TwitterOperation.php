@@ -14,8 +14,6 @@ use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation
 {
-    protected $shortName;
-
     protected $parameters = [];
 
     protected $data = [];
@@ -245,6 +243,6 @@ abstract class TwitterOperation
 
     final public function getShortName(): string
     {
-        return $this->shortName;
+        return Config::getShortname($this::class);
     }
 }

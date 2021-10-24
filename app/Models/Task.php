@@ -263,7 +263,7 @@ class Task extends Model
         return $this->baseName;
     }
 
-    public function getShortNameAttribute()
+    public function getShortNameAttribute(): string
     {
         return Str::slug(__('messages.'.$this->type, [], 'en'));
     }

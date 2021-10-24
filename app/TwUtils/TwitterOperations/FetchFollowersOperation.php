@@ -11,8 +11,6 @@ use App\TwUtils\Services\TweepsService;
 
 class FetchFollowersOperation extends FetchFollowingOperation
 {
-    protected $shortName = 'Followers';
-
     protected $scope = 'read';
 
     protected function buildNextJob()

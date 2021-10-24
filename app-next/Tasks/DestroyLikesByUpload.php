@@ -8,8 +8,6 @@ use AppNext\Tasks\Base\DestroyByUploadTask;
 
 class DestroyLikesByUpload extends DestroyByUploadTask
 {
-    protected string $shortName = 'ManagedDestroyLikes';
-
     protected array $acceptsUploadPurpose = [
         'DestroyLikes',
     ];

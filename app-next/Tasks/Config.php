@@ -4,18 +4,23 @@ namespace AppNext\Tasks;
 
 class Config
 {
-    public static function getJob(string $taskType): string
+    public static function getJob(string $taskTypeClassName): string
     {
-        return config("twutils.tasks.{$taskType}.job");
+        return config("twutils.tasks.{$taskTypeClassName}.job");
     }
 
-    public static function getMethod(string $taskType): string
+    public static function getMethod(string $taskTypeClassName): string
     {
-        return config("twutils.tasks.{$taskType}.method");
+        return config("twutils.tasks.{$taskTypeClassName}.method");
     }
 
-    public static function getEndpoint(string $taskType): string
+    public static function getEndpoint(string $taskTypeClassName): string
     {
-        return config("twutils.tasks.{$taskType}.endpoint");
+        return config("twutils.tasks.{$taskTypeClassName}.endpoint");
+    }
+
+    public static function getShortname(string $taskTypeClassName): string
+    {
+        return config("twutils.tasks.{$taskTypeClassName}.shortname");
     }
 }

@@ -10,7 +10,6 @@ use App\Exceptions\TaskAddException;
 use App\TwUtils\Services\TasksService;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
-use AppNext\Tasks\Base\Task as NextTwitterOperation;
 
 class TaskAddRequest extends FormRequest
 {
@@ -123,9 +122,7 @@ class TaskAddRequest extends FormRequest
                     }
                 },
                 function ($attribute, $value, $fail) {
-                    $operation = (new Task(['type' => $this->taskFullType]))->getTaskTypeInstance();
-
-                    if ($operation instanceof NextTwitterOperation) {
+                    if (Config::isNext($this->taskFullType)) {
                         return;
                     }
 

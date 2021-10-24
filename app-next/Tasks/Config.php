@@ -33,4 +33,9 @@ class Config
     {
         return config("twutils.tasks.{$taskTypeClassName}.upload_purposes");
     }
+
+    public static function isNext(string $taskTypeClassName): bool
+    {
+        return config("twutils.tasks.{$taskTypeClassName}.next") === true;
+    }
 }

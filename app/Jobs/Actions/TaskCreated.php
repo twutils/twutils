@@ -5,7 +5,7 @@ namespace App\Jobs\Actions;
 use App\Models\Task;
 use App\Models\Export;
 use App\TwUtils\Base\Job;
-use AppNext\Tasks\Base\Task as NextTask;
+use AppNext\Tasks\Config;
 
 class TaskCreated extends Job
 {
@@ -20,7 +20,7 @@ class TaskCreated extends Job
     {
         $operationInstance = $this->task->getTaskTypeInstance();
 
-        if ($operationInstance instanceof NextTask) {
+        if (Config::isNext($this->task->type)) {
             $operationInstance->init();
 
             return;

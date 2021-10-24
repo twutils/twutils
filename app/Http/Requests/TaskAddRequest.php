@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Task;
 use App\Models\Upload;
+use AppNext\Tasks\Config;
 use App\TwUtils\UserManager;
 use App\Exceptions\TaskAddException;
 use App\TwUtils\Services\TasksService;
@@ -91,7 +92,7 @@ class TaskAddRequest extends FormRequest
                     $chosenUpload = Upload::findOrFail($this->settings['chosenUpload']);
 
                     // Validate the chosen upload has the correct purpose
-                    if (! (new Task(['type' => $this->taskFullType]))->getTaskTypeInstance()->acceptsUpload($chosenUpload)) {
+                    if (! in_array($chosenUpload->purpose, Config::getUploadPurposes($this->taskFullType))) {
                         throw new TaskAddException([__('messages.task_add_upload_wrong_purpose')], Response::HTTP_UPGRADE_REQUIRED);
                     }
                 },

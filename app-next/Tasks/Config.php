@@ -26,6 +26,6 @@ class Config
 
     public static function getUploadPurposes(string $taskTypeClassName): array
     {
-        return config("twutils.tasks.{$taskTypeClassName}.accepts_uploads_purposes");
+        return config("twutils.tasks.{$taskTypeClassName}.upload_purposes");
     }
 }

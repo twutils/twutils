@@ -26,7 +26,7 @@ return [
             'source'                   => 'file',
 
             'next'                     => true,
-            'accepts_uploads_purposes' => [
+            'upload_purposes'          => [
                 'DestroyLikes',
             ],
         ],
@@ -37,7 +37,7 @@ return [
             'source'                   => 'file',
 
             'next'                     => true,
-            'accepts_uploads_purposes' => [
+            'upload_purposes'          => [
                 'DestroyTweets',
             ],
         ],

@@ -2,12 +2,14 @@
 
 namespace AppNext\Jobs;
 
+use AppNext\Twitter\Requester;
+
 class DestroyRawTweetJob extends DestroyRawLikeJob
 {
     protected function run(): void
     {
         try {
-            $response = $this->getTwitterInstance()
+            $response = Requester::for($this->task->socialUser)
                 ->destroyTweet(
                     $this->rawTweet->id_str
                 );

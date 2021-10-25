@@ -10,6 +10,7 @@ use App\TwUtils\Base\Job;
 use Atymic\Twitter\Facade\Twitter;
 use AppNext\Tasks\DestroyLikesByUpload;
 use AppNext\Tasks\DestroyTweetsByUpload;
+use AppNext\Twitter\Requester;
 use Atymic\Twitter\ApiV1\Contract\Twitter as TwitterV1Contract;
 
 class DestroyRawLikeJob extends Job
@@ -47,7 +48,7 @@ class DestroyRawLikeJob extends Job
     protected function run(): void
     {
         try {
-            $response = $this->getTwitterInstance()
+            $response = Requester::for($this->task->socialUser)
                 ->destroyFavorite([
                     'id' => $this->rawTweet->id_str,
                 ]);
@@ -55,16 +56,5 @@ class DestroyRawLikeJob extends Job
         } catch (\Exception $e) {
             $this->failure($e);
         }
-    }
-
-    protected function getTwitterInstance(): TwitterV1Contract
-    {
-        return Twitter::usingCredentials(
-            $this->task->socialUser->token,
-            $this->task->socialUser->token_secret,
-            config('services.twitter.client_id'),
-            config('services.twitter.client_secret'),
-        )
-        ->forApiV1();
     }
 }

@@ -3,6 +3,7 @@
 namespace AppNext\Tasks\Base;
 
 use App\Models\RawTweet;
+use AppNext\Tasks\Config;
 
 abstract class DestroyByUploadTask extends Task
 {
@@ -30,5 +31,13 @@ abstract class DestroyByUploadTask extends Task
         $this->destroyRawTweet($tweetQuery->first());
     }
 
-    abstract protected function destroyRawTweet(RawTweet $rawTweet);
+    final protected function destroyRawTweet(RawTweet $rawTweet): void
+    {
+        dispatch(
+            new (Config::getJob($this::class))(
+                $this->taskModel,
+                $rawTweet
+            )
+        );
+    }
 }

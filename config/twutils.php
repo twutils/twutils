@@ -2,6 +2,8 @@
 
 use App\Jobs\DestroyTweetJob;
 use App\Jobs\DislikeTweetJob;
+use AppNext\Jobs\DestroyRawLikeJob;
+use AppNext\Jobs\DestroyRawTweetJob;
 use AppNext\Tasks\DestroyLikesByUpload;
 use AppNext\Tasks\DestroyTweetsByUpload;
 use App\TwUtils\Tasks\Validators\DateValidator;
@@ -33,6 +35,7 @@ return [
             ],
 
             'validators'    => [],
+            'job'           => DestroyRawLikeJob::class,
         ],
 
         DestroyTweetsByUpload::class => [
@@ -46,6 +49,7 @@ return [
             ],
 
             'validators'    => [],
+            'job'           => DestroyRawTweetJob::class,
         ],
 
         DestroyLikesOperation::class => [

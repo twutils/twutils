@@ -6,7 +6,7 @@ use App\Models\RawTweet;
 
 abstract class DestroyByUploadTask extends Task
 {
-    public function init(): void
+    final public function init(): void
     {
         $this->taskModel->getChosenUpload()->rawTweets()->update([
             'removed' => null,
@@ -15,7 +15,7 @@ abstract class DestroyByUploadTask extends Task
         $this->run();
     }
 
-    public function run(): void
+    final public function run(): void
     {
         $tweetQuery = $this->taskModel->getChosenUpload()->rawTweets()->where('removed', '=', null);
 

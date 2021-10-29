@@ -2,7 +2,7 @@
 
 namespace AppNext\Jobs;
 
-use AppNext\Twitter\Requester;
+use AppNext\Twitter\Api\Requester;
 
 class DestroyRawTweetJob extends DestroyRawLikeJob
 {

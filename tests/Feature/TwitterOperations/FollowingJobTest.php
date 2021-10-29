@@ -57,7 +57,7 @@ class FollowingJobTest extends UsersListTest
             $this->dispatchedJobs[$i]->handle();
         }
         $this->assertTaskCount(2, 'completed');
-        $this->assertTrue($this->allTwitterClientData()->pluck('endpoint')->contains('friends/list'));
+        $this->assertTrue($this->allTwitterClientData()->pluck('path')->contains('friends/list'));
         $this->assertTrue($this->allTwitterClientData()->pluck('parameters.user_id')->contains(auth()->user()->socialUsers[0]->social_user_id));
     }
 
@@ -135,7 +135,7 @@ class FollowingJobTest extends UsersListTest
         );
         $tweepIds = Tweep::whereIn('id', [2, 4])->pluck('id_str')->toArray();
 
-        $this->assertEquals('friendships/lookup', $this->lastTwitterClientData()['endpoint']);
+        $this->assertEquals('friendships/lookup', $this->lastTwitterClientData()['path']);
         $this->assertEquals('_1,_2,_3,_4,_5,_6,_7,_8,_9,_10', $this->lastTwitterClientData()['parameters']['user_id']);
         $this->assertEquals(2, Following::where('followed_by', true)->whereIn('tweep_id_str', $tweepIds)->get()->count());
         $this->assertCountDispatchedJobs(1, FetchFollowingLookupsJob::class);

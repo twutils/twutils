@@ -426,7 +426,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
         foreach (TwitterClientMock::getAllCallsData() as $index => $twitterCallData) {
             $this->assertEquals(
                 $this->twitterEndpoint,
-                $twitterCallData['endpoint'],
+                $twitterCallData['path'],
             );
 
             $expectedParameters = $this->initalTwitterParametersKeys;

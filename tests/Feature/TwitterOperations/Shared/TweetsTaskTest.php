@@ -442,7 +442,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         foreach (TwitterClientMock::getAllCallsData() as $index => $twitterCallData) {
             $this->assertEquals(
                 $this->twitterEndpoint,
-                $twitterCallData['endpoint'],
+                $twitterCallData['path'],
             );
 
             $expectedParameters = $this->initalTwitterParametersKeys;
@@ -562,7 +562,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         foreach (TwitterClientMock::getAllCallsData() as $index => $twitterCallData) {
             $this->assertEquals(
                 $this->twitterEndpoint,
-                $twitterCallData['endpoint'],
+                $twitterCallData['path'],
             );
 
             $expectedParameters = $this->initalTwitterParametersKeys;

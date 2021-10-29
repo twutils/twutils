@@ -57,6 +57,11 @@ class SocialUser extends Model
         return ! empty($this->token);
     }
 
+    public function hasWriteScope()
+    {
+        return in_array('write', $this->scope);
+    }
+
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');

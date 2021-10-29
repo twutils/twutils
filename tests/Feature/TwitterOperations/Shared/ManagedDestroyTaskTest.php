@@ -67,7 +67,7 @@ abstract class ManagedDestroyTaskTest extends IntegrationTestCase
 
         $this->assertCount(4, Tweet::all());
 
-        $this->assertCount(4, TwitterClientMock::getAllCallsData()->where('endpoint', $this->twitterEndpoint));
+        $this->assertCount(4, TwitterClientMock::getAllCallsData()->where('path', $this->twitterEndpoint));
 
         $this->assertCountDispatchedJobs(1, $this->tweetsListjobName);
 

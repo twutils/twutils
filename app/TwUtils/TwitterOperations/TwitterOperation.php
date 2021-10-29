@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Jobs\CompleteTaskJob;
 use App\TwUtils\Services\JobsService;
 use Illuminate\Support\Facades\Cache;
+use App\TwUtils\Contracts\TwitterConnector;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation
@@ -47,7 +48,8 @@ abstract class TwitterOperation
 
         $this->handleJobParameters($parameters);
 
-        $connector = app(\App\TwUtils\ITwitterConnector::class);
+        /** @var TwitterConnector * */
+        $connector = app(TwitterConnector::class);
         $twitterClient = $connector->get($socialUser);
 
         $parameters = $this->getTwitterClientParameters();

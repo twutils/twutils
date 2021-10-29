@@ -4,26 +4,22 @@ namespace App\TwUtils;
 
 use App\Models\SocialUser;
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\TwUtils\Contracts\TwitterConnector;
 
-class TwitterConnector implements ITwitterConnector
+class TwitterConnector implements TwitterConnector
 {
     public function get(SocialUser $user)
     {
         if (app('env') === 'testing') {
-            return dump('Error on binding testing twitter mock client, remove this if you are willing to run unit tests on the live real twitter client..');
+            return dd('Error on binding testing twitter mock client');
         }
 
         $clientId = config('services.twitter.client_id');
         $clientSecret = config('services.twitter.client_secret');
 
-        if (in_array('write', $user->scope)) {
+        if ($user->hasWriteScope()) {
             $clientId = env('TWITTER_READ_WRITE_CLIENT_ID');
             $clientSecret = env('TWITTER_READ_WRITE_CLIENT_SECRET');
-        }
-
-        if (in_array('dm', $user->scope)) {
-            $clientId = env('TWITTER_READ_WRITE_DM_CLIENT_ID');
-            $clientSecret = env('TWITTER_READ_WRITE_DM_CLIENT_SECRET');
         }
 
         return new TwitterOAuth(

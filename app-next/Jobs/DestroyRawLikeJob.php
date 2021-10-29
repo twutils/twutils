@@ -7,7 +7,7 @@ use Exception;
 use App\Models\Task;
 use App\Models\RawTweet;
 use App\TwUtils\Base\Job;
-use AppNext\Twitter\Requester;
+use AppNext\Twitter\Api\Requester;
 use AppNext\Tasks\DestroyLikesByUpload;
 use AppNext\Tasks\DestroyTweetsByUpload;
 

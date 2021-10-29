@@ -1,6 +1,6 @@
 <?php
 
-namespace AppNext\Twitter;
+namespace AppNext\Twitter\Api;
 
 use App\Utils;
 use App\Models\SocialUser;
@@ -9,13 +9,12 @@ use Atymic\Twitter\ApiV1\Service\Twitter as ServiceTwitter;
 
 class Requester
 {
-    /** @var \Atymic\Twitter\ApiV1\Service\Twitter */
     protected ServiceTwitter $twitterV1;
 
     public function __construct(
         protected SocialUser $socialUser,
     ) {
-        if (in_array('write', $socialUser->scope)) {
+        if ($socialUser->hasWriteScope()) {
             Utils::setup_twitter_config_for_read_write();
         }
 

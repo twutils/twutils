@@ -2,7 +2,9 @@
 
 namespace Tests;
 
-class TwitterClientMock
+use Abraham\TwitterOAuth\TwitterOAuth;
+
+class TwitterClientMock extends TwitterOAuth
 {
     private $twitterResults;
 
@@ -18,21 +20,21 @@ class TwitterClientMock
         $this->headers = $headers;
     }
 
-    public function getLastXHeaders()
+    public function getLastXHeaders(): array
     {
         return $this->headers;
     }
 
-    public function get($endpoint, $parameters)
+    public function get(string $path, array $parameters = [])
     {
         if (is_null(static::$allCallsData)) {
             static::$allCallsData = collect();
         }
 
-        static::$lastCallData = compact('endpoint', 'parameters');
+        static::$lastCallData = compact('path', 'parameters');
         static::$allCallsData->push(static::$lastCallData);
 
-        if ($endpoint === 'friendships/lookup') {
+        if ($path === 'friendships/lookup') {
             return $this->followingLookupResult($parameters);
         }
 
@@ -55,9 +57,9 @@ class TwitterClientMock
         return $results;
     }
 
-    public function post($endpoint, $parameters)
+    public function post(string $path, array $parameters = [], bool $json = false)
     {
-        return $this->get($endpoint, $parameters);
+        return $this->get($path, $parameters);
     }
 
     public static function getLastCallData()

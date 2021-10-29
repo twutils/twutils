@@ -2,13 +2,12 @@
 
 namespace Tests;
 
-use Mockery;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\SocialUser;
 use App\Jobs\FetchLikesJob;
 use Illuminate\Support\Str;
-use App\TwUtils\ITwitterConnector;
+use App\TwUtils\Contracts\TwitterConnector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IntegrationTestCase extends TestCase
@@ -165,16 +164,16 @@ class IntegrationTestCase extends TestCase
     protected function bindTwitterConnector($twitterResults = [], $twitterHeaders = ['x_rate_limit_remaining' => '74'], $callback = null)
     {
         $twitterClient = new TwitterClientMock($twitterResults, $twitterHeaders);
-        $twitterConnector = Mockery::mock(ITwitterConnector::class);
-        $twitterConnector->shouldReceive('get')
-        ->andReturn($twitterClient);
+
+        $twitterConnector = $this->mock(TwitterConnector::class);
+        $twitterConnector->shouldReceive('get')->andReturn($twitterClient);
 
         if (! is_null($callback)) {
             $callback($twitterConnector, $twitterClient);
         }
 
         app()->bind(
-            ITwitterConnector::class,
+            TwitterConnector::class,
             function () use ($twitterConnector) {
                 return $twitterConnector;
             }

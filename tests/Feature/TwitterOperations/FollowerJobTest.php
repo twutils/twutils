@@ -56,7 +56,7 @@ class FollowerJobTest extends UsersListTest
             $this->dispatchedJobs[$i]->handle();
         }
         $this->assertTaskCount(2, 'completed');
-        $this->assertEquals('followers/list', $this->lastTwitterClientData()['endpoint']);
+        $this->assertEquals('followers/list', $this->lastTwitterClientData()['path']);
         $this->assertEquals($this->lastTwitterClientData()['parameters']['user_id'], auth()->user()->socialUsers[0]->social_user_id);
     }
 }

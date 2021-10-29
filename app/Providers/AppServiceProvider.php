@@ -83,7 +83,7 @@ class AppServiceProvider extends ServiceProvider
             }
         } catch (\Exception $e) {
         }
-        app()->bind(\App\TwUtils\ITwitterConnector::class, \App\TwUtils\TwitterConnector::class);
+        app()->bind(\App\TwUtils\Contracts\TwitterConnector::class, \App\TwUtils\TwitterConnector::class);
         app()->bind('MimeDB', MimeDbRepository::class);
         app()->bind('HttpClient', Client::class);
 

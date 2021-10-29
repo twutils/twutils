@@ -247,7 +247,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId]);
         $response->assertStatus(200);
@@ -260,7 +260,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter([], $indexLastDispatched);
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->twitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->twitterEndpoint);
 
         $this->assertCountDispatchedJobs(2, $this->jobName);
         $removedDate = new \Carbon\Carbon(Task::find(1)->tweets->first()->pivot->removed);
@@ -302,7 +302,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         [$indexLastDispatched, $taskId] = $this->fetchTweets();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $response = $this->postJson($this->apiEndpoint, ['id' => $taskId]);
         $response->assertStatus(200);
@@ -351,7 +351,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $this->assertCount(2, collect($this->dispatchedJobs)->filter(function ($job) {
             return $job->delay;
         }));
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->twitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->twitterEndpoint);
 
         $this->assertFalse(Task::find(1)->tweets->where('pivot.removed', '!=', null)->count() == 0);
 
@@ -379,7 +379,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->twitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->twitterEndpoint);
 
         $this->assertCountDispatchedJobs(2, $this->jobName);
         $this->assertEquals(2, Task::find(1)->tweets->where('pivot.removed', '!=', null)->count());
@@ -412,7 +412,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->twitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->twitterEndpoint);
 
         $this->assertCountDispatchedJobs(3, $this->jobName);
         $this->assertEquals(3, Task::find(1)->tweets->where('pivot.removed', '!=', null)->count());
@@ -445,7 +445,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertNotEquals($this->lastTwitterClientData()['endpoint'], $this->twitterEndpoint);
+        $this->assertNotEquals($this->lastTwitterClientData()['path'], $this->twitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertTaskCount(1, 'completed');
@@ -467,7 +467,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertEquals(40, Task::find(1)->tweets->where('pivot.removed', '=', null)->count());
@@ -493,7 +493,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertEquals(40, Task::find(1)->tweets->where('pivot.removed', '=', null)->count());
@@ -519,7 +519,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertEquals(40, Task::find(1)->tweets->where('pivot.removed', '=', null)->count());
@@ -545,7 +545,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertEquals(40, Task::find(1)->tweets->where('pivot.removed', '=', null)->count());
@@ -571,7 +571,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertEquals(40, Task::find(1)->tweets->where('pivot.removed', '=', null)->count());
@@ -596,7 +596,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
         $this->assertStringContainsString('End Date', implode($response->json()['errors']));
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertEquals(40, Task::find(1)->tweets->where('pivot.removed', '=', null)->count());
@@ -624,7 +624,7 @@ abstract class DestroyTweetsTest extends IntegrationTestCase
 
         $this->fireJobsAndBindTwitter();
 
-        $this->assertEquals($this->lastTwitterClientData()['endpoint'], $this->tweetsSourcetwitterEndpoint);
+        $this->assertEquals($this->lastTwitterClientData()['path'], $this->tweetsSourcetwitterEndpoint);
 
         $this->assertCountDispatchedJobs(0, $this->jobName);
         $this->assertEquals(40, Task::find(1)->tweets->where('pivot.removed', '=', null)->count());

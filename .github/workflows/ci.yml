@@ -19,6 +19,17 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
           coverage: none
 
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      run: |
+        echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
     - name: Install composer Dependencies
       run: |
        composer install --prefer-dist --no-interaction --no-suggest

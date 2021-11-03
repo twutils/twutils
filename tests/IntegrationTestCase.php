@@ -7,14 +7,13 @@ use App\Models\User;
 use App\Models\SocialUser;
 use App\Jobs\FetchLikesJob;
 use Illuminate\Support\Str;
-use App\TwUtils\Contracts\TwitterConnector;
+use App\TwUtils\TwitterConnector;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IntegrationTestCase extends TestCase
 {
-    use RefreshDatabase {
-        RefreshDatabase::refreshDatabase as refreshDatabaseTrait;
-     }
+    use RefreshDatabase;
 
     protected static int $lastJobIndex = 0;
 
@@ -31,15 +30,6 @@ class IntegrationTestCase extends TestCase
         parent::tearDown();
 
         static::$lastJobIndex = 0;
-    }
-
-    public function refreshDatabase()
-    {
-        $this->refreshDatabaseTrait();
-        \DB::getSchemaBuilder()->enableForeignKeyConstraints();
-        if (config('database.connections.'.config('database.default').'.driver') == 'sqlite') {
-            \DB::connection()->getPdo()->exec('pragma foreign_keys=1');
-        }
     }
 
     public function call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
@@ -152,13 +142,12 @@ class IntegrationTestCase extends TestCase
         $this->assertEquals($count, $dispatchedJobs->count());
     }
 
-    protected function assertLikesBelongsToTask()
+    protected function assertLikesBelongsToFirstTask()
     {
-        $tasksIds = \DB::table('task_tweet')->get()->pluck('task_id')->unique();
+        $tasksIds = DB::table('task_tweet')->get()->pluck('task_id')->unique();
 
-        foreach ($tasksIds as $taskId) {
-            $this->assertEquals($taskId, Task::first()->id);
-        }
+        $this->assertCount(1, $tasksIds);
+        $this->assertEquals($tasksIds[0], Task::first()->id);
     }
 
     protected function bindTwitterConnector($twitterResults = [], $twitterHeaders = ['x_rate_limit_remaining' => '74'], $callback = null)
@@ -172,7 +161,7 @@ class IntegrationTestCase extends TestCase
             $callback($twitterConnector, $twitterClient);
         }
 
-        app()->bind(
+        $this->app->bind(
             TwitterConnector::class,
             function () use ($twitterConnector) {
                 return $twitterConnector;

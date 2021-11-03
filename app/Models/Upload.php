@@ -38,6 +38,8 @@ class Upload extends Model
             if (static::getStorageDisk()->exists(static::UPLOADS_DIR.'/'.$upload->filename)) {
                 static::getStorageDisk()->delete(static::UPLOADS_DIR.'/'.$upload->filename);
             }
+
+            $upload->rawTweets()->getQuery()->delete();
         });
     }
 

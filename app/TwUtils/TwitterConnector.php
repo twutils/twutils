@@ -4,14 +4,13 @@ namespace App\TwUtils;
 
 use App\Models\SocialUser;
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\TwUtils\Contracts\TwitterConnector;
 
-class TwitterConnector implements TwitterConnector
+class TwitterConnector
 {
-    public function get(SocialUser $user)
+    public function get(SocialUser $user): TwitterOAuth
     {
         if (app('env') === 'testing') {
-            return dd('Error on binding testing twitter mock client');
+            return dd('Error binding testing twitter mock client');
         }
 
         $clientId = config('services.twitter.client_id');

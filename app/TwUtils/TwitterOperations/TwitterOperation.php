@@ -8,9 +8,9 @@ use AppNext\Tasks\Config;
 use App\Models\SocialUser;
 use Illuminate\Support\Str;
 use App\Jobs\CompleteTaskJob;
+use App\TwUtils\TwitterConnector;
 use App\TwUtils\Services\JobsService;
 use Illuminate\Support\Facades\Cache;
-use App\TwUtils\Contracts\TwitterConnector;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 
 abstract class TwitterOperation

@@ -58,7 +58,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(0);
         $this->assertCount(0, Tweet::all());
-        $this->assertLikesBelongsToTask();
     }
 
     public function test_tweet_and_tweep_data_is_up_to_date()
@@ -97,7 +96,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertTaskCount(1);
         $this->assertCount(10, Tweet::all());
         $this->assertCount(3, Tweep::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
 
         $this->assertEquals($firstTweetLikes, Tweet::where('id_str', $firstTweetStrId)->first()->favorite_count);
         $this->assertEquals($firstTweepBio, Tweep::where('id_str', $firstTweepStrId)->first()->description);
@@ -185,7 +184,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         // Assert that only 10 tweets remaining are related to second user's task
         $this->assertCount(10, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertEquals(10, Tweep::count());
 
         // Login Second User - Delete the second task
@@ -255,7 +254,6 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         // Assert that remaining tweeps are related to first user's task and the second user didn't impact them
         $this->assertCount(0, Tweet::all());
-        $this->assertLikesBelongsToTask();
         $this->assertEquals(10, Tweep::count());
 
         // Login First User - Delete the first task
@@ -292,7 +290,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1);
         $this->assertCount(3, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_dont_create_same_operation_task_before_finishing_the_one_before()
@@ -355,7 +353,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_save_likes_with_custom_date()
@@ -385,7 +383,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_save_likes_has_correct_twitter_parameters()
@@ -634,7 +632,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertTrue($exceptionIsThrown);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_build_next_job_if_needed()
@@ -669,7 +667,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCountDispatchedJobs(3, $this->jobName);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(25, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_expired_token_in_middle_of_fetch()
@@ -709,7 +707,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCountDispatchedJobs(2, $this->jobName);
         $this->assertTaskCount(1, 'broken');
         $this->assertCount(10, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_next_job_returned_zero_tweets()
@@ -744,7 +742,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCountDispatchedJobs(3, $this->jobName);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(20, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_delay_next_job_if_needed()
@@ -780,7 +778,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
 
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_dont_build_next_job_if_less_than100()
@@ -800,7 +798,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCountDispatchedJobs(1, $this->jobName);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_dont_build_next_job_if_less_than100and_ignore_delay()
@@ -820,7 +818,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCountDispatchedJobs(1, $this->jobName);
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(1, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_error_response()
@@ -871,7 +869,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(1, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_clean_likes_job_remove_duplicate_assignment_to_task()
@@ -892,7 +890,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCount(1, Tweet::all());
         $this->assertCount(1, Task::first()->likes);
         $this->assertCount(1, DB::table('task_tweet')->get());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_clean_likes_job_remove_duplicate_tweet_ids_to_task()
@@ -928,7 +926,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCount(1, Tweet::all());
         $this->assertCount(1, DB::table('task_tweet')->get());
         $this->assertCount(1, Task::first()->likes);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_clean_likes_job_remove_multiple_duplicate_tweet_ids_to_task()
@@ -978,7 +976,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
         $this->assertCount(2, Tweet::all());
         $this->assertCount(2, DB::table('task_tweet')->get());
         $this->assertCount(2, Task::first()->likes);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_clean_likes_job_remove_duplicate_str_id_two_str_ids()
@@ -1004,7 +1002,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(2, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_clean_likes_job_remove_duplicate_str_id_multiple_str_ids()
@@ -1041,7 +1039,7 @@ abstract class TweetsTaskTest extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertCount(4, Tweet::all());
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
     }
 
     public function test_fetch_extended_entities()

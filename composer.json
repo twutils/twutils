@@ -29,7 +29,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",
         "barryvdh/laravel-ide-helper": "^2.10",
-        "brianium/paratest": "^6.2",
+        "brianium/paratest": "^6.3",
         "facade/ignition": "^2.3.6",
         "filp/whoops": "~2.0",
         "matt-allan/laravel-code-style": "^0.6.0",
@@ -81,7 +81,7 @@
             "@php artisan horizon:publish"
         ],
         "test": [
-            "vendor/bin/paratest -p5 --no-coverage"
+            "@php artisan test --parallel --no-coverage --recreate-databases"
         ],
         "testData": [
             "phpunit --no-coverage --configuration testData.phpunit.xml"

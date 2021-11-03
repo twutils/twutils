@@ -63,7 +63,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertEquals(Task::all()->last()->tweets->first()->media->map->mediaFiles[0][0]->mediaPath, $tweet->id_str.'_1.jpeg');
     }
@@ -88,7 +88,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.jpeg');
         $this->assertEquals($tweet->id_str.'_1.jpeg', $response->json()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
@@ -111,7 +111,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $lastJobIndex = count($this->dispatchedJobs);
 
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertCount(2, Tweet::first()->media);
         $this->assertCount(2, Media::all());
         $this->assertCount(2, MediaFile::all());
@@ -157,7 +157,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
         $this->assertEquals($tweet->id_str.'_1.jpeg', $response->json()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
@@ -181,7 +181,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertZippedExists('1', $tweet->id_str.'_1.jpeg');
         $this->assertZippedExists('1', $tweet->id_str.'_2.mp4');
         $this->assertEquals($tweet->id_str.'_1.jpeg', $response->json()['data'][0]['media'][0]['media_files'][0]['mediaPath']);
@@ -221,7 +221,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertZippedMissing('1', $tweet->id_str.'_1.zip');
         $this->assertEquals('broken', $response->json()['data'][0]['media'][0]['media_files'][0]['status']);
     }
@@ -299,7 +299,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 34);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertStringContainsString($expectedTweetsAttachmentsPaths, $likeEntitiesPaths);
         $this->assertStringContainsString($expectedSavedPaths, collect($this->getZippedFiles(3))->implode(','));
         $this->assertEquals(['success', 'success', 'success'], Task::find(1)->exports->pluck('status')->toArray());
@@ -321,7 +321,7 @@ abstract class EntitiesTaskTests extends IntegrationTestCase
 
         $this->assertTaskCount(1, 'completed');
         $this->assertEquals(Tweet::all()->count(), 1);
-        $this->assertLikesBelongsToTask();
+        $this->assertLikesBelongsToFirstTask();
         $this->assertZippedMissing('1', $tweet->id_str.'_1.jpeg');
         $this->assertCount(0, MediaFile::all());
     }

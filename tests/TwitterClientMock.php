@@ -2,9 +2,7 @@
 
 namespace Tests;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
-
-class TwitterClientMock extends TwitterOAuth
+class TwitterClientMock
 {
     private $twitterResults;
 

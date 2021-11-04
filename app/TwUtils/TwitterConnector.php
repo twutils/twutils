@@ -7,7 +7,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 
 class TwitterConnector
 {
-    public function get(SocialUser $user): TwitterOAuth
+    public function get(SocialUser $user)
     {
         if (app('env') === 'testing') {
             return dd('Error binding testing twitter mock client');

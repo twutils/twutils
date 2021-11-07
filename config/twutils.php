@@ -6,9 +6,7 @@ use AppNext\Jobs\DestroyRawLikeJob;
 use AppNext\Jobs\DestroyRawTweetJob;
 use AppNext\Tasks\DestroyLikesByUpload;
 use AppNext\Tasks\DestroyTweetsByUpload;
-use App\TwUtils\Tasks\Validators\DateValidator;
 use App\TwUtils\TwitterOperations\FetchLikesOperation;
-use App\TwUtils\Tasks\Validators\ManagedByTaskValidator;
 use App\TwUtils\TwitterOperations\DestroyLikesOperation;
 use App\TwUtils\TwitterOperations\RevokeAccessOperation;
 use App\TwUtils\TwitterOperations\DestroyTweetsOperation;
@@ -34,7 +32,6 @@ return [
                 'DestroyLikes',
             ],
 
-            'validators'    => [],
             'job'           => DestroyRawLikeJob::class,
         ],
 
@@ -48,7 +45,6 @@ return [
                 'DestroyTweets',
             ],
 
-            'validators'    => [],
             'job'           => DestroyRawTweetJob::class,
         ],
 
@@ -60,10 +56,6 @@ return [
             'endpoint'      => 'favorites/destroy',
             'method'        => 'post',
             'job'           => DislikeTweetJob::class,
-            'validators'    => [
-                DateValidator::class,
-                ManagedByTaskValidator::class,
-            ],
         ],
 
         DestroyTweetsOperation::class => [
@@ -74,10 +66,6 @@ return [
             'endpoint'      => 'statuses/destroy',
             'method'        => 'post',
             'job'           => DestroyTweetJob::class,
-            'validators'    => [
-                DateValidator::class,
-                ManagedByTaskValidator::class,
-            ],
         ],
 
         FetchLikesOperation::class => [
@@ -88,9 +76,6 @@ return [
             'endpoint'      => 'favorites/list',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [
-                DateValidator::class,
-            ],
         ],
 
         FetchUserTweetsOperation::class => [
@@ -101,9 +86,6 @@ return [
             'endpoint'      => 'statuses/user_timeline',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [
-                DateValidator::class,
-            ],
         ],
 
         FetchEntitiesLikesOperation::class => [
@@ -114,9 +96,6 @@ return [
             'endpoint'      => 'favorites/list',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [
-                DateValidator::class,
-            ],
         ],
 
         FetchEntitiesUserTweetsOperation::class => [
@@ -127,9 +106,6 @@ return [
             'endpoint'      => 'statuses/user_timeline',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [
-                DateValidator::class,
-            ],
         ],
 
         FetchFollowingOperation::class => [
@@ -140,7 +116,6 @@ return [
             'endpoint'      => 'friends/list',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [],
         ],
 
         FetchFollowersOperation::class => [
@@ -151,7 +126,6 @@ return [
             'endpoint'      => 'followers/list',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [],
         ],
 
         FetchFollowingLookupsOperation::class => [
@@ -162,7 +136,6 @@ return [
             'endpoint'      => 'friendships/lookup',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [],
         ],
 
         FetchUserInfoOperation::class => [
@@ -173,7 +146,6 @@ return [
             'endpoint'      => 'users/show',
             'method'        => 'get',
             'job'           => null,
-            'validators'    => [],
         ],
 
         RevokeAccessOperation::class => [
@@ -184,7 +156,6 @@ return [
             'endpoint'      => 'oauth/invalidate_token',
             'method'        => 'post',
             'job'           => null,
-            'validators'    => [],
         ],
 
         ManagedDestroyLikesOperation::class => [
@@ -195,9 +166,6 @@ return [
             'endpoint'      => '...',
             'method'        => '...',
             'job'           => null,
-            'validators'    => [
-                DateValidator::class,
-            ],
         ],
 
         ManagedDestroyTweetsOperation::class => [
@@ -208,9 +176,6 @@ return [
             'endpoint'      => '...',
             'method'        => '...',
             'job'           => null,
-            'validators'    => [
-                DateValidator::class,
-            ],
         ],
     ],
 

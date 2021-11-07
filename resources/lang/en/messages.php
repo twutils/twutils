@@ -115,7 +115,7 @@ return [
     \App\TwUtils\TwitterOperations\ManagedDestroyLikesOperation::class     => 'Remove Likes',
     \App\TwUtils\TwitterOperations\ManagedDestroyTweetsOperation::class    => 'Remove Tweets',
 
-    'fetch_following'      => 'Backup My Following',
+    'fetch_following'      => 'Backup My Followings',
     'fetch_following_desc' => 'Fetch a copy of your twitter following list.',
 
     'following' => 'Following',

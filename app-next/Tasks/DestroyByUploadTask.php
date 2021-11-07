@@ -1,11 +1,10 @@
 <?php
 
-namespace AppNext\Tasks\Base;
+namespace AppNext\Tasks;
 
 use App\Models\RawTweet;
-use AppNext\Tasks\Config;
 
-abstract class DestroyByUploadTask extends Task
+abstract class DestroyByUploadTask extends Base
 {
     final public function init(): void
     {

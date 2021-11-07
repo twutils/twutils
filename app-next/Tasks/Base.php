@@ -1,10 +1,10 @@
 <?php
 
-namespace AppNext\Tasks\Base;
+namespace AppNext\Tasks;
 
 use App\Models\Task as TaskModel;
 
-abstract class Task
+abstract class Base
 {
     final public function __construct(
         protected TaskModel $taskModel

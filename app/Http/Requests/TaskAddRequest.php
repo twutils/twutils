@@ -17,7 +17,7 @@ class TaskAddRequest extends FormRequest
     {
         $targetedTask = ucfirst($this->segment(2));
 
-        $relatedTask = Task::find($this->segment(3)) ?? (Task::find($this->id) ?? null);
+        $relatedTask = Task::find($this->segment(3)) ?? null;
 
         $taskFullType = app(TasksService::class)
             ->findOperationTypeByShortName(
@@ -61,6 +61,25 @@ class TaskAddRequest extends FormRequest
                             ],
                         ])
                         ->validate();
+                    }
+                },
+                // Whatever the task type, validate 'start_date' or 'end_date' if present
+                function ($attribute, $value, $fail) {
+                    $startDate = $value['start_date'] ?? null;
+                    $endDate = $value['end_date'] ?? null;
+
+                    $shouldValidate = $endDate !== null || $startDate !== null;
+
+                    $datesErrors = validator()->make(
+                        ['start_date' => $startDate, 'end_date' => $endDate],
+                        [
+                            'start_date' => 'nullable|date|date_format:Y-m-d'.(is_null($endDate) ? '' : '|before:end_date'),
+                            'end_date'   => 'nullable|date|date_format:Y-m-d'.(is_null($startDate) ? '' : '|after:start_date'),
+                        ]
+                    )->errors()->all();
+
+                    if ($shouldValidate && ! empty($datesErrors)) {
+                        throw new TaskAddException($datesErrors, Response::HTTP_UNPROCESSABLE_ENTITY);
                     }
                 },
             ],
@@ -119,11 +138,6 @@ class TaskAddRequest extends FormRequest
 
                     if ($oldTasks->count() != 0) {
                         throw new TaskAddException([], Response::HTTP_UNPROCESSABLE_ENTITY, ['task_id' => $oldTasks->last()->id]);
-                    }
-                },
-                function ($attribute, $value, $fail) {
-                    foreach (Config::getValidators($this->taskFullType) as $validatorClassName) {
-                        (new $validatorClassName)->apply($this->all(), $this->user());
                     }
                 },
             ],

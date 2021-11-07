@@ -5,6 +5,27 @@ import addTask from '@/components/TaskAdd'
 import EventBus from '@/EventBus'
 const router = new VueRouter({})
 
+const routes = [
+  {
+    path: `/task/:id`,
+    component: task,
+    props: true,
+    name: `task.show`,
+  },
+  {
+    path: `/addTask/:type`,
+    component: addTask,
+    props: true,
+    name: `task.add`,
+  },
+  {
+    path: `/*`,
+    component: tasksView,
+    props: false,
+    name: `task.index`,
+  },
+]
+
 let openModals = []
 
 $(document).on(`shown.bs.modal`, function (event) {
@@ -37,11 +58,6 @@ router.afterEach((to, from) => {
 
   switchLangAnchor.href = switchLangAnchor.dataset.originalHref + `?returnUrl=` + to.path
 })
-
-const routes = [
-  { path: `/task/:id`, component: task, props: true, name: `task.show`, },
-  { path: `/addTask/:type`, component: addTask, props: true, name: `task.add`, },
-  { path: `/*`, component: tasksView, props: false, name: `task.index`, }, ]
 
 router.addRoutes(routes)
 
